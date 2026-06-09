@@ -24,9 +24,11 @@ export const STATE = {
   carros: [],           // Carros/vehículos
   returns: [],          // Devoluciones
   movements: [],        // Movimientos en patio
+  wave: [],             // Wave/Plan de ola de camiones
 
   // Datos específicos por vista
   alertas: [],          // Alertas activas
+  alerts: [],           // Alertas (alias de alertas)
   citasData: [],        // Citas/appointments
   tareasData: [],       // Tareas (datos alternativos)
   turnosData: [],       // Turnos del turnomático
@@ -84,7 +86,9 @@ export function clearState() {
   STATE.carros = [];
   STATE.returns = [];
   STATE.movements = [];
+  STATE.wave = [];
   STATE.alertas = [];
+  STATE.alerts = [];
   STATE.citasData = [];
   STATE.tareasData = [];
   STATE.turnosData = [];

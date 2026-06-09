@@ -996,7 +996,7 @@ function renderAndenes() {
   const statusLabels = { free:'LIBRE', busy:'OCUPADO', blocked:'BLOQUEADO' };
 
   // IDs de visitas ya reclamadas por otros andenes (para el fallback)
-  const claimedByOther = new Set(STATE.docks.map(function(od){ return od.truck_id; }).filter(Boolean));
+  const claimedByOther = new Set((STATE.docks || []).map(function(od){ return od.truck_id; }).filter(Boolean));
 
   const cards = docks.map(function(d) {
     const visit = resolveVisitForDock(d, STATE.visits, STATE.docks);
@@ -1904,7 +1904,7 @@ function renderQueueHistory() {
 }
 
 async function llamarTicket(ticketId) {
-  const t = STATE.queueTickets.find(x => x.id === ticketId);
+  const t = (STATE.queueTickets || []).find(x => x.id === ticketId);
   if (!t) return;
   const dock = buscarAndenCompatible(t.tipo_operacion === 'carga' ? 'secundaria' : 'primaria', t.tipo_carga || 'seco');
   if (!dock) { notify('No hay andenes compatibles disponibles para este ticket', 'warn'); return; }
@@ -1925,7 +1925,7 @@ async function llamarTicket(ticketId) {
 }
 
 async function cancelarTicket(ticketId) {
-  const t = STATE.queueTickets.find(x => x.id === ticketId);
+  const t = (STATE.queueTickets || []).find(x => x.id === ticketId);
   if (!t) return;
   if (STATE.usingSeed) t.estado = 'cancelado';
   else await sb.from('queue_tickets').update({ estado: 'cancelado' }).eq('id', ticketId);
@@ -2281,8 +2281,8 @@ function loadReports() {
   const vencidas = (STATE.tasks || []).filter(t => t.estado === 'vencida').length;
   const aprobadas = (STATE.returns || []).filter(r => r.estado === 'aprobada').length;
   const rechazadas = (STATE.returns || []).filter(r => r.estado === 'rechazada').length;
-  const util = STATE.docks.length
-    ? Math.round((STATE.docks || []).filter(d => d.estado === 'busy').length / STATE.docks.length * 100) : 0;
+  const util = (STATE.docks || []).length
+    ? Math.round((STATE.docks || []).filter(d => d.estado === 'busy').length / (STATE.docks || []).length * 100) : 0;
 
   kpis.innerHTML = `
     <div class="kpi info"><div class="kpi-lbl">Total Ingresos</div><div class="kpi-val">${totalIngresos}</div><div class="kpi-sub">en período</div></div>
@@ -2364,7 +2364,7 @@ function loadReports() {
     const pend = (STATE.returns || []).filter(r => r.estado === 'pendiente').length;
     devolTbl.innerHTML = `<tr>
       <td>${new Date().toLocaleDateString('es-CL', { month:'long', year:'numeric' })}</td>
-      <td>${STATE.returns.length}</td>
+      <td>${(STATE.returns || []).length}</td>
       <td class="c-ok">${apr}</td>
       <td class="c-err">${rec}</td>
     </tr>`;
@@ -2398,9 +2398,9 @@ function renderChatUsers() {
   // Set de mensajes ocultados localmente por el usuario actual (soft-delete)
   const hidden = ChatHide.load(myId);
   others.forEach(p => {
-    const unread = STATE.chatMessages.filter(m =>
+    const unread = (STATE.chatMessages || []).filter(m =>
       m.from_id === p.id && m.to_id === myId && !m.leido && !hidden.has(m.id)).length;
-    const lastMsg = STATE.chatMessages.filter(m =>
+    const lastMsg = (STATE.chatMessages || []).filter(m =>
       !hidden.has(m.id) &&
       ((m.from_id === p.id && m.to_id === myId) ||
        (m.from_id === myId && m.to_id === p.id))
@@ -2496,7 +2496,7 @@ async function limpiarChatUsuario() {
       convMsgs = data || [];
     } catch(_) {
       // Si falla la lectura, usamos lo que tenemos en STATE
-      convMsgs = STATE.chatMessages.filter(function(m){
+      convMsgs = (STATE.chatMessages || []).filter(function(m){
         return (m.from_id === myId && m.to_id === otherId) || (m.from_id === otherId && m.to_id === myId);
       });
     }
@@ -2523,7 +2523,7 @@ async function limpiarChatUsuario() {
   ChatHide.hideMany(myId, allIds);
 
   // 4) Limpiar STATE
-  STATE.chatMessages = STATE.chatMessages.filter(function(m){
+  STATE.chatMessages = (STATE.chatMessages || []).filter(function(m){
     return !((m.from_id === myId && m.to_id === otherId) || (m.from_id === otherId && m.to_id === myId));
   });
 
@@ -2561,7 +2561,7 @@ async function loadChatMessages() {
   if (hidden.size) msgs = msgs.filter(function(m){ return !hidden.has(m.id); });
 
   // Guardar en STATE para preview en lista
-  STATE.chatMessages = [...STATE.chatMessages.filter(m =>
+  STATE.chatMessages = [...(STATE.chatMessages || []).filter(m =>
     !((m.from_id===myId&&m.to_id===otherId)||(m.from_id===otherId&&m.to_id===myId))
   ), ...msgs];
 
@@ -2627,7 +2627,7 @@ async function sendChatMsg() {
 
 async function deleteChatMsg(msgId) {
   const myId = STATE.profile?.id;
-  const msg = STATE.chatMessages.find(m => m.id === msgId);
+  const msg = (STATE.chatMessages || []).find(m => m.id === msgId);
   if (!msg || msg.from_id !== myId) { notify('Solo puedes borrar tus propios mensajes', 'warn'); return; }
 
   if (STATE.usingSeed) {
@@ -2637,7 +2637,7 @@ async function deleteChatMsg(msgId) {
       await sb.from('chat_messages').delete().eq('id', msgId).eq('from_id', myId);
     } catch(e) { notify('Error al borrar mensaje', 'error'); return; }
   }
-  STATE.chatMessages = STATE.chatMessages.filter(m => m.id !== msgId);
+  STATE.chatMessages = (STATE.chatMessages || []).filter(m => m.id !== msgId);
   loadChatMessages();
 }
 
@@ -2815,7 +2815,7 @@ async function addCarrier() {
 }
 
 function populateCarrierSelects() {
-  const opts = STATE.carriers.map(c => `<option value="${c.codigo}" data-nombre="${c.nombre}" data-ruta="${c.numero_ruta}">${c.codigo} â€” ${c.numero_ruta} â€” ${c.nombre}</option>`).join('');
+  const opts = (STATE.carriers || []).map(c => `<option value="${c.codigo}" data-nombre="${c.nombre}" data-ruta="${c.numero_ruta}">${c.codigo} â€” ${c.numero_ruta} â€” ${c.nombre}</option>`).join('');
   ['wave-patente','carro-patente'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.innerHTML = '<option value="">-- Seleccionar --</option>' + opts; }
@@ -2823,7 +2823,7 @@ function populateCarrierSelects() {
   // trazabilidad empresa filter
   const trz = document.getElementById('trz-empresa');
   if (trz) {
-    const unique = [...new Set(STATE.carriers.map(c => c.nombre))];
+    const unique = [...new Set((STATE.carriers || []).map(c => c.nombre))];
     trz.innerHTML = '<option value="">Todas</option>' + unique.map(n => `<option value="${n}">${n}</option>`).join('');
   }
 }
@@ -2866,9 +2866,9 @@ function renderCarros() {
   if (!list) return;
   const pColors = { alta:'var(--c-err)', normal:'var(--c-info)', baja:'var(--tx-muted)' };
   const isAdmin = ['administrador','administrativo_ops'].includes(STATE.profile?.rol);
-  list.innerHTML = STATE.carros.length ? STATE.carros.map(function(cr,i) {
+  list.innerHTML = (STATE.carros || []).length ? (STATE.carros || []).map(function(cr,i) {
     const anden = cr.anden_destino ? ((STATE.docks || []).find(d=>d.id===cr.anden_destino)?.codigo||'â€”') : 'â€”';
-    const slot  = cr.slot ? STATE.playaSlots.find(s=>s.id===cr.slot) : null;
+    const slot  = cr.slot ? (STATE.playaSlots || []).find(s=>s.id===cr.slot) : null;
     const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'â€”';
     return '<div class="carro-card" style="border-left:3px solid ' + (pColors[cr.prioridad]||'var(--border-md)') + ';">' +
       '<div style="display:flex;flex-direction:column;min-width:80px;">' +
@@ -2890,9 +2890,9 @@ function renderCarros() {
   : '<div class="c-dim" style="padding:16px;text-align:center;">Sin carros registrados â€” use el botón + REGISTRAR CARRO</div>';
 
   // KPIs
-  const t = STATE.carros.length;
-  const v1 = STATE.carros.filter(c => c.vuelta === 'primera').length;
-  const v2 = STATE.carros.filter(c => c.vuelta === 'segunda').length;
+  const t = (STATE.carros || []).length;
+  const v1 = (STATE.carros || []).filter(c => c.vuelta === 'primera').length;
+  const v2 = (STATE.carros || []).filter(c => c.vuelta === 'segunda').length;
   const pal = STATE.carros.reduce((s,c) => s + (parseInt(c.pallets)||0), 0);
   ['carr-total','carr-1v','carr-2v','carr-pallets'].forEach((id,i) => set(id, [t,v1,v2,pal][i]));
 }
@@ -2959,7 +2959,7 @@ function saveCarro() {
   STATE.carros.push({ patente:pat, conductor:cond, ruta, pallets:pall, vuelta:vuelt, slot, obs, prioridad:prio, anden_destino:andDest, hora: new Date().toISOString(), estado:'esperando_planificacion' });
   // Marcar slot ocupado
   if (slot) {
-    const s = STATE.playaSlots.find(x => x.id === slot);
+    const s = (STATE.playaSlots || []).find(x => x.id === slot);
     if (s) { s.ocupado = true; s.patente = pat; s.ruta = ruta; }
   }
   closeModal('modal-carro');
@@ -2973,7 +2973,7 @@ function removeCarro(idx) {
   const c = STATE.carros[idx];
   if (!confirm('Â¿Eliminar registro de ' + c.patente + '?')) return;
   if (c.slot) {
-    const s = STATE.playaSlots.find(x => x.id === c.slot);
+    const s = (STATE.playaSlots || []).find(x => x.id === c.slot);
     if (s) { s.ocupado = false; s.patente = null; s.ruta = null; }
   }
   STATE.carros.splice(idx, 1);
@@ -2995,9 +2995,9 @@ function renderWave() {
   
   const list = document.getElementById('wave-list');
   if (!list) return;
-  set('wave-total', STATE.wave.length);
+  set('wave-total', (STATE.wave || []).length);
   
-  list.innerHTML = STATE.wave.length ? STATE.wave.map((w,i) => `
+  list.innerHTML = (STATE.wave || []).length ? (STATE.wave || []).map((w,i) => `
     <div class="wave-card">
       <div class="wave-pos">${String(i+1).padStart(2,'0')}</div>
       <div style="flex:1;">
@@ -3006,7 +3006,7 @@ function renderWave() {
       </div>
       <div class="wave-arrows">
         <button class="wave-arrow" data-action="moveWave" data-id="${i}" data-arg2="-1" ${i===0?'disabled':''}>â–²</button>
-        <button class="wave-arrow" data-action="moveWave" data-id="${i}" data-arg2="1" ${i===STATE.wave.length-1?'disabled':''}>â–¼</button>
+        <button class="wave-arrow" data-action="moveWave" data-id="${i}" data-arg2="1" ${i===(STATE.wave || []).length-1?'disabled':''}>â–¼</button>
       </div>
       <button class="btn btn-err" style="padding:2px 8px;font-size:10px;" data-action="removeWave" data-id="${i}">âœ•</button>
     </div>`).join('')
@@ -3023,7 +3023,7 @@ function addToWave() {
     Audio.play('error');
     notify('â›” Debe seleccionar una patente para agregar al wave', 'error'); return;
   }
-  if (STATE.wave.find(w => w.patente === pat)) {
+  if ((STATE.wave || []).find(w => w.patente === pat)) {
     Audio.play('warn');
     notify('⚠  La patente ' + pat + ' ya está en el wave de este turno', 'warn'); return;
   }
@@ -3037,7 +3037,7 @@ function addToWave() {
 
 function moveWave(idx, dir) {
   const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= STATE.wave.length) return;
+  if (newIdx < 0 || newIdx >= (STATE.wave || []).length) return;
   [STATE.wave[idx], STATE.wave[newIdx]] = [STATE.wave[newIdx], STATE.wave[idx]];
   renderWave();
 }
@@ -3059,8 +3059,8 @@ function saveWave() {
   const turno = document.getElementById('wave-turno')?.value || '';
   const key = 'yms_wave_' + (STATE.currentSite || 'default');
   localStorage.setItem(key, JSON.stringify({ turno, wave: STATE.wave, savedAt: new Date().toISOString() }));
-  notify(`Wave guardado â€” ${STATE.wave.length} rutas / ${turno}`, 'ok');
-  auditLog('planificacion', 'WAVE_GUARDADO', `${STATE.wave.length} rutas planificadas`);
+  notify(`Wave guardado â€” ${(STATE.wave || []).length} rutas / ${turno}`, 'ok');
+  auditLog('planificacion', 'WAVE_GUARDADO', `${(STATE.wave || []).length} rutas planificadas`);
 }
 
 function loadWaveFromStorage() {
@@ -3133,17 +3133,17 @@ function checkSLAAlerts() {
 
   renderAlertas();
   // Badge en nav
-  const active = STATE.alerts.filter(a => !a.resuelta);
+  const active = (STATE.alerts || []).filter(a => !a.resuelta);
   const badge = document.getElementById('alerts-badge');
   if (badge) badge.textContent = active.length > 0 ? '(' + active.length + ')' : '';
 }
 
 function addAlert(nivel, titulo, msg, refId) {
   STATE.alerts.unshift({ id: 'al' + Date.now() + Math.random(), nivel, titulo, msg, refId, ts: new Date().toISOString(), resuelta: false });
-  if (STATE.alerts.length > 200) STATE.alerts.pop();
+  if ((STATE.alerts || []).length > 200) STATE.alerts.pop();
   notify(titulo + ': ' + msg, nivel === 'P1' ? 'error' : 'warn');
   // Badge en desktop nav
-  const cnt = STATE.alerts.filter(a => !a.resuelta).length;
+  const cnt = (STATE.alerts || []).filter(a => !a.resuelta).length;
   const badge = document.getElementById('alerts-badge');
   if (badge) badge.textContent = cnt > 0 ? ' (' + cnt + ')' : '';
   // Badge en mobile nav
@@ -3155,12 +3155,12 @@ function renderAlertas() {
   initAlertasEventDelegation();
   const list = document.getElementById('alertas-content') || document.getElementById('alerts-list');
   if (!list) return;
-  const active = STATE.alerts.filter(a => !a.resuelta);
+  const active = (STATE.alerts || []).filter(a => !a.resuelta);
   const p1 = active.filter(a => a.nivel==='P1').length;
   const p2 = active.filter(a => a.nivel==='P2').length;
   const p3 = active.filter(a => a.nivel==='P3').length;
   set('al-p1', p1); set('al-p2', p2); set('al-p3', p3);
-  set('al-res', STATE.alerts.filter(a => a.resuelta).length);
+  set('al-res', (STATE.alerts || []).filter(a => a.resuelta).length);
   
   list.innerHTML = active.length
     ? active.map(a => `
@@ -3177,11 +3177,11 @@ function renderAlertas() {
 }
 
 function resolveAlert(id) {
-  const a = STATE.alerts.find(x => x.id === id);
+  const a = (STATE.alerts || []).find(x => x.id === id);
   if (a) { a.resuelta = true; STATE.alertsResolved++; }
   renderAlertas();
   const badge = document.getElementById('alerts-badge');
-  const cnt = STATE.alerts.filter(x => !x.resuelta).length;
+  const cnt = (STATE.alerts || []).filter(x => !x.resuelta).length;
   if (badge) badge.textContent = cnt > 0 ? '(' + cnt + ')' : '';
 }
 
@@ -3324,7 +3324,7 @@ async function loadTrazabilidad() {
     .map(v => Math.round((new Date(v.hora_salida) - new Date(v.hora_ingreso)) / 60000));
   const dwellProm = dwells.length ? Math.round(dwells.reduce((a,b)=>a+b,0)/dwells.length) : 0;
   const dwellMax  = dwells.length ? Math.max(...dwells) : 0;
-  const slaVenc   = STATE.alerts.filter(a => a.nivel === 'P1' && !a.resuelta).length;
+  const slaVenc   = (STATE.alerts || []).filter(a => a.nivel === 'P1' && !a.resuelta).length;
 
   set('trz-k1', total); set('trz-k2', prim); set('trz-k3', sec);
   set('trz-k4', dwellProm + 'm'); set('trz-k5', dwellMax + 'm'); set('trz-k6', slaVenc);
@@ -3476,10 +3476,10 @@ function clearDockForm() {
 }
 
 function renderConfigDocks() {
-  set('cfg-dock-count', STATE.docks.length);
+  set('cfg-dock-count', (STATE.docks || []).length);
   const tbody = document.getElementById('cfg-docks-tbl');
   if (!tbody) return;
-  tbody.innerHTML = STATE.docks.map(d => `<tr>
+  tbody.innerHTML = (STATE.docks || []).map(d => `<tr>
     <td class="c-bright fw">${d.codigo}</td>
     <td>${(d.tipo||'').toUpperCase()}</td>
     <td>${(d.operacion_permitida||'').replace(/_/g,' ').toUpperCase()}</td>
@@ -3494,12 +3494,12 @@ function renderConfigDocks() {
   const selDevol = document.getElementById('cfg-devol-anden');
   if (selDevol) {
     selDevol.innerHTML = '<option value="">Sin andén fijo</option>' +
-      STATE.docks.map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('');
+      (STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('');
   }
   // Poblar tabla devolución
   const devTbl = document.getElementById('cfg-devol-docks-tbl');
   if (devTbl) {
-    devTbl.innerHTML = STATE.docks.map(d => `<tr>
+    devTbl.innerHTML = (STATE.docks || []).map(d => `<tr>
       <td class="c-bright">${d.codigo}</td>
       <td class="c-dim">${d.tipo}</td>
       <td><span class="badge ${d.tipo==='devolucion'||d.operacion_permitida==='devolucion'?'b-ok':'b-dim'}">${d.tipo==='devolucion'||d.operacion_permitida==='devolucion'?'SÃ':'NO'}</span></td>
@@ -3692,7 +3692,7 @@ function clearCarrierForm() {
 function renderConfigPlantas() {
   const tbody = document.getElementById('plants-tbl');
   if (!tbody) return;
-  tbody.innerHTML = STATE.plants.map(p => `<tr>
+  tbody.innerHTML = (STATE.plants || []).map(p => `<tr>
     <td class="c-bright">${Utils.esc(p.codigo)}</td>
     <td>${Utils.esc(p.nombre)}</td>
     <td class="c-dim">${Utils.esc(p.region || 'â€”')}</td>
@@ -3845,7 +3845,7 @@ function renderCitas() {
   const andenSel = document.getElementById('cita-filter-anden');
   if (andenSel) {
     andenSel.innerHTML = '<option value="">Todos</option>' +
-      STATE.docks.map(d => `<option value="${d.id}">${d.codigo}</option>`).join('');
+      (STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo}</option>`).join('');
   }
   // Fecha por defecto = hoy
   const fechaEl = document.getElementById('cita-filter-fecha');
@@ -3917,7 +3917,7 @@ function openNuevaCita() {
         </div>
         <div class="fr">
           <div class="fg"><label>Andén *</label>
-            <select id="nc-anden">${STATE.docks.map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('')}</select>
+            <select id="nc-anden">${(STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('')}</select>
           </div>
           <div class="fg"><label>Patente rampla PRIMARIA * <span style="color:var(--tx-muted);font-size:9px;">(NO secundaria)</span></label>
             <input type="text" id="nc-patente" placeholder="Ej: XXYY00" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();buscarDatosCita(this.value)">
@@ -4084,7 +4084,7 @@ function closeModal(id) {
 
 function resolveAllAlerts() {
   STATE.alerts.forEach(a => { a.resuelta = true; });
-  STATE.alertsResolved = (STATE.alertsResolved || 0) + STATE.alerts.filter(a => a.resuelta).length;
+  STATE.alertsResolved = (STATE.alertsResolved || 0) + (STATE.alerts || []).filter(a => a.resuelta).length;
   renderAlertas();
   set('kpi-alerts', 0);
   const badge = document.getElementById('alerts-badge');
@@ -4110,7 +4110,7 @@ function openNewCarro() {
   const sel = document.getElementById('carro-patente');
   if (sel) {
     sel.innerHTML = '<option value="">-- Seleccionar --</option>' +
-      STATE.carriers.map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
+      (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
   }
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
@@ -5121,7 +5121,7 @@ function fillSecundariaCarriers() {
   const sel = document.getElementById('ing2-carrier');
   if (!sel) return;
   sel.innerHTML = '<option value="">â€” Seleccionar desde flota â€”</option>' +
-    STATE.carriers.map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
+    (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
 }
 
 
@@ -5895,7 +5895,7 @@ async function confirmarCarroCargado() {
   if (!t) return;
 
   // â”€â”€ VALIDACIÃ“N CRÃTICA: Verificar que el slot sea válido para carros cargados â”€â”€
-  const slot = STATE.playaSlots.find(s => s.id === slotId);
+  const slot = (STATE.playaSlots || []).find(s => s.id === slotId);
   if (!slot) { msgEl.textContent = 'â›” El estacionamiento seleccionado no existe'; Audio.play('error'); return; }
   if (slot.ocupado) { msgEl.textContent = 'â›” El estacionamiento ya está ocupado. Selecciona otro disponible'; Audio.play('error'); return; }
   if (slot.cfg_tipo === 'bloqueado') { msgEl.textContent = 'â›” Este estacionamiento está bloqueado y no puede usarse'; Audio.play('error'); return; }
@@ -5926,7 +5926,7 @@ async function confirmarCarroCargado() {
 
   // Marcar slot si se asignó â€” siempre tipo carros_cargados para trazabilidad
   if (slotId) {
-    const slot = STATE.playaSlots.find(s => s.id === slotId);
+    const slot = (STATE.playaSlots || []).find(s => s.id === slotId);
     if (slot) {
       slot.ocupado = true; slot.patente = t.patente;
       slot.ruta = carrier?.numero_ruta || 'â€”'; slot.nombre = carrier?.nombre || 'â€”';
@@ -6113,7 +6113,7 @@ async function confirmarPalletCheck() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function configurarSlot(slotId) {
   if (STATE.profile?.rol !== 'administrador') { notify('â›” Solo el administrador puede configurar slots', 'error'); return; }
-  const slot = STATE.playaSlots.find(s => s.id === slotId);
+  const slot = (STATE.playaSlots || []).find(s => s.id === slotId);
   if (!slot) return;
   const tipo = prompt('Tipo de slot:\n1 = DINÃMICO (cualquier camión)\n2 = DEDICADO (patente fija)\nActual: ' + (STATE.slotsDedicados[slotId]?.tipo || 'dinámico'), '1');
   if (!tipo) return;
@@ -6239,7 +6239,7 @@ function cargarDatosPrueba() {
   STATE.tasks = [...tareasPrueba, ...(STATE.tasks || []).filter(t => !t._prueba)];
 
   // Andenes de prueba si no hay
-  if (STATE.docks.length === 0) {
+  if ((STATE.docks || []).length === 0) {
     STATE.docks = [
       { id:'d1', codigo:'A01', tipo:'frigorifico', operacion_permitida:'descarga', estado:'busy',
         truck_id:'vp2', inicio_ocupacion: new Date(now - 45*60000).toISOString() },
@@ -6642,7 +6642,7 @@ function configurarEstacionamientos() {
 function solicitarMovimientoCarro(idx) {
   const carro = STATE.carros[idx];
   if (!carro) return;
-  const slot = carro.slot ? STATE.playaSlots.find(s => s.id === carro.slot) : null;
+  const slot = carro.slot ? (STATE.playaSlots || []).find(s => s.id === carro.slot) : null;
   const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'sin estac.';
   const anden = carro.anden_destino ? ((STATE.docks || []).find(d=>d.id===carro.anden_destino)?.codigo||'sin andén') : 'sin andén';
 
@@ -6800,7 +6800,7 @@ function onTaskTruckChange(){
   if(truckVal.startsWith('slot:')){
     var parts=truckVal.split(':');
     var patente=parts[2]||'';
-    var slot=STATE.playaSlots.find(function(s){return s.id===parts[1];});
+    var slot=(STATE.playaSlots || []).find(function(s){return s.id===parts[1];});
     var carrier=(STATE.carriers || []).find(function(x){return x.codigo===patente;});
     html='<strong style="color:var(--tx-head);">'+patente+'</strong>'+(carrier?' â€” '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'â€”'):'')+(slot?'<br>ðŸ“ F'+slot.fila+'-'+String(slot.col).padStart(2,'0'):'');
   } else {
@@ -6863,10 +6863,10 @@ function sincronizarSlotsConVisitas() {
   (STATE.visits || []).filter(function(v) {
     return v.zona_actual === 'playa' && v.estado !== 'salida';
   }).forEach(function(v) {
-    const yaEnSlot = STATE.playaSlots.find(function(s) { return s.patente === v.patente && s.ocupado; });
+    const yaEnSlot = (STATE.playaSlots || []).find(function(s) { return s.patente === v.patente && s.ocupado; });
     if (!yaEnSlot) {
       // Buscar slot libre compatible
-      const slotLibre = STATE.playaSlots.find(function(s) {
+      const slotLibre = (STATE.playaSlots || []).find(function(s) {
         if (s.ocupado || s.cfg_tipo === 'bloqueado') return false;
         if (s.cfg_tipo === 'dedicado' && s.cfg_patente && s.cfg_patente !== v.patente) return false;
         return true;
@@ -7072,7 +7072,7 @@ function abrirConfigSlot(idx) {
   var patSel = document.getElementById('cfg-slot-patente');
   if (patSel) {
     patSel.innerHTML = '<option value="">â€” Seleccionar â€”</option>' +
-      STATE.carriers.map(function(ca) {
+      (STATE.carriers || []).map(function(ca) {
         return '<option value="' + ca.codigo + '" ' + (slot.cfg_patente === ca.codigo ? 'selected' : '') + '>' + ca.codigo + ' â€” ' + ca.nombre + '</option>';
       }).join('');
   }
@@ -7107,7 +7107,7 @@ function abrirModalNuevoSlot() {
   // Poblar patentes
   var patSel = document.getElementById('ns-patente');
   patSel.innerHTML = '<option value="">â€” Seleccionar â€”</option>' +
-    STATE.carriers.map(function(ca){
+    (STATE.carriers || []).map(function(ca){
       return '<option value="' + ca.codigo + '">' + ca.codigo + ' â€” ' + ca.nombre + '</option>';
     }).join('');
   // Reset checkboxes
@@ -7138,7 +7138,7 @@ function guardarNuevoSlot() {
   if (!codigo)        { msgEl.textContent = 'â›” Ingrese un código para el slot'; return; }
   if (fila < 1 || fila > 20) { msgEl.textContent = 'â›” Fila debe estar entre 1 y 20'; return; }
   if (col  < 1 || col  > 20) { msgEl.textContent = 'â›” Columna debe estar entre 1 y 20'; return; }
-  if (STATE.playaSlots.find(function(s){ return s.id === ('slot-' + codigo); })) {
+  if ((STATE.playaSlots || []).find(function(s){ return s.id === ('slot-' + codigo); })) {
     msgEl.textContent = 'â›” Ya existe un slot con ese código'; return;
   }
   if (tipo === 'dedicado' && !patente) { msgEl.textContent = 'â›” Seleccione patente para slot dedicado'; return; }
@@ -7393,7 +7393,7 @@ async function crearTarea() {
     if (tipo === 'mover_anden') {
       if (!truck || !truck.startsWith('slot:')) { Audio.play('error'); setTaskMsg('â›” Seleccione una patente desde un estacionamiento dedicado', 'err'); if(btn)btn.disabled=false; return; }
       const parts = truck.split(':');
-      const slot = STATE.playaSlots.find(function(s){ return s.id === parts[1]; });
+      const slot = (STATE.playaSlots || []).find(function(s){ return s.id === parts[1]; });
       const patente = parts[2] || '';
       const patenteSlot = ymsSlotPatente(slot);
       if (!slot || slot.cfg_tipo !== 'dedicado' || !slot.cfg_patente || !patenteSlot || String(patenteSlot).toUpperCase() !== String(patente).toUpperCase()) {
