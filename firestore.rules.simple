@@ -1,0 +1,22 @@
+/**
+ * EMERGENCY SIMPLIFIED RULES
+ * Use if role-based rules cause issues.
+ * Replace firestore.rules with this content and redeploy.
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Only authenticated users
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Simple rule: Any authenticated user can read/write
+    // WARNING: Use temporarily only! Implement proper role-based access in production.
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
