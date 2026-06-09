@@ -91,6 +91,7 @@ function renderAll() {
     case 'patio':        if(_patioActiveTab==='carros'){renderCarros();renderVisionGeneral();}else{renderPatio();} break;
     case 'turno':        renderTurno();        break;
     case 'tareas':       renderTareas();       break;
+    case 'citas':        renderCitas();        break;
     case 'devoluciones': renderDevoluciones(); break;
     case 'config':       renderConfig();       break;
     case 'chat':         renderChat();         break;
