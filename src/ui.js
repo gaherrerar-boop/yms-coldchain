@@ -85,6 +85,7 @@ function renderAll() {
   renderPresence();  // siempre actualizar presencia en header
   // Solo renderizar la vista activa para evitar trabajo innecesario y queries extra
   switch (STATE.currentView) {
+    case 'alertas':      renderAlertas();      break;
     case 'guardia':      renderGuardia();      break;
     case 'andenes':      renderAndenes();      break;
     case 'patio':        if(_patioActiveTab==='carros'){renderCarros();renderVisionGeneral();}else{renderPatio();} break;
