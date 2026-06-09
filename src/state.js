@@ -16,9 +16,30 @@ export const STATE = {
   tasks: [],            // Tareas activas
   docks: [],            // Andenes
   visits: [],           // Camiones en patio
+  playaSlots: [],       // Slots de estacionamiento (6x12 = 72)
   carriers: [],         // Transportistas
   plants: [],           // Plantas
   queue: [],            // Cola de turnomático
+  queueTickets: [],     // Tickets del turnomático
+  carros: [],           // Carros/vehículos
+  returns: [],          // Devoluciones
+  movements: [],        // Movimientos en patio
+
+  // Datos específicos por vista
+  alertas: [],          // Alertas activas
+  citasData: [],        // Citas/appointments
+  tareasData: [],       // Tareas (datos alternativos)
+  turnosData: [],       // Turnos del turnomático
+  movimientos: [],      // Movimientos de camiones (alias de movements)
+  camiones: [],         // Maestro de camiones
+  usuarios: [],         // Usuarios específicos
+
+  // Parámetros de configuración
+  params: {             // Parámetros del sistema
+    dwell_max: 180,     // Máximo tiempo de ocupación en andén (minutos)
+    sla_max: 60,        // SLA máximo (minutos)
+    sla_min: 5,         // SLA mínimo (minutos)
+  },
 
   // Datos sociales
   users: [],            // Lista de usuarios del sistema
@@ -55,6 +76,21 @@ export function clearState() {
   STATE.tasks = [];
   STATE.docks = [];
   STATE.visits = [];
+  STATE.playaSlots = [];
+  STATE.carriers = [];
+  STATE.plants = [];
+  STATE.queue = [];
+  STATE.queueTickets = [];
+  STATE.carros = [];
+  STATE.returns = [];
+  STATE.movements = [];
+  STATE.alertas = [];
+  STATE.citasData = [];
+  STATE.tareasData = [];
+  STATE.turnosData = [];
+  STATE.movimientos = [];
+  STATE.camiones = [];
+  STATE.usuarios = [];
   STATE.users = [];
   STATE.presence = [];
   STATE.chatMessages = [];

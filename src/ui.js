@@ -163,12 +163,12 @@ function renderDashboard() {
 }
 
 function updateKPIs() {
-  const free  = STATE.docks.filter(d => d.estado === 'free').length;
-  const total = STATE.docks.length;
-  const queue = STATE.queueTickets.filter(t => t.estado === 'esperando' || t.estado === 'llamado').length;
-  const trucks= STATE.visits.filter(v => v.estado !== 'salida').length;
-  const tasks = STATE.tasks.filter(t => ['pendiente','ofertada'].includes(t.estado)).length;
-  const online= STATE.presence.filter(p => p.online).length;
+  const free  = (STATE.docks || []).filter(d => d.estado === 'free').length;
+  const total = (STATE.docks || []).length;
+  const queue = (STATE.queueTickets || []).filter(t => t.estado === 'esperando' || t.estado === 'llamado').length;
+  const trucks= (STATE.visits || []).filter(v => v.estado !== 'salida').length;
+  const tasks = (STATE.tasks || []).filter(t => ['pendiente','ofertada'].includes(t.estado)).length;
+  const online= (STATE.presence || []).filter(p => p.online).length;
 
   set('kpi-docks-free', free);
   set('kpi-docks-total', total);
@@ -179,21 +179,21 @@ function updateKPIs() {
   set('kpi-online', online);
   set('dock-count-hdr', `${free}/${total} LIBRES`);
   set('queue-count-hdr', queue);
-  set('task-count-hdr', STATE.tasks.length);
+  set('task-count-hdr', (STATE.tasks || []).length);
 
   // Dwell promedio
-  const finished = STATE.visits.filter(v => v.dwell_minutes);
+  const finished = (STATE.visits || []).filter(v => v.dwell_minutes);
   const dwell = finished.length ? Math.round(finished.reduce((s,v) => s + v.dwell_minutes, 0) / finished.length) : 0;
   set('kpi-dwell', dwell || 'â€”');
-  set('kpi-entries', STATE.visits.length);
+  set('kpi-entries', (STATE.visits || []).length);
 }
 
 function renderDockMap(containerId) {
   const c = document.getElementById(containerId);
   if (!c) return;
   c.innerHTML = '';
-  STATE.docks.forEach(d => {
-    const visit   = STATE.visits.find(v => v.dock_id === d.id || v.id === d.truck_id);
+  (STATE.docks || []).forEach(d => {
+    const visit   = (STATE.visits || []).find(v => v.dock_id === d.id || v.id === d.truck_id);
     const elapsed = d.inicio_ocupacion
       ? Math.round((Date.now() - new Date(d.inicio_ocupacion)) / 60000) : 0;
     const maxT  = d.max_tiempo || STATE.params?.dwell_max || 180;
@@ -219,17 +219,17 @@ function renderDockMap(containerId) {
 }
 
 function getVisitByTruck(truckId) {
-  return STATE.visits.find(v => v.id === truckId || v.truck_id === truckId);
+  return (STATE.visits || []).find(v => v.id === truckId || v.truck_id === truckId);
 }
 
 function renderQueueDash() {
   const c = document.getElementById('queue-dash');
   if (!c) return;
-  const active = STATE.queueTickets.filter(t => ['esperando','llamado'].includes(t.estado));
+  const active = (STATE.queueTickets || []).filter(t => ['esperando','llamado'].includes(t.estado));
   c.innerHTML = active.length ? '' : '<span class="c-dim fz10">Cola vacía</span>';
   active.forEach((t, i) => {
     const elapsed = Math.round((Date.now() - new Date(t.hora_creacion)) / 60000);
-    const urgent = elapsed > STATE.params.sla_max;
+    const urgent = elapsed > (STATE.params?.sla_max || 60);
     c.innerHTML += `
       <div class="queue-item ${urgent ? 'urgent' : ''}">
         <div class="qi-pos">${i+1}</div>
@@ -251,7 +251,7 @@ function renderTaskDash() {
   const tbody = document.getElementById('task-tbl-dash');
   if (!tbody) return;
   tbody.innerHTML = '';
-  STATE.tasks.slice(0, 8).forEach(t => {
+  (STATE.tasks || []).slice(0, 8).forEach(t => {
     const stMap = {
       pendiente: 'warn', ofertada: 'info', aceptada: 'ok',
       en_ejecucion: 'ok', completada: 'dim', rechazada: 'err', vencida: 'err',
@@ -269,13 +269,13 @@ function renderAlertsDash() {
   const c = document.getElementById('alerts-dash');
   if (!c) return;
   const alerts = [];
-  STATE.queueTickets.forEach(t => {
+  (STATE.queueTickets || []).forEach(t => {
     const min = Math.round((Date.now() - new Date(t.hora_creacion)) / 60000);
     if (min > STATE.params.sla_max) {
       alerts.push({ type: 'err', msg: `⚠  Cola SLA: ${t.patente} lleva ${min} min esperando andén` });
     }
   });
-  STATE.tasks.forEach(t => {
+  (STATE.tasks || []).forEach(t => {
     if (t.estado === 'vencida') alerts.push({ type: 'err', msg: `⚠  Tarea vencida: ${t.tipo?.replace(/_/g,' ')} â€” ${t.patente}` });
   });
   if (alerts.length === 0) {
@@ -305,10 +305,10 @@ function renderGuardia() {
   const tbody = document.getElementById('guard-trucks-tbl');
   if (!tbody) return;
   tbody.innerHTML = '';
-  const active = STATE.visits.filter(v => v.estado !== 'salida');
+  const active = (STATE.visits || []).filter(v => v.estado !== 'salida');
   active.forEach(v => {
     const elapsed = Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000);
-    const exceded = elapsed > STATE.params.dwell_max;
+    const exceded = elapsed > (STATE.params?.dwell_max || 180);
     tbody.innerHTML += `<tr>
       <td class="c-bright fw">${Utils.esc(v.patente)}</td>
       <td><span class="badge badge-${v.tipo === 'primaria' ? 'info' : 'warn'}">${Utils.esc(v.tipo?.toUpperCase())}</span></td>
@@ -316,7 +316,7 @@ function renderGuardia() {
       <td class="c-dim">${Utils.esc(v.carrier_nombre || 'â€”')}</td>
       <td class="c-dim">${fmtTime(v.hora_ingreso)}</td>
       <td>${Utils.esc(v.zona_actual?.replace(/_/g,' ').toUpperCase() || 'â€”')}</td>
-      <td class="${exceded ? 'c-err' : elapsed > STATE.params.dwell_max*0.75 ? 'c-warn' : 'c-ok'}">${elapsed} min</td>
+      <td class="${exceded ? 'c-err' : elapsed > (STATE.params?.dwell_max || 180)*0.75 ? 'c-warn' : 'c-ok'}">${elapsed} min</td>
       <td><span class="badge badge-${v.estado === 'en_anden' ? 'warn' : 'ok'}">${Utils.esc(v.estado?.replace(/_/g,' ').toUpperCase())}</span></td>
       <td>
         <button class="btn btn-err" style="font-size:10px;padding:2px 6px;" data-action="openSalida" data-id="${v.id}">SALIDA</button>
@@ -352,20 +352,20 @@ function setTipoIngreso(tipo) {
 function fillCarriersSelect(id) {
   const sel = document.getElementById(id);
   sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
-  STATE.carriers.forEach(c => sel.innerHTML += `<option value="${Utils.esc(c.id)}" data-nombre="${Utils.esc(c.nombre || '')}" data-codigo="${Utils.esc(c.codigo || '')}">${Utils.esc(c.nombre)}</option>`);
+  (STATE.carriers || []).forEach(c => sel.innerHTML += `<option value="${Utils.esc(c.id)}" data-nombre="${Utils.esc(c.nombre || '')}" data-codigo="${Utils.esc(c.codigo || '')}">${Utils.esc(c.nombre)}</option>`);
 }
 
 function fillPlantsSelect(id) {
   const sel = document.getElementById(id);
   sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
-  STATE.plants.forEach(p => sel.innerHTML += `<option value="${Utils.esc(p.id)}">${Utils.esc(p.nombre)}</option>`);
+  (STATE.plants || []).forEach(p => sel.innerHTML += `<option value="${Utils.esc(p.id)}">${Utils.esc(p.nombre)}</option>`);
 }
 
 function buscarAndenCompatible(tipoIngreso, tipoCarga) {
   // Retorna andén libre compatible por tipo térmico y operación.
   const operacion = tipoIngreso === 'secundaria' ? 'carga' : 'descarga';
   const requiereFrio = ['congelado','refrigerado','mixto'].includes(tipoCarga);
-  return STATE.docks.find(d => {
+  return (STATE.docks || []).find(d => {
     if (d.estado !== 'free') return false;
     // 'mixta' y 'descarga_carga' son compatibles con cualquier operación
     if (d.operacion_permitida && d.operacion_permitida !== operacion &&
@@ -382,13 +382,13 @@ function buscarRetorno() {
   const btnPall = document.getElementById('retorno-pallet-btn');
   if (patente.length < 4) { if(info) info.style.display='none'; if(btnPall) btnPall.style.display='none'; return; }
 
-  const carrier = STATE.carriers.find(x => x.codigo === patente);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === patente);
   const deuda = STATE.palletDeuda[patente];
   const ultimaCarga = deuda?.historial?.filter(h => h.tipo === 'carga').slice(-1)[0];
-  const auth = STATE.returns.find(r => r.patente?.toUpperCase() === patente && r.estado === 'aprobada');
+  const auth = (STATE.returns || []).find(r => r.patente?.toUpperCase() === patente && r.estado === 'aprobada');
 
   // Buscar historial de visitas del camión
-  const visitas = STATE.visits.filter(v => v.patente === patente);
+  const visitas = (STATE.visits || []).filter(v => v.patente === patente);
   const ultimaVisita = visitas.slice(-1)[0];
 
   if(info) info.style.display = '';
@@ -575,8 +575,8 @@ async function confirmarIngreso() {
       numero_guia: guia, precinto, hora_ingreso: new Date().toISOString(),
       zona_actual: andénLibre ? 'anden' : 'espera_anden',
       dock_id: andénLibre?.id || null, estado: andénLibre ? 'en_anden' : 'en_patio',
-      carrier_nombre: STATE.carriers.find(c => c.id === carrierId || c.codigo === carrierId)?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.dataset?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.textContent || 'â€”',
-      planta_nombre: STATE.plants.find(p => p.id === plantaId)?.nombre || 'â€”',
+      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId || c.codigo === carrierId)?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.dataset?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.textContent || 'â€”',
+      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || 'â€”',
       temp_cabina: isNaN(tempCabina) ? null : tempCabina,
       temp_producto: isNaN(tempProd) ? null : tempProd,
       tipo_carga: tipoCarga,
@@ -629,8 +629,8 @@ async function confirmarIngreso() {
     // Optimistic state local inmediato
     const localVisit = {
       id: 'v_local_' + Date.now(), ...visitData,
-      carrier_nombre: STATE.carriers.find(c => c.id === carrierId)?.nombre || 'â€”',
-      planta_nombre: STATE.plants.find(p => p.id === plantaId)?.nombre || 'â€”',
+      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId)?.nombre || 'â€”',
+      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || 'â€”',
     };
     STATE.visits.push(localVisit);
     visitId = localVisit.id;
@@ -644,7 +644,7 @@ async function confirmarIngreso() {
       const { data: vData, error: vErr } = await sb.from('yard_visits').insert(visitData).select().single();
       if (vErr) throw vErr;
       // Reemplazar ID local con ID real
-      const idx = STATE.visits.findIndex(v => v.id === localVisit.id);
+      const idx = (STATE.visits || []).findIndex(v => v.id === localVisit.id);
       if (idx >= 0 && vData) { STATE.visits[idx] = { ...STATE.visits[idx], ...vData }; }
       visitId = vData?.id || localVisit.id;
 
@@ -699,7 +699,7 @@ async function confirmarIngreso() {
 function openSalida(visitId) {
   const sel = document.getElementById('sal-truck');
   sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
-  const active = STATE.visits.filter(v => v.estado !== 'salida');
+  const active = (STATE.visits || []).filter(v => v.estado !== 'salida');
   active.forEach(v => {
     sel.innerHTML += `<option value="${Utils.esc(v.id)}" ${visitId === v.id ? 'selected' : ''}>${Utils.esc(v.patente)} â€” ${Utils.esc(v.carrier_nombre || '')}</option>`;
   });
@@ -708,7 +708,7 @@ function openSalida(visitId) {
   document.getElementById('sal-historial').innerHTML = '';
 
   sel.onchange = () => {
-    const v = STATE.visits.find(x => x.id === sel.value);
+    const v = (STATE.visits || []).find(x => x.id === sel.value);
     if (!v) return;
     const elapsed = Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000);
     document.getElementById('sal-truck-info').innerHTML =
@@ -727,14 +727,14 @@ function openSalida(visitId) {
 
     // Andén (si pasó por ahí)
     if (v.dock_id) {
-      const dock = STATE.docks.find(d => d.id === v.dock_id);
+      const dock = (STATE.docks || []).find(d => d.id === v.dock_id);
       historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
       historialHtml += 'ðŸš› <strong>ANDÃ‰N</strong> â€” ' + (dock?.codigo || 'Andén ?');
       historialHtml += '</div>';
     }
 
     // Tareas completadas
-    const tareasDelCarro = STATE.tasks.filter(t => t.patente === v.patente && t.estado === 'completada');
+    const tareasDelCarro = (STATE.tasks || []).filter(t => t.patente === v.patente && t.estado === 'completada');
     if (tareasDelCarro.length > 0) {
       tareasDelCarro.forEach(t => {
         historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(99,102,241,0.08);border-left:3px solid var(--c-info);border-radius:2px;">';
@@ -757,7 +757,7 @@ async function confirmarSalida() {
   const obs = document.getElementById('sal-obs').value.trim();
   if (!visitId) { notify('Seleccione un camión', 'error'); return; }
 
-  const visit = STATE.visits.find(v => v.id === visitId);
+  const visit = (STATE.visits || []).find(v => v.id === visitId);
   if (!visit) return;
   const elapsed = Math.round((Date.now() - new Date(visit.hora_ingreso)) / 60000);
 
@@ -766,10 +766,10 @@ async function confirmarSalida() {
     visit.hora_salida = new Date().toISOString();
     visit.dwell_minutes = elapsed;
     // Liberar andén si estaba ocupado
-    const dock = STATE.docks.find(d => d.truck_id === visitId || d.id === visit.dock_id);
+    const dock = (STATE.docks || []).find(d => d.truck_id === visitId || d.id === visit.dock_id);
     if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; }
     clearSLAAlertMarks(visitId);
-    STATE.visits = STATE.visits.filter(v => v.id !== visitId);
+    STATE.visits = (STATE.visits || []).filter(v => v.id !== visitId);
     if (dock) { ymsDespacharTurnomaticoPatio(dock); }
     STATE.auditLog.unshift({
       id: 'a' + Date.now(), categoria: 'gate', evento: 'SALIDA',
@@ -778,13 +778,13 @@ async function confirmarSalida() {
     });
   } else {
     // Optimistic update local
-    const dock = STATE.docks.find(d => d.truck_id === visitId || d.id === visit.dock_id);
+    const dock = (STATE.docks || []).find(d => d.truck_id === visitId || d.id === visit.dock_id);
     visit.estado = 'salida';
     visit.hora_salida = new Date().toISOString();
     visit.dwell_minutes = elapsed;
     if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; }
     clearSLAAlertMarks(visitId);
-    STATE.visits = STATE.visits.filter(v => v.id !== visitId);
+    STATE.visits = (STATE.visits || []).filter(v => v.id !== visitId);
 
     try {
       await sb.from('yard_visits').update({
@@ -1000,18 +1000,18 @@ function renderAndenes() {
 
   const cards = docks.map(function(d) {
     const visit = resolveVisitForDock(d, STATE.visits, STATE.docks);
-    const carrier = visit ? STATE.carriers.find(function(c){ return c.codigo === visit.patente; }) : null;
+    const carrier = visit ? (STATE.carriers || []).find(function(c){ return c.codigo === visit.patente; }) : null;
     const elapsed = d.inicio_ocupacion ? Math.round((now - new Date(d.inicio_ocupacion)) / 60000) : 0;
     const maxT    = d.max_tiempo || STATE.params?.dwell_max || 180;
     const pct     = d.estado === 'busy' ? Math.min(100, Math.round(elapsed / maxT * 100)) : 0;
     const timeC   = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--c-ok)';
     // Detectar si hay un carro asignado (planificado) para este andén libre
-    const carroAsignadoCard = d.estado === 'free' ? STATE.carros.find(function(c){ return c.anden_destino === d.id; }) : null;
+    const carroAsignadoCard = d.estado === 'free' ? (STATE.carros || []).find(function(c){ return c.anden_destino === d.id; }) : null;
     const sc      = carroAsignadoCard ? 'var(--c-accent)' : (statusColors[d.estado] || 'var(--tx-dim)');
     const sl      = carroAsignadoCard ? 'ASIGNADO' : (statusLabels[d.estado] || d.estado);
 
     // Tareas relacionadas a este andén/patente
-    const relTasks = visit ? STATE.tasks.filter(function(t){
+    const relTasks = visit ? (STATE.tasks || []).filter(function(t){
       return t.patente === visit.patente &&
              !['completada','cancelada','rechazada'].includes(t.estado) &&
              (t.zona_origen === 'anden' || t.zona_destino === 'anden');
@@ -1050,7 +1050,7 @@ function renderAndenes() {
       const taskInstalacion = resolveAndenTaskActiva(d, STATE.tasks, patenteAnden);
       if (!patenteAnden && taskInstalacion?.patente) patenteAnden = String(taskInstalacion.patente).toUpperCase();
       if (taskInstalacion) {
-        const carrierT = STATE.carriers.find(function(c){ return c.codigo === taskInstalacion.patente; });
+        const carrierT = (STATE.carriers || []).find(function(c){ return c.codigo === taskInstalacion.patente; });
         const estadoLabel = taskInstalacion.estado === 'checklist_ok' ? 'âœ“ CHECKLIST OK â€” POSTURA PENDIENTE' :
                             taskInstalacion.estado === 'en_ejecucion' ? '⚠™ EN MOVIMIENTO' : 'â³ OFERTADA';
         body = '<div style="margin:10px 0 12px;padding:10px;background:rgba(245,158,11,0.07);border:1px dashed rgba(245,158,11,0.4);border-radius:6px;">' +
@@ -1065,8 +1065,8 @@ function renderAndenes() {
         '</div>' : '');
       } else if (patenteAnden) {
         // Carro instalado en andén â€” postura confirmada pero sin registro de visita (flujo Carros)
-        const carrierAnd = STATE.carriers.find(function(c){ return c.codigo === patenteAnden; });
-        const carroAnd   = STATE.carros.find(function(c){ return String(c.patente||'').toUpperCase() === patenteAnden; });
+        const carrierAnd = (STATE.carriers || []).find(function(c){ return c.codigo === patenteAnden; });
+        const carroAnd   = (STATE.carros || []).find(function(c){ return String(c.patente||'').toUpperCase() === patenteAnden; });
         const conductorN = carrierAnd?.nombre || carroAnd?.conductor || '';
         const rutaN      = carrierAnd?.numero_ruta || carroAnd?.ruta || 'â€”';
         body = '<div style="margin:10px 0 12px;">' +
@@ -1114,7 +1114,7 @@ function renderAndenes() {
         (isAdmin ? '<button class="btn" style="width:100%;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Desbloquear</button>' : '');
     } else {
       if (carroAsignadoCard) {
-        const carrierA = STATE.carriers.find(function(c){ return c.codigo === carroAsignadoCard.patente; });
+        const carrierA = (STATE.carriers || []).find(function(c){ return c.codigo === carroAsignadoCard.patente; });
         body = '<div style="margin:10px 0 12px;padding:10px;background:rgba(99,102,241,0.07);border:1px dashed rgba(99,102,241,0.35);border-radius:6px;">' +
           '<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--c-accent);margin-bottom:6px;">â© ASIGNADO â€” PENDIENTE DE LLEGADA</div>' +
           '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;">' + escHtml(carroAsignadoCard.patente || 'â€”') + '</div>' +
@@ -1166,11 +1166,11 @@ function renderAndenes() {
   // â”€â”€ Panel: Carros EN ESPERA de andén (zona_actual='espera_anden') â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const esperaContainer = document.getElementById('and-espera-container');
   if (esperaContainer) {
-    const esperaVisits = STATE.visits.filter(function(v){ return v.zona_actual === 'espera_anden' && v.estado !== 'salida'; });
+    const esperaVisits = (STATE.visits || []).filter(function(v){ return v.zona_actual === 'espera_anden' && v.estado !== 'salida'; });
     if (esperaVisits.length) {
-      const docksLibres = STATE.docks.filter(function(d){ return d.estado === 'free'; });
+      const docksLibres = (STATE.docks || []).filter(function(d){ return d.estado === 'free'; });
       const esperaRows = esperaVisits.map(function(v, idx) {
-        const carrier = STATE.carriers.find(function(c){ return c.codigo === v.patente; });
+        const carrier = (STATE.carriers || []).find(function(c){ return c.codigo === v.patente; });
         const wait = v.hora_ingreso ? Math.round((now - new Date(v.hora_ingreso)) / 60000) : 0;
         const tipoLabel = v.tipo === 'primaria' ? 'ðŸ”µ PRIMARIA' : 'ðŸŸ¡ SECUNDARIA';
         const tempInfo = v.temp_cabina ? ' · ðŸŒ¡ ' + v.temp_cabina + 'Â°C' : '';
@@ -1208,8 +1208,8 @@ function renderAndenes() {
     const queueItems = (STATE.queueTickets || []).filter(function(q){ return q.tipo_operacion === 'mover_anden' && q.estado === 'esperando'; });
     if (queueItems.length) {
       const qRows = queueItems.map(function(q, idx) {
-        const visit = STATE.visits.find(function(v){ return v.patente === String(q.patente||'').toUpperCase() && v.estado !== 'salida'; });
-        const carrier = visit ? STATE.carriers.find(function(c){ return c.codigo === visit.patente; }) : null;
+        const visit = (STATE.visits || []).find(function(v){ return v.patente === String(q.patente||'').toUpperCase() && v.estado !== 'salida'; });
+        const carrier = visit ? (STATE.carriers || []).find(function(c){ return c.codigo === visit.patente; }) : null;
         const wait = q.hora_creacion ? Math.round((now - new Date(q.hora_creacion)) / 60000) : 0;
         const prioLabel = q.prioridad >= 8 ? 'ðŸ”´ URGENTE' : q.prioridad >= 6 ? 'ðŸŸ¡ ALTA' : 'ðŸŸ¢ NORMAL';
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:6px;gap:12px;">' +
@@ -1233,22 +1233,22 @@ function renderAndenes() {
   // Mantener compatibilidad asignación manual
   const selAnden = document.getElementById('asig-anden');
   const selVisita = document.getElementById('asig-visita');
-  if (selAnden) selAnden.innerHTML = STATE.docks.filter(d => d.estado === 'free').map(d => '<option value="' + d.id + '">' + d.codigo + ' â€” ' + d.tipo + '</option>').join('') || '<option>Sin andenes libres</option>';
-  if (selVisita) selVisita.innerHTML = STATE.visits.filter(v => v.estado === 'en_patio' && !v.dock_id).map(v => '<option value="' + v.id + '">' + v.patente + ' â€” ' + (v.carrier_nombre || v.numero_ruta || '') + '</option>').join('') || '<option>Sin visitas en espera</option>';
+  if (selAnden) selAnden.innerHTML = (STATE.docks || []).filter(d => d.estado === 'free').map(d => '<option value="' + d.id + '">' + d.codigo + ' â€” ' + d.tipo + '</option>').join('') || '<option>Sin andenes libres</option>';
+  if (selVisita) selVisita.innerHTML = (STATE.visits || []).filter(v => v.estado === 'en_patio' && !v.dock_id).map(v => '<option value="' + v.id + '">' + v.patente + ' â€” ' + (v.carrier_nombre || v.numero_ruta || '') + '</option>').join('') || '<option>Sin visitas en espera</option>';
 }
 
 // â”€â”€ Movimiento desde andén (admin/supervisor inicia, patio completa) â”€â”€â”€â”€â”€â”€
 function crearRetiroAnden(dockId, destino) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock || dock.estado !== 'busy') { notify('El andén no está ocupado', 'warn'); return; }
-  const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
+  const visit = (STATE.visits || []).find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
     patente = String(dock.truck_id).toUpperCase();
   }
   if (!patente) { notify('Sin vehículo registrado en este andén', 'warn'); return; }
-  const carrier = STATE.carriers.find(c => c.codigo === patente);
-  const carroAnd = STATE.carros.find(function(c){ return String(c.patente||'').toUpperCase() === patente; });
+  const carrier = (STATE.carriers || []).find(c => c.codigo === patente);
+  const carroAnd = (STATE.carros || []).find(function(c){ return String(c.patente||'').toUpperCase() === patente; });
   // Poblar modal
   const el = id => document.getElementById(id);
   if (el('mra-dock-id'))   el('mra-dock-id').value   = dockId;
@@ -1264,16 +1264,16 @@ function crearRetiroAnden(dockId, destino) {
 }
 
 async function crearRetiroAndenInmediato(dockId, destino) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock || dock.estado !== 'busy') { notify('El andén no está ocupado', 'warn'); return; }
-  let visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
+  let visit = (STATE.visits || []).find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
     patente = String(dock.truck_id).toUpperCase();
   }
   if (!patente) { notify('Sin vehículo registrado en este andén', 'warn'); return; }
 
-  const tareaActiva = STATE.tasks.find(t => t.patente === patente &&
+  const tareaActiva = (STATE.tasks || []).find(t => t.patente === patente &&
     ['retirar_anden','mover_playa'].includes(t.tipo) &&
     ['ofertada','pendiente','en_proceso'].includes(t.estado));
   if (tareaActiva) { notify('⚠  Ya existe tarea activa para ' + patente, 'warn'); return; }
@@ -1312,9 +1312,9 @@ async function confirmarRetiroAnden() {
   const destino = document.getElementById('mra-destino-sel')?.value || document.getElementById('mra-destino')?.value || 'carros_cargados';
   const pallets = document.getElementById('mra-pallets')?.value || '';
   const precinto= document.getElementById('mra-precinto')?.value || '';
-  const dock    = STATE.docks.find(d => d.id === dockId);
+  const dock    = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock) { notify('Error: andén no encontrado', 'error'); return; }
-  const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
+  const visit = (STATE.visits || []).find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
     patente = String(dock.truck_id).toUpperCase();
@@ -1354,8 +1354,8 @@ async function confirmarRetiroAnden() {
 function selectDock(d) {
   const detail = document.getElementById('dock-detail');
   if (!detail) return;
-  const visit  = STATE.visits.find(v => v.dock_id === d.id || v.id === d.truck_id);
-  const carrier = visit ? STATE.carriers.find(c => c.codigo === visit.patente) : null;
+  const visit  = (STATE.visits || []).find(v => v.dock_id === d.id || v.id === d.truck_id);
+  const carrier = visit ? (STATE.carriers || []).find(c => c.codigo === visit.patente) : null;
   const elapsed = d.inicio_ocupacion ? Math.round((Date.now() - new Date(d.inicio_ocupacion)) / 60000) : 0;
   const maxT = d.max_tiempo || STATE.params?.dwell_max || 180;
   const pct  = d.estado === 'busy' ? Math.min(100, Math.round(elapsed / maxT * 100)) : 0;
@@ -1402,7 +1402,7 @@ function selectDock(d) {
 }
 
 async function liberarAnden(dockId) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock) return;
 
   if (STATE.usingSeed) {
@@ -1429,7 +1429,7 @@ async function liberarAnden(dockId) {
 }
 
 async function bloquearAnden(dockId) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock) return;
   if (STATE.usingSeed) {
     dock.estado = 'blocked';
@@ -1454,7 +1454,7 @@ async function bloquearAnden(dockId) {
 }
 
 function abrirTareaDesdeAnden(dockId, tipoForzado) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock || dock.estado !== 'busy') { notify('â›” El andén no está ocupado', 'warn'); return; }
   openNewTask();
   // Andén ocupado â†’ por defecto mover la rampla a carros cargados
@@ -1462,7 +1462,7 @@ function abrirTareaDesdeAnden(dockId, tipoForzado) {
   const tipoSel = document.getElementById('task-tipo');
   if (tipoSel) { tipoSel.value = tipo; onTaskTipoChange(); }
   // Pre-seleccionar la rampla que está en el andén
-  const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
+  const visit = (STATE.visits || []).find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   if (visit) {
     setTimeout(function() {
       const truckSel = document.getElementById('task-truck');
@@ -1540,8 +1540,8 @@ function renderVisionGeneral() {
   const rows = [];
 
   // 1. Vehículos en andenes
-  STATE.docks.filter(d => d.estado === 'busy').forEach(d => {
-    const v = STATE.visits.find(v => v.dock_id === d.id || v.id === d.truck_id);
+  (STATE.docks || []).filter(d => d.estado === 'busy').forEach(d => {
+    const v = (STATE.visits || []).find(v => v.dock_id === d.id || v.id === d.truck_id);
     const mins = d.inicio_ocupacion ? Math.round((now - new Date(d.inicio_ocupacion)) / 60000) : 0;
     const maxT = d.max_tiempo || STATE.params?.dwell_max || 180;
     const pct  = Math.min(100, Math.round(mins / maxT * 100));
@@ -1550,15 +1550,15 @@ function renderVisionGeneral() {
   });
 
   // 2. Vehículos en estacionamiento
-  STATE.playaSlots.filter(s => s.ocupado).forEach(s => {
-    const v = STATE.visits.find(v => v.patente === s.patente && v.estado !== 'salida');
+  (STATE.playaSlots || []).filter(s => s.ocupado).forEach(s => {
+    const v = (STATE.visits || []).find(v => v.patente === s.patente && v.estado !== 'salida');
     const mins = s.hora_entrada ? Math.round((now - new Date(s.hora_entrada)) / 60000) : 0;
     const zona = (s.playa_tipo === 'carros_cargados' ? 'Cargado' : s.playa_tipo === 'en_espera' ? 'En Espera' : 'Estac.') + ' F' + s.fila + '-' + String(s.col).padStart(2,'0');
     rows.push({ zona, patente: s.patente || 'â€”', carrier: v?.carrier_nombre || s.nombre || 'â€”', mins, pct: 0, barC: 'var(--c-info)', estado: (s.playa_tipo === 'carros_cargados' ? 'CARGADO' : 'ESTAC.'), color: 'var(--c-info)' });
   });
 
   // 3. Visitas activas sin slot ni andén (en espera de asignación)
-  STATE.visits.filter(v => v.estado === 'en_patio' && !v.dock_id && !STATE.playaSlots.find(s => s.patente === v.patente && s.ocupado)).forEach(v => {
+  (STATE.visits || []).filter(v => v.estado === 'en_patio' && !v.dock_id && !(STATE.playaSlots || []).find(s => s.patente === v.patente && s.ocupado)).forEach(v => {
     const mins = v.hora_ingreso ? Math.round((now - new Date(v.hora_ingreso)) / 60000) : 0;
     rows.push({ zona: 'Espera Gate', patente: v.patente || 'â€”', carrier: v.carrier_nombre || 'â€”', mins, pct: 0, barC: 'var(--tx-dim)', estado: 'EN PATIO', color: 'var(--c-ok)' });
   });
@@ -1723,7 +1723,7 @@ function renderPatio() {
     <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);padding:0 8px 8px;">
       <div class="kpi ok"><div class="kpi-lbl">Libres</div><div class="kpi-val">${docksLibres}</div><div class="kpi-sub">de ${docksTotal}</div></div>
       <div class="kpi warn"><div class="kpi-lbl">Ocupados</div><div class="kpi-val">${docksOcupados}</div></div>
-      <div class="kpi err"><div class="kpi-lbl">Bloqueados</div><div class="kpi-val">${STATE.docks.filter(d=>d.estado==='blocked').length}</div></div>
+      <div class="kpi err"><div class="kpi-lbl">Bloqueados</div><div class="kpi-val">${(STATE.docks || []).filter(d=>d.estado==='blocked').length}</div></div>
       <div class="kpi info"><div class="kpi-lbl">Utilización</div><div class="kpi-val">${utilAndenes}%</div></div>
     </div>
     <div style="padding:0 8px;margin-bottom:4px;">
@@ -1762,7 +1762,7 @@ function toggleSlot(idx) {
     slot.ocupado = true;
     slot.patente = pat.toUpperCase();
     slot.playa_tipo = tipoAsignar;
-    const carr = STATE.carriers.find(x => x.codigo === slot.patente);
+    const carr = (STATE.carriers || []).find(x => x.codigo === slot.patente);
     slot.ruta   = carr?.numero_ruta || null;
     slot.nombre = carr?.nombre || null;
     slot.tipo   = carr?.tipo || null;
@@ -1818,7 +1818,7 @@ function verInfoSlot(idx) {
 function renderZone(containerId, zones) {
   const c = document.getElementById(containerId);
   if (!c) return;
-  const visits = STATE.visits.filter(v => zones.some(z => v.zona_actual?.includes(z)));
+  const visits = (STATE.visits || []).filter(v => zones.some(z => v.zona_actual?.includes(z)));
   c.innerHTML = visits.length
     ? visits.map(v => `
       <div style="border:1px solid var(--border);padding:5px 8px;margin-bottom:4px;">
@@ -1857,13 +1857,13 @@ function renderTurno() {
 function renderQueueList() {
   const c = document.getElementById('queue-list');
   if (!c) return;
-  const active = STATE.queueTickets.filter(t => ['esperando','llamado','en_maniobra'].includes(t.estado));
+  const active = (STATE.queueTickets || []).filter(t => ['esperando','llamado','en_maniobra'].includes(t.estado));
   set('queue-active-count', active.length);
   c.innerHTML = active.length ? '' : '<span class="c-dim fz10">Cola vacía âœ“</span>';
   active.sort((a, b) => (b.prioridad - a.prioridad) || new Date(a.hora_creacion) - new Date(b.hora_creacion));
   active.forEach((t, i) => {
     const elapsed = Math.round((Date.now() - new Date(t.hora_creacion)) / 60000);
-    const urgent = elapsed > STATE.params.sla_max;
+    const urgent = elapsed > (STATE.params?.sla_max || 60);
     const pct = Math.min(100, elapsed / STATE.params.sla_max * 100);
     c.innerHTML += `
       <div class="queue-item ${urgent ? 'urgent' : ''}">
@@ -1890,7 +1890,7 @@ function renderQueueList() {
 function renderQueueHistory() {
   const tbody = document.getElementById('queue-history-tbl');
   if (!tbody) return;
-  const history = STATE.queueTickets.filter(t => ['atendido','cancelado','vencido'].includes(t.estado));
+  const history = (STATE.queueTickets || []).filter(t => ['atendido','cancelado','vencido'].includes(t.estado));
   tbody.innerHTML = history.length
     ? history.map((t, i) => `<tr>
         <td class="c-dim">${i+1}</td>
@@ -1898,7 +1898,7 @@ function renderQueueHistory() {
         <td class="c-dim">${t.tipo_operacion?.replace(/_/g,' ') || 'â€”'}</td>
         <td>${t.minutos_espera || 'â€”'} min</td>
         <td><span class="badge badge-${t.estado === 'atendido' ? 'ok' : 'err'}">${t.estado?.toUpperCase()}</span></td>
-        <td class="c-dim">${t.dock_id ? STATE.docks.find(d => d.id === t.dock_id)?.codigo || 'â€”' : 'â€”'}</td>
+        <td class="c-dim">${t.dock_id ? (STATE.docks || []).find(d => d.id === t.dock_id)?.codigo || 'â€”' : 'â€”'}</td>
       </tr>`).join('')
     : '<tr><td colspan="6" class="c-dim tc">Sin historial hoy</td></tr>';
 }
@@ -1981,7 +1981,7 @@ function openNewTask() {
 // Función crearTarea() movida a la línea 12512 (versión mejorada con safeWrite)
 
 async function completarTarea(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   if (STATE.usingSeed) t.estado = 'completada';
   else {
@@ -2008,7 +2008,7 @@ async function completarTarea(taskId) {
 }
 
 async function cancelarTarea(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   if (STATE.usingSeed) t.estado = 'cancelada';
   else {
@@ -2048,7 +2048,7 @@ function ofertarTareaOperador(task) {
       <div class="tob-field"><span class="tob-label">Destino</span><span class="tob-val">${task.zona_destino||'â€”'}</span></div>
       <div class="tob-field"><span class="tob-label">Prioridad</span><span class="tob-val">${(task.prioridad||'normal').toUpperCase()}</span></div>`;
   }
-  if (sla) sla.textContent = 'SLA: ' + (task.sla_minutos || STATE.params.task_sla || 20) + ' min';
+  if (sla) sla.textContent = 'SLA: ' + (task.sla_minutos || (STATE.params?.task_sla || 20) || 20) + ' min';
   document.getElementById('task-offer-overlay')?.classList.add('show');
   Audio.play('new_task');
 }
@@ -2058,7 +2058,7 @@ async function aceptarTarea() {
   const task = STATE.pendingTaskOffer;
 
   // Actualizar STATE local inmediatamente (para que abrirCarroCargado encuentre la tarea)
-  const tLocal = STATE.tasks.find(x => x.id === task.id);
+  const tLocal = (STATE.tasks || []).find(x => x.id === task.id);
   if (tLocal) {
     tLocal.estado = 'en_ejecucion';
     tLocal.operador_nombre = STATE.profile?.nombre;
@@ -2139,7 +2139,7 @@ async function rechazarTarea() {
       return;
     }
   } else {
-    const t = STATE.tasks.find(x => x.id === task.id);
+    const t = (STATE.tasks || []).find(x => x.id === task.id);
     if (t) { t.estado = 'ofertada'; t.operador_id = null; t.operador_nombre = null; }
   }
 
@@ -2147,7 +2147,7 @@ async function rechazarTarea() {
 
   // Re-ofertar a otro operador patio disponible (modo seed: mostrar al usuario actual si no hay otro)
   if (STATE.usingSeed) {
-    const pendingTask = STATE.tasks.find(x => x.id === task.id);
+    const pendingTask = (STATE.tasks || []).find(x => x.id === task.id);
     if (pendingTask) setTimeout(() => mostrarUberTaskPatio(pendingTask), 5000);
   }
 
@@ -2167,8 +2167,8 @@ function renderDevoluciones() {
   var bannerEl=document.getElementById('devol-flujo-banner');
   if(bannerEl)bannerEl.innerHTML='<div style="background:var(--bg-alt);border-left:3px solid var(--c-warn);padding:8px 14px;font-size: 8px;margin-bottom:10px;"><strong style="color:var(--c-warn);">⚠  REQUISITO DE FLUJO YMS</strong><br>Solo devoluciones de camiones que completaron: Playa â†’ Andén â†’ Carros cargados (con sello)</div>';
 
-  const pend = STATE.returns.filter(r => r.estado === 'pendiente');
-  const hist = STATE.returns.filter(r => r.estado !== 'pendiente');
+  const pend = (STATE.returns || []).filter(r => r.estado === 'pendiente');
+  const hist = (STATE.returns || []).filter(r => r.estado !== 'pendiente');
 
   pending.innerHTML = pend.length
     ? pend.map(r => `<tr>
@@ -2206,7 +2206,7 @@ let currentDevolId = null, currentDevolAction = null;
 function abrirDevol(id, action) {
   currentDevolId = id;
   currentDevolAction = action;
-  var r = STATE.returns.find(function(x){ return x.id === id; });
+  var r = (STATE.returns || []).find(function(x){ return x.id === id; });
   if (!r) return;
   if (action === 'aprobar') {
     var val = validarElegibleDevolucion(r.patente);
@@ -2236,7 +2236,7 @@ async function confirmarDevol() {
   const comentario = document.getElementById('devol-comentario').value.trim();
   if (!comentario) { notify('El comentario es obligatorio', 'error'); return; }
 
-  const r = STATE.returns.find(x => x.id === currentDevolId);
+  const r = (STATE.returns || []).find(x => x.id === currentDevolId);
   if (!r) return;
 
   const nuevoEstado = currentDevolAction === 'aprobar' ? 'aprobada' : 'rechazada';
@@ -2274,15 +2274,15 @@ async function confirmarDevol() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function loadReports() {
   const kpis = document.getElementById('rpt-kpis');
-  const totalIngresos = STATE.visits.length;
-  const totalPrimaria = STATE.visits.filter(v => v.tipo === 'primaria').length;
-  const totalSecundaria = STATE.visits.filter(v => v.tipo === 'secundaria').length;
-  const completadas = STATE.tasks.filter(t => t.estado === 'completada').length;
-  const vencidas = STATE.tasks.filter(t => t.estado === 'vencida').length;
-  const aprobadas = STATE.returns.filter(r => r.estado === 'aprobada').length;
-  const rechazadas = STATE.returns.filter(r => r.estado === 'rechazada').length;
+  const totalIngresos = (STATE.visits || []).length;
+  const totalPrimaria = (STATE.visits || []).filter(v => v.tipo === 'primaria').length;
+  const totalSecundaria = (STATE.visits || []).filter(v => v.tipo === 'secundaria').length;
+  const completadas = (STATE.tasks || []).filter(t => t.estado === 'completada').length;
+  const vencidas = (STATE.tasks || []).filter(t => t.estado === 'vencida').length;
+  const aprobadas = (STATE.returns || []).filter(r => r.estado === 'aprobada').length;
+  const rechazadas = (STATE.returns || []).filter(r => r.estado === 'rechazada').length;
   const util = STATE.docks.length
-    ? Math.round(STATE.docks.filter(d => d.estado === 'busy').length / STATE.docks.length * 100) : 0;
+    ? Math.round((STATE.docks || []).filter(d => d.estado === 'busy').length / STATE.docks.length * 100) : 0;
 
   kpis.innerHTML = `
     <div class="kpi info"><div class="kpi-lbl">Total Ingresos</div><div class="kpi-val">${totalIngresos}</div><div class="kpi-sub">en período</div></div>
@@ -2298,7 +2298,7 @@ function loadReports() {
   const dwellTbl = document.getElementById('rpt-dwell-tbl');
   if (dwellTbl) {
     const byCarrier = {};
-    STATE.visits.forEach(v => {
+    (STATE.visits || []).forEach(v => {
       const k = v.carrier_nombre || 'Desconocido';
       if (!byCarrier[k]) byCarrier[k] = { visits: 0, totalDwell: 0, maxDwell: 0 };
       const dwell = Number.isFinite(v.dwell_minutes) ? v.dwell_minutes :
@@ -2318,7 +2318,7 @@ function loadReports() {
   const opsTbl = document.getElementById('rpt-ops-tbl');
   if (opsTbl) {
     const byOp = {};
-    STATE.tasks.forEach(t => {
+    (STATE.tasks || []).forEach(t => {
       if (!t.operador_nombre) return;
       if (!byOp[t.operador_nombre]) byOp[t.operador_nombre] = { total: 0, ok: 0, vencidas: 0 };
       byOp[t.operador_nombre].total++;
@@ -2337,7 +2337,7 @@ function loadReports() {
   const hourTbl = document.getElementById('rpt-hour-tbl');
   if (hourTbl) {
     const hours = Array.from({length:18}, (_,i) => i + 6); // 06:00 - 23:00
-    const countByHour = (type) => (h) => STATE.visits.filter(v => {
+    const countByHour = (type) => (h) => (STATE.visits || []).filter(v => {
       const d = new Date(type === 'in' ? v.hora_ingreso : v.hora_salida);
       return !isNaN(d) && d.getHours() === h;
     }).length;
@@ -2347,7 +2347,7 @@ function loadReports() {
       const inCount  = inByHour(h);
       const outCount = outByHour(h);
       const total    = inCount + outCount;
-      const pct      = STATE.visits.length > 0 ? Math.round(total / Math.max(STATE.visits.length, 1) * 100) : 0;
+      const pct      = (STATE.visits || []).length > 0 ? Math.round(total / Math.max((STATE.visits || []).length, 1) * 100) : 0;
       return `<tr>
         <td>${String(h).padStart(2,'0')}:00 - ${String(h+1).padStart(2,'0')}:00</td>
         <td class="c-ok">${inCount}</td><td class="c-warn">${outCount}</td>
@@ -2359,9 +2359,9 @@ function loadReports() {
   // Resumen devoluciones
   const devolTbl = document.getElementById('rpt-devol-tbl');
   if (devolTbl) {
-    const apr = STATE.returns.filter(r => r.estado === 'aprobada').length;
-    const rec = STATE.returns.filter(r => r.estado === 'rechazada').length;
-    const pend = STATE.returns.filter(r => r.estado === 'pendiente').length;
+    const apr = (STATE.returns || []).filter(r => r.estado === 'aprobada').length;
+    const rec = (STATE.returns || []).filter(r => r.estado === 'rechazada').length;
+    const pend = (STATE.returns || []).filter(r => r.estado === 'pendiente').length;
     devolTbl.innerHTML = `<tr>
       <td>${new Date().toLocaleDateString('es-CL', { month:'long', year:'numeric' })}</td>
       <td>${STATE.returns.length}</td>
@@ -2390,7 +2390,7 @@ function renderChatUsers() {
   if (!list) return;
   list.innerHTML = '';
   const myId = STATE.profile?.id;
-  const others = STATE.presence.filter(p => p.id !== myId);
+  const others = (STATE.presence || []).filter(p => p.id !== myId);
   if (!others.length) {
     list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--tx-dim);font-size:10px;">Sin usuarios disponibles</div>';
     return;
@@ -2654,13 +2654,13 @@ function renderPresence() {
   const list = document.getElementById('presence-list');
   if (!list) return;
   list.innerHTML = '';
-  STATE.presence.forEach(p => {
+  (STATE.presence || []).forEach(p => {
     const div = document.createElement('div');
     div.className = `presence-user ${p.online ? 'online' : ''}`;
     div.innerHTML = `<div class="dot ${p.online ? 'online' : ''}"></div>${Utils.esc(p.nombre || '?')}`;
     list.appendChild(div);
   });
-  set('kpi-online', STATE.presence.filter(p => p.online).length);
+  set('kpi-online', (STATE.presence || []).filter(p => p.online).length);
 }
 
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -2766,7 +2766,7 @@ async function addCarrier() {
     notify('â›” El nombre del conductor es obligatorio', 'error');
     return;
   }
-  if (!editId && STATE.carriers.find(x => x.codigo === codigo)) {
+  if (!editId && (STATE.carriers || []).find(x => x.codigo === codigo)) {
     if (codigoEl) { codigoEl.style.borderColor = 'var(--c-warn)'; setTimeout(() => codigoEl.style.borderColor = '', 2000); }
     Audio.play('error');
     setCarrierMsg('â›” La patente ' + codigo + ' ya está registrada', 'err');
@@ -2778,7 +2778,7 @@ async function addCarrier() {
 
   try {
     if (editId) {
-      const existing = STATE.carriers.find(x => x.id === editId);
+      const existing = (STATE.carriers || []).find(x => x.id === editId);
       if (existing) Object.assign(existing, { codigo, nombre, tipo, numero_ruta: ruta, zona, estado, cd });
       if (!STATE.usingSeed && sb) {
         const { error } = await sb.from('carriers').update({ codigo, nombre, tipo, numero_ruta: ruta }).eq('id', editId);
@@ -2867,7 +2867,7 @@ function renderCarros() {
   const pColors = { alta:'var(--c-err)', normal:'var(--c-info)', baja:'var(--tx-muted)' };
   const isAdmin = ['administrador','administrativo_ops'].includes(STATE.profile?.rol);
   list.innerHTML = STATE.carros.length ? STATE.carros.map(function(cr,i) {
-    const anden = cr.anden_destino ? (STATE.docks.find(d=>d.id===cr.anden_destino)?.codigo||'â€”') : 'â€”';
+    const anden = cr.anden_destino ? ((STATE.docks || []).find(d=>d.id===cr.anden_destino)?.codigo||'â€”') : 'â€”';
     const slot  = cr.slot ? STATE.playaSlots.find(s=>s.id===cr.slot) : null;
     const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'â€”';
     return '<div class="carro-card" style="border-left:3px solid ' + (pColors[cr.prioridad]||'var(--border-md)') + ';">' +
@@ -2911,7 +2911,7 @@ function openNuevoCarro() {
   const andenSel = document.getElementById('carro-anden-destino');
   if (andenSel) {
     andenSel.innerHTML = '<option value="">Sin asignar</option>' +
-      STATE.docks.filter(function(d){ return d.estado === 'free'; }).map(function(d){
+      (STATE.docks || []).filter(function(d){ return d.estado === 'free'; }).map(function(d){
         return '<option value="' + d.id + '">' + d.codigo + ' â€” ' + (d.tipo||'').toUpperCase() + '</option>';
       }).join('');
   }
@@ -2922,7 +2922,7 @@ function openNuevoCarro() {
 }
 function autoFillCarroConductor() {
   const pat = document.getElementById('carro-patente').value;
-  const c = STATE.carriers.find(x => x.codigo === pat);
+  const c = (STATE.carriers || []).find(x => x.codigo === pat);
   if (c) {
     document.getElementById('carro-conductor').value = c.nombre;
     document.getElementById('carro-ruta').value = c.numero_ruta || '';
@@ -2931,7 +2931,7 @@ function autoFillCarroConductor() {
 
 function autoFillWaveConductor() {
   const pat = document.getElementById('wave-patente').value;
-  const c = STATE.carriers.find(x => x.codigo === pat);
+  const c = (STATE.carriers || []).find(x => x.codigo === pat);
   if (c) {
     document.getElementById('wave-ruta').value = c.numero_ruta || '';
   }
@@ -3027,7 +3027,7 @@ function addToWave() {
     Audio.play('warn');
     notify('⚠  La patente ' + pat + ' ya está en el wave de este turno', 'warn'); return;
   }
-  const c = STATE.carriers.find(x => x.codigo === pat);
+  const c = (STATE.carriers || []).find(x => x.codigo === pat);
   STATE.wave.push({ patente: pat, ruta, conductor: c?.nombre || '', prioridad: prio, obs });
   document.getElementById('wave-obs').value = '';
   Audio.play('ok');
@@ -3093,7 +3093,7 @@ function checkSLAAlerts() {
   const sessionKey = 'yms_alerted_';
 
   // 1. Dwell vencido (P1)
-  STATE.visits.filter(v => v.estado === 'en_patio').forEach(v => {
+  (STATE.visits || []).filter(v => v.estado === 'en_patio').forEach(v => {
     const mins = Math.round((now - new Date(v.hora_ingreso)) / 60000);
     const key = sessionKey + 'dwell_' + v.id;
     if (mins >= P.dwell_max && !sessionStorage.getItem(key + '_p1')) {
@@ -3107,7 +3107,7 @@ function checkSLAAlerts() {
   });
 
   // 2. Tareas vencidas (P1)
-  STATE.tasks.filter(t => ['ofertada','en_ejecucion'].includes(t.estado)).forEach(t => {
+  (STATE.tasks || []).filter(t => ['ofertada','en_ejecucion'].includes(t.estado)).forEach(t => {
     const mins = Math.round((now - new Date(t.hora_creacion)) / 60000);
     const key = sessionKey + 'task_' + t.id;
     if (mins > (t.sla_minutos || P.task_sla) && !sessionStorage.getItem(key)) {
@@ -3119,7 +3119,7 @@ function checkSLAAlerts() {
   });
 
   // 3. Cola SLA (P2)
-  STATE.queueTickets.filter(q => q.estado === 'esperando').forEach(q => {
+  (STATE.queueTickets || []).filter(q => q.estado === 'esperando').forEach(q => {
     const mins = Math.round((now - new Date(q.hora_creacion)) / 60000);
     const key = sessionKey + 'queue_' + q.id;
     if (mins >= P.sla_max && !sessionStorage.getItem(key + '_p1')) {
@@ -3336,7 +3336,7 @@ async function loadTrazabilidad() {
       const dw = v.hora_salida && v.hora_ingreso
         ? Math.round((new Date(v.hora_salida) - new Date(v.hora_ingreso)) / 60000) + 'm'
         : v.hora_ingreso ? Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000) + 'm*' : 'â€”';
-      const c = STATE.carriers.find(x => x.codigo === v.patente);
+      const c = (STATE.carriers || []).find(x => x.codigo === v.patente);
       return `<tr>
         <td class="c-dim">${v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleDateString('es-CL') : 'â€”'}</td>
         <td class="c-bright">${v.patente || 'â€”'}</td>
@@ -3344,7 +3344,7 @@ async function loadTrazabilidad() {
         <td><span class="badge ${v.tipo==='primaria'?'badge b-ok':'badge b-warn'}">${v.tipo||'â€”'}</span></td>
         <td class="c-dim">${fmtTime(v.hora_ingreso)}</td>
         <td class="c-dim">${fmtTime(v.hora_salida)}</td>
-        <td style="color:${parseInt(dw)>STATE.params.dwell_max?'var(--c-err)':'var(--tx-base)'}">${dw}</td>
+        <td style="color:${parseInt(dw)>(STATE.params?.dwell_max || 180)?'var(--c-err)':'var(--tx-base)'}">${dw}</td>
         <td class="c-dim">${v.dock_codigo || v.dock?.codigo || 'â€”'}</td>
         <td><span class="badge ${v.estado==='en_patio'?'badge b-ok':v.estado==='salida'?'badge b-dim':'badge b-info'}">${v.estado||'â€”'}</span></td>
       </tr>`;
@@ -3361,7 +3361,7 @@ function exportTrazabilidad() {
   if (!data.length) { notify('Sin datos para exportar', 'warn'); return; }
   const headers = ['Fecha','Patente','Conductor','Ruta','Empresa','Tipo','Ingreso','Salida','Dwell(min)','Andén','Estado'];
   const rows = data.map(v => {
-    const c = STATE.carriers.find(x => x.codigo === v.patente);
+    const c = (STATE.carriers || []).find(x => x.codigo === v.patente);
     const dw = v.hora_salida && v.hora_ingreso ? Math.round((new Date(v.hora_salida)-new Date(v.hora_ingreso))/60000) : '';
     return [
       v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleDateString('es-CL') : '',
@@ -3400,7 +3400,7 @@ async function saveAnden() {
 
   if (editId) {
     // EDITAR
-    const dock = STATE.docks.find(d => d.id === editId);
+    const dock = (STATE.docks || []).find(d => d.id === editId);
     if (dock) {
       dock.codigo = codigo; dock.tipo = tipo; dock.operacion_permitida = op;
       dock.plantas_compat = plantas; dock.max_tiempo = maxtime;
@@ -3415,7 +3415,7 @@ async function saveAnden() {
     auditLog('dock', 'ANDÃ‰N_EDITADO', 'Andén ' + codigo + ' modificado');
   } else {
     // CREAR
-    if (STATE.docks.find(d => d.codigo === codigo)) {
+    if ((STATE.docks || []).find(d => d.codigo === codigo)) {
       Audio.play('error');
       notify('â›” El código ' + codigo + ' ya existe en los andenes registrados', 'error'); return;
     }
@@ -3437,7 +3437,7 @@ async function saveAnden() {
 }
 
 function editAnden(id) {
-  const d = STATE.docks.find(x => x.id === id);
+  const d = (STATE.docks || []).find(x => x.id === id);
   if (!d) return;
   // Si está en vista config, cambiar a tab andenes
   switchCfgTabById('cfg-andenes');
@@ -3454,11 +3454,11 @@ function editAnden(id) {
 }
 
 async function deleteAnden(id) {
-  const dock = STATE.docks.find(d => d.id === id);
+  const dock = (STATE.docks || []).find(d => d.id === id);
   if (!dock) return;
   if (dock.estado === 'busy') { notify('â›” No se puede eliminar un andén ocupado', 'error'); return; }
   if (!confirm('Â¿ELIMINAR andén ' + dock.codigo + '? Esta acción no se puede deshacer.')) return;
-  STATE.docks = STATE.docks.filter(d => d.id !== id);
+  STATE.docks = (STATE.docks || []).filter(d => d.id !== id);
   if (!STATE.usingSeed) {
     await sb.from('docks').delete().eq('id', id);
     await auditLog('dock', 'ANDÃ‰N_ELIMINADO', 'Andén ' + dock.codigo + ' eliminado');
@@ -3623,8 +3623,8 @@ function renderConfigCarriers() {
     const cdOpts = SITES_DISPONIBLES.map(s =>
       '<option value="' + Utils.esc(s.codigo) + '"' + (c.cd === s.codigo ? ' selected' : '') + '>' + Utils.esc(s.nombre) + '</option>'
     ).join('');
-    const enPatio = STATE.visits.find(v => v.patente === c.codigo && v.estado !== 'salida');
-    const andenActual = enPatio?.dock_id ? (STATE.docks.find(d => d.id === enPatio.dock_id)?.codigo || 'â€”') : 'â€”';
+    const enPatio = (STATE.visits || []).find(v => v.patente === c.codigo && v.estado !== 'salida');
+    const andenActual = enPatio?.dock_id ? ((STATE.docks || []).find(d => d.id === enPatio.dock_id)?.codigo || 'â€”') : 'â€”';
     const isAdmin = STATE.profile?.rol === 'administrador';
     return '<tr>' +
       '<td class="c-bright fw">' + Utils.esc(c.codigo) + '</td>' +
@@ -3647,7 +3647,7 @@ function renderConfigCarriers() {
 }
 
 function editCarrier(id) {
-  const c = STATE.carriers.find(x => x.id === id);
+  const c = (STATE.carriers || []).find(x => x.id === id);
   if (!c) return;
   document.getElementById('edit-carrier-id').value   = c.id;
   document.getElementById('inp-carrier-code').value  = c.codigo;
@@ -3664,7 +3664,7 @@ function editCarrier(id) {
 }
 
 async function deleteCarrier(id) {
-  const c = STATE.carriers.find(x => x.id === id);
+  const c = (STATE.carriers || []).find(x => x.id === id);
   if (!c) return;
   if (!confirm('Â¿ELIMINAR transporte ' + c.codigo + ' â€” ' + c.nombre + '?')) return;
   STATE.carriers = STATE.carriers.filter(x => x.id !== id);
@@ -3716,7 +3716,7 @@ async function addPlanta() {
     Audio.play('error');
     notify('â›” El nombre de la planta es obligatorio', 'error'); return;
   }
-  if (STATE.plants.find(p => p.codigo === cod)) {
+  if ((STATE.plants || []).find(p => p.codigo === cod)) {
     Audio.play('warn');
     notify('⚠  Ya existe una planta con el código ' + cod, 'warn'); return;
   }
@@ -3790,7 +3790,7 @@ function deleteMotivo(id) {
 
 // â”€â”€ Acepta tarea por ID (desde mobile card buttons) â”€â”€
 async function aceptarTareaById(taskId) {
-  const t = STATE.tasks.find(function(x){ return x.id === taskId; });
+  const t = (STATE.tasks || []).find(function(x){ return x.id === taskId; });
   if (!t) { notify('â›” Tarea no encontrada', 'error'); return; }
   try {
     const oldEstado = t.estado;
@@ -3882,8 +3882,8 @@ function renderCitas() {
       programada:'badge b-info', confirmada:'badge b-ok', en_curso:'badge b-warn',
       completada:'badge b-dim', no_presentada:'badge b-err', cancelada:'badge b-err'
     }[c.estado] || 'badge b-dim';
-    const dock = STATE.docks.find(d => d.id === c.dock_id);
-    const carrier = STATE.carriers.find(x => x.codigo === c.patente);
+    const dock = (STATE.docks || []).find(d => d.id === c.dock_id);
+    const carrier = (STATE.carriers || []).find(x => x.codigo === c.patente);
     return `<tr>
       <td class="c-bright fw">${Utils.esc(c.hora_inicio || 'â€”')}</td>
       <td class="c-dim">${Utils.esc(c.hora_inicio || 'â€”')}â€“${Utils.esc(c.hora_fin || 'â€”')}</td>
@@ -3992,8 +3992,8 @@ function saveCita() {
     notify('â›” Conflicto de horario: ya existe una cita en Andén ' + (dock?.codigo||'?') + ' entre ' + horaIni + ' y ' + (horaFin || horaIni), 'error'); return;
   }
 
-  const carrier = STATE.carriers.find(x => x.codigo === patente);
-  const dock    = STATE.docks.find(d => d.id === dockId);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === patente);
+  const dock    = (STATE.docks || []).find(d => d.id === dockId);
   const newCita = {
     id: 'cit' + Date.now(), fecha, hora_inicio: horaIni, hora_fin: horaFin,
     dock_id: dockId, dock_codigo: dock?.codigo, patente,
@@ -4041,7 +4041,7 @@ function cancelCita(id) {
 function renderTemperatura() {
   const cont = document.getElementById('view-temperatura');
   if (!cont) return;
-  const tempVisits = STATE.visits.filter(v => v.temp_cabina != null);
+  const tempVisits = (STATE.visits || []).filter(v => v.temp_cabina != null);
   const alertas = tempVisits.filter(v => v.temp_alerta);
   const ok_     = tempVisits.filter(v => !v.temp_alerta);
 
@@ -4124,8 +4124,8 @@ function openNewCarro() {
 // Asignación rápida desde panel "En Espera de Andén"
 async function asignarAndenDesdeEspera(visitId, dockId) {
   if (!visitId || !dockId) return;
-  const dock  = STATE.docks.find(d => d.id === dockId);
-  const visit = STATE.visits.find(v => v.id === visitId);
+  const dock  = (STATE.docks || []).find(d => d.id === dockId);
+  const visit = (STATE.visits || []).find(v => v.id === visitId);
   if (!dock || !visit) { notify('â›” Datos no encontrados', 'error'); return; }
   if (dock.estado !== 'free') { notify('â›” El andén ya no está libre', 'warn'); return; }
   const ahora = new Date().toISOString();
@@ -4153,8 +4153,8 @@ async function asignarManual() {
   const dockId  = document.getElementById('asig-anden')?.value;
   const visitId = document.getElementById('asig-visita')?.value;
   if (!dockId || !visitId) { notify('â›” Seleccione andén y camión', 'error'); return; }
-  const dock  = STATE.docks.find(d => d.id === dockId);
-  const visit = STATE.visits.find(v => v.id === visitId);
+  const dock  = (STATE.docks || []).find(d => d.id === dockId);
+  const visit = (STATE.visits || []).find(v => v.id === visitId);
   if (!dock || !visit) return;
   if (STATE.usingSeed) {
     dock.estado = 'busy'; dock.truck_id = visitId; dock.inicio_ocupacion = new Date().toISOString();
@@ -4173,7 +4173,7 @@ async function asignarManual() {
 }
 
 async function aprobarDevolucion(id, aprobada) {
-  const r = STATE.returns.find(x => x.id === id);
+  const r = (STATE.returns || []).find(x => x.id === id);
   if (!r) return;
   const action = aprobada ? 'aprobada' : 'rechazada';
   if (!confirm(`Â¿${aprobada ? 'APROBAR' : 'RECHAZAR'} esta devolución?`)) return;
@@ -5032,7 +5032,7 @@ async function confirmImport() {
   if (_importType === 'carriers') {
     for (const r of _importParsed) {
       if (!r.codigo || !r.nombre) { err++; continue; }
-      const exists = STATE.carriers.find(c => c.codigo === r.codigo);
+      const exists = (STATE.carriers || []).find(c => c.codigo === r.codigo);
       if (exists) {
         Object.assign(exists, { nombre: r.nombre, tipo: r.tipo, numero_ruta: r.numero_ruta, zona: r.zona, estado: r.estado });
         if (!STATE.usingSeed) await sb.from('carriers').update({ nombre: r.nombre, tipo: r.tipo, numero_ruta: r.numero_ruta }).eq('codigo', r.codigo);
@@ -5049,7 +5049,7 @@ async function confirmImport() {
   } else {
     for (const r of _importParsed) {
       if (!r.codigo || !r.nombre) { err++; continue; }
-      const exists = STATE.plants.find(p => p.codigo === r.codigo);
+      const exists = (STATE.plants || []).find(p => p.codigo === r.codigo);
       if (!exists) {
         STATE.plants.push({ id: 'p'+Date.now()+ok, ...r });
         if (!STATE.usingSeed) await sb.from('plants').insert({ codigo: r.codigo, nombre: r.nombre, region: r.region, tipo: r.tipo });
@@ -5109,7 +5109,7 @@ function autoFillSecPatente() {
   if (!sel || !pat) return;
   const codigo = sel.value;
   if (!codigo) return;
-  const carrier = STATE.carriers.find(x => x.codigo === codigo);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === codigo);
   if (carrier) {
     pat.value = carrier.codigo;
     if (rut) rut.value = carrier.numero_ruta || '';
@@ -5155,15 +5155,15 @@ function renderTareasMobile() {
   const myId  = STATE.profile?.id;
   const myRol = STATE.profile?.rol;
 
-  const pend = STATE.tasks.filter(t => ['pendiente','ofertada'].includes(t.estado));
-  const cur  = STATE.tasks.filter(t => ['aceptada','en_ejecucion'].includes(t.estado));
-  const venc = STATE.tasks.filter(t => t.estado === 'vencida');
+  const pend = (STATE.tasks || []).filter(t => ['pendiente','ofertada'].includes(t.estado));
+  const cur  = (STATE.tasks || []).filter(t => ['aceptada','en_ejecucion'].includes(t.estado));
+  const venc = (STATE.tasks || []).filter(t => t.estado === 'vencida');
   set('m-kpi-pend', pend.length);
   set('m-kpi-cur',  cur.length);
   set('m-kpi-venc', venc.length);
   set('tareas-mobile-resumen', pend.length + ' pendientes · ' + cur.length + ' en curso');
 
-  const tareasMostrar = STATE.tasks.filter(t =>
+  const tareasMostrar = (STATE.tasks || []).filter(t =>
     !['completada','cancelada'].includes(t.estado)
   ).slice(0, 30);
 
@@ -5271,7 +5271,7 @@ function renderTareasMobile() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function abrirChecklistTarea(taskId) {
   _checklistTaskId = taskId;
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   _clStepData    = {};
   _clCurrentStep = 0;
   _clActiveItems = CL_ITEMS_CONFIG.filter(i => i.enabled !== false);
@@ -5402,7 +5402,7 @@ function updateChecklist() { /* no-op â€” reemplazado por wizard */ }
 async function confirmarChecklistTarea() {
   clSaveCurrentValue();
   if (!_checklistTaskId) return;
-  const t = STATE.tasks.find(x => x.id === _checklistTaskId);
+  const t = (STATE.tasks || []).find(x => x.id === _checklistTaskId);
   if (!t) return;
 
   // Validar que todos los ítems activos tengan valor
@@ -5470,9 +5470,9 @@ async function confirmarChecklistTarea() {
 
 function abrirPosturaAnden(taskId) {
   _posturaAndenTaskId = taskId;
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
-  const carrier = STATE.carriers.find(x => x.codigo === t.patente);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === t.patente);
   const infoEl = document.getElementById('pa-info-camion');
   if (infoEl) {
     infoEl.innerHTML =
@@ -5483,8 +5483,8 @@ function abrirPosturaAnden(taskId) {
   // Poblar select: andenes libres + andén pre-asignado en la tarea (aunque ya esté reservado/busy)
   const andenSel = document.getElementById('pa-anden-select');
   if (andenSel) {
-    const preAsignado = t?.dock_id ? STATE.docks.find(function(d){ return d.id === t.dock_id; }) : null;
-    const andenesSel = STATE.docks.filter(function(d) {
+    const preAsignado = t?.dock_id ? (STATE.docks || []).find(function(d){ return d.id === t.dock_id; }) : null;
+    const andenesSel = (STATE.docks || []).filter(function(d) {
       return d.estado === 'free' || (preAsignado && d.id === preAsignado.id);
     });
     andenSel.innerHTML = '<option value="">â€” Seleccionar andén â€”</option>' +
@@ -5520,13 +5520,13 @@ async function confirmarPosturaAnden() {
     return;
   }
 
-  const t    = STATE.tasks.find(x => x.id === taskId);
-  const dock = STATE.docks.find(d => d.id === andenId);
+  const t    = (STATE.tasks || []).find(x => x.id === taskId);
+  const dock = (STATE.docks || []).find(d => d.id === andenId);
   if (!t || !dock) return;
 
   // Si el andén seleccionado difiere del pre-reservado en la tarea, liberar el original
   if (t.dock_id && t.dock_id !== andenId) {
-    const dockOriginal = STATE.docks.find(function(d){ return d.id === t.dock_id; });
+    const dockOriginal = (STATE.docks || []).find(function(d){ return d.id === t.dock_id; });
     if (dockOriginal && (dockOriginal.truck_id === t.visit_id || dockOriginal.truck_id === t.patente || !dockOriginal.truck_id)) {
       dockOriginal.estado = 'free';
       dockOriginal.truck_id = null;
@@ -5538,7 +5538,7 @@ async function confirmarPosturaAnden() {
   }
 
   // Actualizar visita: mover de playa/espera a andén
-  const visit = STATE.visits.find(function(v) { return v.patente === t.patente && v.estado !== 'salida'; });
+  const visit = (STATE.visits || []).find(function(v) { return v.patente === t.patente && v.estado !== 'salida'; });
   if (visit) {
     visit.zona_actual = 'anden';
     visit.estado      = 'en_anden';
@@ -5655,7 +5655,7 @@ async function confirmarPosturaAnden() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 function abrirEdicionTarea(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   const el = (id) => document.getElementById(id);
   el('edit-task-id').value    = taskId;
@@ -5677,7 +5677,7 @@ function abrirEdicionTarea(taskId) {
 
 async function guardarEdicionTarea() {
   const taskId = document.getElementById('edit-task-id').value;
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   const tipo     = document.getElementById('edit-task-tipo').value;
   const prio     = document.getElementById('edit-task-prio').value;
@@ -5713,7 +5713,7 @@ async function guardarEdicionTarea() {
 
 async function eliminarTarea(taskId) {
   if (!confirm('Â¿Eliminar esta tarea definitivamente?')) return;
-  STATE.tasks = STATE.tasks.filter(t => t.id !== taskId);
+  STATE.tasks = (STATE.tasks || []).filter(t => t.id !== taskId);
   if (!STATE.usingSeed && sb) {
     try { await sb.from('yard_tasks').delete().eq('id', taskId); } catch(e) {}
   }
@@ -5724,7 +5724,7 @@ async function eliminarTarea(taskId) {
 }
 
 async function desasignarTarea(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   const oldEstado = t.estado;
   t.operador_id = null; t.operador_nombre = null; t.estado = 'pendiente';
@@ -5806,7 +5806,7 @@ function utpCerrar() {
 // Punto de entrada unificado para supervisor/admin: acepta la tarea si no está
 // en ejecución y luego abre el modal de registro de sello y pallets.
 async function registrarRetiroAnden(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   // Auto-aceptar si aÃºn no fue tomada por nadie
   if (['pendiente','ofertada'].includes(t.estado)) {
@@ -5830,10 +5830,10 @@ async function registrarRetiroAnden(taskId) {
 }
 
 function abrirCarroCargado(taskId) {
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
   document.getElementById('cc-task-id').value = taskId;
-  const carrier = STATE.carriers.find(x => x.codigo === t.patente);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === t.patente);
   // Adaptar título y etiqueta segÃºn tipo
   const esCarrosVacios = t.tipo === 'anden_a_carros_vacios';
   const titleEl = document.getElementById('cc-modal-title');
@@ -5891,7 +5891,7 @@ async function confirmarCarroCargado() {
   if (pallets < 1 || pallets > 33) { msgEl.textContent = 'â›” Cantidad de pallets debe estar entre 1 y 33'; Audio.play('error'); return; }
   if (!slotId) { msgEl.textContent = 'â›” Debe seleccionar el estacionamiento de carros cargados de destino'; Audio.play('error'); return; }
 
-  const t = STATE.tasks.find(x => x.id === taskId);
+  const t = (STATE.tasks || []).find(x => x.id === taskId);
   if (!t) return;
 
   // â”€â”€ VALIDACIÃ“N CRÃTICA: Verificar que el slot sea válido para carros cargados â”€â”€
@@ -5915,7 +5915,7 @@ async function confirmarCarroCargado() {
   }
 
   // Registrar en carros
-  const carrier = STATE.carriers.find(x => x.codigo === t.patente);
+  const carrier = (STATE.carriers || []).find(x => x.codigo === t.patente);
   const nuevoCarro = {
     patente: t.patente, conductor: carrier?.nombre || 'â€”',
     ruta: carrier?.numero_ruta || 'â€”', pallets: pallets,
@@ -5941,8 +5941,8 @@ async function confirmarCarroCargado() {
   });
 
   // â”€â”€ Actualizar visita: mover de andén a carros_cargados â”€â”€
-  const visit = STATE.visits.find(v => v.patente === t.patente && v.estado !== 'salida');
-  const dock  = visit?.dock_id ? STATE.docks.find(d => d.id === visit.dock_id) : null;
+  const visit = (STATE.visits || []).find(v => v.patente === t.patente && v.estado !== 'salida');
+  const dock  = visit?.dock_id ? (STATE.docks || []).find(d => d.id === visit.dock_id) : null;
 
   if (visit) {
     const dockAnterior = visit.dock_id;
@@ -6019,7 +6019,7 @@ let _pcPatente = null;
 
 function abrirPalletCheck(patente, visitId) {
   _pcPatente = patente;
-  const carrier  = STATE.carriers.find(x => x.codigo === patente);
+  const carrier  = (STATE.carriers || []).find(x => x.codigo === patente);
   const deuda    = STATE.palletDeuda[patente] || { deuda: 0, historial: [] };
   const ultimaCarga = deuda.historial.filter(h => h.tipo === 'carga').slice(-1)[0];
   const esperados   = ultimaCarga ? ultimaCarga.pallets : 0;
@@ -6172,7 +6172,7 @@ const _origCrearTarea = crearTarea;
 function cargarDatosPrueba() {
   const now = Date.now();
   // Limpiar visits de demo que puedan existir
-  STATE.visits = STATE.visits.filter(v => v._prueba);
+  STATE.visits = (STATE.visits || []).filter(v => v._prueba);
 
   // Visitas primarias (ramplas desde plantas)
   const visitasPrimarias = [
@@ -6207,7 +6207,7 @@ function cargarDatosPrueba() {
       zona_actual:'playa', estado:'en_patio', carrier_id:'c6', _prueba:true },
   ];
 
-  STATE.visits = [...visitasPrimarias, ...visitasSecundarias, ...STATE.visits.filter(v => !v._prueba)];
+  STATE.visits = [...visitasPrimarias, ...visitasSecundarias, ...(STATE.visits || []).filter(v => !v._prueba)];
 
   // Datos de pallets cargados para secundarias (deuda)
   STATE.palletDeuda['DFWT11'] = {
@@ -6236,7 +6236,7 @@ function cargarDatosPrueba() {
       hora_creacion: new Date(now - 3*60000).toISOString(), operador_nombre:null, _prueba:true },
   ];
 
-  STATE.tasks = [...tareasPrueba, ...STATE.tasks.filter(t => !t._prueba)];
+  STATE.tasks = [...tareasPrueba, ...(STATE.tasks || []).filter(t => !t._prueba)];
 
   // Andenes de prueba si no hay
   if (STATE.docks.length === 0) {
@@ -6267,7 +6267,7 @@ function abrirPalletCheckDesdeIngreso() {
 //  GESTIÃ“N CARRIERS â€” Mover CD y Asignar Andén desde Config
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function moverCarrierCD(carrierId, newCD) {
-  const carrier = STATE.carriers.find(x => x.id === carrierId);
+  const carrier = (STATE.carriers || []).find(x => x.id === carrierId);
   if (!carrier) return;
   const oldCD = carrier.cd || 'â€”';
   carrier.cd = newCD;
@@ -6282,14 +6282,14 @@ async function moverCarrierCD(carrierId, newCD) {
 }
 
 function abrirAsignacionAnden(carrierId, patente) {
-  const carrier = STATE.carriers.find(x => x.id === carrierId);
-  const visit = STATE.visits.find(v => v.patente === patente && v.estado !== 'salida');
+  const carrier = (STATE.carriers || []).find(x => x.id === carrierId);
+  const visit = (STATE.visits || []).find(v => v.patente === patente && v.estado !== 'salida');
   if (!carrier || !visit) {
     notify('⚠  El camión no está actualmente en patio', 'warn'); return;
   }
 
   // Construir opciones de andenes libres
-  const docksLibres = STATE.docks.filter(d => d.estado === 'free');
+  const docksLibres = (STATE.docks || []).filter(d => d.estado === 'free');
   if (!docksLibres.length) {
     notify('â›” Sin andenes libres disponibles', 'error'); return;
   }
@@ -6329,8 +6329,8 @@ async function confirmarAsignacionAnden(visitId, patente) {
   const dockId = document.getElementById('sel-anden-asignar')?.value;
   if (!dockId) { notify('â›” Seleccione un andén', 'error'); return; }
 
-  const dock  = STATE.docks.find(d => d.id === dockId);
-  const visit = STATE.visits.find(v => v.id === visitId);
+  const dock  = (STATE.docks || []).find(d => d.id === dockId);
+  const visit = (STATE.visits || []).find(v => v.id === visitId);
   if (!dock || !visit) return;
 
   // Asignar andén
@@ -6373,7 +6373,7 @@ function renderConfigCD() {
   set('cd-total-count', cds.length);
 
   tbody.innerHTML = cds.map(function(cd) {
-    const andenes = STATE.docks.filter(d => d.site_id === cd.codigo || (!d.site_id && cd.codigo === STATE.currentSite));
+    const andenes = (STATE.docks || []).filter(d => d.site_id === cd.codigo || (!d.site_id && cd.codigo === STATE.currentSite));
     const libres  = andenes.filter(d => d.estado === 'free').length;
     const ocupados= andenes.filter(d => d.estado === 'busy').length;
     const slots   = STATE.playaSlots?.length || 72;
@@ -6418,7 +6418,7 @@ function seleccionarCD(codigo) {
 }
 
 function renderAndenesCD(codigo) {
-  var andenes = STATE.docks.filter(function(d){ return d.site_id === codigo || !d.site_id; });
+  var andenes = (STATE.docks || []).filter(function(d){ return d.site_id === codigo || !d.site_id; });
   set('cd-andenes-count', andenes.length);
   var tbody = document.getElementById('cd-andenes-tbl');
   if (!tbody) return;
@@ -6568,7 +6568,7 @@ function abrirModalNuevoAnden() {
     const op     = document.getElementById('na-op')?.value||'descarga';
     const max    = parseInt(document.getElementById('na-max')?.value)||120;
     if (!codigo) { Audio.play('error'); notify('â›” Ingrese código de andén', 'error'); return; }
-    if (STATE.docks.find(d => d.codigo === codigo && d.site_id === _cdSeleccionado)) {
+    if ((STATE.docks || []).find(d => d.codigo === codigo && d.site_id === _cdSeleccionado)) {
       Audio.play('error'); notify('â›” Código ya existe en este CD', 'error'); return;
     }
     STATE.docks.push({ id:'d_'+Date.now(), codigo, tipo, operacion_permitida:op, estado:'free', site_id:_cdSeleccionado, max_tiempo:max, plantas_compat:'TODAS' });
@@ -6584,11 +6584,11 @@ function abrirModalNuevoAnden() {
 }
 
 function eliminarAndenCD(dockId) {
-  const dock = STATE.docks.find(d => d.id === dockId);
+  const dock = (STATE.docks || []).find(d => d.id === dockId);
   if (!dock) return;
   if (dock.estado === 'busy') { Audio.play('error'); notify('â›” No se puede eliminar un andén ocupado', 'error'); return; }
   if (!confirm('Â¿Eliminar andén ' + dock.codigo + '?')) return;
-  STATE.docks = STATE.docks.filter(d => d.id !== dockId);
+  STATE.docks = (STATE.docks || []).filter(d => d.id !== dockId);
   Audio.play('warn');
   notify('⚠  Andén ' + dock.codigo + ' eliminado', 'warn');
   renderAndenesCD(_cdSeleccionado);
@@ -6607,7 +6607,7 @@ function eliminarCD(codigo) {
   if (!confirm('Â¿ELIMINAR Centro de Distribución ' + (cd?.nombre||codigo) + '? Esta acción no se puede deshacer.')) return;
   const idx = SITES_DISPONIBLES.findIndex(s => s.codigo === codigo);
   if (idx >= 0) SITES_DISPONIBLES.splice(idx, 1);
-  STATE.docks = STATE.docks.filter(d => d.site_id !== codigo);
+  STATE.docks = (STATE.docks || []).filter(d => d.site_id !== codigo);
   Audio.play('error');
   notify('CD ' + codigo + ' eliminado', 'warn');
   auditLog('config', 'CD_ELIMINADO', codigo);
@@ -6644,7 +6644,7 @@ function solicitarMovimientoCarro(idx) {
   if (!carro) return;
   const slot = carro.slot ? STATE.playaSlots.find(s => s.id === carro.slot) : null;
   const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'sin estac.';
-  const anden = carro.anden_destino ? (STATE.docks.find(d=>d.id===carro.anden_destino)?.codigo||'sin andén') : 'sin andén';
+  const anden = carro.anden_destino ? ((STATE.docks || []).find(d=>d.id===carro.anden_destino)?.codigo||'sin andén') : 'sin andén';
 
   // Crear tarea de movimiento
   const newTask = {
@@ -6740,7 +6740,7 @@ function onTaskTipoChange() {
   // Verificar disponibilidad específica
   var extraInfo = '';
   if(tipo === 'mover_anden') {
-    var andLibres = STATE.docks.filter(function(d){ return d.estado==='free'; });
+    var andLibres = (STATE.docks || []).filter(function(d){ return d.estado==='free'; });
     if(andLibres.length === 0) {
       extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;">â›” SIN ANDENES DISPONIBLES â€” la rampla irá al Turnomático automáticamente.</span>';
     } else {
@@ -6748,8 +6748,8 @@ function onTaskTipoChange() {
     }
   }
   if(tipo === 'retirar_anden' || tipo === 'anden_a_carros_vacios') {
-    var enAnden = STATE.visits.filter(function(v){ return v.zona_actual==='anden'&&v.estado!=='salida'; });
-    var docksOcupados = STATE.docks.filter(function(d){ return d.estado==='busy'; });
+    var enAnden = (STATE.visits || []).filter(function(v){ return v.zona_actual==='anden'&&v.estado!=='salida'; });
+    var docksOcupados = (STATE.docks || []).filter(function(d){ return d.estado==='busy'; });
     if(enAnden.length === 0 && docksOcupados.length === 0) {
       extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;">â›” Sin carros confirmados en andén actualmente.</span>';
     } else {
@@ -6766,18 +6766,18 @@ function onTaskTipoChange() {
     if(tipo==='mover_anden'){
       var andSel=document.getElementById('task-anden-dest');
       andSel.innerHTML='<option value="">â€” Auto (primer libre) â€”</option>'+
-        STATE.docks.filter(function(d){return d.estado==='free';}).map(function(d){
+        (STATE.docks || []).filter(function(d){return d.estado==='free';}).map(function(d){
           return '<option value="'+d.id+'">'+d.codigo+' â€” '+d.tipo.toUpperCase()+'</option>';
         }).join('');
     }
   }
   if(truckSel){
-    var visitsValidas=STATE.visits.filter(mov.filtro);
+    var visitsValidas=(STATE.visits || []).filter(mov.filtro);
     var slotConCamion=STATE.playaSlots.filter(function(s){return s.ocupado&&s.patente;});
     var opts=[];
     if(tipo==='mover_anden'){
       slotConCamion.forEach(function(s){
-        var carrier=STATE.carriers.find(function(x){return x.codigo===s.patente;});
+        var carrier=(STATE.carriers || []).find(function(x){return x.codigo===s.patente;});
         opts.push('<option value="slot:'+s.id+':'+s.patente+'">'+s.patente+' â€” '+(carrier?carrier.nombre.split(' ').slice(-2).join(' '):'â€”')+' (F'+s.fila+'-'+String(s.col).padStart(2,'0')+')</option>');
       });
     }
@@ -6801,16 +6801,16 @@ function onTaskTruckChange(){
     var parts=truckVal.split(':');
     var patente=parts[2]||'';
     var slot=STATE.playaSlots.find(function(s){return s.id===parts[1];});
-    var carrier=STATE.carriers.find(function(x){return x.codigo===patente;});
+    var carrier=(STATE.carriers || []).find(function(x){return x.codigo===patente;});
     html='<strong style="color:var(--tx-head);">'+patente+'</strong>'+(carrier?' â€” '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'â€”'):'')+(slot?'<br>ðŸ“ F'+slot.fila+'-'+String(slot.col).padStart(2,'0'):'');
   } else {
-    var visit=STATE.visits.find(function(v){return v.id===truckVal;});
+    var visit=(STATE.visits || []).find(function(v){return v.id===truckVal;});
     if(visit){
       var error=mov?mov.validar(visit):null;
       if(error){html='<span style="color:var(--c-err);">'+error+'</span>';}
       else{
-        var carrier2=STATE.carriers.find(function(x){return x.codigo===visit.patente;});
-        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong> â€” '+(visit.carrier_nombre||'â€”')+'<br>ðŸ“ Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?' · Andén: '+(STATE.docks.find(function(d){return d.id===visit.dock_id;})?.codigo||'â€”'):'')+(carrier2?' · Ruta: '+(carrier2.numero_ruta||'â€”'):'');
+        var carrier2=(STATE.carriers || []).find(function(x){return x.codigo===visit.patente;});
+        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong> â€” '+(visit.carrier_nombre||'â€”')+'<br>ðŸ“ Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?' · Andén: '+((STATE.docks || []).find(function(d){return d.id===visit.dock_id;})?.codigo||'â€”'):'')+(carrier2?' · Ruta: '+(carrier2.numero_ruta||'â€”'):'');
       }
     }
   }
@@ -6820,12 +6820,12 @@ function onTaskTruckChange(){
 
 function buscarDatosCita(patente){
   if(!patente||patente.length<4)return;
-  var carrier=STATE.carriers.find(function(x){return x.codigo===patente.toUpperCase();});
+  var carrier=(STATE.carriers || []).find(function(x){return x.codigo===patente.toUpperCase();});
   var infoEl=document.getElementById('nc-carrier-info');
   if(!infoEl)return;
   infoEl.style.display='block';
   if(carrier){
-    var enPatio=STATE.visits.find(function(v){return v.patente===patente&&v.tipo==='secundaria'&&v.estado!=='salida';});
+    var enPatio=(STATE.visits || []).find(function(v){return v.patente===patente&&v.tipo==='secundaria'&&v.estado!=='salida';});
     infoEl.style.color=enPatio?'var(--c-warn)':'var(--c-ok)';
     infoEl.innerHTML='ðŸš› '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'â€”')+(enPatio?'<br>⚠  SECUNDARIA â€” Las citas son solo para ramplas PRIMARIAS (desde plantas)':'');
   } else {
@@ -6849,7 +6849,7 @@ function sincronizarSlotsConVisitas() {
   // Solo sincroniza slots ya ocupados: verifica que la visita sigue activa
   STATE.playaSlots.forEach(function(slot) {
     if (!slot.ocupado || !slot.patente) return;
-    const visitaActiva = STATE.visits.find(function(v) {
+    const visitaActiva = (STATE.visits || []).find(function(v) {
       return v.patente === slot.patente && v.estado !== 'salida';
     });
     // Si la visita salió o se movió a andén, el slot queda libre
@@ -6860,7 +6860,7 @@ function sincronizarSlotsConVisitas() {
   });
 
   // Reflejar visitas activas en playa que no tienen slot asignado
-  STATE.visits.filter(function(v) {
+  (STATE.visits || []).filter(function(v) {
     return v.zona_actual === 'playa' && v.estado !== 'salida';
   }).forEach(function(v) {
     const yaEnSlot = STATE.playaSlots.find(function(s) { return s.patente === v.patente && s.ocupado; });
@@ -6872,7 +6872,7 @@ function sincronizarSlotsConVisitas() {
         return true;
       });
       if (slotLibre) {
-        const carrier = STATE.carriers.find(function(x) { return x.codigo === v.patente; });
+        const carrier = (STATE.carriers || []).find(function(x) { return x.codigo === v.patente; });
         slotLibre.ocupado = true; slotLibre.patente = v.patente;
         slotLibre.nombre = carrier ? carrier.nombre : null;
         slotLibre.ruta = carrier ? carrier.numero_ruta : null;
@@ -6916,7 +6916,7 @@ function renderTareasLista() {
   var container = document.getElementById('tasks-list-single');
   if (!container) return;
 
-  var tareas = STATE.tasks.slice();
+  var tareas = (STATE.tasks || []).slice();
   // Aplicar filtro
   if (_taskFilter === 'pendiente') tareas = tareas.filter(function(t){ return ['pendiente','ofertada'].includes(t.estado); });
   else if (_taskFilter === 'ejecucion') tareas = tareas.filter(function(t){ return ['aceptada','en_ejecucion'].includes(t.estado); });
@@ -7402,10 +7402,10 @@ async function crearTarea() {
       if (slot.patente && String(slot.patente).toUpperCase() !== String(slot.cfg_patente).toUpperCase()) {
         Audio.play('error'); setTaskMsg('â›” El slot tiene una patente ocupante distinta a la patente dedicada', 'err'); if(btn)btn.disabled=false; return;
       }
-      const visit = STATE.visits.find(function(v){ return String(v.patente).toUpperCase() === String(patente).toUpperCase() && v.estado !== 'salida'; });
+      const visit = (STATE.visits || []).find(function(v){ return String(v.patente).toUpperCase() === String(patente).toUpperCase() && v.estado !== 'salida'; });
       if (visit && visit.tipo && visit.tipo !== 'secundaria') { Audio.play('error'); setTaskMsg('â›” La patente seleccionada no corresponde a secundaria', 'err'); if(btn)btn.disabled=false; return; }
       // Validar patente duplicada en mover_anden
-      const tareaActivaMov = STATE.tasks.find(function(t) {
+      const tareaActivaMov = (STATE.tasks || []).find(function(t) {
         return String(t.patente || '').toUpperCase() === patente.toUpperCase() &&
                ['ofertada', 'pendiente', 'aceptada', 'en_ejecucion'].includes(t.estado);
       });
@@ -7451,11 +7451,11 @@ async function crearTarea() {
 
     // Flujo original para otros tipos de tarea.
     let visitId = null, patente = '';
-    if (truck) { const visit = STATE.visits.find(function(v){ return v.id === truck; }); visitId = truck; patente = visit ? visit.patente : ''; }
+    if (truck) { const visit = (STATE.visits || []).find(function(v){ return v.id === truck; }); visitId = truck; patente = visit ? visit.patente : ''; }
 
     // â”€â”€ Validar patente duplicada: no crear tarea si ya tiene una activa â”€â”€
     if (patente) {
-      const tareaActiva = STATE.tasks.find(function(t) {
+      const tareaActiva = (STATE.tasks || []).find(function(t) {
         return String(t.patente || '').toUpperCase() === patente.toUpperCase() &&
                ['ofertada', 'pendiente', 'aceptada', 'en_ejecucion'].includes(t.estado);
       });
