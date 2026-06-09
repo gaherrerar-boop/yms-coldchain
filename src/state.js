@@ -29,7 +29,8 @@ export const STATE = {
   // Datos específicos por vista
   alertas: [],          // Alertas activas
   alerts: [],           // Alertas (alias de alertas)
-  citasData: [],        // Citas/appointments
+  citas: [],            // Citas/appointments
+  citasData: [],        // Citas/appointments (alias de citas)
   tareasData: [],       // Tareas (datos alternativos)
   turnosData: [],       // Turnos del turnomático
   movimientos: [],      // Movimientos de camiones (alias de movements)

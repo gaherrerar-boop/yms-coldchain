@@ -2858,7 +2858,7 @@ function renderCarros() {
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
     slotSel.innerHTML = '<option value="">Sin slot</option>' +
-      STATE.playaSlots.filter(s => !s.ocupado).map(s =>
+      (STATE.playaSlots || []).filter(s => !s.ocupado).map(s =>
         `<option value="${s.id}">F${s.fila}-${String(s.col).padStart(2,'0')}</option>`
       ).join('');
   }
@@ -2902,9 +2902,9 @@ function openNuevoCarro() {
   // Slots con camiones (estacionamiento origen)
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
-    slotSel.innerHTML = '<option value="">Sin slot asignado</option>' +
-      STATE.playaSlots.filter(function(s){ return s.ocupado; }).map(function(s){
-        return '<option value="' + s.id + '">F' + s.fila + '-' + String(s.col).padStart(2,'0') + ' â€” ' + (s.patente||'libre') + '</option>';
+    slotSel.innerHTML = '<option value=””>Sin slot asignado</option>' +
+      (STATE.playaSlots || []).filter(function(s){ return s.ocupado; }).map(function(s){
+        return '<option value=”' + s.id + '”>F' + s.fila + '-' + String(s.col).padStart(2,'0') + ' â€” ' + (s.patente||'libre') + '</option>';
       }).join('');
   }
   // Andenes libres como destino planificado
@@ -3186,7 +3186,7 @@ function resolveAlert(id) {
 }
 
 function clearAllAlerts() {
-  STATE.alerts.forEach(a => { if (a.resuelta) return; a.resuelta = true; STATE.alertsResolved++; });
+  (STATE.alerts || []).forEach(a => { if (a.resuelta) return; a.resuelta = true; STATE.alertsResolved++; });
   renderAlertas();
   notify('Alertas resueltas', 'ok');
 }
@@ -3608,10 +3608,10 @@ function switchCfgTabById(id) {
 
 function renderConfigCarriers() {
   const search = (document.getElementById('carrier-search')?.value || '').toLowerCase();
-  set('cfg-carrier-count', STATE.carriers.length);
+  set('cfg-carrier-count', (STATE.carriers || []).length);
   const tbody = document.getElementById('carriers-tbl');
   if (!tbody) return;
-  const filtered = STATE.carriers.filter(c =>
+  const filtered = (STATE.carriers || []).filter(c =>
     !search ||
     c.codigo?.toLowerCase().includes(search) ||
     c.nombre?.toLowerCase().includes(search) ||
@@ -3667,7 +3667,7 @@ async function deleteCarrier(id) {
   const c = (STATE.carriers || []).find(x => x.id === id);
   if (!c) return;
   if (!confirm('Â¿ELIMINAR transporte ' + c.codigo + ' â€” ' + c.nombre + '?')) return;
-  STATE.carriers = STATE.carriers.filter(x => x.id !== id);
+  STATE.carriers = (STATE.carriers || []).filter(x => x.id !== id);
   if (!STATE.usingSeed) {
     await sb.from('carriers').delete().eq('id', id);
     await auditLog('config', 'TRANSPORTE_ELIMINADO', c.codigo + ' â€” ' + c.nombre);
@@ -3734,14 +3734,14 @@ async function addPlanta() {
 
 function deletePlanta(id) {
   if (!confirm('Â¿Eliminar planta?')) return;
-  STATE.plants = STATE.plants.filter(p => p.id !== id);
+  STATE.plants = (STATE.plants || []).filter(p => p.id !== id);
   notify('Planta eliminada', 'ok');
   renderConfigPlantas();
 }
 
 //[DUPLICATE REMOVED]
 //async function toggleUser(id) {
-//  const u = STATE.users.find(x => x.id === id);
+//  const u = (STATE.users || []).find(x => x.id === id);
 //  if (!u) return;
 //  u.activo = !u.activo;
 //  if (!STATE.usingSeed) {
@@ -3982,7 +3982,7 @@ function saveCita() {
   // Verificar conflicto de horario en el mismo andén
   const nuevoIni = horaIni;
   const nuevoFin = horaFin || horaIni;
-  const conflicto = STATE.citas.find(c =>
+  const conflicto = (STATE.citas || []).find(c =>
     c.dock_id === dockId && c.fecha === fecha &&
     !['cancelada','no_presentada'].includes(c.estado) &&
     ((c.hora_inicio || '') < nuevoFin && nuevoIni < (c.hora_fin || c.hora_inicio || '23:59'))
@@ -4020,7 +4020,7 @@ function saveCita() {
 }
 
 function confirmCita(id) {
-  const c = STATE.citas.find(x => x.id === id);
+  const c = (STATE.citas || []).find(x => x.id === id);
   if (!c) return;
   c.estado = 'confirmada';
   notify('Cita confirmada', 'ok');
@@ -4028,7 +4028,7 @@ function confirmCita(id) {
 }
 
 function cancelCita(id) {
-  const c = STATE.citas.find(x => x.id === id);
+  const c = (STATE.citas || []).find(x => x.id === id);
   if (!c || !confirm('Â¿Cancelar esta cita?')) return;
   c.estado = 'cancelada';
   notify('Cita cancelada', 'warn');
@@ -4083,7 +4083,7 @@ function closeModal(id) {
 }
 
 function resolveAllAlerts() {
-  STATE.alerts.forEach(a => { a.resuelta = true; });
+  (STATE.alerts || []).forEach(a => { a.resuelta = true; });
   STATE.alertsResolved = (STATE.alertsResolved || 0) + (STATE.alerts || []).filter(a => a.resuelta).length;
   renderAlertas();
   set('kpi-alerts', 0);
@@ -4115,7 +4115,7 @@ function openNewCarro() {
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
     slotSel.innerHTML = '<option value="">Sin slot</option>' +
-      STATE.playaSlots.filter(s => !s.ocupado).map(s => `<option value="${s.id}">Slot ${s.num}</option>`).join('');
+      (STATE.playaSlots || []).filter(s => !s.ocupado).map(s => `<option value="${s.id}">Slot ${s.num}</option>`).join('');
   }
   const modal = document.getElementById('modal-carro');
   if (modal) modal.style.display = 'flex';
@@ -4256,7 +4256,7 @@ async function createUser() {
   if (!nombre || !email || !pass) { setMsg('â›” Nombre, email y contraseña son obligatorios', 'c-err'); return; }
   if (pass.length < 8) { setMsg('â›” Contraseña mínimo 8 caracteres', 'c-err'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMsg('â›” Email no válido', 'c-err'); return; }
-  if (STATE.users.find(u => u.email === email)) { setMsg('â›” Este email ya existe', 'c-err'); return; }
+  if ((STATE.users || []).find(u => u.email === email)) { setMsg('â›” Este email ya existe', 'c-err'); return; }
 
   setMsg('âŒ› Creando usuario...', 'c-warn');
 
@@ -4334,7 +4334,7 @@ async function createUser() {
     await auditLog('config', 'USUARIO_CREADO', nombre + ' · ' + email + ' · ' + rol);
     if (MOBILE_ACCESS_ROLES.includes(rol)) showCreatedLink(nombre, email, rol);
     clearUserForm(); renderConfigUsuarios();
-    set('cfg-user-count', STATE.users.length);
+    set('cfg-user-count', (STATE.users || []).length);
   } catch(err) {
     const msg = err?.message || 'Error desconocido';
     console.error('createUser error:', err);
@@ -4364,7 +4364,7 @@ function clearUserForm() {
 }
 
 async function editUserRol(userId, newRol) {
-  const u = STATE.users.find(x => x.id === userId);
+  const u = (STATE.users || []).find(x => x.id === userId);
   if (!u) return;
   u.rol = newRol;
   if (STATE.usingSeed) {
@@ -4387,7 +4387,7 @@ function renderConfigUsuarios() {
   // Filtrar usuarios: solo mostrar los del CD actual (administrador ve todos)
   const isAdmin = STATE.profile?.rol === 'administrador';
   const currentCD = STATE.currentSite || 'CD_SAN_BERNARDO';
-  const filtered = isAdmin ? STATE.users : STATE.users.filter(u => u.sitio === currentCD);
+  const filtered = isAdmin ? STATE.users : (STATE.users || []).filter(u => u.sitio === currentCD);
 
   set('cfg-user-count', filtered.length);
   const roles = ['guardia','operador_patio','supervisor_andenes','administrativo_ops','jefe_ops','visualizador','administrador'];
@@ -4419,7 +4419,7 @@ function renderConfigUsuarios() {
 }
 
 async function editUserCD(userId, newCD) {
-  const u = STATE.users.find(x => x.id === userId);
+  const u = (STATE.users || []).find(x => x.id === userId);
   if (!u) return;
   u.sitio = newCD;
   const site = SITES_DISPONIBLES.find(s => s.codigo === newCD);
@@ -4438,7 +4438,7 @@ async function editUserCD(userId, newCD) {
 }
 
 async function resetUserPassword(userId) {
-  const u = STATE.users.find(x => x.id === userId);
+  const u = (STATE.users || []).find(x => x.id === userId);
   if (!u) return;
 
   if (!confirm('Â¿Generar nueva contraseña para ' + u.nombre + '? Se enviará un enlace de reset al email.')) return;
@@ -4468,7 +4468,7 @@ async function resetUserPassword(userId) {
 }
 
 function toggleUser(userId) {
-  const u = STATE.users.find(x => x.id === userId);
+  const u = (STATE.users || []).find(x => x.id === userId);
   if (!u) return;
   u.activo = !u.activo;
   if (STATE.usingSeed) {
@@ -4500,7 +4500,7 @@ function openUserModal(userId = null) {
 
   if (userId) {
     // Modo edición
-    const u = STATE.users.find(x => x.id === userId);
+    const u = (STATE.users || []).find(x => x.id === userId);
     if (!u) return;
     titulo.textContent = 'âœï¸ EDITAR USUARIO';
     subtitulo.textContent = 'Modifica los datos de ' + u.nombre;
@@ -4554,7 +4554,7 @@ function saveUserFromModal() {
 
   if (_userModalEditId) {
     // Edición
-    const u = STATE.users.find(x => x.id === _userModalEditId);
+    const u = (STATE.users || []).find(x => x.id === _userModalEditId);
     if (!u) return;
     u.nombre = nombre;
     u.email = email;
@@ -4577,7 +4577,7 @@ function saveUserFromModal() {
       return;
     }
 
-    if (STATE.users.find(u => u.email === email)) {
+    if ((STATE.users || []).find(u => u.email === email)) {
       msg.innerHTML = 'â›” Este email ya existe';
       return;
     }
@@ -4650,7 +4650,7 @@ function saveChangePassword() {
   }
 
   // Validar contraseña actual
-  const user = STATE.users.find(u => u.id === STATE.user?.id);
+  const user = (STATE.users || []).find(u => u.id === STATE.user?.id);
   if (!user) {
     msg.innerHTML = 'â›” Usuario no encontrado';
     return;
@@ -4811,7 +4811,7 @@ function renderWorkflows() {
       return `<tr>
         <td class="c-bright">${wf?.nombre||'Devoluciones'}</td>
         <td class="c-bright fw">${r.patente||'â€”'}</td>
-        <td class="c-dim">${STATE.users.find(u=>u.id===r.solicitado_por)?.nombre||'â€”'}</td>
+        <td class="c-dim">${(STATE.users || []).find(u=>u.id===r.solicitado_por)?.nombre||'â€”'}</td>
         <td><span class="badge b-warn">PASO 1â†’2</span></td>
         <td><span class="badge b-info fz10">${p2}</span></td>
         <td class="${elapsed>(wf?.sla_horas||4)*60?'c-err':'c-ok'}">${elapsed}min</td>
@@ -5130,10 +5130,10 @@ function fillSecundariaCarriers() {
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function initPlayaConCarriers() {
   if (STATE._playaIniciada) return;
-  const yaOcupados = STATE.playaSlots.filter(s => s.ocupado).length;
+  const yaOcupados = (STATE.playaSlots || []).filter(s => s.ocupado).length;
   if (yaOcupados > 0) { STATE._playaIniciada = true; return; }
   const cdActual = STATE.currentSite || 'CD_SAN_BERNARDO';
-  const carriers = STATE.carriers.filter(ca =>
+  const carriers = (STATE.carriers || []).filter(ca =>
     !ca.estado?.includes('INACTIVO') && (ca.cd === cdActual || !ca.cd)
   );
   if (!carriers.length) { STATE._playaIniciada = true; return; }
@@ -5145,7 +5145,7 @@ function initPlayaConCarriers() {
     slot.tipo = carrier.tipo; slot.estado = carrier.estado || '';
   });
   STATE._playaIniciada = true;
-  const cargados = STATE.playaSlots.filter(s => s.ocupado).length;
+  const cargados = (STATE.playaSlots || []).filter(s => s.ocupado).length;
   if (cargados > 0) notify('âœ“ Playa: ' + cargados + ' vehículos cargados', 'ok', 3000);
 }
 
@@ -5668,7 +5668,7 @@ function abrirEdicionTarea(taskId) {
   // Poblar operadores
   const selOp = el('edit-task-operador');
   selOp.innerHTML = '<option value="">â€” Sin asignar â€”</option>' +
-    STATE.users.filter(u => u.activo && ['operador_patio','supervisor_andenes'].includes(u.rol))
+    (STATE.users || []).filter(u => u.activo && ['operador_patio','supervisor_andenes'].includes(u.rol))
       .map(u => '<option value="' + u.id + '" ' + (t.operador_id === u.id ? 'selected' : '') + '>' +
         u.nombre + ' (' + u.rol.replace(/_/g,' ') + ')</option>').join('');
   el('edit-task-msg').textContent = '';
@@ -5686,7 +5686,7 @@ async function guardarEdicionTarea() {
   const sla      = parseInt(document.getElementById('edit-task-sla').value) || 20;
   const notas    = document.getElementById('edit-task-notas').value.trim();
   const opId     = document.getElementById('edit-task-operador').value;
-  const opUser   = STATE.users.find(u => u.id === opId);
+  const opUser   = (STATE.users || []).find(u => u.id === opId);
   Object.assign(t, { tipo, prioridad: prio, zona_origen: origen, zona_destino: destino,
     sla_minutos: sla, notas, operador_id: opId || null, operador_nombre: opUser?.nombre || null });
   if (!STATE.usingSeed && sb) {
@@ -6773,7 +6773,7 @@ function onTaskTipoChange() {
   }
   if(truckSel){
     var visitsValidas=(STATE.visits || []).filter(mov.filtro);
-    var slotConCamion=STATE.playaSlots.filter(function(s){return s.ocupado&&s.patente;});
+    var slotConCamion=(STATE.playaSlots || []).filter(function(s){return s.ocupado&&s.patente;});
     var opts=[];
     if(tipo==='mover_anden'){
       slotConCamion.forEach(function(s){
