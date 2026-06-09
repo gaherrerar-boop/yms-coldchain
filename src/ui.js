@@ -5138,7 +5138,7 @@ function initPlayaConCarriers() {
   );
   if (!carriers.length) { STATE._playaIniciada = true; return; }
   carriers.forEach((carrier, idx) => {
-    if (idx >= STATE.playaSlots.length) return;
+    if (idx >= (STATE.playaSlots || []).length) return;
     const slot = STATE.playaSlots[idx];
     slot.ocupado = true; slot.patente = carrier.codigo;
     slot.ruta = carrier.numero_ruta || 'â€”'; slot.nombre = carrier.nombre;
@@ -6847,7 +6847,7 @@ function validarElegibleDevolucion(patente){
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function sincronizarSlotsConVisitas() {
   // Solo sincroniza slots ya ocupados: verifica que la visita sigue activa
-  STATE.playaSlots.forEach(function(slot) {
+  (STATE.playaSlots || []).forEach(function(slot) {
     if (!slot.ocupado || !slot.patente) return;
     const visitaActiva = (STATE.visits || []).find(function(v) {
       return v.patente === slot.patente && v.estado !== 'salida';
@@ -7094,7 +7094,7 @@ function abrirConfigSlot(idx) {
 
 function abrirModalNuevoSlot() {
   // Calcular siguiente fila/col disponibles
-  var total = STATE.playaSlots.length;
+  var total = (STATE.playaSlots || []).length;
   var nextFila = Math.floor(total / 12) + 1;
   var nextCol  = (total % 12) + 1;
   document.getElementById('ns-codigo').value = '';
@@ -7144,7 +7144,7 @@ function guardarNuevoSlot() {
   if (tipo === 'dedicado' && !patente) { msgEl.textContent = 'â›” Seleccione patente para slot dedicado'; return; }
   if (!permitidas.length) permitidas = ['todas'];
 
-  var num  = STATE.playaSlots.length + 1;
+  var num  = (STATE.playaSlots || []).length + 1;
   var newSlot = {
     id: 'slot-' + codigo, num: num, fila: fila, col: col,
     ocupado: false, patente: null, ruta: null, nombre: null, tipo_v: null, estado_v: '',
