@@ -1,0 +1,147 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "yard_tasks",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "estado",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "yard_tasks",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "tipo",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "yard_tasks",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "asignadoA",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "estado",
+          "order": "Ascending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "yard_visits",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "patente",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "yard_visits",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "estado",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "docks",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "estado",
+          "order": "Ascending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "queue_tickets",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "estado",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "audit_log",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "chat",
+      "queryScope": "Collection",
+      "fields": [
+        {
+          "fieldPath": "cd",
+          "order": "Ascending"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "Descending"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

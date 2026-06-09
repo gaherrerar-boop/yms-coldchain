@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseapp.com https://*.firestore.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://*.firebaseapp.com https://*.firestore.googleapis.com">
+
+  <title>YMS — Agrosuper Operaciones Nacionales</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDKs (v11.1.0) -->
+  <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js"></script>
+
+  <!-- Estilos principales -->
+  <link rel="stylesheet" href="../public/styles.css">
+</head>
+<body id="app">
+  <!-- ═══════════════════════════════════════════════════════════════
+       PANTALLA DE LOGIN
+       ═══════════════════════════════════════════════════════════════ -->
+  <div id="login-view" style="display: none;">
+    <div class="login-container">
+      <div class="login-box">
+        <h1>YMS Agrosuper</h1>
+        <p>Operaciones Nacionales</p>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="login-email-input" placeholder="correo@empresa.cl" required />
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="login-password-input" placeholder="••••••" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+        </form>
+
+        <div id="login-error" class="alert alert-error" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PANTALLA PRINCIPAL
+       ═══════════════════════════════════════════════════════════════ -->
+  <div id="main-view" style="display: none;">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="btn-menu" id="menu-toggle">☰</button>
+        <h1 class="app-title">YMS Agrosuper</h1>
+      </div>
+      <div class="header-right">
+        <span id="user-name">Usuario</span>
+        <button class="btn btn-secondary" id="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <nav class="nav">
+          <button class="nav-item" data-view="patio">📍 Patio</button>
+          <button class="nav-item" data-view="andenes">🚚 Andenes</button>
+          <button class="nav-item" data-view="tareas">📋 Tareas</button>
+          <button class="nav-item" data-view="chat">💬 Chat</button>
+          <button class="nav-item" data-view="presencia">👥 Presencia</button>
+          <button class="nav-item" data-view="auditlog">📊 Auditoría</button>
+          <button class="nav-item" data-view="config">⚙️ Configuración</button>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+        <!-- Patio -->
+        <section id="view-patio" class="view" style="display: none;">
+          <h2>Patio</h2>
+          <div id="patio-content"><!-- Contenido renderizado por renderTareas() --></div>
+        </section>
+
+        <!-- Andenes -->
+        <section id="view-andenes" class="view" style="display: none;">
+          <h2>Andenes</h2>
+          <div id="andenes-content"><!-- Contenido renderizado por renderAndenes() --></div>
+        </section>
+
+        <!-- Tareas -->
+        <section id="view-tareas" class="view" style="display: none;">
+          <h2>Tareas</h2>
+          <div id="tareas-content"><!-- Contenido renderizado por renderTareas() --></div>
+        </section>
+
+        <!-- Chat -->
+        <section id="view-chat" class="view" style="display: none;">
+          <h2>Chat</h2>
+          <div id="chat-content"><!-- Contenido renderizado por renderChat() --></div>
+        </section>
+
+        <!-- Presencia -->
+        <section id="view-presencia" class="view" style="display: none;">
+          <h2>Presencia Online</h2>
+          <div id="presencia-content"><!-- Contenido renderizado por renderPresence() --></div>
+        </section>
+
+        <!-- Auditoría -->
+        <section id="view-auditlog" class="view" style="display: none;">
+          <h2>Auditoría</h2>
+          <div id="auditlog-content"><!-- Contenido renderizado por renderAuditLog() --></div>
+        </section>
+
+        <!-- Configuración -->
+        <section id="view-config" class="view" style="display: none;">
+          <h2>Configuración</h2>
+          <div id="config-content">
+            <label>Tema: <select id="theme-select">
+              <option value="light">Claro</option>
+              <option value="dark">Oscuro</option>
+            </select></label>
+            <label><input type="checkbox" id="sound-toggle" /> Sonido habilitado</label>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MÓDULOS (en orden de dependencia)
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- 1. Constantes -->
+  <script src="./constants.js" type="module"></script>
+
+  <!-- 2. Firebase -->
+  <script src="./firebase.js" type="module"></script>
+
+  <!-- 3. Estado Global -->
+  <script src="./state.js" type="module"></script>
+
+  <!-- 4. Autenticación -->
+  <script src="./auth.js" type="module"></script>
+
+  <!-- 5. Capa de Abstracción DB -->
+  <script src="./db.js" type="module"></script>
+
+  <!-- 6. Operaciones Firestore -->
+  <script src="./firestore.js" type="module"></script>
+
+  <!-- 7. Listeners Real-time -->
+  <script src="./realtime.js" type="module"></script>
+
+  <!-- 8. Presencia -->
+  <script src="./presence.js" type="module"></script>
+
+  <!-- 9. Roles y Permisos -->
+  <script src="./roles.js" type="module"></script>
+
+  <!-- 10. UI (render functions) -->
+  <script src="./ui.js" type="module"></script>
+
+  <!-- 11. App (entry point - debe ir al final) -->
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

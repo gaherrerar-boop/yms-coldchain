@@ -1,0 +1,297 @@
+/**
+ * Firestore Security Rules — YMS Agrosuper
+ *
+ * REGLAS POR ROL:
+ * - administrador: acceso total (lectura + escritura)
+ * - supervisor: su CD + asignación de tareas + lectura de audit_log
+ * - guardia: crea ingresos/salidas + lectura su CD
+ * - patio: acepta y ejecuta movimientos + lectura su CD
+ * - anden: confirma recepción/carga + lectura su CD
+ * - visualizador: lectura solo su CD
+ *
+ * PRINCIPIOS:
+ * 1. No autenticado: acceso denegado
+ * 2. Autenticado: acceso según rol + CD
+ * 3. Escritura en audit_log siempre registrada
+ * 4. Timestamps servidor no modificables por cliente
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════════
+    // HELPERS / FUNCIONES
+    // ═══════════════════════════════════════════════════════════════
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'administrador';
+    }
+
+    function isSupervisor() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'supervisor';
+    }
+
+    function isGuardia() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'guardia';
+    }
+
+    function isPatio() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'patio';
+    }
+
+    function isAnden() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'anden';
+    }
+
+    function isVisualizador() {
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol == 'visualizador';
+    }
+
+    function getUserCD() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.cd;
+    }
+
+    function canAccessCD(cd) {
+      return isAdmin() || getUserCD() == cd;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: users
+    // ═══════════════════════════════════════════════════════════════
+
+    match /users/{userId} {
+      // Lectura: usuario propio o admin
+      allow read: if request.auth.uid == userId || isAdmin();
+
+      // Escritura: admin o usuario propio (solo algunos campos)
+      allow update: if isAdmin() || (request.auth.uid == userId &&
+                                     !request.resource.data.rol.changed &&
+                                     !request.resource.data.cd.changed);
+
+      // Crear: solo admin (crear usuarios)
+      allow create: if isAdmin();
+
+      // Borrar: solo admin
+      allow delete: if isAdmin();
+
+      // Presence sub-colección
+      match /presence/{presenceDoc} {
+        allow read: if canAccessCD(get(/databases/$(database)/documents/users/$(userId)).data.cd);
+        allow write: if request.auth.uid == userId;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: yard_tasks
+    // ═══════════════════════════════════════════════════════════════
+
+    match /yard_tasks/{taskId} {
+      // Lectura: si tienes acceso al CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: guardia, patio, anden, supervisor, admin
+      allow create: if (isGuardia() || isPatio() || isAnden() || isSupervisor() || isAdmin()) &&
+                       canAccessCD(request.resource.data.cd) &&
+                       request.resource.data.keys().hasAll(['tipo', 'estado', 'cd', 'creadoPor', 'createdAt']);
+
+      // Actualizar:
+      // - Admin: todo
+      // - Supervisor: estado, asignación
+      // - Patio/Anden: estado si está asignado a ellos
+      // - Guardia: solo su creadas
+      allow update: if isAdmin() ||
+                       (isSupervisor() && canAccessCD(resource.data.cd) &&
+                        (request.resource.data.estado != resource.data.estado ||
+                         request.resource.data.asignadoA != resource.data.asignadoA)) ||
+                       ((isPatio() || isAnden()) && canAccessCD(resource.data.cd) &&
+                        resource.data.asignadoA == request.auth.uid) ||
+                       (isGuardia() && resource.data.creadoPor == request.auth.uid);
+
+      // Borrar: solo admin o creador (si está pendiente)
+      allow delete: if isAdmin() || (resource.data.creadoPor == request.auth.uid &&
+                                     resource.data.estado == 'pendiente');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: yard_visits
+    // ═══════════════════════════════════════════════════════════════
+
+    match /yard_visits/{visitId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: guardia (ingreso/salida)
+      allow create: if isGuardia() && canAccessCD(request.resource.data.cd) &&
+                       request.resource.data.keys().hasAll(['patente', 'tipo', 'cd', 'createdAt']);
+
+      // Actualizar: guardia (quien creó), patio/anden (estado)
+      allow update: if (isGuardia() && resource.data.tipo == 'salida') ||
+                       ((isPatio() || isAnden()) && canAccessCD(resource.data.cd)) ||
+                       isAdmin();
+
+      // Borrar: solo admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: docks
+    // ═══════════════════════════════════════════════════════════════
+
+    match /docks/{dockId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: solo admin (setup inicial)
+      allow create: if isAdmin();
+
+      // Actualizar: patio/anden (estado), admin (todo)
+      allow update: if (isPatio() || isAnden() || isSupervisor()) && canAccessCD(resource.data.cd) ||
+                       isAdmin();
+
+      // Borrar: solo admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: queue_tickets
+    // ═══════════════════════════════════════════════════════════════
+
+    match /queue_tickets/{ticketId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd) || isAdmin();
+
+      // Crear: sistema (patio/anden)
+      allow create: if (isPatio() || isAnden() || isGuardia()) && canAccessCD(request.resource.data.cd) ||
+                       isAdmin();
+
+      // Actualizar: patio/anden/supervisor
+      allow update: if (isPatio() || isAnden() || isSupervisor()) && canAccessCD(resource.data.cd) ||
+                       isAdmin();
+
+      // Borrar: admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: carriers (transportistas)
+    // ═══════════════════════════════════════════════════════════════
+
+    match /carriers/{carrierId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: admin
+      allow create: if isAdmin();
+
+      // Actualizar: admin, supervisor
+      allow update: if (isSupervisor() && canAccessCD(resource.data.cd)) ||
+                       isAdmin();
+
+      // Borrar: admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: plants (plantas)
+    // ═══════════════════════════════════════════════════════════════
+
+    match /plants/{plantId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: admin
+      allow create: if isAdmin();
+
+      // Actualizar: admin, supervisor
+      allow update: if (isSupervisor() && canAccessCD(resource.data.cd)) ||
+                       isAdmin();
+
+      // Borrar: admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: audit_log
+    // ═══════════════════════════════════════════════════════════════
+
+    match /audit_log/{logId} {
+      // Lectura: administrador, supervisor su CD, visualizador su CD
+      allow read: if isAdmin() ||
+                     (isSupervisor() && canAccessCD(resource.data.cd)) ||
+                     (isVisualizador() && canAccessCD(resource.data.cd));
+
+      // Crear: cualquiera autenticado (app lo hace automático)
+      allow create: if isAuthenticated() &&
+                       request.resource.data.keys().hasAll(['accion', 'userId', 'cd', 'createdAt']);
+
+      // Actualizar: NO (immutable)
+      allow update: if false;
+
+      // Borrar: solo admin (raramente)
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: chat
+    // ═══════════════════════════════════════════════════════════════
+
+    match /chat/{messageId} {
+      // Lectura: participante o admin
+      allow read: if request.auth.uid == resource.data.from ||
+                     request.auth.uid == resource.data.to ||
+                     isAdmin();
+
+      // Crear: cualquiera autenticado
+      allow create: if isAuthenticated() &&
+                       request.resource.data.from == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['from', 'to', 'mensaje', 'cd', 'createdAt']);
+
+      // Actualizar: marcar como leído
+      allow update: if request.auth.uid == resource.data.to &&
+                       request.resource.data.read != resource.data.read;
+
+      // Borrar: creador o admin
+      allow delete: if request.auth.uid == resource.data.from ||
+                       isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLECCIÓN: return_authorizations (devoluciones)
+    // ═══════════════════════════════════════════════════════════════
+
+    match /return_authorizations/{authId} {
+      // Lectura: CD
+      allow read: if canAccessCD(resource.data.cd);
+
+      // Crear: guardia
+      allow create: if isGuardia() && canAccessCD(request.resource.data.cd) ||
+                       isAdmin();
+
+      // Actualizar: guardía, patio, anden
+      allow update: if (isGuardia() || isPatio() || isAnden()) && canAccessCD(resource.data.cd) ||
+                       isAdmin();
+
+      // Borrar: admin
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // CATCH-ALL: Denegar todo lo demás
+    // ═══════════════════════════════════════════════════════════════
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
