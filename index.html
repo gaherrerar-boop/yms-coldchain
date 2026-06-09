@@ -5492,14 +5492,15 @@ async function loadQueue() {
 async function loadTasks() {
   try {
     const ready = await ensureFirebaseReady();
-    if (!ready || !sb) {
+    const sbInstance = window.sb || sb;  // Usar window.sb (desde main.js) o fallback a variable local
+    if (!ready || !sbInstance) {
       console.warn('[YMS] Firebase no disponible para loadTasks');
       renderTareas();
       return;
     }
 
     console.log('[YMS]  Cargando tareas...');
-    const { data, error } = await sb.from('yard_tasks').select(
+    const { data, error } = await sbInstance.from('yard_tasks').select(
       '*'
     ).order('hora_creacion', { ascending: false }).limit(60);
 
@@ -14085,6 +14086,24 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script type="module" src="/src/main.js"></script>
+
+<!-- Sincronizar variable local sb desde window.sb después de que main.js se cargue -->
+<script>
+  // Esperar a que main.js exponga window.sb y sincronizar con variable local sb
+  let syncAttempts = 0;
+  const syncSb = setInterval(() => {
+    if (window.sb && syncAttempts < 50) {
+      sb = window.sb;  // Asignar window.sb a la variable local sb del script inline
+      console.log('[YMS] ✅ Variable sb sincronizado desde window.sb');
+      clearInterval(syncSb);
+    }
+    syncAttempts++;
+    if (syncAttempts >= 50) {
+      console.warn('[YMS] ⚠️  No se pudo sincronizar sb después de 50 intentos');
+      clearInterval(syncSb);
+    }
+  }, 50);
+</script>
 </body>
 </html>
 /* Force redeploy - Tue May 26 08:30:40 HSP 2026 */
