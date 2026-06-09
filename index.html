@@ -1578,7 +1578,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       <input type="email" id="inp-email" placeholder="usuario@agrosuper.cl" autocomplete="username">
     </div>
     <div class="lf">
-      <label>CONTRASEA</label>
+      <label>Contraseña</label>
       <input type="password" id="inp-pass" placeholder="" autocomplete="current-password">
     </div>
     <div id="login-err"></div>
@@ -1610,7 +1610,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   </div>
   <div id="btn-sound" onclick="toggleSound()" data-tip="Sonidos sistema"> SON</div>
   <button class="theme-btn admin-only" onclick="showView('config_cd')" title="Configurar Centros de Distribucin" style="border-color:var(--c-accent);color:var(--c-accent);"> CD</button>
-  <button class="theme-btn" onclick="openChangePasswordModal()" title="Cambiar contrasea" style="border-color:var(--c-info);color:var(--c-info);"> PASS</button>
+  <button class="theme-btn" onclick="openChangePasswordModal()" title="Cambiar Contraseña" style="border-color:var(--c-info);color:var(--c-info);"> PASS</button>
   <button id="btn-logout" onclick="logout()">[ SALIR ]</button>
 </div>
 
@@ -1632,7 +1632,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       <button class="nb" onclick="showView('patio')"><span class="ni"></span><span class="nl">Patio / Playa</span></button>
       <button class="nb" onclick="showView('wave')"><span class="ni"></span><span class="nl">Wave / Plan</span></button>
       <button class="nb" onclick="showView('citas')"><span class="ni"></span><span class="nl">Citas<span id="citas-badge" class="badge-nav"></span></span></button>
-      <button class="nb" onclick="showView('turno')"><span class="ni"></span><span class="nl">Turnomtico</span></button>
+      <button class="nb" onclick="showView('turno')"><span class="ni"></span><span class="nl">Automático</span></button>
       <button class="nb" onclick="showView('tareas')"><span class="ni"></span><span class="nl">Tareas</span></button>
     </div>
     <div class="sb-section">
@@ -1673,7 +1673,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
         <div class="kpi-row" id="kpi-grid">
           <div class="kpi info"><div class="kpi-lbl">Andenes Libres</div><div class="kpi-val" id="kpi-docks-free"></div><div class="kpi-sub">de <span id="kpi-docks-total"></span> totales</div></div>
           <div class="kpi warn"><div class="kpi-lbl">En Cola</div><div class="kpi-val" id="kpi-queue"></div><div class="kpi-sub">tickets activos</div></div>
-          <div class="kpi ok"><div class="kpi-lbl">Camiones Patio</div><div class="kpi-val" id="kpi-trucks"></div><div class="kpi-sub">en instalaciones</div></div>
+          <div class="kpi ok"><div class="kpi-lbl">Camiónes Patio</div><div class="kpi-val" id="kpi-trucks"></div><div class="kpi-sub">en instalaciones</div></div>
           <div class="kpi warn"><div class="kpi-lbl">Tareas Pendientes</div><div class="kpi-val" id="kpi-tasks"></div><div class="kpi-sub">sin asignar</div></div>
           <div class="kpi err"><div class="kpi-lbl">Alertas Activas</div><div class="kpi-val" id="kpi-alerts"></div><div class="kpi-sub">requieren atencin</div></div>
           <div class="kpi info"><div class="kpi-lbl">Dwell Promedio</div><div class="kpi-val" id="kpi-dwell"></div><div class="kpi-sub">minutos hoy</div></div>
@@ -1686,7 +1686,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
             <div class="dock-map" id="dock-map-dash"></div>
           </div>
           <div class="panel">
-            <div class="ph">Cola Turnomtico <span class="cnt" id="queue-count-hdr"></span></div>
+            <div class="ph">Cola Automático <span class="cnt" id="queue-count-hdr"></span></div>
             <div class="pb" id="queue-dash"></div>
           </div>
           <div class="panel">
@@ -1746,7 +1746,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
         </div>
         <div class="pad8">
           <div class="panel">
-            <div class="ph">CAMIONES EN PATIO  ACTIVOS</div>
+            <div class="ph">CamiónES EN PATIO  ACTIVOS</div>
             <div class="tbl-wrap">
               <table><thead><tr><th>PATENTE</th><th>TIPO</th><th>PLANTA/RUTA</th><th>EMPRESA</th><th>INGRESO</th><th>UBICACIN</th><th>DWELL</th><th>ESTADO</th><th>ACC.</th></tr></thead>
               <tbody id="guard-trucks-tbl"></tbody></table>
@@ -1768,7 +1768,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <option value="busy">Ocupados</option>
           <option value="blocked">Bloqueados</option>
         </select>
-        <button class="btn admin-only" onclick="openNewDock()" style="font-size: 8px;">+ Andn</button>
+        <button class="btn admin-only" onclick="openNewDock()" style="font-size: 8px;">+ Andén</button>
         <button class="btn" onclick="renderAndenes()" style="font-size: 10px;padding:4px 10px;"></button>
       </div>
       <!-- KPIs -->
@@ -1781,17 +1781,17 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       </div>
       <!-- Cards grid -->
       <div class="vb pad8" id="and-cards-container" style="padding:12px;"></div>
-      <!-- Panel En Espera de Andn -->
+      <!-- Panel En Espera de Andén -->
       <div id="and-espera-container" style="padding:0 12px 8px;"></div>
-      <!-- Cola Turnomtico -->
+      <!-- Cola Automático -->
       <div id="and-queue-container" style="padding:0 12px 12px;"></div>
-      <!-- Asignacin manual (hidden, solo admin) -->
+      <!-- Asignación manual (hidden, solo admin) -->
       <div id="and-asign-panel" class="pad8" style="display:none;">
         <div class="panel">
-          <div class="ph">Asignacin Manual de Andn</div>
+          <div class="ph">Asignación Manual de Andén</div>
           <div class="pb">
             <div class="fr">
-              <div class="fg"><label>Andn</label><select id="asig-anden"></select></div>
+              <div class="fg"><label>Andén</label><select id="asig-anden"></select></div>
               <div class="fg"><label>Camin en espera</label><select id="asig-visita"></select></div>
               <button class="btn btn-ok" onclick="asignarAndn()" style="margin-top:16px;">Asignar</button>
             </div>
@@ -1929,7 +1929,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
                   <option value="cancelada">Cancelada</option>
                 </select>
               </div>
-              <div class="fg" style="min-width:120px;"><label>Andn</label><select id="cita-filter-anden" onchange="renderCitas()"><option value="">Todos</option></select></div>
+              <div class="fg" style="min-width:120px;"><label>Andén</label><select id="cita-filter-anden" onchange="renderCitas()"><option value="">Todos</option></select></div>
               <div style="display:flex;gap:20px;font-size: 8px;flex-wrap:wrap;">
                 <div><div class="c-dim fz10">PROGRAMADAS</div><div class="c-bright fw" id="cita-k-prog"></div></div>
                 <div><div class="c-dim fz10">CONFIRMADAS</div><div class="c-ok fw" id="cita-k-conf"></div></div>
@@ -1945,7 +1945,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <div class="panel">
             <div class="ph">AGENDA DE CITAS <span class="cnt" id="cita-count">0</span></div>
             <div class="tbl-wrap">
-              <table><thead><tr><th>HORA</th><th>VENTANA</th><th>ANDN</th><th>PATENTE</th><th>EMPRESA</th><th>TIPO OP.</th><th>CARGA</th><th>PALLETS</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
+              <table><thead><tr><th>HORA</th><th>VENTANA</th><th>Andén</th><th>PATENTE</th><th>EMPRESA</th><th>TIPO OP.</th><th>CARGA</th><th>PALLETS</th><th>ESTADO</th><th>ACCIONES</th></tr></thead>
               <tbody id="citas-tbl"></tbody></table>
             </div>
           </div>
@@ -1953,24 +1953,24 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       </div>
     </div>
 
-    <!--  TURNOMTICO  -->
+    <!--  Automático  -->
     <div id="view-turno" class="view">
       <div class="view-hdr">
-        <h2>Turnomtico de Andn</h2>
+        <h2>Automático de Andén</h2>
         <div class="sp"></div>
         <button class="btn btn-ok" onclick="refreshQueue()"> ACTUALIZAR</button>
       </div>
       <div class="vb">
         <div class="grid2" style="padding:8px;gap:8px;">
           <div class="panel">
-            <div class="ph">COLA ACTIVA  ESPERANDO ANDN <span class="cnt" id="queue-active-count">0</span></div>
+            <div class="ph">COLA ACTIVA  ESPERANDO Andén <span class="cnt" id="queue-active-count">0</span></div>
             <div class="pb" id="queue-list"></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div class="panel">
               <div class="ph">HISTORIAL COLA  HOY</div>
               <div class="tbl-wrap">
-                <table><thead><tr><th>#</th><th>PATENTE</th><th>TIPO</th><th>ESPERA</th><th>ESTADO</th><th>ANDN</th></tr></thead>
+                <table><thead><tr><th>#</th><th>PATENTE</th><th>TIPO</th><th>ESPERA</th><th>ESTADO</th><th>Andén</th></tr></thead>
                 <tbody id="queue-history-tbl"></tbody></table>
               </div>
             </div>
@@ -2095,7 +2095,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
         <div class="panel">
           <div class="ph">REGISTRO COMPLETO DE VISITAS</div>
           <div class="tbl-wrap">
-            <table><thead><tr><th>INGRESO</th><th>SALIDA</th><th>PATENTE</th><th>TIPO</th><th>PLANTA/RUTA</th><th>EMPRESA</th><th>ANDN</th><th>DWELL</th><th>ESTADO</th></tr></thead>
+            <table><thead><tr><th>INGRESO</th><th>SALIDA</th><th>PATENTE</th><th>TIPO</th><th>PLANTA/RUTA</th><th>EMPRESA</th><th>Andén</th><th>DWELL</th><th>ESTADO</th></tr></thead>
             <tbody id="trz-tbl"></tbody></table>
           </div>
         </div>
@@ -2296,14 +2296,14 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
               <div class="tbl-wrap"><table><thead><tr><th>CD.</th><th>TIPO</th><th>OPERACIN</th><th>PLANTAS</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody id="cfg-docks-tbl"></tbody></table></div>
             </div>
             <div class="panel" style="min-width:260px;">
-              <div class="ph" id="cfg-dock-form-title">+ NUEVO ANDN</div>
+              <div class="ph" id="cfg-dock-form-title">+ NUEVO Andén</div>
               <div class="pb">
                 <input type="hidden" id="edit-dock-id">
                 <div class="fg mb6"><label>Cdigo *</label><input type="text" id="cfg-dock-code" placeholder="A01, B02..."></div>
                 <div class="fg mb6"><label>Tipo *</label><select id="cfg-dock-type"><option value="frigorifico">Frigorfico</option><option value="seco">Seco</option><option value="mixto">Mixto</option><option value="devolucion">Devolucin</option></select></div>
                 <div class="fg mb6"><label>Operacin permitida</label><select id="cfg-dock-op"><option value="descarga">Descarga</option><option value="carga">Carga</option><option value="descarga_carga">Descarga + Carga</option><option value="devolucion">Devolucin</option></select></div>
                 <div class="fg mb6"><label>Plantas compatibles</label><input type="text" id="cfg-dock-plantas" placeholder="Rancagua, Quilicura... (o TODAS)"></div>
-                <div class="fg mb6"><label>Tiempo mx. en andn (min)</label><input type="number" id="cfg-dock-maxtime" value="120" min="10" max="480"></div>
+                <div class="fg mb6"><label>Tiempo mx. en Andén (min)</label><input type="number" id="cfg-dock-maxtime" value="120" min="10" max="480"></div>
                 <div class="fg mb6"><label>Estado inicial</label><select id="cfg-dock-status"><option value="free">Libre</option><option value="blocked">Bloqueado</option></select></div>
                 <div style="display:flex;gap:6px;"><button class="btn btn-ok" style="flex:1;" onclick="saveAnden()">GUARDAR</button><button class="btn" onclick="clearDockForm()">LIMPIAR</button></div>
               </div>
@@ -2318,7 +2318,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
               <div class="ph">TRANSPORTES REGISTRADOS <span class="cnt" id="cfg-carrier-count">0</span>
                 <input type="text" id="carrier-search" placeholder="Buscar patente/nombre..." onkeyup="renderConfigCarriers()" style="margin-left:8px;padding:1px 6px;font-size:10px;width:160px;">
               </div>
-              <div class="tbl-wrap"><table><thead><tr><th>PATENTE</th><th>CONDUCTOR</th><th>TIPO</th><th>RUTA</th><th>CD ASIGNADO</th><th>ANDN</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody id="carriers-tbl"></tbody></table></div>
+              <div class="tbl-wrap"><table><thead><tr><th>PATENTE</th><th>CONDUCTOR</th><th>TIPO</th><th>RUTA</th><th>CD ASIGNADO</th><th>Andén</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody id="carriers-tbl"></tbody></table></div>
             </div>
             <div class="panel" style="min-width:240px;">
               <div class="ph" style="justify-content:space-between;" id="cfg-carrier-form-title">+ NUEVO TRANSPORTE
@@ -2328,7 +2328,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
                 <input type="hidden" id="edit-carrier-id">
                 <div class="fg mb6"><label>Patente *</label><input type="text" id="inp-carrier-code" placeholder="Ej: BFWX20" style="text-transform:uppercase;"></div>
                 <div class="fg mb6"><label>Conductor / Nombre *</label><input type="text" id="inp-carrier-nombre" placeholder="Nombre completo"></div>
-                <div class="fg mb6"><label>Tipo vehculo</label><select id="inp-carrier-tipo"><option value="Camin">Camin</option><option value="Camioneta">Camioneta</option></select></div>
+                <div class="fg mb6"><label>Tipo vehculo</label><select id="inp-carrier-tipo"><option value="Camin">Camin</option><option value="Camióneta">Camióneta</option></select></div>
                 <div class="fg mb6"><label>N Ruta</label><input type="text" id="inp-carrier-ruta" placeholder="Vxxxx"></div>
                 <div class="fg mb6"><label>Estado</label><select id="inp-carrier-estado"><option value="">Activo</option><option value="EN PANNE">EN PANNE</option><option value="BACK UP DE REEMPLAZO">BACK UP REEMPLAZO</option><option value="INACTIVO">INACTIVO</option></select></div>
                 <div class="fg mb6"><label>Centro de Distribucin</label>
@@ -2387,7 +2387,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
                 <input type="hidden" id="edit-user-id">
                 <div class="fg mb6"><label>Nombre Completo *</label><input type="text" id="inp-user-nombre" placeholder="Juan Prez Gonzlez"></div>
                 <div class="fg mb6"><label>Email / Usuario *</label><input type="email" id="inp-user-email" placeholder="juan@agrosuper.cl"></div>
-                <div class="fg mb6"><label>Contrasea Inicial *</label><input type="password" id="inp-user-pass" placeholder="Mnimo 8 caracteres"></div>
+                <div class="fg mb6"><label>Contraseña Inicial *</label><input type="password" id="inp-user-pass" placeholder="Mnimo 8 caracteres"></div>
                 <div class="fg mb6"><label>Rol *</label>
                   <select id="inp-user-rol" onchange="checkRolLink()">
                     <option value="guardia">Guardia</option>
@@ -2433,7 +2433,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
               <button class="btn btn-ok" style="font-size:9px;padding:2px 8px;" onclick="copyCreatedLink()">COPIAR</button>
             </div>
             <div class="al-note" id="created-link-cred" style="margin-top:6px;"></div>
-            <div class="al-note">Comparta este link con el usuario. Las credenciales son su email y la contrasea configurada.</div>
+            <div class="al-note">Comparta este link con el usuario. Las credenciales son su email y la Contraseña configurada.</div>
           </div>
         </div>
 
@@ -2443,7 +2443,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
             <div class="panel" style="flex:1;min-width:280px;">
               <div class="ph">PARMETROS DE TIEMPO Y SLA</div>
               <div class="pb">
-                <div class="fr"><div class="fg"><label>Espera mn. andn (min)</label><input type="number" id="cfg-sla-min" value="5" min="1" max="60"></div><div class="fg"><label>Espera mx. andn  SLA (min)</label><input type="number" id="cfg-sla-max" value="60" min="10" max="240"></div></div>
+                <div class="fr"><div class="fg"><label>Espera mn. Andén (min)</label><input type="number" id="cfg-sla-min" value="5" min="1" max="60"></div><div class="fg"><label>Espera mx. Andén  SLA (min)</label><input type="number" id="cfg-sla-max" value="60" min="10" max="240"></div></div>
                 <div class="fr"><div class="fg"><label>Dwell mx. en patio (min)</label><input type="number" id="cfg-dwell-max" value="180" min="30" max="720"></div><div class="fg"><label>Aviso dwell prximo (min antes)</label><input type="number" id="cfg-dwell-prox" value="30" min="5" max="60"></div></div>
                 <div class="fr"><div class="fg"><label>SLA tarea patio (min)</label><input type="number" id="cfg-task-sla" value="20" min="5" max="120"></div><div class="fg"><label>Countdown Uber (seg)</label><input type="number" id="cfg-uber-countdown" value="30" min="10" max="120"></div></div>
                 <div class="fr"><div class="fg"><label>Sonidos del sistema</label><select id="cfg-sound"><option value="1">ACTIVADOS</option><option value="0">DESACTIVADOS</option></select></div><div class="fg"><label>Tema visual</label><select id="cfg-tema" onchange="setTheme(this.value)"><option value="default">AS400 Classic</option><option value="green">Green Terminal</option><option value="amber">Amber Terminal</option><option value="light">Light / Claro</option></select></div></div>
@@ -2460,7 +2460,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
                     <label class="c-accent"><input type="checkbox" id="turno-noche"> Turno Noche (22:00-06:00)</label>
                   </div>
                 </div>
-                <div class="fg mb6"><label>Cap. mx. cola turnomtico</label><input type="number" id="cfg-queue-max" value="20" min="5" max="100"></div>
+                <div class="fg mb6"><label>Cap. mx. cola Automático</label><input type="number" id="cfg-queue-max" value="20" min="5" max="100"></div>
                 <div class="fg mb6"><label>Modo prioridad cola</label><select id="cfg-queue-mode"><option value="fifo">FIFO  Primero en llegar</option><option value="prioridad">Por prioridad manual</option><option value="tipo">Por tipo de operacin</option></select></div>
                 <div class="fg mb6"><label>Escalar tarea rechazada a</label><select id="cfg-escalacion"><option value="supervisor_andenes">Supervisor Andenes</option><option value="administrativo_ops">Administrativo Ops</option><option value="administrador">Administrador</option></select></div>
                 <button class="btn btn-ok" style="width:100%;margin-top:4px;" onclick="saveConfig()">GUARDAR</button>
@@ -2485,7 +2485,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
             </div>
             <div class="panel" style="flex:1;min-width:280px;">
               <div class="ph">ANDENES HABILITADOS DEVOLUCIN</div>
-              <div class="tbl-wrap"><table><thead><tr><th>ANDN</th><th>TIPO</th><th>HABILITADO</th></tr></thead><tbody id="cfg-devol-docks-tbl"></tbody></table></div>
+              <div class="tbl-wrap"><table><thead><tr><th>Andén</th><th>TIPO</th><th>HABILITADO</th></tr></thead><tbody id="cfg-devol-docks-tbl"></tbody></table></div>
             </div>
           </div>
         </div>
@@ -2495,7 +2495,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <div class="gap8" style="align-items:flex-start;">
             <div class="panel" style="flex:2;min-width:320px;">
               <div class="ph" style="justify-content:space-between;">
-                <span>Puntos de Inspeccin</span>
+                <span>Puntos de Inspección</span>
                 <button class="btn btn-ok" style="font-size:10px;padding:2px 10px;" onclick="toggleAddChecklistItemForm()">+ Agregar punto</button>
               </div>
               <div style="padding:4px 8px 8px;font-size: 8px;color:var(--tx-muted);">
@@ -2504,7 +2504,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
               <div id="cfg-checklist-list" style="padding:4px 10px 10px;"></div>
             </div>
             <div class="panel" style="min-width:260px;display:none;" id="cfg-checklist-form-wrap">
-              <div class="ph">Nuevo punto de inspeccin</div>
+              <div class="ph">Nuevo punto de Inspección</div>
               <div class="pb">
                 <div class="fg mb6">
                   <label>Nombre del punto *</label>
@@ -2588,7 +2588,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
             <!-- Andenes del CD -->
             <div class="panel">
               <div class="ph"> ANDENES DEL CD <span class="cnt" id="cd-andenes-count">0</span>
-                <button class="btn" style="font-size:9px;padding:1px 8px;margin-left:auto;" onclick="abrirModalNuevoAnden()">+ ANDN</button>
+                <button class="btn" style="font-size:9px;padding:1px 8px;margin-left:auto;" onclick="abrirModalNuevoAnden()">+ Andén</button>
               </div>
               <div class="tbl-wrap"><table><thead><tr>
                 <th>CDIGO</th><th>TIPO</th><th>OPERACIN</th><th>MAX(min)</th><th>ESTADO</th><th>ACC.</th>
@@ -2634,7 +2634,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
     <div id="view-config_slots" class="view admin-only">
       <div class="view-hdr">
         <h2>Configuracin Slots  Playa de Estacionamiento</h2>
-        <span class="vsub">Administrador  Asignacin y reglas por slot</span>
+        <span class="vsub">Administrador  Asignación y reglas por slot</span>
         <div class="sp"></div>
         <button class="btn btn-ok" onclick="abrirModalNuevoSlot()">+ NUEVO SLOT</button>
         <button class="btn" onclick="renderConfigSlots()"> ACTUALIZAR</button>
@@ -2702,7 +2702,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 <!-- Modal Ingreso -->
 <div id="modal-ingreso" class="modal-overlay" style="display:none;">
   <div class="modal-box">
-    <div class="mh"><span class="mh-title"> REGISTRO DE INGRESO</span><button class="btn btn-err" onclick="closeModal('modal-ingreso')"></button></div>
+    <div class="mh"><span class="mh-title"> REGISTRO DE INGRESO</span><button class="btn btn-err" onclick="closeModal('modal-ingreso')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div style="display:flex;gap:6px;margin-bottom:12px;">
         <button id="btn-tipo-primaria" class="btn btn-ok" onclick="setTipoIngreso('primaria')">PRIMARIA</button>
@@ -2772,7 +2772,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
         </div>
         <div class="fr"><div class="fg"><label>Observaciones</label><textarea id="ing2-obs" rows="2" placeholder="Observaciones..."></textarea></div></div>
       </div>
-      <div id="ing-andn-info" style="margin-top:8px;font-size: 8px;color:var(--c-ok);min-height:18px;"></div>
+      <div id="ing-Andén-info" style="margin-top:8px;font-size: 8px;color:var(--c-ok);min-height:18px;"></div>
     </div>
     <div class="mf"><button class="btn" onclick="closeModal('modal-ingreso')">CANCELAR</button><button class="btn btn-ok" onclick="confirmarIngreso()">[ CONFIRMAR INGRESO ]</button></div>
   </div>
@@ -2781,7 +2781,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 <!-- Modal Salida -->
 <div id="modal-salida" class="modal-overlay" style="display:none;">
   <div class="modal-box">
-    <div class="mh"><span class="mh-title"> REGISTRO DE SALIDA</span><button class="btn btn-err" onclick="closeModal('modal-salida')"></button></div>
+    <div class="mh"><span class="mh-title"> REGISTRO DE SALIDA</span><button class="btn btn-err" onclick="closeModal('modal-salida')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div class="fr"><div class="fg"><label>Seleccionar Camin en Patio</label><select id="sal-truck"></select></div></div>
       <div id="sal-truck-info" style="font-size: 8px;color:var(--c-dim);padding:6px;border:1px solid var(--border);min-height:40px;margin-top:4px;"></div>
@@ -2798,7 +2798,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   <div class="modal-box" style="max-width:600px;">
     <div class="mh">
       <span class="mh-title">+ NUEVA TAREA  PATIO</span>
-      <button class="btn btn-err" onclick="closeModal('modal-task')"></button>
+      <button class="btn btn-err" onclick="closeModal('modal-task')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <div class="fr">
@@ -2806,12 +2806,12 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <label>Tipo de Movimiento *</label>
           <select id="task-tipo" onchange="onTaskTipoChange()">
             <option value=""> Seleccionar tipo </option>
-            <optgroup label=" INGRESO A ANDN ">
-              <option value="mover_anden"> Estac. Carros Vacos  Andn</option>
+            <optgroup label=" INGRESO A Andén ">
+              <option value="mover_anden"> Estac. Carros Vacos  Andén</option>
             </optgroup>
-            <optgroup label=" SALIDA DE ANDN ">
-              <option value="retirar_anden"> Andn  Carros Cargados</option>
-              <option value="anden_a_carros_vacios"> Andn  Estac. Carros Vacos</option>
+            <optgroup label=" SALIDA DE Andén ">
+              <option value="retirar_anden"> Andén  Carros Cargados</option>
+              <option value="anden_a_carros_vacios"> Andén  Estac. Carros Vacos</option>
             </optgroup>
             <optgroup label=" OTROS MOVIMIENTOS ">
               <option value="mover_lavado">  Zona Lavado</option>
@@ -2839,7 +2839,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           </select>
         </div>
         <div class="fg" style="max-width:160px;display:none;" id="task-anden-dest-wrap">
-          <label>Andn destino</label>
+          <label>Andén destino</label>
           <select id="task-anden-dest"><option value=""> Auto </option></select>
         </div>
       </div>
@@ -2849,22 +2849,22 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <label>Zona Origen</label>
           <select id="task-origen" style="color:var(--c-warn);">
             <option value="playa">Playa Estacionamiento</option>
-            <option value="anden">Andn</option>
+            <option value="anden">Andén</option>
             <option value="carros_cargados">Carros Cargados</option>
             <option value="zona_lavado">Zona Lavado</option>
-            <option value="espera_anden">Espera Andn</option>
+            <option value="espera_anden">Espera Andén</option>
             <option value="gate">Gate</option>
           </select>
         </div>
         <div class="fg">
           <label>Zona Destino</label>
           <select id="task-destino" style="color:var(--c-ok);">
-            <option value="anden">Andn</option>
+            <option value="anden">Andén</option>
             <option value="estacionamiento_carros_vacios">Estacionamiento Carros Vacos</option>
             <option value="carros_cargados">Carros Cargados</option>
             <option value="zona_lavado">Zona Lavado</option>
             <option value="playa">Playa Estacionamiento</option>
-            <option value="espera_anden">Espera Andn</option>
+            <option value="espera_anden">Espera Andén</option>
             <option value="gate_salida">Gate Salida</option>
           </select>
         </div>
@@ -2889,7 +2889,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 <!-- Modal Devolucin -->
 <div id="modal-devol" class="modal-overlay" style="display:none;">
   <div class="modal-box">
-    <div class="mh"><span class="mh-title" id="devol-modal-title">DEVOLUCIN</span><button class="btn btn-err" onclick="closeModal('modal-devol')"></button></div>
+    <div class="mh"><span class="mh-title" id="devol-modal-title">DEVOLUCIN</span><button class="btn btn-err" onclick="closeModal('modal-devol')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div id="devol-info" style="font-size: 8px;margin-bottom:10px;"></div>
       <div class="fr"><div class="fg"><label>Motivo</label><select id="devol-motivo"><option value="producto_daado">Producto daado</option><option value="temperatura_fuera_rango">Temperatura fuera de rango</option><option value="rechazo_cliente">Rechazo de cliente</option><option value="error_pedido">Error en pedido</option><option value="faltante">Faltante de mercadera</option><option value="otro">Otro</option></select></div></div>
@@ -2900,22 +2900,22 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   </div>
 </div>
 
-<!-- Modal Nuevo Andn -->
+<!-- Modal Nuevo Andén -->
 <div id="modal-dock" class="modal-overlay" style="display:none;">
   <div class="modal-box">
-    <div class="mh"><span class="mh-title">+ NUEVO ANDN</span><button class="btn btn-err" onclick="closeModal('modal-dock')"></button></div>
+    <div class="mh"><span class="mh-title">+ NUEVO Andén</span><button class="btn btn-err" onclick="closeModal('modal-dock')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div class="fr"><div class="fg"><label>Cdigo</label><input type="text" id="dock-code" placeholder="A01"></div><div class="fg"><label>Tipo</label><select id="dock-type"><option value="frigorifico">Frigorfico</option><option value="seco">Seco</option><option value="mixto">Mixto</option></select></div></div>
       <div class="fr"><div class="fg"><label>Operacin Permitida</label><select id="dock-op"><option value="descarga">Descarga</option><option value="carga">Carga</option><option value="mixta">Mixta</option></select></div><div class="fg"><label>Estado Inicial</label><select id="dock-status"><option value="free">Libre</option><option value="blocked">Bloqueado</option></select></div></div>
     </div>
-    <div class="mf"><button class="btn" onclick="closeModal('modal-dock')">CANCELAR</button><button class="btn btn-ok" onclick="crearAnden()">[ CREAR ANDN ]</button></div>
+    <div class="mf"><button class="btn" onclick="closeModal('modal-dock')">CANCELAR</button><button class="btn btn-ok" onclick="crearAnden()">[ CREAR Andén ]</button></div>
   </div>
 </div>
 
 <!-- Modal Carro -->
 <div id="modal-carro" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="min-width:400px;">
-    <div class="mh"><span class="mh-title">REGISTRAR CARRO CARGADO</span><button class="btn" onclick="closeModal('modal-carro')"></button></div>
+    <div class="mh"><span class="mh-title">REGISTRAR CARRO CARGADO</span><button class="btn" onclick="closeModal('modal-carro')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div class="fr"><div class="fg"><label>Patente / Ruta *</label><select id="carro-patente" onchange="autoFillCarroConductor()"><option value="">-- Seleccionar --</option></select></div><div class="fg"><label>Conductor</label><input type="text" id="carro-conductor" placeholder="Nombre conductor" readonly style="background:var(--bg-bar);"></div></div>
       <div class="fr"><div class="fg"><label>N Ruta</label><input type="text" id="carro-ruta" placeholder="Vxxxx" readonly style="background:var(--bg-bar);"></div><div class="fg"><label>Pallets Cargados *</label><input type="number" id="carro-pallets" min="1" max="33" value="1"></div></div>
@@ -2925,7 +2925,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       </div>
       <div class="fr">
         <div class="fg"><label>Estacionamiento origen</label><select id="carro-slot"><option value="">Sin slot asignado</option></select></div>
-        <div class="fg"><label>Andn destino (plan)</label><select id="carro-anden-destino"><option value="">Sin asignar</option></select></div>
+        <div class="fg"><label>Andén destino (plan)</label><select id="carro-anden-destino"><option value="">Sin asignar</option></select></div>
       </div>
       <div class="fr"><div class="fg"><label>Observacin</label><input type="text" id="carro-obs" placeholder="Opcional..."></div></div>
     </div>
@@ -2969,7 +2969,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 <!--  MODAL IMPORTACIN MASIVA  -->
 <div id="modal-import" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:640px;">
-    <div class="mh"><span class="mh-title" id="import-modal-title"> IMPORTAR MASIVO</span><button class="btn btn-err" onclick="closeModal('modal-import')"></button></div>
+    <div class="mh"><span class="mh-title" id="import-modal-title"> IMPORTAR MASIVO</span><button class="btn btn-err" onclick="closeModal('modal-import')" aria-label="Cerrar">✕</button></div>
     <div class="mb-inner">
       <div style="margin-bottom:12px;font-size: 8px;color:var(--tx-muted);">
         Pegue datos desde Excel (Ctrl+V) o cargue un archivo CSV.<br>
@@ -2992,19 +2992,19 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   </div>
 </div>
 
-<!--  MODAL MOVER VEHCULO DESDE ANDN  -->
+<!--  MODAL MOVER VEHCULO DESDE Andén  -->
 <div id="modal-mover-anden" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:420px;">
     <div class="mh">
-      <span class="mh-title">Mover vehculo desde andn</span>
-      <button class="btn btn-err" onclick="closeModal('modal-mover-anden')"></button>
+      <span class="mh-title">Mover vehculo desde Andén</span>
+      <button class="btn btn-err" onclick="closeModal('modal-mover-anden')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <input type="hidden" id="mra-dock-id">
       <input type="hidden" id="mra-destino">
       <!-- Info del vehculo -->
       <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--tx-muted);margin-bottom:6px;">ANDN <span id="mra-anden" style="color:var(--c-accent);"></span></div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--tx-muted);margin-bottom:6px;">Andén <span id="mra-anden" style="color:var(--c-accent);"></span></div>
         <div style="font-size: 10px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;line-height:1;" id="mra-patente"></div>
         <div style="font-size: 9px;color:var(--tx-muted);margin-top:6px;" id="mra-conductor"></div>
       </div>
@@ -3036,12 +3036,12 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   </div>
 </div>
 
-<!--  MODAL CHECKLIST PRE-ANDN  PASO A PASO  -->
+<!--  MODAL CHECKLIST PRE-Andén  PASO A PASO  -->
 <div id="modal-checklist" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:440px;">
     <div class="mh" style="border-bottom:1px solid var(--border);">
-      <span class="mh-title" id="cl-step-title" style="font-size: 10px;">Inspeccin Pre-Andn</span>
-      <button class="btn btn-err" onclick="closeModal('modal-checklist')" style="padding:2px 8px;"></button>
+      <span class="mh-title" id="cl-step-title" style="font-size: 10px;">Inspección Pre-Andén</span>
+      <button class="btn btn-err" onclick="closeModal('modal-checklist')" style="padding:2px 8px;" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner" style="padding:20px;">
       <!-- Vehculo info -->
@@ -3077,36 +3077,36 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   </div>
 </div>
 
-<!--  MODAL POSTURA EN ANDN (PASO 2 post-checklist)  -->
+<!--  MODAL POSTURA EN Andén (PASO 2 post-checklist)  -->
 <div id="modal-postura-anden" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:480px;">
     <div class="mh" style="border-bottom-color:rgba(14,158,109,0.3);">
-      <span class="mh-title" style="color:var(--c-ok);"> PASO 2 DE 2  CONFIRMAR POSTURA EN ANDN</span>
-      <button class="btn btn-err" onclick="closeModal('modal-postura-anden')"></button>
+      <span class="mh-title" style="color:var(--c-ok);"> PASO 2 DE 2  CONFIRMAR POSTURA EN Andén</span>
+      <button class="btn btn-err" onclick="closeModal('modal-postura-anden')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <div style="background:rgba(14,158,109,0.08);border:1px solid rgba(14,158,109,0.3);border-left:4px solid var(--c-ok);padding:10px 14px;margin-bottom:14px;border-radius:4px;">
         <div style="color:var(--c-ok);font-size:9px;font-weight:700;letter-spacing:1.5px;margin-bottom:5px;"> CHECKLIST OPERACIONAL APROBADO</div>
-        <div id="pa-info-camion" style="font-size: 9px;color:var(--tx-base);"></div>
+        <div id="pa-info-Camión" style="font-size: 9px;color:var(--tx-base);"></div>
       </div>
       <div style="background:var(--bg-alt);border:1px solid var(--border);padding:8px 14px;margin-bottom:14px;border-radius:4px;font-size:10px;color:var(--tx-muted);line-height:1.7;">
-        Traslade el vehculo al andn indicado y confirme la postura cuando est correctamente encuadrado y el nivelador de andn activo.
+        Traslade el vehculo al Andén indicado y confirme la postura cuando est correctamente encuadrado y el nivelador de Andén activo.
       </div>
       <div class="fg">
-        <label>Andn de Destino <span style="color:var(--c-err);">*</span></label>
+        <label>Andén de Destino <span style="color:var(--c-err);">*</span></label>
         <select id="pa-anden-select" style="border-color:var(--c-accent);">
-          <option value=""> Seleccionar andn libre </option>
+          <option value=""> Seleccionar Andén libre </option>
         </select>
       </div>
       <div class="fg" style="margin-top:10px;">
         <label>Observaciones de postura</label>
-        <textarea id="pa-obs" rows="2" placeholder="Temperatura de acople, nivelador, condiciones de andn..."></textarea>
+        <textarea id="pa-obs" rows="2" placeholder="Temperatura de acople, nivelador, condiciones de Andén..."></textarea>
       </div>
       <div id="pa-msg" style="font-size: 8px;min-height:16px;margin-top:8px;color:var(--c-err);padding:0 2px;"></div>
     </div>
     <div class="mf">
       <button class="btn" onclick="closeModal('modal-postura-anden')">CANCELAR</button>
-      <button class="btn btn-ok" style="flex:1;" onclick="confirmarPosturaAnden()"> CONFIRMAR POSTURA EN ANDN</button>
+      <button class="btn btn-ok" style="flex:1;" onclick="confirmarPosturaAnden()"> CONFIRMAR POSTURA EN Andén</button>
     </div>
   </div>
 </div>
@@ -3146,7 +3146,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   <div class="modal-box" style="max-width:520px;">
     <div class="mh">
       <span class="mh-title"> EDITAR TAREA</span>
-      <button class="btn btn-err" onclick="closeModal('modal-edit-task')"></button>
+      <button class="btn btn-err" onclick="closeModal('modal-edit-task')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <input type="hidden" id="edit-task-id">
@@ -3154,8 +3154,8 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
         <div class="fg">
           <label>Tipo de Tarea</label>
           <select id="edit-task-tipo">
-            <option value="mover_anden">Mover rampla  andn</option>
-            <option value="retirar_anden">Retirar rampla de andn</option>
+            <option value="mover_anden">Mover rampla  Andén</option>
+            <option value="retirar_anden">Retirar rampla de Andén</option>
             <option value="mover_playa">Mover a playa</option>
             <option value="reposicionar">Reposicionar rampla</option>
             <option value="traslado_zona">Traslado entre zonas</option>
@@ -3177,18 +3177,18 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
           <select id="edit-task-origen">
             <option value="gate">Gate Ingreso</option>
             <option value="playa">Playa Estacionamiento</option>
-            <option value="espera_anden">Espera Andn</option>
+            <option value="espera_anden">Espera Andén</option>
             <option value="carros_cargados">Carros Cargados</option>
-            <option value="anden">Andn</option>
+            <option value="anden">Andén</option>
             <option value="zona_lavado">Zona Lavado</option>
           </select>
         </div>
         <div class="fg">
           <label>Zona Destino</label>
           <select id="edit-task-destino">
-            <option value="anden">Andn</option>
+            <option value="anden">Andén</option>
             <option value="playa">Playa Estacionamiento</option>
-            <option value="espera_anden">Espera Andn</option>
+            <option value="espera_anden">Espera Andén</option>
             <option value="carros_cargados">Carros Cargados</option>
             <option value="gate_salida">Gate Salida</option>
             <option value="zona_lavado">Zona Lavado</option>
@@ -3223,20 +3223,20 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 </div>
 
 
-<!--  MODAL CARRO CARGADO (Patio: andn  estacionamiento carros)  -->
+<!--  MODAL CARRO CARGADO (Patio: Andén  estacionamiento carros)  -->
 <div id="modal-carro-cargado" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:500px;">
     <div class="mh" style="border-bottom-color:rgba(217,119,6,0.3);">
-      <span class="mh-title" id="cc-modal-title"> ANDN  ESTACIONAMIENTO CARROS CARGADOS</span>
-      <button class="btn btn-err" onclick="closeModal('modal-carro-cargado')"></button>
+      <span class="mh-title" id="cc-modal-title"> Andén  ESTACIONAMIENTO CARROS CARGADOS</span>
+      <button class="btn btn-err" onclick="closeModal('modal-carro-cargado')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <input type="hidden" id="cc-task-id">
       <div style="background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.3);border-left:4px solid var(--c-warn);padding:10px 14px;margin-bottom:12px;border-radius:4px;">
-        <div id="cc-info-camion" style="font-size: 9px;color:var(--tx-base);"></div>
+        <div id="cc-info-Camión" style="font-size: 9px;color:var(--tx-base);"></div>
       </div>
       <div style="background:var(--bg-alt);border:1px solid var(--border);padding:7px 12px;margin-bottom:12px;border-radius:4px;font-size:10px;color:var(--tx-muted);letter-spacing:0.3px;">
-         Ingrese precinto y pallets &nbsp;&nbsp;  Seleccione posicin L disponible &nbsp;&nbsp;  Confirme salida de andn
+         Ingrese precinto y pallets &nbsp;&nbsp;  Seleccione posicin L disponible &nbsp;&nbsp;  Confirme salida de Andén
       </div>
       <div class="fr">
         <div class="fg">
@@ -3264,7 +3264,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
     </div>
     <div class="mf">
       <button class="btn" onclick="closeModal('modal-carro-cargado')">CANCELAR</button>
-      <button class="btn btn-warn" style="flex:1;" onclick="confirmarCarroCargado()"> CONFIRMAR SALIDA DE ANDN</button>
+      <button class="btn btn-warn" style="flex:1;" onclick="confirmarCarroCargado()"> CONFIRMAR SALIDA DE Andén</button>
     </div>
   </div>
 </div>
@@ -3273,12 +3273,12 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
 <div id="modal-pallet-check" class="modal-overlay" style="display:none;">
   <div class="modal-box" style="max-width:560px;">
     <div class="mh">
-      <span class="mh-title"> VERIFICACIN DE PALLETS  RETORNO SECUNDARIA</span>
-      <button class="btn btn-err" onclick="closeModal('modal-pallet-check')"></button>
+      <span class="mh-title"> Verificación DE PALLETS  RETORNO SECUNDARIA</span>
+      <button class="btn btn-err" onclick="closeModal('modal-pallet-check')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <div style="background:var(--bg-alt);border:1px solid var(--border);padding:10px 14px;margin-bottom:14px;">
-        <div id="pc-info-camion" style="font-size: 9px;color:var(--tx-base);"></div>
+        <div id="pc-info-Camión" style="font-size: 9px;color:var(--tx-base);"></div>
         <div id="pc-deuda-info" style="font-size: 8px;color:var(--c-warn);margin-top:4px;"></div>
       </div>
       <div class="fr">
@@ -3307,7 +3307,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
     </div>
     <div class="mf">
       <button class="btn" onclick="closeModal('modal-pallet-check')">CANCELAR</button>
-      <button class="btn btn-ok" onclick="confirmarPalletCheck()"> CONFIRMAR VERIFICACIN</button>
+      <button class="btn btn-ok" onclick="confirmarPalletCheck()"> CONFIRMAR Verificación</button>
     </div>
   </div>
 </div>
@@ -3335,7 +3335,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   <div class="modal-box" style="max-width:520px;">
     <div class="mh">
       <span class="mh-title" id="slot-modal-title"> CONFIGURAR SLOT</span>
-      <button class="btn btn-err" onclick="closeModal('modal-config-slot')"></button>
+      <button class="btn btn-err" onclick="closeModal('modal-config-slot')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <input type="hidden" id="cfg-slot-id">
@@ -3394,7 +3394,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
       <div class="fr">
         <div class="fg">
           <label>Notas / Instrucciones</label>
-          <textarea id="cfg-slot-notas" rows="2" placeholder="Ej: Solo camiones de planta Rancagua  Prioridad turno maana..."></textarea>
+          <textarea id="cfg-slot-notas" rows="2" placeholder="Ej: Solo Camiónes de planta Rancagua  Prioridad turno maana..."></textarea>
         </div>
       </div>
       <div id="cfg-slot-msg" style="font-size: 8px;min-height:16px;margin-top:6px;"></div>
@@ -3412,18 +3412,18 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   <div class="modal-box" style="max-width:440px;">
     <div class="mh">
       <span class="mh-title"> AGREGAR SLOT  TIPO DE PLAYA</span>
-      <button class="btn btn-err" onclick="closeModal('modal-agregar-slot')"></button>
+      <button class="btn btn-err" onclick="closeModal('modal-agregar-slot')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <div style="font-size: 8px;color:var(--tx-muted);margin-bottom:14px;">Seleccione el propsito del slot que desea crear. Luego haga clic en un espacio libre del mapa.</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button class="btn" id="btn-tipo-cargado" onclick="seleccionarTipoSlot('carros_cargados')" style="padding:14px 18px;text-align:left;border-left:4px solid var(--c-warn);background:var(--bg-alt);">
           <div style="color:var(--c-warn);font-size: 9px;letter-spacing:2px;font-weight:700;"> PLAYA CARROS CARGADOS</div>
-          <div style="color:var(--tx-muted);font-size:10px;margin-top:4px;">Camiones que salieron del andn con carga  trazabilidad de sello y pallets</div>
+          <div style="color:var(--tx-muted);font-size:10px;margin-top:4px;">Camiónes que salieron del Andén con carga  trazabilidad de sello y pallets</div>
         </button>
         <button class="btn" id="btn-tipo-espera" onclick="seleccionarTipoSlot('en_espera')" style="padding:14px 18px;text-align:left;border-left:4px solid var(--c-info);background:var(--bg-alt);">
           <div style="color:var(--c-info);font-size: 9px;letter-spacing:2px;font-weight:700;"> PLAYA CARROS EN ESPERA</div>
-          <div style="color:var(--tx-muted);font-size:10px;margin-top:4px;">Camiones aguardando asignacin de andn o liberacin de espacio</div>
+          <div style="color:var(--tx-muted);font-size:10px;margin-top:4px;">Camiónes aguardando Asignación de Andén o liberacin de espacio</div>
         </button>
         <button class="btn" id="btn-tipo-libre" onclick="seleccionarTipoSlot('libre')" style="padding:14px 18px;text-align:left;border-left:4px solid var(--c-ok);background:var(--bg-alt);">
           <div style="color:var(--c-ok);font-size: 9px;letter-spacing:2px;font-weight:700;"> SIN RESTRICCIONES</div>
@@ -3446,7 +3446,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
   <div class="modal-box" style="max-width:540px;">
     <div class="mh">
       <span class="mh-title"> CREAR NUEVO SLOT DE PLAYA</span>
-      <button class="btn btn-err" onclick="closeModal('modal-crear-slot')"></button>
+      <button class="btn btn-err" onclick="closeModal('modal-crear-slot')" aria-label="Cerrar">✕</button>
     </div>
     <div class="mb-inner">
       <div class="fr">
@@ -3582,7 +3582,7 @@ body[data-tablet="true"] .modal-box{max-width:700px!important;}
      L 12229 Object.assign(window, { ... })
     */
 
-//  Variables globales para checklist y postura de andn 
+//  Variables globales para checklist y postura de Andén 
 let _checklistTaskId = null;
 let _posturaAndenTaskId = null;
 let _checklistResumen = null;
@@ -3703,12 +3703,12 @@ create table if not exists plants (
   activo boolean default true
 );
 
--- CAMIONES / VISITAS
+-- CamiónES / VISITAS
 create table if not exists trucks (
   id uuid primary key default uuid_generate_v4(),
   patente text not null,
   carrier_id uuid references carriers,
-  tipo text check (tipo in ('rampla','camion','otro')),
+  tipo text check (tipo in ('rampla','Camión','otro')),
   estado text default 'activo' check (estado in ('activo','inactivo')),
   estacionamiento_fijo text,
   notas text
@@ -3765,7 +3765,7 @@ create table if not exists gate_events (
   created_at timestamptz default now()
 );
 
--- TICKETS TURNOMTICO
+-- TICKETS Automático
 create table if not exists queue_tickets (
   id uuid primary key default uuid_generate_v4(),
   site_id uuid references sites,
@@ -3784,7 +3784,7 @@ create table if not exists queue_tickets (
   notas text
 );
 
--- ASIGNACIONES DE ANDN
+-- ASIGNACIONES DE Andén
 create table if not exists dock_assignments (
   id uuid primary key default uuid_generate_v4(),
   dock_id uuid references docks,
@@ -3879,8 +3879,8 @@ create table if not exists system_parameters (
 
 --  INSERT PARMETROS BASE
 insert into system_parameters (key, value, descripcion) values
-  ('sla_espera_min', '5',   'Tiempo mnimo espera andn (min)'),
-  ('sla_espera_max', '60',  'Tiempo mximo espera andn (min)'),
+  ('sla_espera_min', '5',   'Tiempo mnimo espera Andén (min)'),
+  ('sla_espera_max', '60',  'Tiempo mximo espera Andén (min)'),
   ('dwell_max',      '180', 'Dwell mximo permitido (min)'),
   ('task_sla',       '20',  'SLA tarea operador patio (min)')
 on conflict (key) do nothing;
@@ -3894,23 +3894,23 @@ on conflict (codigo) do nothing;
 
 -- FLOTA MIRAFLORES  72 VEHCULOS
 insert into carriers (codigo, nombre, tipo, numero_ruta, zona, estado) values
-  ('BFWX20','Sandoval Aedo Thiare Bristela','Camioneta','V3940','Miraflores',''),
+  ('BFWX20','Sandoval Aedo Thiare Bristela','Camióneta','V3940','Miraflores',''),
   ('CXLW85','Maestre Ureta Oscar Patricio','Camin','V0118','Miraflores',''),
   ('DDYD57','Abarca Pino Nicolas Rafael','Camin','V4023','Miraflores',''),
   ('DFWT11','Pena Mass Victor Ignacio A','Camin','V3823','Miraflores',''),
-  ('DWHK97','Plaza Gonzalez Claudio','Camioneta','V2919','Miraflores',''),
+  ('DWHK97','Plaza Gonzalez Claudio','Camióneta','V2919','Miraflores',''),
   ('DYSK20','Pinto Lobos Juan Pablo','Camin','V1779','Miraflores',''),
   ('DYZB75','Riquelme Ruiz Eloisa Deolinda','Camin','V3996','Miraflores',''),
   ('FCBH54','Gonzalez Ahumada Felipe Javier','Camin','V3958','Miraflores',''),
   ('FJPP30','Yaez Avello Juan Pablo','Camin','V2120','Miraflores',''),
-  ('FPBG55','Valdes Yaez Gabriel Bernardo','Camioneta','V2370','Miraflores',''),
+  ('FPBG55','Valdes Yaez Gabriel Bernardo','Camióneta','V2370','Miraflores',''),
   ('GFBW18','Juan Pablo Pinto','Camin','V3098','Miraflores','BACK UP DE REEMPLAZO'),
   ('GFRF82','Gutierrez Vilches Victor Hugo','Camin','V3690','Miraflores',''),
-  ('GLCD66','Astudillo Morales Francisco Javier','Camioneta','V4052','Miraflores',''),
+  ('GLCD66','Astudillo Morales Francisco Javier','Camióneta','V4052','Miraflores',''),
   ('GVVR90','Novoa Rojas Erwin Dagoberto','Camin','V2811','Miraflores',''),
-  ('GYPX81','Navarro Espinoza Patricio Andres','Camioneta','V3769','Miraflores',''),
+  ('GYPX81','Navarro Espinoza Patricio Andres','Camióneta','V3769','Miraflores',''),
   ('GZXP87','Jonathan Bernal','Camin','0','Back Up','BACK UP DE REEMPLAZO'),
-  ('HCRR26','Navarro Espinoza Patricio A (2)','Camioneta','0','Miraflores',''),
+  ('HCRR26','Navarro Espinoza Patricio A (2)','Camióneta','0','Miraflores',''),
   ('HLBX25','Villegas Garcia Mauricio','Camin','V2178','Miraflores',''),
   ('HVWT21','Rojas Nuez Gustavo Arturo','Camin','V3934','Miraflores',''),
   ('HWHR52','Muoz Campos Josue Patricio','Camin','V2156','Miraflores',''),
@@ -3941,30 +3941,30 @@ insert into carriers (codigo, nombre, tipo, numero_ruta, zona, estado) values
   ('LXCK20','Aguilar Valdes Christian Marcelo','Camin','V5285','Miraflores',''),
   ('PBBZ43','Baeza Loyola Javier','Camin','V0042','Miraflores',''),
   ('RBTT51','Salas Labra Angelo Fabian','Camin','V3948','Miraflores',''),
-  ('RBXF59','Andres Baraona','Camioneta','0','Miraflores','BACK UP DE REEMPLAZO'),
+  ('RBXF59','Andres Baraona','Camióneta','0','Miraflores','BACK UP DE REEMPLAZO'),
   ('RKCG83','Acua Salinas Harold Esteban','Camin','V4020','Miraflores',''),
   ('RKYD10','Urban Henriquez Carlos Ivan','Camin','V3888','Miraflores',''),
-  ('RSHF79','Celis Marin Felipe Andres','Camioneta','V3904','Miraflores',''),
+  ('RSHF79','Celis Marin Felipe Andres','Camióneta','V3904','Miraflores',''),
   ('RSTR69','Barbazzo Cuadra Sergio Bruno','Camin','V3805','Miraflores',''),
   ('RTDC75','Vargas Espinoza Constanza','Camin','V3877','Miraflores',''),
-  ('RWPW95','Sanchez Lorca Claudio Alejandro','Camioneta','V3680','Miraflores',''),
+  ('RWPW95','Sanchez Lorca Claudio Alejandro','Camióneta','V3680','Miraflores',''),
   ('RZGD52','Baeza Regular Mario Enrique','Camin','V4076','Miraflores',''),
   ('RZGL40','Huencho Figueroa Eduardo Andres','Camin','V4035','Miraflores',''),
   ('SFZH59','Martinez Gonzalez Juan Carlos','Camin','V3866','Miraflores',''),
-  ('SGHD61','Oate Castro Alejandro','Camioneta','V3924','Miraflores',''),
-  ('SSSZ13','Gomez Rojas Alexis Rafael','Camioneta','V0036','Miraflores',''),
-  ('TFYF85','Perez Morales Manuel Jhoan','Camioneta','V3960','Miraflores',''),
-  ('TGSR48','Camacaro Cordones Danny Alexander','Camioneta','V3913','Miraflores',''),
-  ('TKPH56','Baraona Parra Pablo Andres','Camioneta','V3931','Miraflores',''),
-  ('TKVS21','Beltran Aranguiz Nicolas Andres','Camioneta','V3970','Miraflores',''),
-  ('TPDB40','Sanchez Gonzalez David Eugenio','Camioneta','V3980','Miraflores',''),
-  ('TSSZ43','Briones Barria Sergio Elias','Camioneta','V3959','Miraflores',''),
-  ('TVSV96','Gonzalez Rodriguez Alexander Enrique','Camioneta','V3976','Miraflores',''),
+  ('SGHD61','Oate Castro Alejandro','Camióneta','V3924','Miraflores',''),
+  ('SSSZ13','Gomez Rojas Alexis Rafael','Camióneta','V0036','Miraflores',''),
+  ('TFYF85','Perez Morales Manuel Jhoan','Camióneta','V3960','Miraflores',''),
+  ('TGSR48','Camacaro Cordones Danny Alexander','Camióneta','V3913','Miraflores',''),
+  ('TKPH56','Baraona Parra Pablo Andres','Camióneta','V3931','Miraflores',''),
+  ('TKVS21','Beltran Aranguiz Nicolas Andres','Camióneta','V3970','Miraflores',''),
+  ('TPDB40','Sanchez Gonzalez David Eugenio','Camióneta','V3980','Miraflores',''),
+  ('TSSZ43','Briones Barria Sergio Elias','Camióneta','V3959','Miraflores',''),
+  ('TVSV96','Gonzalez Rodriguez Alexander Enrique','Camióneta','V3976','Miraflores',''),
   ('TYJS76','Alarcon Molina Juan Carlos','Camin','V3654','Miraflores',''),
   ('TZYR52','Reyes Ormeo Hernaldo Yamil','Camin','V2102','Miraflores',''),
   ('VFPY59','Prado Santibaez Byron Ignacio','Camin','V4086','Miraflores',''),
-  ('VGDC49','Gomez Colmenarez Alexis Rafael','Camioneta','V4050','Miraflores',''),
-  ('XF3781','Sandoval Garrido Gustavo Alex','Camioneta','V5104','Miraflores',''),
+  ('VGDC49','Gomez Colmenarez Alexis Rafael','Camióneta','V4050','Miraflores',''),
+  ('XF3781','Sandoval Garrido Gustavo Alex','Camióneta','V5104','Miraflores',''),
   ('ZB4123','German Andres Inzunza Quintana (B)','Camin','V3779','Back Up','')
 on conflict (codigo) do update set
   nombre = excluded.nombre, tipo = excluded.tipo,
@@ -4186,23 +4186,23 @@ const STATE = {
   queueTickets: [],
   tasks: [],
   carriers: [
-    {id:'c1',  codigo:'BFWX20', nombre:'Sandoval Aedo Thiare Bristela',          tipo:'Camioneta', numero_ruta:'V3940', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c1',  codigo:'BFWX20', nombre:'Sandoval Aedo Thiare Bristela',          tipo:'Camióneta', numero_ruta:'V3940', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c2',  codigo:'CXLW85', nombre:'Maestre Ureta Oscar Patricio',            tipo:'Camin',    numero_ruta:'V0118', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c3',  codigo:'DDYD57', nombre:'Abarca Pino Nicolas Rafael',              tipo:'Camin',    numero_ruta:'V4023', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c4',  codigo:'DFWT11', nombre:'Pena Mass Victor Ignacio A',              tipo:'Camin',    numero_ruta:'V3823', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c5',  codigo:'DWHK97', nombre:'Plaza Gonzalez Claudio',                  tipo:'Camioneta', numero_ruta:'V2919', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c5',  codigo:'DWHK97', nombre:'Plaza Gonzalez Claudio',                  tipo:'Camióneta', numero_ruta:'V2919', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c6',  codigo:'DYSK20', nombre:'Pinto Lobos Juan Pablo',                  tipo:'Camin',    numero_ruta:'V1779', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c7',  codigo:'DYZB75', nombre:'Riquelme Ruiz Eloisa Deolinda',           tipo:'Camin',    numero_ruta:'V3996', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c8',  codigo:'FCBH54', nombre:'Gonzalez Ahumada Felipe Javier',          tipo:'Camin',    numero_ruta:'V3958', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c9',  codigo:'FJPP30', nombre:'Yaez Avello Juan Pablo',                 tipo:'Camin',    numero_ruta:'V2120', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c10', codigo:'FPBG55', nombre:'Valdes Yaez Gabriel Bernardo',           tipo:'Camioneta', numero_ruta:'V2370', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c10', codigo:'FPBG55', nombre:'Valdes Yaez Gabriel Bernardo',           tipo:'Camióneta', numero_ruta:'V2370', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c11', codigo:'GFBW18', nombre:'Juan Pablo Pinto',                        tipo:'Camin',    numero_ruta:'V3098', zona:'Miraflores', estado:'BACK UP DE REEMPLAZO',cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c12', codigo:'GFRF82', nombre:'Gutierrez Vilches Victor Hugo',           tipo:'Camin',    numero_ruta:'V3690', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c13', codigo:'GLCD66', nombre:'Astudillo Morales Francisco Javier',      tipo:'Camioneta', numero_ruta:'V4052', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c13', codigo:'GLCD66', nombre:'Astudillo Morales Francisco Javier',      tipo:'Camióneta', numero_ruta:'V4052', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c14', codigo:'GVVR90', nombre:'Novoa Rojas Erwin Dagoberto',             tipo:'Camin',    numero_ruta:'V2811', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c15', codigo:'GYPX81', nombre:'Navarro Espinoza Patricio Andres',        tipo:'Camioneta', numero_ruta:'V3769', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c15', codigo:'GYPX81', nombre:'Navarro Espinoza Patricio Andres',        tipo:'Camióneta', numero_ruta:'V3769', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c16', codigo:'GZXP87', nombre:'Jonathan Bernal',                         tipo:'Camin',    numero_ruta:'0',     zona:'Back Up',    estado:'BACK UP DE REEMPLAZO',cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c17', codigo:'HCRR26', nombre:'Navarro Espinoza Patricio Andres',        tipo:'Camioneta', numero_ruta:'0',     zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c17', codigo:'HCRR26', nombre:'Navarro Espinoza Patricio Andres',        tipo:'Camióneta', numero_ruta:'0',     zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c18', codigo:'HLBX25', nombre:'Villegas Garcia Mauricio',                tipo:'Camin',    numero_ruta:'V2178', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c19', codigo:'HVWT21', nombre:'Rojas Nuez Gustavo Arturo',              tipo:'Camin',    numero_ruta:'V3934', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c20', codigo:'HWHR52', nombre:'Muoz Campos Josue Patricio',             tipo:'Camin',    numero_ruta:'V2156', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
@@ -4233,30 +4233,30 @@ const STATE = {
     {id:'c45', codigo:'LXCK20', nombre:'Aguilar Valdes Christian Marcelo',        tipo:'Camin',    numero_ruta:'V5285', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c46', codigo:'PBBZ43', nombre:'Baeza Loyola Javier',                     tipo:'Camin',    numero_ruta:'V0042', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c47', codigo:'RBTT51', nombre:'Salas Labra Angelo Fabian',               tipo:'Camin',    numero_ruta:'V3948', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c48', codigo:'RBXF59', nombre:'Andres Baraona',                          tipo:'Camioneta', numero_ruta:'0',     zona:'Miraflores', estado:'BACK UP DE REEMPLAZO',cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c48', codigo:'RBXF59', nombre:'Andres Baraona',                          tipo:'Camióneta', numero_ruta:'0',     zona:'Miraflores', estado:'BACK UP DE REEMPLAZO',cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c49', codigo:'RKCG83', nombre:'Acua Salinas Harold Esteban',            tipo:'Camin',    numero_ruta:'V4020', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c50', codigo:'RKYD10', nombre:'Urban Henriquez Carlos Ivan',             tipo:'Camin',    numero_ruta:'V3888', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c51', codigo:'RSHF79', nombre:'Celis Marin Felipe Andres',               tipo:'Camioneta', numero_ruta:'V3904', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c51', codigo:'RSHF79', nombre:'Celis Marin Felipe Andres',               tipo:'Camióneta', numero_ruta:'V3904', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c52', codigo:'RSTR69', nombre:'Barbazzo Cuadra Sergio Bruno',            tipo:'Camin',    numero_ruta:'V3805', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c53', codigo:'RTDC75', nombre:'Vargas Espinoza Constanza',               tipo:'Camin',    numero_ruta:'V3877', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c54', codigo:'RWPW95', nombre:'Sanchez Lorca Claudio Alejandro',         tipo:'Camioneta', numero_ruta:'V3680', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c54', codigo:'RWPW95', nombre:'Sanchez Lorca Claudio Alejandro',         tipo:'Camióneta', numero_ruta:'V3680', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c55', codigo:'RZGD52', nombre:'Baeza Regular Mario Enrique',             tipo:'Camin',    numero_ruta:'V4076', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c56', codigo:'RZGL40', nombre:'Huencho Figueroa Eduardo Andres',         tipo:'Camin',    numero_ruta:'V4035', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c57', codigo:'SFZH59', nombre:'Martinez Gonzalez Juan Carlos',           tipo:'Camin',    numero_ruta:'V3866', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c58', codigo:'SGHD61', nombre:'Oate Castro Alejandro',                  tipo:'Camioneta', numero_ruta:'V3924', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c59', codigo:'SSSZ13', nombre:'Gomez Rojas Alexis Rafael',               tipo:'Camioneta', numero_ruta:'V0036', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c60', codigo:'TFYF85', nombre:'Perez Morales Manuel Jhoan',              tipo:'Camioneta', numero_ruta:'V3960', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c61', codigo:'TGSR48', nombre:'Camacaro Cordones Danny Alexander',       tipo:'Camioneta', numero_ruta:'V3913', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c62', codigo:'TKPH56', nombre:'Baraona Parra Pablo Andres',              tipo:'Camioneta', numero_ruta:'V3931', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c63', codigo:'TKVS21', nombre:'Beltran Aranguiz Nicolas Andres',         tipo:'Camioneta', numero_ruta:'V3970', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c64', codigo:'TPDB40', nombre:'Sanchez Gonzalez David Eugenio',          tipo:'Camioneta', numero_ruta:'V3980', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c65', codigo:'TSSZ43', nombre:'Briones Barria Sergio Elias',             tipo:'Camioneta', numero_ruta:'V3959', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c66', codigo:'TVSV96', nombre:'Gonzalez Rodriguez Alexander Enrique',    tipo:'Camioneta', numero_ruta:'V3976', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c58', codigo:'SGHD61', nombre:'Oate Castro Alejandro',                  tipo:'Camióneta', numero_ruta:'V3924', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c59', codigo:'SSSZ13', nombre:'Gomez Rojas Alexis Rafael',               tipo:'Camióneta', numero_ruta:'V0036', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c60', codigo:'TFYF85', nombre:'Perez Morales Manuel Jhoan',              tipo:'Camióneta', numero_ruta:'V3960', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c61', codigo:'TGSR48', nombre:'Camacaro Cordones Danny Alexander',       tipo:'Camióneta', numero_ruta:'V3913', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c62', codigo:'TKPH56', nombre:'Baraona Parra Pablo Andres',              tipo:'Camióneta', numero_ruta:'V3931', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c63', codigo:'TKVS21', nombre:'Beltran Aranguiz Nicolas Andres',         tipo:'Camióneta', numero_ruta:'V3970', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c64', codigo:'TPDB40', nombre:'Sanchez Gonzalez David Eugenio',          tipo:'Camióneta', numero_ruta:'V3980', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c65', codigo:'TSSZ43', nombre:'Briones Barria Sergio Elias',             tipo:'Camióneta', numero_ruta:'V3959', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c66', codigo:'TVSV96', nombre:'Gonzalez Rodriguez Alexander Enrique',    tipo:'Camióneta', numero_ruta:'V3976', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c67', codigo:'TYJS76', nombre:'Alarcon Molina Juan Carlos',              tipo:'Camin',    numero_ruta:'V3654', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c68', codigo:'TZYR52', nombre:'Reyes Ormeo Hernaldo Yamil',             tipo:'Camin',    numero_ruta:'V2102', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c69', codigo:'VFPY59', nombre:'Prado Santibaez Byron Ignacio',          tipo:'Camin',    numero_ruta:'V4086', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c70', codigo:'VGDC49', nombre:'Gomez Colmenarez Alexis Rafael',          tipo:'Camioneta', numero_ruta:'V4050', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
-    {id:'c71', codigo:'XF3781', nombre:'Sandoval Garrido Gustavo Alex',           tipo:'Camioneta', numero_ruta:'V5104', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c70', codigo:'VGDC49', nombre:'Gomez Colmenarez Alexis Rafael',          tipo:'Camióneta', numero_ruta:'V4050', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
+    {id:'c71', codigo:'XF3781', nombre:'Sandoval Garrido Gustavo Alex',           tipo:'Camióneta', numero_ruta:'V5104', zona:'Miraflores', estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
     {id:'c72', codigo:'ZB4123', nombre:'German Andres Inzunza Quintana',          tipo:'Camin',    numero_ruta:'V3779', zona:'Back Up',    estado:'',                    cd:'CD_SAN_BERNARDO', activo:true},
   ],
   plants: [],
@@ -4319,7 +4319,7 @@ const AppState = {
       get presence() { return STATE.presence; }, set presence(v) { STATE.presence = v; },
     };
   },
-  //  Tareas y cola turnomtico 
+  //  Tareas y cola Automático 
   get tareas() {
     return {
       get list()         { return STATE.tasks; },        set list(v)         { STATE.tasks = v; },
@@ -4525,7 +4525,7 @@ function ymsLoadYardConfig() {
     //  DOCKS (ANDENES): Hacer merge inteligente
     if (Array.isArray(saved.docks) && saved.docks.length && STATE.docks) {
       saved.docks.forEach(function(sd) {
-        // Buscar andn existente por ID o cdigo
+        // Buscar Andén existente por ID o cdigo
         const d = STATE.docks.find(function(x) { return x.id === sd.id || x.codigo === sd.codigo; });
         if (d) {
           //  MERGE: Actualizar propiedades de configuracin (usuario las cambi)
@@ -4537,7 +4537,7 @@ function ymsLoadYardConfig() {
           // NO actualizar estado si est ocupado (truck_id significa que est en uso)
           if (!d.truck_id && sd.estado) d.estado = sd.estado;
         } else {
-          //  NUEVO: Andn fue creado por usuario, agregarlo
+          //  NUEVO: Andén fue creado por usuario, agregarlo
           STATE.docks.push(sd);
         }
       });
@@ -4566,24 +4566,24 @@ const SEED = {
     { id:'d10',codigo:'C02', tipo:'seco',        operacion_permitida:'carga',    estado:'blocked',truck_id:null,inicio_ocupacion:null, plantas_compat:'TODAS', max_tiempo:90,  site_id:'CD_SAN_BERNARDO' },
   ],
   visits: [
-    // PRIMARIA  en andn A01
+    // PRIMARIA  en Andén A01
     { id:'v1', patente:'BFWX20', tipo:'primaria', carrier_id:'c1', planta_id:'p1',
       numero_guia:'G-2024-0881', precinto:'SL-44821', hora_ingreso:new Date(Date.now()-45*60000).toISOString(),
       zona_actual:'anden', dock_id:'d1', estado:'en_anden', site_id:'CD_SAN_BERNARDO',
       carrier_nombre:'Sandoval Aedo Thiare Bristela', planta_nombre:'Planta Rancagua',
       temp_cabina:-18, temp_producto:-17.5, tipo_carga:'congelado', temp_alerta:false },
-    // PRIMARIA  en andn A02
+    // PRIMARIA  en Andén A02
     { id:'v2', patente:'CXLW85', tipo:'primaria', carrier_id:'c2', planta_id:'p2',
       numero_guia:'G-2024-0882', precinto:'SL-44822', hora_ingreso:new Date(Date.now()-90*60000).toISOString(),
       zona_actual:'anden', dock_id:'d2', estado:'en_anden', site_id:'CD_SAN_BERNARDO',
       carrier_nombre:'Maestre Ureta Oscar Patricio', planta_nombre:'Planta Los Andes',
       temp_cabina:-16, temp_producto:-15, tipo_carga:'congelado', temp_alerta:true },
-    // SECUNDARIA  en andn B01 (retorno ruta V3940)
+    // SECUNDARIA  en Andén B01 (retorno ruta V3940)
     { id:'v3', patente:'DDYD57', tipo:'secundaria', carrier_id:'c3', planta_id:null,
       numero_ruta:'V4023', hora_ingreso:new Date(Date.now()-20*60000).toISOString(),
       zona_actual:'anden', dock_id:'d6', estado:'en_anden', site_id:'CD_SAN_BERNARDO',
       carrier_nombre:'Abarca Pino Nicolas Rafael', pallets_retorno:14, pallets_esperados:16 },
-    // PRIMARIA  esperando andn (en cola)
+    // PRIMARIA  esperando Andén (en cola)
     { id:'v4', patente:'DFWT11', tipo:'primaria', carrier_id:'c4', planta_id:'p3',
       numero_guia:'G-2024-0883', precinto:'SL-44823', hora_ingreso:new Date(Date.now()-15*60000).toISOString(),
       zona_actual:'espera_anden', dock_id:null, estado:'en_patio', site_id:'CD_SAN_BERNARDO',
@@ -4608,23 +4608,23 @@ const SEED = {
       carrier_nombre:'Riquelme Ruiz Eloisa Deolinda', pallets_retorno:18, pallets_esperados:18 },
   ],
   carriers: [
-    {id:'c1',  codigo:'BFWX20', nombre:'Sandoval Aedo Thiare Bristela',            tipo:'Camioneta', numero_ruta:'V3940', zona:'Miraflores', estado:''},
+    {id:'c1',  codigo:'BFWX20', nombre:'Sandoval Aedo Thiare Bristela',            tipo:'Camióneta', numero_ruta:'V3940', zona:'Miraflores', estado:''},
     {id:'c2',  codigo:'CXLW85', nombre:'Maestre Ureta Oscar Patricio',             tipo:'Camin',    numero_ruta:'V0118', zona:'Miraflores', estado:''},
     {id:'c3',  codigo:'DDYD57', nombre:'Abarca Pino Nicolas Rafael',               tipo:'Camin',    numero_ruta:'V4023', zona:'Miraflores', estado:''},
     {id:'c4',  codigo:'DFWT11', nombre:'Pena Mass Victor Ignacio A',               tipo:'Camin',    numero_ruta:'V3823', zona:'Miraflores', estado:''},
-    {id:'c5',  codigo:'DWHK97', nombre:'Plaza Gonzalez Claudio',                   tipo:'Camioneta', numero_ruta:'V2919', zona:'Miraflores', estado:''},
+    {id:'c5',  codigo:'DWHK97', nombre:'Plaza Gonzalez Claudio',                   tipo:'Camióneta', numero_ruta:'V2919', zona:'Miraflores', estado:''},
     {id:'c6',  codigo:'DYSK20', nombre:'Pinto Lobos Juan Pablo',                   tipo:'Camin',    numero_ruta:'V1779', zona:'Miraflores', estado:''},
     {id:'c7',  codigo:'DYZB75', nombre:'Riquelme Ruiz Eloisa Deolinda',            tipo:'Camin',    numero_ruta:'V3996', zona:'Miraflores', estado:''},
     {id:'c8',  codigo:'FCBH54', nombre:'Gonzalez Ahumada Felipe Javier',           tipo:'Camin',    numero_ruta:'V3958', zona:'Miraflores', estado:''},
     {id:'c9',  codigo:'FJPP30', nombre:'Yaez Avello Juan Pablo',                  tipo:'Camin',    numero_ruta:'V2120', zona:'Miraflores', estado:''},
-    {id:'c10', codigo:'FPBG55', nombre:'Valdes Yaez Gabriel Bernardo',            tipo:'Camioneta', numero_ruta:'V2370', zona:'Miraflores', estado:''},
+    {id:'c10', codigo:'FPBG55', nombre:'Valdes Yaez Gabriel Bernardo',            tipo:'Camióneta', numero_ruta:'V2370', zona:'Miraflores', estado:''},
     {id:'c11', codigo:'GFBW18', nombre:'Juan Pablo Pinto',                         tipo:'Camin',    numero_ruta:'V3098', zona:'Miraflores', estado:'BACK UP DE REEMPLAZO'},
     {id:'c12', codigo:'GFRF82', nombre:'Gutierrez Vilches Victor Hugo',            tipo:'Camin',    numero_ruta:'V3690', zona:'Miraflores', estado:''},
-    {id:'c13', codigo:'GLCD66', nombre:'Astudillo Morales Francisco Javier',       tipo:'Camioneta', numero_ruta:'V4052', zona:'Miraflores', estado:''},
+    {id:'c13', codigo:'GLCD66', nombre:'Astudillo Morales Francisco Javier',       tipo:'Camióneta', numero_ruta:'V4052', zona:'Miraflores', estado:''},
     {id:'c14', codigo:'GVVR90', nombre:'Novoa Rojas Erwin Dagoberto',              tipo:'Camin',    numero_ruta:'V2811', zona:'Miraflores', estado:''},
-    {id:'c15', codigo:'GYPX81', nombre:'Navarro Espinoza Patricio Andres',         tipo:'Camioneta', numero_ruta:'V3769', zona:'Miraflores', estado:''},
+    {id:'c15', codigo:'GYPX81', nombre:'Navarro Espinoza Patricio Andres',         tipo:'Camióneta', numero_ruta:'V3769', zona:'Miraflores', estado:''},
     {id:'c16', codigo:'GZXP87', nombre:'Jonathan Bernal',                          tipo:'Camin',    numero_ruta:'0',     zona:'Back Up',    estado:'BACK UP DE REEMPLAZO'},
-    {id:'c17', codigo:'HCRR26', nombre:'Navarro Espinoza Patricio A (2)',          tipo:'Camioneta', numero_ruta:'0',     zona:'Miraflores', estado:''},
+    {id:'c17', codigo:'HCRR26', nombre:'Navarro Espinoza Patricio A (2)',          tipo:'Camióneta', numero_ruta:'0',     zona:'Miraflores', estado:''},
     {id:'c18', codigo:'HLBX25', nombre:'Villegas Garcia Mauricio',                 tipo:'Camin',    numero_ruta:'V2178', zona:'Miraflores', estado:''},
     {id:'c19', codigo:'HVWT21', nombre:'Rojas Nuez Gustavo Arturo',               tipo:'Camin',    numero_ruta:'V3934', zona:'Miraflores', estado:''},
     {id:'c20', codigo:'HWHR52', nombre:'Muoz Campos Josue Patricio',              tipo:'Camin',    numero_ruta:'V2156', zona:'Miraflores', estado:''},
@@ -4655,30 +4655,30 @@ const SEED = {
     {id:'c45', codigo:'LXCK20', nombre:'Aguilar Valdes Christian Marcelo',         tipo:'Camin',    numero_ruta:'V5285', zona:'Miraflores', estado:''},
     {id:'c46', codigo:'PBBZ43', nombre:'Baeza Loyola Javier',                      tipo:'Camin',    numero_ruta:'V0042', zona:'Miraflores', estado:''},
     {id:'c47', codigo:'RBTT51', nombre:'Salas Labra Angelo Fabian',                tipo:'Camin',    numero_ruta:'V3948', zona:'Miraflores', estado:''},
-    {id:'c48', codigo:'RBXF59', nombre:'Andres Baraona',                           tipo:'Camioneta', numero_ruta:'0',     zona:'Miraflores', estado:'BACK UP DE REEMPLAZO'},
+    {id:'c48', codigo:'RBXF59', nombre:'Andres Baraona',                           tipo:'Camióneta', numero_ruta:'0',     zona:'Miraflores', estado:'BACK UP DE REEMPLAZO'},
     {id:'c49', codigo:'RKCG83', nombre:'Acua Salinas Harold Esteban',             tipo:'Camin',    numero_ruta:'V4020', zona:'Miraflores', estado:''},
     {id:'c50', codigo:'RKYD10', nombre:'Urban Henriquez Carlos Ivan',              tipo:'Camin',    numero_ruta:'V3888', zona:'Miraflores', estado:''},
-    {id:'c51', codigo:'RSHF79', nombre:'Celis Marin Felipe Andres',                tipo:'Camioneta', numero_ruta:'V3904', zona:'Miraflores', estado:''},
+    {id:'c51', codigo:'RSHF79', nombre:'Celis Marin Felipe Andres',                tipo:'Camióneta', numero_ruta:'V3904', zona:'Miraflores', estado:''},
     {id:'c52', codigo:'RSTR69', nombre:'Barbazzo Cuadra Sergio Bruno',             tipo:'Camin',    numero_ruta:'V3805', zona:'Miraflores', estado:''},
     {id:'c53', codigo:'RTDC75', nombre:'Vargas Espinoza Constanza',                tipo:'Camin',    numero_ruta:'V3877', zona:'Miraflores', estado:''},
-    {id:'c54', codigo:'RWPW95', nombre:'Sanchez Lorca Claudio Alejandro',          tipo:'Camioneta', numero_ruta:'V3680', zona:'Miraflores', estado:''},
+    {id:'c54', codigo:'RWPW95', nombre:'Sanchez Lorca Claudio Alejandro',          tipo:'Camióneta', numero_ruta:'V3680', zona:'Miraflores', estado:''},
     {id:'c55', codigo:'RZGD52', nombre:'Baeza Regular Mario Enrique',              tipo:'Camin',    numero_ruta:'V4076', zona:'Miraflores', estado:''},
     {id:'c56', codigo:'RZGL40', nombre:'Huencho Figueroa Eduardo Andres',          tipo:'Camin',    numero_ruta:'V4035', zona:'Miraflores', estado:''},
     {id:'c57', codigo:'SFZH59', nombre:'Martinez Gonzalez Juan Carlos',            tipo:'Camin',    numero_ruta:'V3866', zona:'Miraflores', estado:''},
-    {id:'c58', codigo:'SGHD61', nombre:'Oate Castro Alejandro',                   tipo:'Camioneta', numero_ruta:'V3924', zona:'Miraflores', estado:''},
-    {id:'c59', codigo:'SSSZ13', nombre:'Gomez Rojas Alexis Rafael',                tipo:'Camioneta', numero_ruta:'V0036', zona:'Miraflores', estado:''},
-    {id:'c60', codigo:'TFYF85', nombre:'Perez Morales Manuel Jhoan',               tipo:'Camioneta', numero_ruta:'V3960', zona:'Miraflores', estado:''},
-    {id:'c61', codigo:'TGSR48', nombre:'Camacaro Cordones Danny Alexander',        tipo:'Camioneta', numero_ruta:'V3913', zona:'Miraflores', estado:''},
-    {id:'c62', codigo:'TKPH56', nombre:'Baraona Parra Pablo Andres',               tipo:'Camioneta', numero_ruta:'V3931', zona:'Miraflores', estado:''},
-    {id:'c63', codigo:'TKVS21', nombre:'Beltran Aranguiz Nicolas Andres',          tipo:'Camioneta', numero_ruta:'V3970', zona:'Miraflores', estado:''},
-    {id:'c64', codigo:'TPDB40', nombre:'Sanchez Gonzalez David Eugenio',           tipo:'Camioneta', numero_ruta:'V3980', zona:'Miraflores', estado:''},
-    {id:'c65', codigo:'TSSZ43', nombre:'Briones Barria Sergio Elias',              tipo:'Camioneta', numero_ruta:'V3959', zona:'Miraflores', estado:''},
-    {id:'c66', codigo:'TVSV96', nombre:'Gonzalez Rodriguez Alexander Enrique',     tipo:'Camioneta', numero_ruta:'V3976', zona:'Miraflores', estado:''},
+    {id:'c58', codigo:'SGHD61', nombre:'Oate Castro Alejandro',                   tipo:'Camióneta', numero_ruta:'V3924', zona:'Miraflores', estado:''},
+    {id:'c59', codigo:'SSSZ13', nombre:'Gomez Rojas Alexis Rafael',                tipo:'Camióneta', numero_ruta:'V0036', zona:'Miraflores', estado:''},
+    {id:'c60', codigo:'TFYF85', nombre:'Perez Morales Manuel Jhoan',               tipo:'Camióneta', numero_ruta:'V3960', zona:'Miraflores', estado:''},
+    {id:'c61', codigo:'TGSR48', nombre:'Camacaro Cordones Danny Alexander',        tipo:'Camióneta', numero_ruta:'V3913', zona:'Miraflores', estado:''},
+    {id:'c62', codigo:'TKPH56', nombre:'Baraona Parra Pablo Andres',               tipo:'Camióneta', numero_ruta:'V3931', zona:'Miraflores', estado:''},
+    {id:'c63', codigo:'TKVS21', nombre:'Beltran Aranguiz Nicolas Andres',          tipo:'Camióneta', numero_ruta:'V3970', zona:'Miraflores', estado:''},
+    {id:'c64', codigo:'TPDB40', nombre:'Sanchez Gonzalez David Eugenio',           tipo:'Camióneta', numero_ruta:'V3980', zona:'Miraflores', estado:''},
+    {id:'c65', codigo:'TSSZ43', nombre:'Briones Barria Sergio Elias',              tipo:'Camióneta', numero_ruta:'V3959', zona:'Miraflores', estado:''},
+    {id:'c66', codigo:'TVSV96', nombre:'Gonzalez Rodriguez Alexander Enrique',     tipo:'Camióneta', numero_ruta:'V3976', zona:'Miraflores', estado:''},
     {id:'c67', codigo:'TYJS76', nombre:'Alarcon Molina Juan Carlos',               tipo:'Camin',    numero_ruta:'V3654', zona:'Miraflores', estado:''},
     {id:'c68', codigo:'TZYR52', nombre:'Reyes Ormeo Hernaldo Yamil',              tipo:'Camin',    numero_ruta:'V2102', zona:'Miraflores', estado:''},
     {id:'c69', codigo:'VFPY59', nombre:'Prado Santibaez Byron Ignacio',           tipo:'Camin',    numero_ruta:'V4086', zona:'Miraflores', estado:''},
-    {id:'c70', codigo:'VGDC49', nombre:'Gomez Colmenarez Alexis Rafael',           tipo:'Camioneta', numero_ruta:'V4050', zona:'Miraflores', estado:''},
-    {id:'c71', codigo:'XF3781', nombre:'Sandoval Garrido Gustavo Alex',            tipo:'Camioneta', numero_ruta:'V5104', zona:'Miraflores', estado:''},
+    {id:'c70', codigo:'VGDC49', nombre:'Gomez Colmenarez Alexis Rafael',           tipo:'Camióneta', numero_ruta:'V4050', zona:'Miraflores', estado:''},
+    {id:'c71', codigo:'XF3781', nombre:'Sandoval Garrido Gustavo Alex',            tipo:'Camióneta', numero_ruta:'V5104', zona:'Miraflores', estado:''},
     {id:'c72', codigo:'ZB4123', nombre:'German Andres Inzunza Quintana (B)',       tipo:'Camin',    numero_ruta:'V3779', zona:'Back Up',    estado:''},
   ],
   plants: [
@@ -4702,12 +4702,12 @@ const SEED = {
       carrier_nombre:'Plaza Gonzalez Claudio', numero_ruta:'V2919' },
   ],
   tasks: [
-    // Tarea pendiente  mover DFWT11 de espera a andn A03
+    // Tarea pendiente  mover DFWT11 de espera a Andén A03
     { id:'t1', tipo:'mover_anden', patente:'DFWT11', zona_origen:'espera_anden', zona_destino:'anden',
       prioridad:'urgente', sla_minutos:15, estado:'ofertada',
       hora_creacion:new Date(Date.now()-5*60000).toISOString(), operador_nombre:null,
       notas:'Carga congelada prioritaria  planta Quilicura' },
-    // Tarea en ejecucin  mover BFWX20 de andn a carros cargados
+    // Tarea en ejecucin  mover BFWX20 de Andén a carros cargados
     { id:'t2', tipo:'retirar_anden', patente:'BFWX20', zona_origen:'anden', zona_destino:'carros_cargados',
       prioridad:'normal', sla_minutos:20, estado:'en_ejecucion',
       hora_creacion:new Date(Date.now()-18*60000).toISOString(), operador_nombre:'Marco Patio',
@@ -4717,7 +4717,7 @@ const SEED = {
       prioridad:'normal', sla_minutos:30, estado:'pendiente',
       hora_creacion:new Date(Date.now()-2*60000).toISOString(), operador_nombre:null,
       notas:'Ir primero a zona lavado luego a estacionamiento' },
-    // Tarea urgente  DWHK97 secundaria sin andn asignado
+    // Tarea urgente  DWHK97 secundaria sin Andén asignado
     { id:'t4', tipo:'mover_anden', patente:'DWHK97', zona_origen:'espera_anden', zona_destino:'anden',
       prioridad:'urgente', sla_minutos:10, estado:'ofertada',
       hora_creacion:new Date(Date.now()-12*60000).toISOString(), operador_nombre:null,
@@ -4754,21 +4754,21 @@ const SEED = {
   ],
   auditLog: [
     { id:'a1', categoria:'gate', evento:'INGRESO_PRIMARIA',   detalle:'BFWX20 ingres  Planta Rancagua  G-2024-0881  T-18C', user_nombre:'Pedro Guardia',    created_at:new Date(Date.now()-45*60000).toISOString() },
-    { id:'a2', categoria:'dock', evento:'ASIGNACION_ANDEN',   detalle:'Andn A01 asignado a BFWX20 (automtico)',                  user_nombre:'Sistema',           created_at:new Date(Date.now()-44*60000).toISOString() },
+    { id:'a2', categoria:'dock', evento:'ASIGNACION_ANDEN',   detalle:'Andén A01 asignado a BFWX20 (automtico)',                  user_nombre:'Sistema',           created_at:new Date(Date.now()-44*60000).toISOString() },
     { id:'a3', categoria:'gate', evento:'INGRESO_PRIMARIA',   detalle:'CXLW85 ingres  Planta Los Andes  G-2024-0882  T-16C ', user_nombre:'Pedro Guardia', created_at:new Date(Date.now()-92*60000).toISOString() },
     { id:'a4', categoria:'gate', evento:'INGRESO_SECUNDARIA', detalle:'DDYD57 retorna ruta V4023  14 pallets (16 esperados)',       user_nombre:'Pedro Guardia',   created_at:new Date(Date.now()-22*60000).toISOString() },
-    { id:'a5', categoria:'dock', evento:'ASIGNACION_ANDEN',   detalle:'Andn B01 asignado a DDYD57 (supervisor)',                   user_nombre:'Carlos Supervisor',created_at:new Date(Date.now()-20*60000).toISOString() },
+    { id:'a5', categoria:'dock', evento:'ASIGNACION_ANDEN',   detalle:'Andén B01 asignado a DDYD57 (supervisor)',                   user_nombre:'Carlos Supervisor',created_at:new Date(Date.now()-20*60000).toISOString() },
     { id:'a6', categoria:'gate', evento:'INGRESO_PRIMARIA',   detalle:'DFWT11 ingres  Planta Quilicura  G-2024-0883',            user_nombre:'Pedro Guardia',   created_at:new Date(Date.now()-15*60000).toISOString() },
     { id:'a7', categoria:'gate', evento:'INGRESO_SECUNDARIA', detalle:'DWHK97 retorna ruta V2919  0 pallets (12 esperados)',        user_nombre:'Pedro Guardia',   created_at:new Date(Date.now()-8*60000).toISOString() },
     { id:'a8', categoria:'task', evento:'TAREA_CREADA',       detalle:'Mover DFWT11 espera_andenandn  Prioridad URGENTE',        user_nombre:'Sistema',         created_at:new Date(Date.now()-5*60000).toISOString() },
     { id:'a9', categoria:'gate', evento:'SALIDA',             detalle:'DYZB75 sali  ruta V3996  Dwell: 120 min  18/18 pallets', user_nombre:'Pedro Guardia',   created_at:new Date(Date.now()-2*3600000).toISOString() },
   ],
   chatMessages: [
-    { id: 'cm1', from_id: 'u4', to_id: 'u3', from_nombre: 'Pedro Guardia', mensaje: 'Tienes andn disponible para JKLT45?', created_at: new Date(Date.now()-10*60000).toISOString() },
+    { id: 'cm1', from_id: 'u4', to_id: 'u3', from_nombre: 'Pedro Guardia', mensaje: 'Tienes Andén disponible para JKLT45?', created_at: new Date(Date.now()-10*60000).toISOString() },
     { id: 'cm2', from_id: 'u3', to_id: 'u4', from_nombre: 'Carlos Supervisor', mensaje: 'S, en 15 min libera A02. Mndalo a espera.', created_at: new Date(Date.now()-9*60000).toISOString() },
   ],
   movements: [
-    { hora: new Date(Date.now()-44*60000).toISOString(), patente: 'GPBN72', origen: 'gate', destino: 'anden', operador: 'Luis Patio', motivo: 'Asignacin automtica' },
+    { hora: new Date(Date.now()-44*60000).toISOString(), patente: 'GPBN72', origen: 'gate', destino: 'anden', operador: 'Luis Patio', motivo: 'Asignación automtica' },
     { hora: new Date(Date.now()-30*60000).toISOString(), patente: 'RNVQ89', origen: 'gate', destino: 'playa', operador: 'Pedro Guardia', motivo: 'Ingreso secundaria' },
   ],
 };
@@ -5032,15 +5032,11 @@ async function onLogin(session) {
 
 function loadDemoMode(profileOverride) {
   STATE.usingSeed = true;
-  STATE.profile = profileOverride || {
-    id: 'u1',
-    nombre: 'Gabriel Herrera',
-    email: 'gherrera@yms.local',
-    rol: 'administrador',
-    activo: true,
-    sound_enabled: true,
-    theme: 'light',
-  };
+  if (!profileOverride) {
+    console.error('[YMS] loadDemoMode() requires profileOverride parameter. No hardcoded fallback allowed.');
+    throw new Error('loadDemoMode requires profileOverride parameter');
+  }
+  STATE.profile = profileOverride;
   //  DEEP COPY de SEED data para evitar modificar el original
   STATE.docks   = JSON.parse(JSON.stringify(SEED.docks));
   STATE.visits  = JSON.parse(JSON.stringify(SEED.visits));
@@ -5100,7 +5096,7 @@ async function login() {
   const err   = document.getElementById('login-err');
   err.textContent = '';
 
-  if (!email || !pass) { err.textContent = ' Complete usuario y contrasea'; return; }
+  if (!email || !pass) { err.textContent = ' Complete usuario y Contraseña'; return; }
 
   //  VALIDAR CONTRA SEED.USERS (todos los usuarios del sistema) 
   const allUsers = SEED.users; // Usar SEED.users que contiene todos los usuarios
@@ -5906,7 +5902,7 @@ window.addEventListener('offline', () => {
 
 const STATE_MACHINE = {
   yard_tasks: {
-    pendiente:    { allow: ['asignado', 'cancelado'], desc: 'Tarea nueva, esperando asignacin' },
+    pendiente:    { allow: ['asignado', 'cancelado'], desc: 'Tarea nueva, esperando Asignación' },
     asignado:     { allow: ['en_proceso', 'cancelado'], desc: 'Asignada a operador' },
     en_proceso:   { allow: ['completado', 'cancelado'], desc: 'Operador en ejecucin' },
     completado:   { allow: [], desc: 'Terminal: tarea lista' },
@@ -5937,7 +5933,7 @@ function validateStateTransition(table, currentState, newState, userRole = null)
     };
   }
   if (table === 'docks' && newState === 'blocked' && userRole !== 'administrador') {
-    return { valid: false, reason: 'Solo admin puede bloquear andn' };
+    return { valid: false, reason: 'Solo admin puede bloquear Andén' };
   }
   return { valid: true, reason: 'OK' };
 }
@@ -6456,7 +6452,7 @@ function renderAlertsDash() {
   STATE.queueTickets.forEach(t => {
     const min = Math.round((Date.now() - new Date(t.hora_creacion)) / 60000);
     if (min > STATE.params.sla_max) {
-      alerts.push({ type: 'err', msg: ` Cola SLA: ${t.patente} lleva ${min} min esperando andn` });
+      alerts.push({ type: 'err', msg: ` Cola SLA: ${t.patente} lleva ${min} min esperando Andén` });
     }
   });
   STATE.tasks.forEach(t => {
@@ -6507,7 +6503,7 @@ function renderGuardia() {
       </td>
     </tr>`;
   });
-  if (active.length === 0) tbody.innerHTML = '<tr><td colspan="9" class="c-dim tc">Sin camiones en patio</td></tr>';
+  if (active.length === 0) tbody.innerHTML = '<tr><td colspan="9" class="c-dim tc">Sin Camiónes en patio</td></tr>';
 }
 
 let currentIngresoTipo = 'primaria';
@@ -6522,7 +6518,7 @@ function openIngreso() {
   // Reset devolucin
   const cbDev = document.getElementById('ing2-tiene-devolucion');
   if (cbDev) { cbDev.checked = false; toggleDevolucionSecundaria(); }
-  document.getElementById('ing-andn-info').textContent = '';
+  document.getElementById('ing-Andén-info').textContent = '';
 }
 
 function setTipoIngreso(tipo) {
@@ -6546,7 +6542,7 @@ function fillPlantsSelect(id) {
 }
 
 function buscarAndenCompatible(tipoIngreso, tipoCarga) {
-  // Retorna andn libre compatible por tipo trmico y operacin.
+  // Retorna Andén libre compatible por tipo trmico y operacin.
   const operacion = tipoIngreso === 'secundaria' ? 'carga' : 'descarga';
   const requiereFrio = ['congelado','refrigerado','mixto'].includes(tipoCarga);
   return STATE.docks.find(d => {
@@ -6745,9 +6741,9 @@ async function confirmarIngreso() {
     if (tipoCarga === 'refrigerado' && (tempCabina < -2 || tempCabina > 6)) { tempAlerta = true; }
   }
   
-  // Buscar andn disponible compatible con tipo de operacin y carga.
+  // Buscar Andén disponible compatible con tipo de operacin y carga.
   const andnLibre = buscarAndenCompatible(tipo, tipoCarga);
-  const infoEl = document.getElementById('ing-andn-info');
+  const infoEl = document.getElementById('ing-Andén-info');
 
   let visitId, dockId = null;
 
@@ -6865,13 +6861,13 @@ async function confirmarIngreso() {
   }
 
   if (andnLibre) {
-    infoEl.innerHTML = ` Andn <strong>${andnLibre.codigo}</strong> asignado automticamente`;
+    infoEl.innerHTML = ` Andén <strong>${andnLibre.codigo}</strong> asignado automticamente`;
     Audio.play('dock_free');
-    notify(`Andn ${andnLibre.codigo} asignado a ${patente}`, 'ok');
+    notify(`Andén ${andnLibre.codigo} asignado a ${patente}`, 'ok');
   } else {
-    infoEl.innerHTML = ` Sin andn disponible  Ticket generado en Turnomtico. Enviar a zona espera.`;
+    infoEl.innerHTML = ` Sin Andén disponible  Ticket generado en Automático. Enviar a zona espera.`;
     Audio.play('alert');
-    notify(`${patente} en cola Turnomtico  Sin andn disponible`, 'warn');
+    notify(`${patente} en cola Automático  Sin Andén disponible`, 'warn');
   }
 
   setTimeout(() => {
@@ -6909,11 +6905,11 @@ function openSalida(visitId) {
     if (v.tipo === 'primaria') historialHtml += '<br> Planta: ' + (v.planta_nombre || '');
     historialHtml += '</div>';
 
-    // Andn (si pas por ah)
+    // Andén (si pas por ah)
     if (v.dock_id) {
       const dock = STATE.docks.find(d => d.id === v.dock_id);
       historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
-      historialHtml += ' <strong>ANDN</strong>  ' + (dock?.codigo || 'Andn ?');
+      historialHtml += ' <strong>Andén</strong>  ' + (dock?.codigo || 'Andén ?');
       historialHtml += '</div>';
     }
 
@@ -6949,7 +6945,7 @@ async function confirmarSalida() {
     visit.estado = 'salida';
     visit.hora_salida = new Date().toISOString();
     visit.dwell_minutes = elapsed;
-    // Liberar andn si estaba ocupado
+    // Liberar Andén si estaba ocupado
     const dock = STATE.docks.find(d => d.truck_id === visitId || d.id === visit.dock_id);
     if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; }
     clearSLAAlertMarks(visitId);
@@ -7189,12 +7185,12 @@ function renderAndenes() {
     const maxT    = d.max_tiempo || STATE.params?.dwell_max || 180;
     const pct     = d.estado === 'busy' ? Math.min(100, Math.round(elapsed / maxT * 100)) : 0;
     const timeC   = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--c-ok)';
-    // Detectar si hay un carro asignado (planificado) para este andn libre
+    // Detectar si hay un carro asignado (planificado) para este Andén libre
     const carroAsignadoCard = d.estado === 'free' ? STATE.carros.find(function(c){ return c.anden_destino === d.id; }) : null;
     const sc      = carroAsignadoCard ? 'var(--c-accent)' : (statusColors[d.estado] || 'var(--tx-dim)');
     const sl      = carroAsignadoCard ? 'ASIGNADO' : (statusLabels[d.estado] || d.estado);
 
-    // Tareas relacionadas a este andn/patente
+    // Tareas relacionadas a este Andén/patente
     const relTasks = visit ? STATE.tasks.filter(function(t){
       return t.patente === visit.patente &&
              !['completada','cancelada','rechazada'].includes(t.estado) &&
@@ -7212,7 +7208,7 @@ function renderAndenes() {
       '</div>' +
       '<div style="margin-bottom:12px;">' +
         '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx-dim);margin-bottom:5px;">' +
-          '<span>Tiempo en andn</span>' +
+          '<span>Tiempo en Andén</span>' +
           '<span style="font-weight:700;color:' + timeC + ';">' + elapsed + ' min</span>' +
         '</div>' +
         '<div style="height:3px;background:var(--bg);border-radius:2px;overflow:hidden;">' +
@@ -7225,7 +7221,7 @@ function renderAndenes() {
           '<button class="btn" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="playa" data-stop="1"> Estacionamiento</button>' +
         '</div>' +
         (isAdmin ? '<div style="display:flex;gap:6px;">' +
-          '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andn</button>' +
+          '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar Andén</button>' +
           '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
         '</div>' : '') +
       '</div>';
@@ -7244,11 +7240,11 @@ function renderAndenes() {
           (taskInstalacion.operador_nombre ? '<div style="font-size: 8px;color:var(--tx-dim);margin-top:2px;">Operador: ' + escHtml(taskInstalacion.operador_nombre) + '</div>' : '') +
         '</div>' +
         (isAdmin ? '<div style="display:flex;gap:6px;">' +
-          '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andn</button>' +
+          '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar Andén</button>' +
           '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
         '</div>' : '');
       } else if (patenteAnden) {
-        // Carro instalado en andn  postura confirmada pero sin registro de visita (flujo Carros)
+        // Carro instalado en Andén  postura confirmada pero sin registro de visita (flujo Carros)
         const carrierAnd = STATE.carriers.find(function(c){ return c.codigo === patenteAnden; });
         const carroAnd   = STATE.carros.find(function(c){ return String(c.patente||'').toUpperCase() === patenteAnden; });
         const conductorN = carrierAnd?.nombre || carroAnd?.conductor || '';
@@ -7265,7 +7261,7 @@ function renderAndenes() {
         '</div>' +
         '<div style="margin-bottom:12px;">' +
           '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx-dim);margin-bottom:5px;">' +
-            '<span>Tiempo en andn</span>' +
+            '<span>Tiempo en Andén</span>' +
             '<span style="font-weight:700;color:' + timeC + ';">' + elapsed + ' min</span>' +
           '</div>' +
           '<div style="height:3px;background:var(--bg);border-radius:2px;overflow:hidden;">' +
@@ -7278,23 +7274,23 @@ function renderAndenes() {
             '<button class="btn" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="playa" data-stop="1"> Estacionamiento</button>' +
           '</div>' +
           (isAdmin ? '<div style="display:flex;gap:6px;">' +
-            '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andn</button>' +
+            '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar Andén</button>' +
             '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
           '</div>' : '') +
         '</div>';
       } else {
-        // Andn busy sin patente derivable  dato inconsistente
+        // Andén busy sin patente derivable  dato inconsistente
         body = '<div style="margin:10px 0 12px;">' +
           '<div style="font-size: 10px;font-weight:600;color:var(--c-warn);">Ocupado  sin registro de vehculo</div>' +
           (d.inicio_ocupacion ? '<div style="font-size: 8px;color:var(--tx-dim);margin-top:4px;">Desde ' + fmtTime(d.inicio_ocupacion) + '  ' + elapsed + ' min</div>' : '') +
         '</div>' +
         (isAdmin ? '<div style="display:flex;gap:6px;">' +
-          '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andn</button>' +
+          '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar Andén</button>' +
           '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
         '</div>' : '');
       }
     } else if (d.estado === 'blocked') {
-      body = '<div style="padding:24px 0 12px;text-align:center;color:var(--c-err);font-size: 9px;">Andn bloqueado</div>' +
+      body = '<div style="padding:24px 0 12px;text-align:center;color:var(--c-err);font-size: 9px;">Andén bloqueado</div>' +
         (isAdmin ? '<button class="btn" style="width:100%;font-size: 8px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Desbloquear</button>' : '');
     } else {
       if (carroAsignadoCard) {
@@ -7310,7 +7306,7 @@ function renderAndenes() {
           '<button class="btn" style="font-size: 8px;" data-action="editAnden" data-id="' + d.id + '" data-stop="1">Editar</button>' +
         '</div>' : '');
       } else {
-        body = '<div style="padding:24px 0 12px;text-align:center;color:var(--tx-dim);font-size: 9px;">Disponible para asignacin</div>' +
+        body = '<div style="padding:24px 0 12px;text-align:center;color:var(--tx-dim);font-size: 9px;">Disponible para Asignación</div>' +
           (isAdmin ? '<div style="display:flex;gap:6px;">' +
             '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
             '<button class="btn" style="font-size: 8px;" data-action="editAnden" data-id="' + d.id + '" data-stop="1">Editar</button>' +
@@ -7347,7 +7343,7 @@ function renderAndenes() {
 
   container.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px;">' + cards.join('') + '</div>';
 
-  //  Panel: Carros EN ESPERA de andn (zona_actual='espera_anden') 
+  //  Panel: Carros EN ESPERA de Andén (zona_actual='espera_anden') 
   const esperaContainer = document.getElementById('and-espera-container');
   if (esperaContainer) {
     const esperaVisits = STATE.visits.filter(function(v){ return v.zona_actual === 'espera_anden' && v.estado !== 'salida'; });
@@ -7376,8 +7372,8 @@ function renderAndenes() {
       }).join('');
       esperaContainer.innerHTML =
         '<div style="background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.3);border-left:4px solid var(--c-info);border-radius:8px;padding:14px 16px;margin-bottom:4px;">' +
-          '<div style="font-size: 8px;font-weight:700;color:var(--c-info);letter-spacing:1px;margin-bottom:10px;"> EN ESPERA DE ANDN (' + esperaVisits.length + ')' +
-            (docksLibres.length ? ' &nbsp;&nbsp; <span style="color:var(--c-ok);font-weight:600;">' + docksLibres.length + ' andn' + (docksLibres.length > 1 ? 'es libres' : ' libre') + '</span>' : ' &nbsp;&nbsp; <span style="color:var(--c-err);font-weight:600;">Sin andenes libres</span>') +
+          '<div style="font-size: 8px;font-weight:700;color:var(--c-info);letter-spacing:1px;margin-bottom:10px;"> EN ESPERA DE Andén (' + esperaVisits.length + ')' +
+            (docksLibres.length ? ' &nbsp;&nbsp; <span style="color:var(--c-ok);font-weight:600;">' + docksLibres.length + ' Andén' + (docksLibres.length > 1 ? 'es libres' : ' libre') + '</span>' : ' &nbsp;&nbsp; <span style="color:var(--c-err);font-weight:600;">Sin andenes libres</span>') +
           '</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' + esperaRows + '</div>' +
         '</div>';
@@ -7386,7 +7382,7 @@ function renderAndenes() {
     }
   }
 
-  // Cola Turnomtico  tickets mover_anden en espera de andn libre
+  // Cola Automático  tickets mover_anden en espera de Andén libre
   const queueContainer = document.getElementById('and-queue-container');
   if (queueContainer) {
     const queueItems = (STATE.queueTickets || []).filter(function(q){ return q.tipo_operacion === 'mover_anden' && q.estado === 'esperando'; });
@@ -7406,7 +7402,7 @@ function renderAndenes() {
       }).join('');
       queueContainer.innerHTML =
         '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.35);border-left:4px solid var(--c-warn);border-radius:8px;padding:14px 16px;">' +
-          '<div style="font-size: 8px;font-weight:700;color:var(--c-warn);letter-spacing:1px;margin-bottom:10px;"> COLA TURNOMTICO  EN ESPERA DE ANDN LIBRE (' + queueItems.length + ')</div>' +
+          '<div style="font-size: 8px;font-weight:700;color:var(--c-warn);letter-spacing:1px;margin-bottom:10px;"> COLA Automático  EN ESPERA DE Andén LIBRE (' + queueItems.length + ')</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' + qRows + '</div>' +
         '</div>';
     } else {
@@ -7414,23 +7410,23 @@ function renderAndenes() {
     }
   }
 
-  // Mantener compatibilidad asignacin manual
+  // Mantener compatibilidad Asignación manual
   const selAnden = document.getElementById('asig-anden');
   const selVisita = document.getElementById('asig-visita');
   if (selAnden) selAnden.innerHTML = STATE.docks.filter(d => d.estado === 'free').map(d => '<option value="' + d.id + '">' + d.codigo + '  ' + d.tipo + '</option>').join('') || '<option>Sin andenes libres</option>';
   if (selVisita) selVisita.innerHTML = STATE.visits.filter(v => v.estado === 'en_patio' && !v.dock_id).map(v => '<option value="' + v.id + '">' + v.patente + '  ' + (v.carrier_nombre || v.numero_ruta || '') + '</option>').join('') || '<option>Sin visitas en espera</option>';
 }
 
-//  Movimiento desde andn (admin/supervisor inicia, patio completa) 
+//  Movimiento desde Andén (admin/supervisor inicia, patio completa) 
 function crearRetiroAnden(dockId, destino) {
   const dock = STATE.docks.find(d => d.id === dockId);
-  if (!dock || dock.estado !== 'busy') { notify('El andn no est ocupado', 'warn'); return; }
+  if (!dock || dock.estado !== 'busy') { notify('El Andén no est ocupado', 'warn'); return; }
   const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
     patente = String(dock.truck_id).toUpperCase();
   }
-  if (!patente) { notify('Sin vehculo registrado en este andn', 'warn'); return; }
+  if (!patente) { notify('Sin vehculo registrado en este Andén', 'warn'); return; }
   const carrier = STATE.carriers.find(c => c.codigo === patente);
   const carroAnd = STATE.carros.find(function(c){ return String(c.patente||'').toUpperCase() === patente; });
   // Poblar modal
@@ -7449,13 +7445,13 @@ function crearRetiroAnden(dockId, destino) {
 
 async function crearRetiroAndenInmediato(dockId, destino) {
   const dock = STATE.docks.find(d => d.id === dockId);
-  if (!dock || dock.estado !== 'busy') { notify('El andn no est ocupado', 'warn'); return; }
+  if (!dock || dock.estado !== 'busy') { notify('El Andén no est ocupado', 'warn'); return; }
   let visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
     patente = String(dock.truck_id).toUpperCase();
   }
-  if (!patente) { notify('Sin vehculo registrado en este andn', 'warn'); return; }
+  if (!patente) { notify('Sin vehculo registrado en este Andén', 'warn'); return; }
 
   const tareaActiva = STATE.tasks.find(t => t.patente === patente &&
     ['retirar_anden','mover_playa'].includes(t.tipo) &&
@@ -7486,7 +7482,7 @@ async function crearRetiroAndenInmediato(dockId, destino) {
 
   Audio.play('new_task');
   notify(' Tarea generada  ' + patente + '  ' + label, 'ok');
-  auditLog('task', 'RETIRO_ANDEN_CREADO', patente + '  Andn ' + dock.codigo + '  ' + destino);
+  auditLog('task', 'RETIRO_ANDEN_CREADO', patente + '  Andén ' + dock.codigo + '  ' + destino);
   renderAndenes();
   if (typeof loadTasks === 'function') loadTasks(); else if (typeof renderTareas === 'function') renderTareas();
 }
@@ -7497,7 +7493,7 @@ async function confirmarRetiroAnden() {
   const pallets = document.getElementById('mra-pallets')?.value || '';
   const precinto= document.getElementById('mra-precinto')?.value || '';
   const dock    = STATE.docks.find(d => d.id === dockId);
-  if (!dock) { notify('Error: andn no encontrado', 'error'); return; }
+  if (!dock) { notify('Error: Andén no encontrado', 'error'); return; }
   const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   let patente = visit?.patente || null;
   if (!patente && dock.truck_id && !Utils.isUUID(dock.truck_id)) {
@@ -7530,7 +7526,7 @@ async function confirmarRetiroAnden() {
   closeModal('modal-mover-anden');
   Audio.play('new_task');
   notify('Tarea creada  ' + patente + '  ' + (destino === 'carros_cargados' ? 'Carros Cargados' : 'Estacionamiento'), 'ok');
-  auditLog('task', 'RETIRO_ANDEN_CREADO', patente + '  Andn ' + dock.codigo + '  ' + destino);
+  auditLog('task', 'RETIRO_ANDEN_CREADO', patente + '  Andén ' + dock.codigo + '  ' + destino);
   renderAndenes();
   if (typeof loadTasks === 'function') loadTasks(); else if (typeof renderTareas === 'function') renderTareas();
 }
@@ -7558,7 +7554,7 @@ function selectDock(d) {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size: 9px;margin-bottom:10px;">
           <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Rampla</div><div style="font-weight:700;font-size: 9px;color:var(--tx-head);font-family:var(--font);">${visit.patente}</div></div>
           <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Empresa / Ruta</div><div style="font-weight:600;color:var(--tx-base);">${carrier?.nombre?.split(' ').slice(-2).join(' ') || visit.carrier_nombre || ''}  ${carrier?.numero_ruta || visit.numero_ruta || ''}</div></div>
-          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Inicio en andn</div><div style="color:var(--tx-base);">${d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : ''}</div></div>
+          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Inicio en Andén</div><div style="color:var(--tx-base);">${d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : ''}</div></div>
           <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Tiempo ocupado</div><div style="font-weight:700;color:${pct>85?'var(--c-err)':pct>60?'var(--c-warn)':'var(--c-ok)'};">${elapsed} min</div></div>
         </div>
         <div style="margin-bottom:10px;">
@@ -7570,16 +7566,16 @@ function selectDock(d) {
           <button class="btn btn-info" style="flex:1;font-size: 8px;" onclick="abrirTareaDesdeAnden('${d.id}','anden_a_carros_vacios')"> Tarea  Carros Vacos</button>
         </div>
         ${isAdmin ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
-          <button class="btn btn-warn supv-action" style="flex:1;font-size: 8px;" onclick="liberarAnden('${d.id}')"> LIBERAR ANDN</button>
+          <button class="btn btn-warn supv-action" style="flex:1;font-size: 8px;" onclick="liberarAnden('${d.id}')"> LIBERAR Andén</button>
           <button class="btn btn-err admin-action" style="font-size: 8px;" onclick="bloquearAnden('${d.id}')">BLOQUEAR</button>
         </div>` : ''}
         ` : `
         <div style="text-align:center;padding:12px 0;color:var(--tx-muted);font-size: 9px;">
-          ${d.estado === 'blocked' ? ' Andn bloqueado  sin operacin' : ' Andn disponible'}
+          ${d.estado === 'blocked' ? ' Andén bloqueado  sin operacin' : ' Andén disponible'}
         </div>
         ${d.estado !== 'blocked'
-          ? `<button class="btn btn-warn supv-action admin-action" onclick="bloquearAnden('${d.id}')">BLOQUEAR ANDN</button>`
-          : `<button class="btn supv-action admin-action" onclick="liberarAnden('${d.id}')">DESBLOQUEAR ANDN</button>`}
+          ? `<button class="btn btn-warn supv-action admin-action" onclick="bloquearAnden('${d.id}')">BLOQUEAR Andén</button>`
+          : `<button class="btn supv-action admin-action" onclick="liberarAnden('${d.id}')">DESBLOQUEAR Andén</button>`}
         `}
       </div>
     </div>`;
@@ -7597,7 +7593,7 @@ async function liberarAnden(dockId) {
     dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null;
     try {
       await sb.from('docks').update({ estado: 'free', truck_id: null, inicio_ocupacion: null }).eq('id', dockId);
-      await auditLog('dock', 'LIBERACION_ANDEN', `Andn ${dock.codigo} liberado manualmente`);
+      await auditLog('dock', 'LIBERACION_ANDEN', `Andén ${dock.codigo} liberado manualmente`);
       await loadDocks();
     } catch(e) {
       Object.assign(dock, prev);
@@ -7607,7 +7603,7 @@ async function liberarAnden(dockId) {
     }
   }
   Audio.play('dock_free');
-  notify(' Andn ' + dock.codigo + ' liberado  disponible para asignacin', 'ok');
+  notify(' Andén ' + dock.codigo + ' liberado  disponible para Asignación', 'ok');
   ymsPersistYardConfig();
   renderAndenes(); renderDashboard();
 }
@@ -7622,7 +7618,7 @@ async function bloquearAnden(dockId) {
     dock.estado = 'blocked';
     try {
       await sb.from('docks').update({ estado: 'blocked' }).eq('id', dockId);
-      await auditLog('dock', 'BLOQUEO_ANDEN', `Andn ${dock.codigo} bloqueado`);
+      await auditLog('dock', 'BLOQUEO_ANDEN', `Andén ${dock.codigo} bloqueado`);
       await loadDocks();
     } catch(e) {
       dock.estado = prevEstado;
@@ -7632,20 +7628,20 @@ async function bloquearAnden(dockId) {
     }
   }
   Audio.play('warn');
-  notify(' Andn ' + dock.codigo + ' bloqueado  no disponible para operaciones', 'warn');
+  notify(' Andén ' + dock.codigo + ' bloqueado  no disponible para operaciones', 'warn');
   ymsPersistYardConfig();
   renderAndenes(); renderDashboard();
 }
 
 function abrirTareaDesdeAnden(dockId, tipoForzado) {
   const dock = STATE.docks.find(d => d.id === dockId);
-  if (!dock || dock.estado !== 'busy') { notify(' El andn no est ocupado', 'warn'); return; }
+  if (!dock || dock.estado !== 'busy') { notify(' El Andén no est ocupado', 'warn'); return; }
   openNewTask();
-  // Andn ocupado  por defecto mover la rampla a carros cargados
+  // Andén ocupado  por defecto mover la rampla a carros cargados
   const tipo = tipoForzado || 'retirar_anden';
   const tipoSel = document.getElementById('task-tipo');
   if (tipoSel) { tipoSel.value = tipo; onTaskTipoChange(); }
-  // Pre-seleccionar la rampla que est en el andn
+  // Pre-seleccionar la rampla que est en el Andén
   const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
   if (visit) {
     setTimeout(function() {
@@ -7664,7 +7660,7 @@ async function crearAnden() {
   const tipo   = document.getElementById('dock-type').value;
   const op     = document.getElementById('dock-op').value;
   const st     = document.getElementById('dock-status').value;
-  if (!codigo) { notify('Ingrese cdigo de andn', 'error'); return; }
+  if (!codigo) { notify('Ingrese cdigo de Andén', 'error'); return; }
 
   const newDock = { id: 'd' + Date.now(), codigo, tipo, operacion_permitida: op, estado: st };
   if (STATE.usingSeed) {
@@ -7674,11 +7670,11 @@ async function crearAnden() {
       codigo, tipo, operacion_permitida: op, estado: st,
     }).select().single();
     if (data) STATE.docks.push(data);
-    await auditLog('dock', 'ANDN_CREADO', `Nuevo andn ${codigo} creado`);
+    await auditLog('dock', 'ANDN_CREADO', `Nuevo Andén ${codigo} creado`);
   }
   closeModal('modal-dock');
   ymsPersistYardConfig();
-  notify(`Andn ${codigo} creado`, 'ok');
+  notify(`Andén ${codigo} creado`, 'ok');
   renderAndenes(); renderDashboard();
 }
 
@@ -7730,7 +7726,7 @@ function renderVisionGeneral() {
     const maxT = d.max_tiempo || STATE.params?.dwell_max || 180;
     const pct  = Math.min(100, Math.round(mins / maxT * 100));
     const barC = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--c-ok)';
-    rows.push({ zona: 'Andn ' + d.codigo, patente: v?.patente || '', carrier: v?.carrier_nombre || '', mins, pct, barC, estado: 'EN ANDN', color: 'var(--c-warn)' });
+    rows.push({ zona: 'Andén ' + d.codigo, patente: v?.patente || '', carrier: v?.carrier_nombre || '', mins, pct, barC, estado: 'EN Andén', color: 'var(--c-warn)' });
   });
 
   // 2. Vehculos en estacionamiento
@@ -7741,7 +7737,7 @@ function renderVisionGeneral() {
     rows.push({ zona, patente: s.patente || '', carrier: v?.carrier_nombre || s.nombre || '', mins, pct: 0, barC: 'var(--c-info)', estado: (s.playa_tipo === 'carros_cargados' ? 'CARGADO' : 'ESTAC.'), color: 'var(--c-info)' });
   });
 
-  // 3. Visitas activas sin slot ni andn (en espera de asignacin)
+  // 3. Visitas activas sin slot ni Andén (en espera de Asignación)
   STATE.visits.filter(v => v.estado === 'en_patio' && !v.dock_id && !STATE.playaSlots.find(s => s.patente === v.patente && s.ocupado)).forEach(v => {
     const mins = v.hora_ingreso ? Math.round((now - new Date(v.hora_ingreso)) / 60000) : 0;
     rows.push({ zona: 'Espera Gate', patente: v.patente || '', carrier: v.carrier_nombre || '', mins, pct: 0, barC: 'var(--tx-dim)', estado: 'EN PATIO', color: 'var(--c-ok)' });
@@ -7862,7 +7858,7 @@ function renderPatio() {
       const displayNom = slot.ocupado ? ((slot.nombre||'').split(' ').slice(-1)[0]||'') : (isBloq ? 'BLOQ' : isDed ? 'DED' : '');
       const isAdm = STATE.profile?.rol === 'administrador';
       const isPatio = STATE.profile?.rol === 'operador_patio';
-      // carros_cargados son read-only para patio (vienen del flujo de andn)
+      // carros_cargados son read-only para patio (vienen del flujo de Andén)
       const slotReadOnly = isPatio && playaTipo === 'carros_cargados';
       const clickAction = slotReadOnly ? 'verInfoSlot' : isAdm ? 'clickSlotAdmin' : (!isBloq ? 'toggleSlot' : '');
       const actionAttr  = clickAction ? ' data-action="' + clickAction + '" data-id="' + idx + '"' : '';
@@ -8010,7 +8006,7 @@ function renderZone(containerId, zones) {
         <div class="c-dim fz10">${v.carrier_nombre || ''}  ${fmtTime(v.hora_ingreso)}</div>
         <span class="badge ${v.tipo === 'primaria' ? 'b-info' : 'b-warn'}">${v.tipo?.toUpperCase()}</span>
       </div>`).join('')
-    : '<span class="c-dim fz10">Sin camiones en esta zona</span>';
+    : '<span class="c-dim fz10">Sin Camiónes en esta zona</span>';
 }
 
 function renderMovements() {
@@ -8030,7 +8026,7 @@ function renderMovements() {
 }
 
 // 
-//  TURNOMTICO
+//  Automático
 // 
 function renderTurno() {
   initTurnoEventDelegation();
@@ -8101,10 +8097,10 @@ async function llamarTicket(ticketId) {
       estado: 'llamado', dock_id: dock.id, hora_llamado: new Date().toISOString(),
     }).eq('id', ticketId);
     await sb.from('docks').update({ estado: 'busy', truck_id: t.visit_id, inicio_ocupacion: new Date().toISOString() }).eq('id', dock.id);
-    await auditLog('dock', 'TICKET_LLAMADO', `Ticket ${t.patente}  Andn ${dock.codigo}`);
+    await auditLog('dock', 'TICKET_LLAMADO', `Ticket ${t.patente}  Andén ${dock.codigo}`);
   }
   Audio.play('dock_free');
-  notify(`${t.patente} llamado a Andn ${dock.codigo}`, 'ok');
+  notify(`${t.patente} llamado a Andén ${dock.codigo}`, 'ok');
   renderTurno(); renderAndenes();
 }
 
@@ -8290,7 +8286,7 @@ async function aceptarTarea() {
   notify('Tarea aceptada: ' + (task.tipo?.replace(/_/g,' ') || ''), 'ok');
   renderTareas();
 
-  // Si es retiro de andn o movimiento a carros vacos, abrir modal de registro pallet/precinto
+  // Si es retiro de Andén o movimiento a carros vacos, abrir modal de registro pallet/precinto
   const esRetiro = task.tipo === 'retirar_anden' || task.tipo === 'anden_a_carros_vacios' || task.zona_destino === 'carros_cargados' || task.zona_destino === 'estacionamiento_carros_vacios';
   if (esRetiro) {
     setTimeout(function() { abrirCarroCargado(task.id); }, 300);
@@ -8349,7 +8345,7 @@ function renderDevoluciones() {
   var history=document.getElementById('devol-history-tbl');
   if(!pending||!history)return;
   var bannerEl=document.getElementById('devol-flujo-banner');
-  if(bannerEl)bannerEl.innerHTML='<div style="background:var(--bg-alt);border-left:3px solid var(--c-warn);padding:8px 14px;font-size: 8px;margin-bottom:10px;"><strong style="color:var(--c-warn);"> REQUISITO DE FLUJO YMS</strong><br>Solo devoluciones de camiones que completaron: Playa  Andn  Carros cargados (con sello)</div>';
+  if(bannerEl)bannerEl.innerHTML='<div style="background:var(--bg-alt);border-left:3px solid var(--c-warn);padding:8px 14px;font-size: 8px;margin-bottom:10px;"><strong style="color:var(--c-warn);"> REQUISITO DE FLUJO YMS</strong><br>Solo devoluciones de Camiónes que completaron: Playa  Andén  Carros cargados (con sello)</div>';
 
   const pend = STATE.returns.filter(r => r.estado === 'pendiente');
   const hist = STATE.returns.filter(r => r.estado !== 'pendiente');
@@ -9014,7 +9010,7 @@ function saveConfig() {
   if (sound !== null) STATE.soundEnabled = sound !== '0';
   localStorage.setItem('yms_params', JSON.stringify(p));
   Audio.play('ok');
-  notify(' Configuracin guardada  SLA andn: ' + p.sla_max + 'min  Dwell mx: ' + p.dwell_max + 'min  SLA tarea: ' + p.task_sla + 'min', 'ok');
+  notify(' Configuracin guardada  SLA Andén: ' + p.sla_max + 'min  Dwell mx: ' + p.dwell_max + 'min  SLA tarea: ' + p.task_sla + 'min', 'ok');
   auditLog('config', 'PARAMS_GUARDADOS', 'SLA max=' + p.sla_max + 'min, Dwell max=' + p.dwell_max + 'min');
 }
 
@@ -9055,7 +9051,7 @@ function renderCarros() {
         '<div><span class="c-dim">Conductor:</span> ' + Utils.esc(cr.conductor||'') + '</div>' +
         '<div><span class="c-dim">Pallets:</span> <b style="color:var(--tx-head);">' + Utils.esc(cr.pallets) + '</b>' +
           ' &nbsp; <span class="c-dim">Estac.:</span> ' + Utils.esc(slotLabel) +
-          ' &nbsp; <span class="c-dim">Andn plan:</span> <span style="color:var(--c-accent);">' + Utils.esc(anden) + '</span></div>' +
+          ' &nbsp; <span class="c-dim">Andén plan:</span> <span style="color:var(--c-accent);">' + Utils.esc(anden) + '</span></div>' +
         '<div class="c-dim" style="font-size:10px;">' + fmtDateTime(cr.hora) + (cr.obs ? '  ' + Utils.esc(cr.obs) : '') + '</div>' +
       '</div>' +
       (isAdmin ? '<button class="btn btn-warn" style="padding:2px 8px;font-size:10px;margin-right:4px;" data-action="solicitarMovimientoCarro" data-id="' + i + '"> SOLICITAR</button>' : '') +
@@ -9074,7 +9070,7 @@ function renderCarros() {
 
 function openNuevoCarro() {
   populateCarrierSelects();
-  // Slots con camiones (estacionamiento origen)
+  // Slots con Camiónes (estacionamiento origen)
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
     slotSel.innerHTML = '<option value="">Sin slot asignado</option>' +
@@ -9534,7 +9530,7 @@ async function loadTrazabilidad() {
 function exportTrazabilidad() {
   const data = window._trzData || STATE.visits;
   if (!data.length) { notify('Sin datos para exportar', 'warn'); return; }
-  const headers = ['Fecha','Patente','Conductor','Ruta','Empresa','Tipo','Ingreso','Salida','Dwell(min)','Andn','Estado'];
+  const headers = ['Fecha','Patente','Conductor','Ruta','Empresa','Tipo','Ingreso','Salida','Dwell(min)','Andén','Estado'];
   const rows = data.map(v => {
     const c = STATE.carriers.find(x => x.codigo === v.patente);
     const dw = v.hora_salida && v.hora_ingreso ? Math.round((new Date(v.hora_salida)-new Date(v.hora_ingreso))/60000) : '';
@@ -9570,7 +9566,7 @@ async function saveAnden() {
   const status  = document.getElementById('cfg-dock-status').value;
   if (!codigo) {
     Audio.play('error');
-    notify(' El cdigo del andn es obligatorio (ej: A01, B02)', 'error'); return;
+    notify(' El cdigo del Andén es obligatorio (ej: A01, B02)', 'error'); return;
   }
 
   if (editId) {
@@ -9586,8 +9582,8 @@ async function saveAnden() {
       await loadDocks();
     }
     Audio.play('ok');
-    notify(' Andn ' + codigo + ' actualizado correctamente  Tipo: ' + tipo.toUpperCase(), 'ok');
-    auditLog('dock', 'ANDN_EDITADO', 'Andn ' + codigo + ' modificado');
+    notify(' Andén ' + codigo + ' actualizado correctamente  Tipo: ' + tipo.toUpperCase(), 'ok');
+    auditLog('dock', 'ANDN_EDITADO', 'Andén ' + codigo + ' modificado');
   } else {
     // CREAR
     if (STATE.docks.find(d => d.codigo === codigo)) {
@@ -9599,10 +9595,10 @@ async function saveAnden() {
     if (!STATE.usingSeed) {
       const { data } = await sb.from('docks').insert({ codigo, tipo, operacion_permitida: op, plantas_compat: plantas, max_tiempo: maxtime, estado: status, site_id: STATE.currentSiteUUID || null }).select().single();
       if (data) { STATE.docks.pop(); STATE.docks.push(data); }
-      await auditLog('dock', 'ANDN_CREADO', 'Nuevo andn ' + codigo);
+      await auditLog('dock', 'ANDN_CREADO', 'Nuevo Andén ' + codigo);
     }
     Audio.play('ok');
-    notify(' Andn ' + codigo + ' creado  Tipo: ' + tipo.toUpperCase() + '  Operacin: ' + op.replace(/_/g,' ').toUpperCase(), 'ok');
+    notify(' Andén ' + codigo + ' creado  Tipo: ' + tipo.toUpperCase() + '  Operacin: ' + op.replace(/_/g,' ').toUpperCase(), 'ok');
   }
   ymsPersistYardConfig();
   clearDockForm();
@@ -9624,21 +9620,21 @@ function editAnden(id) {
   document.getElementById('cfg-dock-plantas').value  = d.plantas_compat || '';
   document.getElementById('cfg-dock-maxtime').value  = d.max_tiempo || 120;
   document.getElementById('cfg-dock-status').value   = d.estado === 'blocked' ? 'blocked' : 'free';
-  document.getElementById('cfg-dock-form-title').textContent = 'EDITAR ANDN  ' + d.codigo;
-  notify('Editando andn ' + d.codigo, 'info');
+  document.getElementById('cfg-dock-form-title').textContent = 'EDITAR Andén  ' + d.codigo;
+  notify('Editando Andén ' + d.codigo, 'info');
 }
 
 async function deleteAnden(id) {
   const dock = STATE.docks.find(d => d.id === id);
   if (!dock) return;
-  if (dock.estado === 'busy') { notify(' No se puede eliminar un andn ocupado', 'error'); return; }
-  if (!confirm('ELIMINAR andn ' + dock.codigo + '? Esta accin no se puede deshacer.')) return;
+  if (dock.estado === 'busy') { notify(' No se puede eliminar un Andén ocupado', 'error'); return; }
+  if (!confirm('ELIMINAR Andén ' + dock.codigo + '? Esta accin no se puede deshacer.')) return;
   STATE.docks = STATE.docks.filter(d => d.id !== id);
   if (!STATE.usingSeed) {
     await sb.from('docks').delete().eq('id', id);
-    await auditLog('dock', 'ANDN_ELIMINADO', 'Andn ' + dock.codigo + ' eliminado');
+    await auditLog('dock', 'ANDN_ELIMINADO', 'Andén ' + dock.codigo + ' eliminado');
   }
-  notify('Andn ' + dock.codigo + ' eliminado', 'ok');
+  notify('Andén ' + dock.codigo + ' eliminado', 'ok');
   renderAndenes(); renderDashboard(); renderConfigDocks();
 }
 
@@ -9647,7 +9643,7 @@ function clearDockForm() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('cfg-dock-maxtime').value = 120;
-  document.getElementById('cfg-dock-form-title').textContent = '+ NUEVO ANDN';
+  document.getElementById('cfg-dock-form-title').textContent = '+ NUEVO Andén';
 }
 
 function renderConfigDocks() {
@@ -9665,10 +9661,10 @@ function renderConfigDocks() {
       <button class="btn btn-err" style="font-size:9px;padding:1px 5px;" onclick="deleteAnden('${d.id}')">ELIMINAR</button>
     </td>
   </tr>`).join('') || '<tr><td colspan="6" class="c-dim tc">Sin andenes</td></tr>';
-  // Poblar select andn devolucin en config
+  // Poblar select Andén devolucin en config
   const selDevol = document.getElementById('cfg-devol-anden');
   if (selDevol) {
-    selDevol.innerHTML = '<option value="">Sin andn fijo</option>' +
+    selDevol.innerHTML = '<option value="">Sin Andén fijo</option>' +
       STATE.docks.map(d => `<option value="${d.id}">${d.codigo}  ${d.tipo}</option>`).join('');
   }
   // Poblar tabla devolucin
@@ -9752,7 +9748,7 @@ function addChecklistItem() {
   const label    = document.getElementById('cfg-cl-label')?.value?.trim();
   const tipo     = document.getElementById('cfg-cl-tipo')?.value || 'requerido';
   const esNum    = document.getElementById('cfg-cl-respuesta')?.value === 'numerico';
-  if (!label) { notify('Ingrese el nombre del punto de inspeccin', 'warn'); return; }
+  if (!label) { notify('Ingrese el nombre del punto de Inspección', 'warn'); return; }
   const id = 'custom_' + Date.now();
   const opciones = esNum ? null : [{v:'ok',l:'Correcto'},{v:'falla',l:'Falla / Problema'}];
   CL_ITEMS_CONFIG.push({ id, label, tipo, enabled: true, esNumerico: esNum, builtin: false, opciones, unidad: esNum ? '' : null });
@@ -9813,7 +9809,7 @@ function renderConfigCarriers() {
       '<td><span class="badge ' + stCls + '">' + Utils.esc(stLbl) + '</span></td>' +
       '<td style="white-space:nowrap;">' +
         (isAdmin && enPatio
-          ? '<button class="btn btn-ok" style="font-size:9px;padding:1px 5px;" onclick="abrirAsignacionAnden(\'' + c.id + '\',\'' + c.codigo + '\')">ANDN</button> ' : '') +
+          ? '<button class="btn btn-ok" style="font-size:9px;padding:1px 5px;" onclick="abrirAsignacionAnden(\'' + c.id + '\',\'' + c.codigo + '\')">Andén</button> ' : '') +
         '<button class="btn" style="font-size:9px;padding:1px 5px;" onclick="editCarrier(\'' + c.id + '\')">EDITAR</button> ' +
         '<button class="btn btn-err" style="font-size:9px;padding:1px 5px;" onclick="deleteCarrier(\'' + c.id + '\')">ELIMINAR</button>' +
       '</td>' +
@@ -10082,7 +10078,7 @@ function renderCitas() {
 function openNuevaCita() {
   const html = `<div id="modal-cita" class="modal-overlay" style="display:flex;">
     <div class="modal-box" style="min-width:500px;">
-      <div class="mh"><span class="mh-title"> NUEVA CITA</span><button class="btn btn-err" onclick="closeModal('modal-cita')"></button></div>
+      <div class="mh"><span class="mh-title"> NUEVA CITA</span><button class="btn btn-err" onclick="closeModal('modal-cita')" aria-label="Cerrar">✕</button></div>
       <div class="mb-inner">
         <div class="fr">
           <div class="fg"><label>Fecha *</label><input type="date" id="nc-fecha" value="${new Date().toISOString().split('T')[0]}"></div>
@@ -10090,7 +10086,7 @@ function openNuevaCita() {
           <div class="fg"><label>Hora fin</label><input type="time" id="nc-hora-fin" step="1800"></div>
         </div>
         <div class="fr">
-          <div class="fg"><label>Andn *</label>
+          <div class="fg"><label>Andén *</label>
             <select id="nc-anden">${STATE.docks.map(d => `<option value="${d.id}">${d.codigo}  ${d.tipo}</option>`).join('')}</select>
           </div>
           <div class="fg"><label>Patente rampla PRIMARIA * <span style="color:var(--tx-muted);font-size:9px;">(NO secundaria)</span></label>
@@ -10148,12 +10144,12 @@ function saveCita() {
     const faltantes = [];
     if (!fecha) faltantes.push('Fecha');
     if (!horaIni) faltantes.push('Hora inicio');
-    if (!dockId) faltantes.push('Andn');
+    if (!dockId) faltantes.push('Andén');
     if (!patente) faltantes.push('Patente');
     notify(' Campos obligatorios faltantes: ' + faltantes.join(', '), 'error'); return;
   }
 
-  // Verificar conflicto de horario en el mismo andn
+  // Verificar conflicto de horario en el mismo Andén
   const nuevoIni = horaIni;
   const nuevoFin = horaFin || horaIni;
   const conflicto = STATE.citas.find(c =>
@@ -10163,7 +10159,7 @@ function saveCita() {
   );
   if (conflicto) {
     Audio.play('error');
-    notify(' Conflicto de horario: ya existe una cita en Andn ' + (dock?.codigo||'?') + ' entre ' + horaIni + ' y ' + (horaFin || horaIni), 'error'); return;
+    notify(' Conflicto de horario: ya existe una cita en Andén ' + (dock?.codigo||'?') + ' entre ' + horaIni + ' y ' + (horaFin || horaIni), 'error'); return;
   }
 
   const carrier = STATE.carriers.find(x => x.codigo === patente);
@@ -10295,28 +10291,28 @@ function openNewCarro() {
   if (modal) modal.style.display = 'flex';
 }
 
-// Asignacin rpida desde panel "En Espera de Andn"
+// Asignación rpida desde panel "En Espera de Andén"
 async function asignarAndenDesdeEspera(visitId, dockId) {
   if (!visitId || !dockId) return;
   const dock  = STATE.docks.find(d => d.id === dockId);
   const visit = STATE.visits.find(v => v.id === visitId);
   if (!dock || !visit) { notify(' Datos no encontrados', 'error'); return; }
-  if (dock.estado !== 'free') { notify(' El andn ya no est libre', 'warn'); return; }
+  if (dock.estado !== 'free') { notify(' El Andén ya no est libre', 'warn'); return; }
   const ahora = new Date().toISOString();
   dock.estado = 'busy'; dock.truck_id = visitId; dock.inicio_ocupacion = ahora;
   visit.zona_actual = 'anden'; visit.dock_id = dockId; visit.estado = 'en_anden';
   STATE.auditLog.unshift({ id:'a'+Date.now(), categoria:'dock', evento:'ASIGNACION_ESPERA',
-    detalle: visit.patente + '  Andn ' + dock.codigo + ' (desde cola espera)',
+    detalle: visit.patente + '  Andén ' + dock.codigo + ' (desde cola espera)',
     user_nombre: STATE.profile?.nombre, created_at: ahora });
   if (!STATE.usingSeed && sb) {
     try {
       await sb.from('docks').update({ estado:'busy', truck_id: visitId, inicio_ocupacion: ahora }).eq('id', dockId);
       await sb.from('yard_visits').update({ zona_actual:'anden', dock_id: dockId, estado:'en_anden' }).eq('id', visitId);
-      await auditLog('dock','ASIGNACION_ESPERA', visit.patente + '  Andn ' + dock.codigo);
+      await auditLog('dock','ASIGNACION_ESPERA', visit.patente + '  Andén ' + dock.codigo);
     } catch(e) { console.warn('asignarAndenDesdeEspera:', e.message); }
   }
   Audio.play('dock_free');
-  notify(' ' + visit.patente + ' asignado a Andn ' + dock.codigo, 'ok');
+  notify(' ' + visit.patente + ' asignado a Andén ' + dock.codigo, 'ok');
   renderAndenes(); renderDashboard();
 }
 
@@ -10326,7 +10322,7 @@ function asignarAndn() { asignarManual(); }
 async function asignarManual() {
   const dockId  = document.getElementById('asig-anden')?.value;
   const visitId = document.getElementById('asig-visita')?.value;
-  if (!dockId || !visitId) { notify(' Seleccione andn y camin', 'error'); return; }
+  if (!dockId || !visitId) { notify(' Seleccione Andén y camin', 'error'); return; }
   const dock  = STATE.docks.find(d => d.id === dockId);
   const visit = STATE.visits.find(v => v.id === visitId);
   if (!dock || !visit) return;
@@ -10334,13 +10330,13 @@ async function asignarManual() {
     dock.estado = 'busy'; dock.truck_id = visitId; dock.inicio_ocupacion = new Date().toISOString();
     visit.zona_actual = 'anden'; visit.dock_id = dockId; visit.estado = 'en_anden';
     STATE.auditLog.unshift({ id:'a'+Date.now(), categoria:'dock', evento:'ASIGNACION_MANUAL',
-      detalle:`${visit.patente}  Andn ${dock.codigo}`, user_nombre: STATE.profile?.nombre, created_at: new Date().toISOString() });
+      detalle:`${visit.patente}  Andén ${dock.codigo}`, user_nombre: STATE.profile?.nombre, created_at: new Date().toISOString() });
   } else {
     await sb.from('docks').update({ estado:'busy', truck_id: visitId, inicio_ocupacion: new Date().toISOString() }).eq('id', dockId);
     await sb.from('yard_visits').update({ zona_actual:'anden', dock_id: dockId, estado:'en_anden' }).eq('id', visitId);
-    await auditLog('dock','ASIGNACION_MANUAL', `${visit.patente}  Andn ${dock.codigo}`);
+    await auditLog('dock','ASIGNACION_MANUAL', `${visit.patente}  Andén ${dock.codigo}`);
   }
-  notify(`Andn ${dock.codigo} asignado a ${visit.patente}`, 'ok');
+  notify(`Andén ${dock.codigo} asignado a ${visit.patente}`, 'ok');
   Audio.play('dock_free');
   document.getElementById('and-asign-panel').style.display = 'none';
   renderAndenes(); renderDashboard();
@@ -10427,8 +10423,8 @@ async function createUser() {
   const msgEl  = document.getElementById('user-form-msg');
   const setMsg = (txt, cls) => { if (msgEl) msgEl.innerHTML = `<span style="color:var(--${cls})">${txt}</span>`; };
 
-  if (!nombre || !email || !pass) { setMsg(' Nombre, email y contrasea son obligatorios', 'c-err'); return; }
-  if (pass.length < 8) { setMsg(' Contrasea mnimo 8 caracteres', 'c-err'); return; }
+  if (!nombre || !email || !pass) { setMsg(' Nombre, email y Contraseña son obligatorios', 'c-err'); return; }
+  if (pass.length < 8) { setMsg(' Contraseña mnimo 8 caracteres', 'c-err'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMsg(' Email no vlido', 'c-err'); return; }
   if (STATE.users.find(u => u.email === email)) { setMsg(' Este email ya existe', 'c-err'); return; }
 
@@ -10615,7 +10611,7 @@ async function resetUserPassword(userId) {
   const u = STATE.users.find(x => x.id === userId);
   if (!u) return;
 
-  if (!confirm('Generar nueva contrasea para ' + u.nombre + '? Se enviar un enlace de reset al email.')) return;
+  if (!confirm('Generar nueva Contraseña para ' + u.nombre + '? Se enviar un enlace de reset al email.')) return;
 
   if (!STATE.usingSeed && sb) {
     try {
@@ -10736,9 +10732,9 @@ function saveUserFromModal() {
     u.sitio = sitio;
     if (pass && pass.length >= 8) {
       u.pass = pass;
-      msg.innerHTML = ' Usuario actualizado (contrasea cambiada)';
+      msg.innerHTML = ' Usuario actualizado (Contraseña cambiada)';
     } else if (pass) {
-      msg.innerHTML = ' Contrasea debe tener mnimo 8 caracteres';
+      msg.innerHTML = ' Contraseña debe tener mnimo 8 caracteres';
       return;
     } else {
       msg.innerHTML = ' Usuario actualizado';
@@ -10747,7 +10743,7 @@ function saveUserFromModal() {
   } else {
     // Creacin
     if (!pass || pass.length < 8) {
-      msg.innerHTML = ' Contrasea mnimo 8 caracteres';
+      msg.innerHTML = ' Contraseña mnimo 8 caracteres';
       return;
     }
 
@@ -10773,13 +10769,13 @@ function saveUserFromModal() {
   }, 500);
 }
 
-//  CAMBIO DE CONTRASEA 
+//  CAMBIO DE Contraseña 
 function openChangePasswordModal() {
   const overlay = document.getElementById('change-pass-overlay');
   const subtitle = document.getElementById('chpass-subtitle');
   const msg = document.getElementById('chpass-msg');
 
-  subtitle.textContent = 'Cambiar contrasea para ' + (STATE.profile?.nombre || 'usuario actual');
+  subtitle.textContent = 'Cambiar Contraseña para ' + (STATE.profile?.nombre || 'usuario actual');
   msg.innerHTML = '';
 
   document.getElementById('chpass-current').value = '';
@@ -10809,21 +10805,21 @@ function saveChangePassword() {
   }
 
   if (newPass.length < 8) {
-    msg.innerHTML = ' La nueva contrasea debe tener mnimo 8 caracteres';
+    msg.innerHTML = ' La nueva Contraseña debe tener mnimo 8 caracteres';
     return;
   }
 
   if (newPass !== confirm) {
-    msg.innerHTML = ' Las contraseas no coinciden';
+    msg.innerHTML = ' Las Contraseñas no coinciden';
     return;
   }
 
   if (current === newPass) {
-    msg.innerHTML = ' La nueva contrasea debe ser diferente a la actual';
+    msg.innerHTML = ' La nueva Contraseña debe ser diferente a la actual';
     return;
   }
 
-  // Validar contrasea actual
+  // Validar Contraseña actual
   const user = STATE.users.find(u => u.id === STATE.user?.id);
   if (!user) {
     msg.innerHTML = ' Usuario no encontrado';
@@ -10831,22 +10827,22 @@ function saveChangePassword() {
   }
 
   if (user.pass !== current) {
-    msg.innerHTML = ' Contrasea actual incorrecta';
+    msg.innerHTML = ' Contraseña actual incorrecta';
     return;
   }
 
-  // Cambiar contrasea
+  // Cambiar Contraseña
   user.pass = newPass;
   if (STATE.usingSeed) {
     saveUsersToStorage();
   }
 
-  msg.innerHTML = ' Contrasea cambiada correctamente';
-  auditLog('auth', 'CONTRASEA_CAMBIADA', STATE.profile?.nombre);
+  msg.innerHTML = ' Contraseña cambiada correctamente';
+  auditLog('auth', 'Contraseña_CAMBIADA', STATE.profile?.nombre);
 
   setTimeout(() => {
     closeChangePasswordModal();
-    notify(' Contrasea actualizada correctamente', 'ok');
+    notify(' Contraseña actualizada correctamente', 'ok');
   }, 800);
 }
 
@@ -11112,7 +11108,7 @@ function showInitializationStatus() {
         <div>Firebase initialized: ${FIREBASE_HEALTH.initialized ? '' : ''}</div>
         <div>Auth ready: ${FIREBASE_HEALTH.authReady ? '' : ''}</div>
         <div>Firestore ready: ${FIREBASE_HEALTH.firestoreReady ? '' : ''}</div>
-        <div>ltima verificacin: ${FIREBASE_HEALTH.lastCheck || 'N/A'}</div>
+        <div>ltima Verificación: ${FIREBASE_HEALTH.lastCheck || 'N/A'}</div>
         <div style="margin-top: 8px;"><strong>Usuario</strong></div>
         <div>${window.firebase?.auth()?.currentUser?.email || 'No autenticado'}</div>
         ${FIREBASE_HEALTH.errors.length > 0 ? `
@@ -11518,7 +11514,7 @@ function renderTareasMobile() {
       var btnP = document.createElement('button');
       btnP.className = 'btn btn-ok';
       btnP.style.cssText = 'flex:1;padding:12px 4px;font-size: 10px;font-weight:600;background:rgba(14,158,109,0.14);border-color:var(--c-ok);color:var(--c-ok);';
-      btnP.textContent = ' CONFIRMAR POSTURA EN ANDN';
+      btnP.textContent = ' CONFIRMAR POSTURA EN Andén';
       (function(id){ btnP.addEventListener('click', function(){ abrirPosturaAnden(id); }); })(t.id);
       btns.appendChild(btnP);
     }
@@ -11580,7 +11576,7 @@ function clShowStep(step) {
   const tipoLbl = { critico:'CRTICO', cadena_frio:'CADENA FRO', requerido:'REQUERIDO' }[item.tipo] || item.tipo.toUpperCase();
 
   const titleEl = document.getElementById('cl-step-title');
-  if (titleEl) titleEl.textContent = 'Inspeccin Pre-Andn  ' + (step + 1) + ' de ' + total;
+  if (titleEl) titleEl.textContent = 'Inspección Pre-Andén  ' + (step + 1) + ' de ' + total;
 
   const savedVal = _clStepData[item.id] !== undefined ? _clStepData[item.id] : '';
   let inputHtml = '';
@@ -11748,7 +11744,7 @@ async function confirmarChecklistTarea() {
 
   closeModal('modal-checklist');
   Audio.play('ok');
-  notify('Checklist aprobado  confirme postura en andn', 'ok', 4000);
+  notify('Checklist aprobado  confirme postura en Andén', 'ok', 4000);
   renderTareas();
   setTimeout(function() { abrirPosturaAnden(_checklistTaskId); }, 500);
 }
@@ -11758,21 +11754,21 @@ function abrirPosturaAnden(taskId) {
   const t = STATE.tasks.find(x => x.id === taskId);
   if (!t) return;
   const carrier = STATE.carriers.find(x => x.codigo === t.patente);
-  const infoEl = document.getElementById('pa-info-camion');
+  const infoEl = document.getElementById('pa-info-Camión');
   if (infoEl) {
     infoEl.innerHTML =
       '<strong style="color:var(--tx-head);">' + escHtml(t.patente || '') + '</strong>' +
       (carrier ? '  ' + escHtml(carrier.nombre) + (carrier.numero_ruta && carrier.numero_ruta !== '0' ? '  Ruta ' + carrier.numero_ruta : '') : '') +
       '<br><span style="color:var(--tx-muted);font-size:10px;">Tarea: ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + '</span>';
   }
-  // Poblar select: andenes libres + andn pre-asignado en la tarea (aunque ya est reservado/busy)
+  // Poblar select: andenes libres + Andén pre-asignado en la tarea (aunque ya est reservado/busy)
   const andenSel = document.getElementById('pa-anden-select');
   if (andenSel) {
     const preAsignado = t?.dock_id ? STATE.docks.find(function(d){ return d.id === t.dock_id; }) : null;
     const andenesSel = STATE.docks.filter(function(d) {
       return d.estado === 'free' || (preAsignado && d.id === preAsignado.id);
     });
-    andenSel.innerHTML = '<option value=""> Seleccionar andn </option>' +
+    andenSel.innerHTML = '<option value=""> Seleccionar Andén </option>' +
       andenesSel.map(function(d) {
         const esReservado = preAsignado && d.id === preAsignado.id && d.estado !== 'free';
         return '<option value="' + d.id + '">' + d.codigo +
@@ -11781,7 +11777,7 @@ function abrirPosturaAnden(taskId) {
           (esReservado ? ' [RESERVADO PARA ESTA TAREA]' : '') + '</option>';
       }).join('') +
       (!andenesSel.length ? '<option value="" disabled> Sin andenes disponibles</option>' : '');
-    // Pre-seleccionar el andn asignado en la tarea
+    // Pre-seleccionar el Andén asignado en la tarea
     if (preAsignado) andenSel.value = preAsignado.id;
   }
   const obsEl = document.getElementById('pa-obs');
@@ -11800,7 +11796,7 @@ async function confirmarPosturaAnden() {
   const msgEl   = document.getElementById('pa-msg');
 
   if (!andenId) {
-    if (msgEl) msgEl.textContent = ' Debe seleccionar un andn de destino';
+    if (msgEl) msgEl.textContent = ' Debe seleccionar un Andén de destino';
     Audio.play('error');
     return;
   }
@@ -11809,7 +11805,7 @@ async function confirmarPosturaAnden() {
   const dock = STATE.docks.find(d => d.id === andenId);
   if (!t || !dock) return;
 
-  // Si el andn seleccionado difiere del pre-reservado en la tarea, liberar el original
+  // Si el Andén seleccionado difiere del pre-reservado en la tarea, liberar el original
   if (t.dock_id && t.dock_id !== andenId) {
     const dockOriginal = STATE.docks.find(function(d){ return d.id === t.dock_id; });
     if (dockOriginal && (dockOriginal.truck_id === t.visit_id || dockOriginal.truck_id === t.patente || !dockOriginal.truck_id)) {
@@ -11822,7 +11818,7 @@ async function confirmarPosturaAnden() {
     }
   }
 
-  // Actualizar visita: mover de playa/espera a andn
+  // Actualizar visita: mover de playa/espera a Andén
   const visit = STATE.visits.find(function(v) { return v.patente === t.patente && v.estado !== 'salida'; });
   if (visit) {
     visit.zona_actual = 'anden';
@@ -11837,7 +11833,7 @@ async function confirmarPosturaAnden() {
     }
   }
 
-  // Marcar andn como ocupado
+  // Marcar Andén como ocupado
   dock.estado           = 'busy';
   dock.truck_id         = visit ? visit.id : t.patente;
   dock.inicio_ocupacion = new Date().toISOString();
@@ -11852,7 +11848,7 @@ async function confirmarPosturaAnden() {
   }
 
   // Completar tarea  PASO 2 finalizado
-  const notaPostura = 'Postura confirmada andn ' + dock.codigo + (obs ? '  ' + obs : '');
+  const notaPostura = 'Postura confirmada Andén ' + dock.codigo + (obs ? '  ' + obs : '');
   const oldEstado = t.estado;
   t.estado   = 'completada';
   t.hora_fin = new Date().toISOString();
@@ -11885,7 +11881,7 @@ async function confirmarPosturaAnden() {
 
   ymsPersistYardConfig();
   await auditLog('task', 'POSTURA_ANDN_CONFIRMADA',
-    (t.patente||'') + '  Andn ' + dock.codigo + (obs ? '  ' + obs : ''));
+    (t.patente||'') + '  Andén ' + dock.codigo + (obs ? '  ' + obs : ''));
 
   //  CREAR AUTOMTICAMENTE la siguiente tarea: mover a carros cargados 
   const nuevaTareaCarroCargado = {
@@ -11897,7 +11893,7 @@ async function confirmarPosturaAnden() {
     patente: t.patente || '',
     sla_minutos: t.sla_minutos || 20,
     estado: 'ofertada',
-    notas: 'Tarea generada automticamente despus de postura en andn ' + dock.codigo,
+    notas: 'Tarea generada automticamente despus de postura en Andén ' + dock.codigo,
     hora_creacion: new Date().toISOString(),
     operador_nombre: null,
     dock_id: andenId
@@ -11921,10 +11917,10 @@ async function confirmarPosturaAnden() {
     } catch(e) { console.warn('crear tarea carro cargado:', e); }
   }
   await auditLog('task', 'TAREA_CARRO_CARGADO_CREADA',
-    (t.patente||'') + '  Mover de andn ' + dock.codigo + ' a carros cargados');
+    (t.patente||'') + '  Mover de Andén ' + dock.codigo + ' a carros cargados');
 
   Audio.play('ok');
-  notify(' Postura confirmada  ' + (t.patente||'') + ' en andn ' + dock.codigo + '   Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
+  notify(' Postura confirmada  ' + (t.patente||'') + ' en Andén ' + dock.codigo + '   Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
   closeModal('modal-postura-anden');
   renderTareas(); renderAndenes(); renderDashboard();
 
@@ -12085,7 +12081,7 @@ function utpCerrar() {
 }
 
 // 
-//  FLUJO PATIO: Andn  Carros Cargados (sello + pallets)
+//  FLUJO PATIO: Andén  Carros Cargados (sello + pallets)
 // 
 
 // Punto de entrada unificado para supervisor/admin: acepta la tarea si no est
@@ -12122,10 +12118,10 @@ function abrirCarroCargado(taskId) {
   // Adaptar ttulo y etiqueta segn tipo
   const esCarrosVacios = t.tipo === 'anden_a_carros_vacios';
   const titleEl = document.getElementById('cc-modal-title');
-  if (titleEl) titleEl.textContent = esCarrosVacios ? ' ANDN  ESTACIONAMIENTO CARROS VACOS' : ' SALIDA DE ANDN  CARROS CARGADOS';
+  if (titleEl) titleEl.textContent = esCarrosVacios ? ' Andén  ESTACIONAMIENTO CARROS VACOS' : ' SALIDA DE Andén  CARROS CARGADOS';
   const slotLabelEl = document.getElementById('cc-slot-label');
   if (slotLabelEl) slotLabelEl.innerHTML = (esCarrosVacios ? 'Estacionamiento Carros Vacos *' : 'Estacionamiento Carros Cargados *') + ' <span style="color:var(--c-err);font-size:9px;">(requerido)</span>';
-  document.getElementById('cc-info-camion').innerHTML =
+  document.getElementById('cc-info-Camión').innerHTML =
     '<strong style="color:var(--tx-head);">' + (t.patente || '') + '</strong>' +
     (carrier ? '  ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'') : '') +
     '<br><span style="color:var(--tx-muted);">Tarea: ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + '</span>';
@@ -12225,7 +12221,7 @@ async function confirmarCarroCargado() {
     tipo: 'carga', pallets: pallets, sello: sello, hora: new Date().toISOString(), obs: obs
   });
 
-  //  Actualizar visita: mover de andn a carros_cargados 
+  //  Actualizar visita: mover de Andén a carros_cargados 
   const visit = STATE.visits.find(v => v.patente === t.patente && v.estado !== 'salida');
   const dock  = visit?.dock_id ? STATE.docks.find(d => d.id === visit.dock_id) : null;
 
@@ -12245,7 +12241,7 @@ async function confirmarCarroCargado() {
         }).eq('id', visit.id);
       } catch(e) { console.warn('update visit zona:', e.message); }
     }
-    //  Liberar el andn 
+    //  Liberar el Andén 
     if (dock) {
       dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null;
       if (!STATE.usingSeed && sb) {
@@ -12288,17 +12284,17 @@ async function confirmarCarroCargado() {
 
   await auditLog('task', 'CARRO_CARGADO_REGISTRADO',
     t.patente + '  Sello: ' + sello + '  Pallets: ' + pallets +
-    (dock ? '  Andn ' + dock.codigo + ' liberado' : ''));
+    (dock ? '  Andén ' + dock.codigo + ' liberado' : ''));
   ymsPersistYardConfig();
   Audio.play('ok');
   const zonaLabel = (t.tipo === 'anden_a_carros_vacios') ? 'Estac. Carros Vacos' : 'Carros Cargados';
-  notify(' ' + t.patente + '  ' + zonaLabel + '  Precinto: ' + sello + '  ' + pallets + ' pallets' + (dock ? '  Andn ' + dock.codigo + ' libre' : ''), 'ok', 5000);
+  notify(' ' + t.patente + '  ' + zonaLabel + '  Precinto: ' + sello + '  ' + pallets + ' pallets' + (dock ? '  Andén ' + dock.codigo + ' libre' : ''), 'ok', 5000);
   closeModal('modal-carro-cargado');
   renderTareas(); renderCarros(); renderAndenes(); renderDashboard();
 }
 
 // 
-//  VERIFICACIN PALLETS  SUPERVISOR (retorno secundaria)
+//  Verificación PALLETS  SUPERVISOR (retorno secundaria)
 // 
 let _pcPatente = null;
 
@@ -12311,7 +12307,7 @@ function abrirPalletCheck(patente, visitId) {
   document.getElementById('pc-patente').value  = patente;
   document.getElementById('pc-pallets-esperados').value  = esperados;
   document.getElementById('pc-pallets-recibidos').value  = esperados;
-  document.getElementById('pc-info-camion').innerHTML =
+  document.getElementById('pc-info-Camión').innerHTML =
     '<strong style="color:var(--tx-head);">' + patente + '</strong>' +
     (carrier ? '  ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'') : '');
   const deudaEl = document.getElementById('pc-deuda-info');
@@ -12428,7 +12424,7 @@ function getAccionesTareaDesktop(t, myId, myRol) {
   const puedeCompletar = estadoActivo && (miaTarea || esSupervisor);
   const esRetiroAnden = t.tipo === 'retirar_anden' || t.tipo === 'anden_a_carros_vacios' || t.zona_destino === 'carros_cargados' || t.zona_destino === 'estacionamiento_carros_vacios';
   const esCarroCargado = esRetiroAnden && puedeCompletar;
-  // Tarea en estado intermedio checklist aprobado  requiere confirmar postura en andn
+  // Tarea en estado intermedio checklist aprobado  requiere confirmar postura en Andén
   const esChecklistOk = t.estado === 'checklist_ok' && (miaTarea || esSupervisor);
   let html = '<div class="tc-actions">';
   if (puedeEditar) {
@@ -12549,7 +12545,7 @@ function abrirPalletCheckDesdeIngreso() {
 }
 
 // 
-//  GESTIN CARRIERS  Mover CD y Asignar Andn desde Config
+//  GESTIN CARRIERS  Mover CD y Asignar Andén desde Config
 // 
 async function moverCarrierCD(carrierId, newCD) {
   const carrier = STATE.carriers.find(x => x.id === carrierId);
@@ -12589,7 +12585,7 @@ function abrirAsignacionAnden(carrierId, patente) {
 
   const modalHtml = '<div id="modal-asignar-anden" class="modal-overlay" style="display:flex;">' +
     '<div class="modal-box" style="max-width:420px;">' +
-      '<div class="mh"><span class="mh-title"> ASIGNAR ANDN  ' + patente + '</span>' +
+      '<div class="mh"><span class="mh-title"> ASIGNAR Andén  ' + patente + '</span>' +
         '<button class="btn btn-err" onclick="closeModal(&quot;modal-asignar-anden&quot;)"></button></div>' +
       '<div class="mb-inner">' +
         '<div style="margin-bottom:12px;font-size: 8px;color:var(--tx-muted);">' +
@@ -12597,13 +12593,13 @@ function abrirAsignacionAnden(carrierId, patente) {
           'Ruta: <strong style="color:var(--tx-head);">' + (carrier.numero_ruta||'') + '</strong> &nbsp;&nbsp; ' +
           'Zona: <strong style="color:var(--tx-head);">' + (visit.zona_actual||'').replace(/_/g,' ').toUpperCase() + '</strong>' +
         '</div>' +
-        '<div class="fg"><label>SELECCIONAR ANDN LIBRE</label>' +
+        '<div class="fg"><label>SELECCIONAR Andén LIBRE</label>' +
           '<select id="sel-anden-asignar" style="font-size: 9px;padding:8px;">' + opts + '</select>' +
         '</div>' +
       '</div>' +
       '<div class="mf">' +
         '<button class="btn" onclick="closeModal(&quot;modal-asignar-anden&quot;)">CANCELAR</button>' +
-        '<button class="btn btn-ok" onclick="confirmarAsignacionAnden(\'' + visit.id + '\',\'' + patente + '\')"> ASIGNAR ANDN</button>' +
+        '<button class="btn btn-ok" onclick="confirmarAsignacionAnden(\'' + visit.id + '\',\'' + patente + '\')"> ASIGNAR Andén</button>' +
       '</div>' +
     '</div></div>';
 
@@ -12612,13 +12608,13 @@ function abrirAsignacionAnden(carrierId, patente) {
 
 async function confirmarAsignacionAnden(visitId, patente) {
   const dockId = document.getElementById('sel-anden-asignar')?.value;
-  if (!dockId) { notify(' Seleccione un andn', 'error'); return; }
+  if (!dockId) { notify(' Seleccione un Andén', 'error'); return; }
 
   const dock  = STATE.docks.find(d => d.id === dockId);
   const visit = STATE.visits.find(v => v.id === visitId);
   if (!dock || !visit) return;
 
-  // Asignar andn
+  // Asignar Andén
   dock.estado = 'busy';
   dock.truck_id = visitId;
   dock.inicio_ocupacion = new Date().toISOString();
@@ -12633,10 +12629,10 @@ async function confirmarAsignacionAnden(visitId, patente) {
     } catch(e) { console.warn('asignar anden:', e.message); }
   }
 
-  await auditLog('dock', 'ANDEN_ASIGNADO_ADMIN', 'Patente ' + patente + '  Andn ' + dock.codigo + ' (asignacin manual admin)');
+  await auditLog('dock', 'ANDEN_ASIGNADO_ADMIN', 'Patente ' + patente + '  Andén ' + dock.codigo + ' (Asignación manual admin)');
   closeModal('modal-asignar-anden');
   Audio.play('dock_free');
-  notify(' Andn ' + dock.codigo + ' asignado a ' + patente, 'ok');
+  notify(' Andén ' + dock.codigo + ' asignado a ' + patente, 'ok');
   renderConfigCarriers();
   renderAndenes();
   renderDashboard();
@@ -12830,7 +12826,7 @@ function abrirModalNuevoAnden() {
   box.className = 'modal-box';
   box.style.maxWidth = '380px';
   box.innerHTML =
-    '<div class="mh"><span class="mh-title">+ NUEVO ANDN  ' + _cdSeleccionado + '</span></div>' +
+    '<div class="mh"><span class="mh-title">+ NUEVO Andén  ' + _cdSeleccionado + '</span></div>' +
     '<div class="mb-inner">' +
       '<div class="fr"><div class="fg"><label>Cdigo *</label><input type="text" id="na-codigo" placeholder="A01" style="text-transform:uppercase;"></div>' +
         '<div class="fg"><label>Tipo</label><select id="na-tipo"><option value="frigorifico">Frigorfico</option><option value="seco">Seco</option><option value="mixto">Mixto</option></select></div>' +
@@ -12852,14 +12848,14 @@ function abrirModalNuevoAnden() {
     const tipo   = document.getElementById('na-tipo')?.value||'frigorifico';
     const op     = document.getElementById('na-op')?.value||'descarga';
     const max    = parseInt(document.getElementById('na-max')?.value)||120;
-    if (!codigo) { Audio.play('error'); notify(' Ingrese cdigo de andn', 'error'); return; }
+    if (!codigo) { Audio.play('error'); notify(' Ingrese cdigo de Andén', 'error'); return; }
     if (STATE.docks.find(d => d.codigo === codigo && d.site_id === _cdSeleccionado)) {
       Audio.play('error'); notify(' Cdigo ya existe en este CD', 'error'); return;
     }
     STATE.docks.push({ id:'d_'+Date.now(), codigo, tipo, operacion_permitida:op, estado:'free', site_id:_cdSeleccionado, max_tiempo:max, plantas_compat:'TODAS' });
     overlay.remove();
     Audio.play('ok');
-    notify(' Andn ' + codigo + ' agregado a ' + _cdSeleccionado, 'ok');
+    notify(' Andén ' + codigo + ' agregado a ' + _cdSeleccionado, 'ok');
     renderAndenesCD(_cdSeleccionado);
     renderAndenes();
   });
@@ -12871,11 +12867,11 @@ function abrirModalNuevoAnden() {
 function eliminarAndenCD(dockId) {
   const dock = STATE.docks.find(d => d.id === dockId);
   if (!dock) return;
-  if (dock.estado === 'busy') { Audio.play('error'); notify(' No se puede eliminar un andn ocupado', 'error'); return; }
-  if (!confirm('Eliminar andn ' + dock.codigo + '?')) return;
+  if (dock.estado === 'busy') { Audio.play('error'); notify(' No se puede eliminar un Andén ocupado', 'error'); return; }
+  if (!confirm('Eliminar Andén ' + dock.codigo + '?')) return;
   STATE.docks = STATE.docks.filter(d => d.id !== dockId);
   Audio.play('warn');
-  notify(' Andn ' + dock.codigo + ' eliminado', 'warn');
+  notify(' Andén ' + dock.codigo + ' eliminado', 'warn');
   renderAndenesCD(_cdSeleccionado);
   renderAndenes();
 }
@@ -12929,7 +12925,7 @@ function solicitarMovimientoCarro(idx) {
   if (!carro) return;
   const slot = carro.slot ? STATE.playaSlots.find(s => s.id === carro.slot) : null;
   const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'sin estac.';
-  const anden = carro.anden_destino ? (STATE.docks.find(d=>d.id===carro.anden_destino)?.codigo||'sin andn') : 'sin andn';
+  const anden = carro.anden_destino ? (STATE.docks.find(d=>d.id===carro.anden_destino)?.codigo||'sin Andén') : 'sin Andén';
 
   // Crear tarea de movimiento
   const newTask = {
@@ -12943,7 +12939,7 @@ function solicitarMovimientoCarro(idx) {
     estado: 'ofertada',
     hora_creacion: new Date().toISOString(),
     operador_nombre: null,
-    notas: 'Planificado: ' + slotLabel + '  Andn ' + anden + '  ' + carro.pallets + ' pallets  ' + (carro.vuelta==='primera'?'1ra VUELTA':'2da VUELTA'),
+    notas: 'Planificado: ' + slotLabel + '  Andén ' + anden + '  ' + carro.pallets + ' pallets  ' + (carro.vuelta==='primera'?'1ra VUELTA':'2da VUELTA'),
   };
   STATE.tasks.unshift(newTask);
   carro.estado = 'en_movimiento';
@@ -12957,7 +12953,7 @@ function solicitarMovimientoCarro(idx) {
   }
 
   Audio.play('new_task');
-  notify(' Movimiento solicitado: ' + carro.patente + '  ' + slotLabel + '  Andn ' + anden, 'ok');
+  notify(' Movimiento solicitado: ' + carro.patente + '  ' + slotLabel + '  Andén ' + anden, 'ok');
   auditLog('task','MOVIMIENTO_SOLICITADO', carro.patente + '  ' + slotLabel + '  ' + anden);
   renderCarros();
   loadTasks();
@@ -12967,26 +12963,26 @@ function solicitarMovimientoCarro(idx) {
 //  LGICA YMS  REGLAS DE MOVIMIENTO 
 const YMS_MOVIMIENTOS = {
   mover_anden: {
-    label:' Estacionamiento  Andn',origen:'playa',destino:'anden',sla:15,
-    info:'Seleccione una patente secundaria dedicada desde un slot de estacionamiento. Si hay andn libre se genera movimiento a Patio; si no, queda en Turnomtico hasta liberacin de andn.',
+    label:' Estacionamiento  Andén',origen:'playa',destino:'anden',sla:15,
+    info:'Seleccione una patente secundaria dedicada desde un slot de estacionamiento. Si hay Andén libre se genera movimiento a Patio; si no, queda en Automático hasta liberacin de Andén.',
     filtro:function(v){ return (v.zona_actual==='playa'||v.zona_actual==='espera_anden')&&v.estado!=='salida'; },
-    validar:function(v){ if(v.zona_actual==='anden') return ' Ya est en andn'; if(v.zona_actual==='carros_cargados') return ' Cargada  debe ir a lavado primero'; return null; }
+    validar:function(v){ if(v.zona_actual==='anden') return ' Ya est en Andén'; if(v.zona_actual==='carros_cargados') return ' Cargada  debe ir a lavado primero'; return null; }
   },
   retirar_anden: {
-    label:' Andn  Carros cargados',origen:'anden',destino:'carros_cargados',sla:20,
-    info:'Rampla con carga completa sale del andn. Requiere sello y cantidad de pallets.',
+    label:' Andén  Carros cargados',origen:'anden',destino:'carros_cargados',sla:20,
+    info:'Rampla con carga completa sale del Andén. Requiere sello y cantidad de pallets.',
     filtro:function(v){ return v.zona_actual==='anden'&&v.estado!=='salida'; },
-    validar:function(v){ if(v.zona_actual!=='anden') return ' Solo ramplas en andn'; return null; }
+    validar:function(v){ if(v.zona_actual!=='anden') return ' Solo ramplas en Andén'; return null; }
   },
   anden_a_carros_vacios: {
-    label:' Andn  Estacionamiento carros vacos',origen:'anden',destino:'estacionamiento_carros_vacios',sla:20,
-    info:'Carro confirmado en andn. El operador Patio registra cantidad de pallets y nmero de precinto al completar el movimiento.',
+    label:' Andén  Estacionamiento carros vacos',origen:'anden',destino:'estacionamiento_carros_vacios',sla:20,
+    info:'Carro confirmado en Andén. El operador Patio registra cantidad de pallets y nmero de precinto al completar el movimiento.',
     filtro:function(v){ return v.zona_actual==='anden'&&v.estado!=='salida'; },
-    validar:function(v){ if(v.zona_actual!=='anden') return ' Solo carros confirmados en andn (dock ocupado)'; return null; }
+    validar:function(v){ if(v.zona_actual!=='anden') return ' Solo carros confirmados en Andén (dock ocupado)'; return null; }
   },
   mover_lavado: {
     label:'  Zona lavado',origen:'carros_cargados',destino:'zona_lavado',sla:25,
-    info:'Rampla que sali del andn va a lavado antes de volver a playa vacos.',
+    info:'Rampla que sali del Andén va a lavado antes de volver a playa vacos.',
     filtro:function(v){ return (v.zona_actual==='carros_cargados'||v.zona_actual==='anden')&&v.estado!=='salida'; },
     validar:function(v){ if(v.zona_actual==='playa') return ' Rampla vaca no requiere lavado'; return null; }
   },
@@ -13027,19 +13023,19 @@ function onTaskTipoChange() {
   if(tipo === 'mover_anden') {
     var andLibres = STATE.docks.filter(function(d){ return d.estado==='free'; });
     if(andLibres.length === 0) {
-      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;"> SIN ANDENES DISPONIBLES  la rampla ir al Turnomtico automticamente.</span>';
+      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;"> SIN ANDENES DISPONIBLES  la rampla ir al Automático automticamente.</span>';
     } else {
-      extraInfo = '<br><span style="color:var(--c-ok);"> ' + andLibres.length + ' andn(es) disponible(s): ' + andLibres.map(function(d){return d.codigo;}).join(', ') + '</span>';
+      extraInfo = '<br><span style="color:var(--c-ok);"> ' + andLibres.length + ' Andén(es) disponible(s): ' + andLibres.map(function(d){return d.codigo;}).join(', ') + '</span>';
     }
   }
   if(tipo === 'retirar_anden' || tipo === 'anden_a_carros_vacios') {
     var enAnden = STATE.visits.filter(function(v){ return v.zona_actual==='anden'&&v.estado!=='salida'; });
     var docksOcupados = STATE.docks.filter(function(d){ return d.estado==='busy'; });
     if(enAnden.length === 0 && docksOcupados.length === 0) {
-      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;"> Sin carros confirmados en andn actualmente.</span>';
+      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;"> Sin carros confirmados en Andén actualmente.</span>';
     } else {
       var total = enAnden.length || docksOcupados.length;
-      extraInfo = '<br><span style="color:var(--c-ok);"> ' + total + ' carro(s) confirmado(s) en andn disponible(s) para movimiento.</span>';
+      extraInfo = '<br><span style="color:var(--c-ok);"> ' + total + ' carro(s) confirmado(s) en Andén disponible(s) para movimiento.</span>';
     }
   }
   if(infoEl){infoEl.style.display='block';infoEl.innerHTML='<strong style="color:var(--c-info);">'+mov.label+'</strong><br>'+mov.info+extraInfo;}
@@ -13058,10 +13054,10 @@ function onTaskTipoChange() {
   }
   if(truckSel){
     var visitsValidas=STATE.visits.filter(mov.filtro);
-    var slotConCamion=STATE.playaSlots.filter(function(s){return s.ocupado&&s.patente;});
+    var slotConCamión=STATE.playaSlots.filter(function(s){return s.ocupado&&s.patente;});
     var opts=[];
     if(tipo==='mover_anden'){
-      slotConCamion.forEach(function(s){
+      slotConCamión.forEach(function(s){
         var carrier=STATE.carriers.find(function(x){return x.codigo===s.patente;});
         opts.push('<option value="slot:'+s.id+':'+s.patente+'">'+s.patente+'  '+(carrier?carrier.nombre.split(' ').slice(-2).join(' '):'')+' (F'+s.fila+'-'+String(s.col).padStart(2,'0')+')</option>');
       });
@@ -13095,7 +13091,7 @@ function onTaskTruckChange(){
       if(error){html='<span style="color:var(--c-err);">'+error+'</span>';}
       else{
         var carrier2=STATE.carriers.find(function(x){return x.codigo===visit.patente;});
-        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong>  '+(visit.carrier_nombre||'')+'<br> Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?'  Andn: '+(STATE.docks.find(function(d){return d.id===visit.dock_id;})?.codigo||''):'')+(carrier2?'  Ruta: '+(carrier2.numero_ruta||''):'');
+        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong>  '+(visit.carrier_nombre||'')+'<br> Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?'  Andén: '+(STATE.docks.find(function(d){return d.id===visit.dock_id;})?.codigo||''):'')+(carrier2?'  Ruta: '+(carrier2.numero_ruta||''):'');
       }
     }
   }
@@ -13122,7 +13118,7 @@ function buscarDatosCita(patente){
 function validarElegibleDevolucion(patente){
   var pd=STATE.palletDeuda[patente];
   var tieneCarga=pd&&pd.historial&&pd.historial.some(function(h){return h.tipo==='carga';});
-  if(!tieneCarga){return{elegible:false,motivo:'El camin '+patente+' no tiene registro de carga en andn. El flujo requerido es: Playa  Andn  Carros cargados'};}
+  if(!tieneCarga){return{elegible:false,motivo:'El camin '+patente+' no tiene registro de carga en Andén. El flujo requerido es: Playa  Andén  Carros cargados'};}
   return{elegible:true,motivo:null};
 }
 
@@ -13137,7 +13133,7 @@ function sincronizarSlotsConVisitas() {
     const visitaActiva = STATE.visits.find(function(v) {
       return v.patente === slot.patente && v.estado !== 'salida';
     });
-    // Si la visita sali o se movi a andn, el slot queda libre
+    // Si la visita sali o se movi a Andén, el slot queda libre
     if (!visitaActiva) {
       slot.ocupado = false; slot.patente = null;
       slot.nombre = null; slot.ruta = null; slot.tipo_v = null;
@@ -13513,9 +13509,9 @@ function clickSlotAdmin(idx) {
 
 
 // 
-//  CORRECCIN FLUJO PATIO: estacionamiento dedicado  andn
+//  CORRECCIN FLUJO PATIO: estacionamiento dedicado  Andén
 //  Regla: solo slots dedicados de secundaria con patente asignada;
-//  si no hay andn libre, queda en Turnomtico y no se oferta a patio.
+//  si no hay Andén libre, queda en Automático y no se oferta a patio.
 // 
 function ymsSlotLabel(slot) {
   if (!slot) return '';
@@ -13559,7 +13555,7 @@ function ymsGetFreeDockForPatio(preferDockId) {
 }
 
 function ymsBuildTaskNotes(slot, dock, notas) {
-  const base = 'Movimiento patio: ' + ymsSlotLabel(slot) + '  Andn ' + (dock ? dock.codigo : 'por asignar');
+  const base = 'Movimiento patio: ' + ymsSlotLabel(slot) + '  Andén ' + (dock ? dock.codigo : 'por asignar');
   return [base, notas || ''].filter(Boolean).join('  ');
 }
 
@@ -13572,7 +13568,7 @@ function ymsQueuePatioMove(patente, slot, prio, visitId, notas) {
     id: 'q' + Date.now(), patente: patente, visit_id: visitId || null, tipo_operacion: 'mover_anden',
     prioridad: prio === 'critica' ? 10 : prio === 'urgente' ? 7 : 5,
     estado: 'esperando', hora_creacion: new Date().toISOString(),
-    notas: 'En espera de andn libre  ' + ymsSlotLabel(slot) + (notas ? '  ' + notas : '')
+    notas: 'En espera de Andén libre  ' + ymsSlotLabel(slot) + (notas ? '  ' + notas : '')
   };
   STATE.queueTickets.push(ticket);
   return ticket;
@@ -13631,13 +13627,13 @@ async function ymsDespacharTurnomaticoPatio(dockLiberado) {
   const slot = ymsGetMovPatioSlots().find(function(s) { return ymsSlotPatente(s) === String(ticket.patente || '').toUpperCase(); });
   if (!slot) {
     ticket.estado = 'cancelado';
-    notify('Turnomtico cancelado: patente sin estacionamiento dedicado asignado (' + (ticket.patente || '') + ')', 'warn', 7000);
+    notify('Automático cancelado: patente sin estacionamiento dedicado asignado (' + (ticket.patente || '') + ')', 'warn', 7000);
     return false;
   }
   const visit = (STATE.visits || []).find(function(v){ return v.patente === ticket.patente && v.estado !== 'salida'; });
   const task = await ymsCrearTareaPatioDesdeSlot(slot, dock, 'normal', 15, ticket.notas, ticket.visit_id || visit?.id || null, ticket);
   Audio.play('new_task');
-  notify('Andn ' + dock.codigo + ' liberado: movimiento enviado a Patio para ' + ticket.patente, 'ok', 7000);
+  notify('Andén ' + dock.codigo + ' liberado: movimiento enviado a Patio para ' + ticket.patente, 'ok', 7000);
   if (STATE.profile?.rol === 'operador_patio') setTimeout(function(){ mostrarUberTaskPatio(task); }, 400);
   renderTareas(); renderTurno(); renderAndenes();
   return true;
@@ -13660,17 +13656,17 @@ function onTaskTipoChange() {
     var andLibres=(STATE.docks||[]).filter(function(d){return d.estado==='free';});
     var slots=ymsGetMovPatioSlots();
     extraInfo='<br><span style="color:var(--c-info);">Patentes disponibles desde estacionamientos dedicados: '+slots.length+'</span>';
-    if(andLibres.length===0) extraInfo+='<br><span style="color:var(--c-warn);font-weight:bold;"> Sin andn libre: el movimiento quedar en Turnomtico y se ofertar a Patio cuando se libere un andn.</span>';
+    if(andLibres.length===0) extraInfo+='<br><span style="color:var(--c-warn);font-weight:bold;"> Sin Andén libre: el movimiento quedar en Automático y se ofertar a Patio cuando se libere un Andén.</span>';
     else extraInfo+='<br><span style="color:var(--c-ok);"> Andenes libres: '+andLibres.map(function(d){return d.codigo;}).join(', ')+'</span>';
   }
   if(tipo==='retirar_anden'||tipo==='anden_a_carros_vacios'){
     var enAnden=(STATE.visits||[]).filter(function(v){return v.zona_actual==='anden'&&v.estado!=='salida';});
     var docksOcupados=(STATE.docks||[]).filter(function(d){return d.estado==='busy';});
     if(enAnden.length===0&&docksOcupados.length===0){
-      extraInfo='<br><span style="color:var(--c-err);font-weight:bold;"> Sin carros confirmados en andn actualmente.</span>';
+      extraInfo='<br><span style="color:var(--c-err);font-weight:bold;"> Sin carros confirmados en Andén actualmente.</span>';
     } else {
       var total=enAnden.length||docksOcupados.length;
-      extraInfo='<br><span style="color:var(--c-ok);"> '+total+' carro(s) confirmado(s) en andn disponible(s): '+enAnden.map(function(v){return v.patente;}).join(', ')+'</span>';
+      extraInfo='<br><span style="color:var(--c-ok);"> '+total+' carro(s) confirmado(s) en Andén disponible(s): '+enAnden.map(function(v){return v.patente;}).join(', ')+'</span>';
       if(tipo==='retirar_anden') extraInfo+='<br><span style="color:var(--c-info);"> El operador Patio confirmar pallets, precinto y slot de destino en Carros Cargados.</span>';
       if(tipo==='anden_a_carros_vacios') extraInfo+='<br><span style="color:var(--c-info);"> El operador Patio ingresar pallets y precinto al completar.</span>';
     }
@@ -13703,9 +13699,9 @@ function onTaskTipoChange() {
       });
     }
     var emptyMsg = tipo==='mover_anden' ? ' Sin patentes en estacionamientos dedicados' :
-                   tipo==='retirar_anden' ? ' Sin ramplas en andn actualmente' :
-                   tipo==='anden_a_carros_vacios' ? ' Sin carros confirmados en andn actualmente' :
-                   tipo==='mover_lavado' ? ' Sin ramplas en carros cargados / andn' :
+                   tipo==='retirar_anden' ? ' Sin ramplas en Andén actualmente' :
+                   tipo==='anden_a_carros_vacios' ? ' Sin carros confirmados en Andén actualmente' :
+                   tipo==='mover_lavado' ? ' Sin ramplas en carros cargados / Andén' :
                    ' Sin ramplas vlidas para este tipo';
     truckSel.innerHTML=(opts.length?'<option value=""> Seleccionar rampla </option>':'<option value="">'+emptyMsg+'</option>')+opts.join('');
     if(hintEl)hintEl.textContent='('+opts.length+' disponibles)';
@@ -13813,19 +13809,19 @@ async function crearTarea() {
           Object.assign(ticket, ins.data);
         }
         Audio.play('warn');
-        setTaskMsg(' Sin andn disponible. '+patente+' queda en Turnomtico; se ofertar a Patio cuando se libere un andn.', 'warn');
-        notify(' '+patente+' qued en Turnomtico por falta de andn libre', 'warn', 7000);
+        setTaskMsg(' Sin Andén disponible. '+patente+' queda en Automático; se ofertar a Patio cuando se libere un Andén.', 'warn');
+        notify(' '+patente+' qued en Automático por falta de Andén libre', 'warn', 7000);
         ymsPersistYardConfig();
         renderTurno(); renderTareas();
         setTimeout(function(){ closeModal('modal-task'); if(btn)btn.disabled=false; }, 1500);
         return;
       }
-      setTaskMsg(' Creando movimiento Patio hacia andn '+dock.codigo+'...', 'warn');
+      setTaskMsg(' Creando movimiento Patio hacia Andén '+dock.codigo+'...', 'warn');
       const task = await ymsCrearTareaPatioDesdeSlot(slot, dock, prio, sla, notas, visit?.id || null, null);
       await auditLog('task', 'TAREA_CREADA', 'mover anden  ' + patente + '  ' + ymsSlotLabel(slot) + '  ' + dock.codigo);
       Audio.play('new_task');
-      setTaskMsg(' Movimiento enviado a Patio: '+patente+'  '+ymsSlotLabel(slot)+'  Andn '+dock.codigo, 'ok');
-      notify(' Movimiento Patio creado: '+patente+'  Andn '+dock.codigo, 'ok', 6000);
+      setTaskMsg(' Movimiento enviado a Patio: '+patente+'  '+ymsSlotLabel(slot)+'  Andén '+dock.codigo, 'ok');
+      notify(' Movimiento Patio creado: '+patente+'  Andén '+dock.codigo, 'ok', 6000);
       if (STATE.profile?.rol === 'operador_patio') setTimeout(function(){ mostrarUberTaskPatio(task); }, 400);
       renderTareas(); renderTurno(); renderAndenes(); renderPatio();
       setTimeout(function(){ closeModal('modal-task'); if(btn)btn.disabled=false; }, 1500);
@@ -13911,10 +13907,10 @@ async function llamarTicket(ticketId) {
   } else {
     await sb.from('queue_tickets').update({ estado:'llamado', dock_id:dock.id, hora_llamado:new Date().toISOString() }).eq('id', ticketId);
     await sb.from('docks').update({ estado:'busy', truck_id:t.visit_id, inicio_ocupacion:new Date().toISOString() }).eq('id', dock.id);
-    await auditLog('dock', 'TICKET_LLAMADO', 'Ticket '+t.patente+'  Andn '+dock.codigo);
+    await auditLog('dock', 'TICKET_LLAMADO', 'Ticket '+t.patente+'  Andén '+dock.codigo);
   }
   Audio.play('dock_free');
-  notify(t.patente + ' llamado a Andn ' + dock.codigo, 'ok');
+  notify(t.patente + ' llamado a Andén ' + dock.codigo, 'ok');
   renderTurno(); renderAndenes();
 }
 
@@ -14017,7 +14013,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="email" id="umod-email" placeholder="usuario@empresa.com" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Contrasea</label>
+        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Contraseña</label>
         <input type="password" id="umod-pass" placeholder="Mnimo 8 caracteres" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
         <div style="font-size:8px;color:var(--tx-muted);"> Mnimo 8 caracteres</div>
       </div>
@@ -14056,25 +14052,25 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- MODAL: Cambiar Contrasea -->
+<!-- MODAL: Cambiar Contraseña -->
 <div id="change-pass-overlay" class="modal-overlay">
   <div class="modal-box" style="max-width:450px;min-width:280px;">
     <div class="mh" style="margin-bottom:16px;">
-      <div class="mh-title" style="font-size:14px;font-weight:700;"> CAMBIAR CONTRASEA</div>
+      <div class="mh-title" style="font-size:14px;font-weight:700;"> CAMBIAR Contraseña</div>
       <div style="font-size:9px;color:var(--tx-muted);margin-top:4px;" id="chpass-subtitle"></div>
     </div>
     <div class="mb" style="display:flex;flex-direction:column;gap:12px;">
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Contrasea actual</label>
-        <input type="password" id="chpass-current" placeholder="Tu contrasea actual" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
+        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Contraseña actual</label>
+        <input type="password" id="chpass-current" placeholder="Tu Contraseña actual" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Nueva contrasea</label>
+        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Nueva Contraseña</label>
         <input type="password" id="chpass-new" placeholder="Mnimo 8 caracteres" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
       </div>
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Confirmar nueva contrasea</label>
-        <input type="password" id="chpass-confirm" placeholder="Repite la nueva contrasea" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
+        <label style="font-size:9px;font-weight:600;color:var(--tx-muted);">Confirmar nueva Contraseña</label>
+        <input type="password" id="chpass-confirm" placeholder="Repite la nueva Contraseña" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg-input);color:var(--tx-base);font-size:11px;">
       </div>
       <div id="chpass-msg" style="font-size:9px;min-height:14px;color:var(--c-warn);"></div>
     </div>

@@ -1,4 +1,4 @@
-﻿// UI Module â€” Render functions with Firebase Service layer
+﻿// UI Module –” Render functions with Firebase Service layer
 import * as taskService from './services/taskService.js';
 import * as dockService from './services/dockService.js';
 import * as visitService from './services/visitService.js';
@@ -100,9 +100,9 @@ function renderAll() {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  DASHBOARD
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderDashboard() {
   console.log('[TEST] === DASHBOARD RENDER TEST ===');
 
@@ -186,7 +186,7 @@ function updateKPIs() {
   // Dwell promedio
   const finished = (STATE.visits || []).filter(v => v.dwell_minutes);
   const dwell = finished.length ? Math.round(finished.reduce((s,v) => s + v.dwell_minutes, 0) / finished.length) : 0;
-  set('kpi-dwell', dwell || 'â€”');
+  set('kpi-dwell', dwell || '–”');
   set('kpi-entries', (STATE.visits || []).length);
 }
 
@@ -202,7 +202,7 @@ function renderDockMap(containerId) {
     const pct   = d.estado === 'busy' ? Math.min(100, Math.round(elapsed / maxT * 100)) : 0;
     const barColor = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--c-ok)';
     const elapsedColor = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--tx-muted)';
-    const patente = visit?.patente || (d.estado === 'busy' ? 'â€”' : '');
+    const patente = visit?.patente || (d.estado === 'busy' ? '–”' : '');
     const tile = document.createElement('div');
     tile.className = `dock-tile ${d.estado}`;
     tile.innerHTML = `
@@ -236,7 +236,7 @@ function renderQueueDash() {
       <div class="queue-item ${urgent ? 'urgent' : ''}">
         <div class="qi-pos">${i+1}</div>
         <div class="qi-data">
-          <div class="qi-truck">${t.patente || 'â€”'}</div>
+          <div class="qi-truck">${t.patente || '–”'}</div>
           <div class="qi-sub">${t.tipo_operacion?.replace(/_/g,' ').toUpperCase() || ''}</div>
         </div>
         <div class="qi-wait">
@@ -259,10 +259,10 @@ function renderTaskDash() {
       en_ejecucion: 'ok', completada: 'dim', rechazada: 'err', vencida: 'err',
     };
     tbody.innerHTML += `<tr>
-      <td class="c-dim">${t.id?.slice(-6) || 'â€”'}</td>
+      <td class="c-dim">${t.id?.slice(-6) || '–”'}</td>
       <td>${t.tipo?.replace(/_/g,' ') || ''}</td>
       <td><span class="badge badge-${stMap[t.estado] || 'gray'}">${t.estado?.toUpperCase()}</span></td>
-      <td class="c-dim">${t.operador_nombre || 'â€”'}</td>
+      <td class="c-dim">${t.operador_nombre || '–”'}</td>
     </tr>`;
   });
 }
@@ -278,7 +278,7 @@ function renderAlertsDash() {
     }
   });
   (STATE.tasks || []).forEach(t => {
-    if (t.estado === 'vencida') alerts.push({ type: 'err', msg: `⚠  Tarea vencida: ${t.tipo?.replace(/_/g,' ')} â€” ${t.patente}` });
+    if (t.estado === 'vencida') alerts.push({ type: 'err', msg: `⚠  Tarea vencida: ${t.tipo?.replace(/_/g,' ')} –” ${t.patente}` });
   });
   if (alerts.length === 0) {
     c.innerHTML = '<span class="c-ok fz10">âœ“ Sin alertas activas</span>';
@@ -291,9 +291,9 @@ function renderAlertsDash() {
   ).join('');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  GUARDIA â€” CONTROL DE ACCESO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  GUARDIA –” CONTROL DE ACCESO
+// ──────────────────────────────────────────────
 function renderGuardia() {
   initGuardiaEventDelegation();
   const isMobile = document.body.getAttribute('data-mobile') === 'true';
@@ -314,10 +314,10 @@ function renderGuardia() {
     tbody.innerHTML += `<tr>
       <td class="c-bright fw">${Utils.esc(v.patente)}</td>
       <td><span class="badge badge-${v.tipo === 'primaria' ? 'info' : 'warn'}">${Utils.esc(v.tipo?.toUpperCase())}</span></td>
-      <td class="c-dim">${Utils.esc(v.planta_nombre || v.numero_ruta || 'â€”')}</td>
-      <td class="c-dim">${Utils.esc(v.carrier_nombre || 'â€”')}</td>
+      <td class="c-dim">${Utils.esc(v.planta_nombre || v.numero_ruta || '–”')}</td>
+      <td class="c-dim">${Utils.esc(v.carrier_nombre || '–”')}</td>
       <td class="c-dim">${fmtTime(v.hora_ingreso)}</td>
-      <td>${Utils.esc(v.zona_actual?.replace(/_/g,' ').toUpperCase() || 'â€”')}</td>
+      <td>${Utils.esc(v.zona_actual?.replace(/_/g,' ').toUpperCase() || '–”')}</td>
       <td class="${exceded ? 'c-err' : elapsed > (STATE.params?.dwell_max || 180)*0.75 ? 'c-warn' : 'c-ok'}">${elapsed} min</td>
       <td><span class="badge badge-${v.estado === 'en_anden' ? 'warn' : 'ok'}">${Utils.esc(v.estado?.replace(/_/g,' ').toUpperCase())}</span></td>
       <td>
@@ -353,13 +353,13 @@ function setTipoIngreso(tipo) {
 
 function fillCarriersSelect(id) {
   const sel = document.getElementById(id);
-  sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
+  sel.innerHTML = '<option value="">–” Seleccionar –”</option>';
   (STATE.carriers || []).forEach(c => sel.innerHTML += `<option value="${Utils.esc(c.id)}" data-nombre="${Utils.esc(c.nombre || '')}" data-codigo="${Utils.esc(c.codigo || '')}">${Utils.esc(c.nombre)}</option>`);
 }
 
 function fillPlantsSelect(id) {
   const sel = document.getElementById(id);
-  sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
+  sel.innerHTML = '<option value="">–” Seleccionar –”</option>';
   (STATE.plants || []).forEach(p => sel.innerHTML += `<option value="${Utils.esc(p.id)}">${Utils.esc(p.nombre)}</option>`);
 }
 
@@ -400,7 +400,7 @@ function buscarRetorno() {
   if (carrier) {
     html += '<div style="background:var(--bg-alt);padding:10px;border-left:4px solid var(--c-accent);margin-bottom:10px;border-radius:4px;">';
     html += '<strong style="color:var(--tx-head);font-size: 10px;">ðŸš› ' + carrier.nombre + '</strong><br>';
-    html += '<span style="color:var(--tx-muted);font-size: 8px;">Ruta: <strong>' + (carrier.numero_ruta||'â€”') + '</strong> · Teléfono: ' + (carrier.telefono||'â€”') + '</span>';
+    html += '<span style="color:var(--tx-muted);font-size: 8px;">Ruta: <strong>' + (carrier.numero_ruta||'–”') + '</strong> · Teléfono: ' + (carrier.telefono||'–”') + '</span>';
     html += '</div>';
   }
 
@@ -422,7 +422,7 @@ function buscarRetorno() {
       const esDeuda = deuda.deuda < 0;
       const color = esDeuda ? 'var(--c-err)' : 'var(--c-ok)';
       html += '<div style="background:' + (esDeuda ? 'rgba(220,38,38,0.08)' : 'rgba(14,158,109,0.08)') + ';padding:8px;border-left:3px solid ' + color + ';margin-bottom:8px;border-radius:3px;">';
-      html += '<span style="color:' + color + ';font-weight:600;font-size: 9px;">' + (esDeuda ? '⚠  DEUDA' : 'âœ“ CRÃ‰DITO') + '</span><br>';
+      html += '<span style="color:' + color + ';font-weight:600;font-size: 9px;">' + (esDeuda ? '⚠  DEUDA' : 'âœ“ CRÉDITO') + '</span><br>';
       html += '<span style="font-size: 8px;">' + (esDeuda ? 'Debe: ' + Math.abs(deuda.deuda) + ' pallets' : 'Disponible: ' + deuda.deuda + ' pallets') + '</span>';
       html += '</div>';
     } else {
@@ -447,8 +447,8 @@ function buscarRetorno() {
     html += '<div style="font-size:10px;color:var(--tx-muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">';
     html += '<strong>Historial: ' + visitas.length + ' visita' + (visitas.length !== 1 ? 's' : '') + '</strong><br>';
     visitas.slice(-3).reverse().forEach(v => {
-      const horaEntrada = v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'}) : 'â€”';
-      html += 'â€¢ ' + horaEntrada + ' â†’ ' + (v.zona_actual || v.estado) + '<br>';
+      const horaEntrada = v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleTimeString('es-CL', {hour:'2-digit', minute:'2-digit'}) : '–”';
+      html += '–¢ ' + horaEntrada + ' â†’ ' + (v.zona_actual || v.estado) + '<br>';
     });
     html += '</div>';
   }
@@ -517,7 +517,7 @@ async function confirmarIngreso() {
       if (STATE.usingSeed) {
         STATE.returns.unshift(devRet);
         Audio.play('alert');
-        notify('⚠  Devolución registrada â€” pendiente de autorización · ' + patente + ' · ' + palletsDevol + ' pallets', 'warn', 6000);
+        notify('⚠  Devolución registrada –” pendiente de autorización · ' + patente + ' · ' + palletsDevol + ' pallets', 'warn', 6000);
       } else {
         // Usar safeWrite para persistencia offline
         await safeWrite(
@@ -536,7 +536,7 @@ async function confirmarIngreso() {
           () => { const idx = STATE.returns.indexOf(devRet); if (idx !== -1) STATE.returns.splice(idx, 1); }
         );
         Audio.play('alert');
-        notify('⚠  Devolución registrada â€” pendiente de autorización · ' + patente + ' · ' + palletsDevol + ' pallets', 'warn', 6000);
+        notify('⚠  Devolución registrada –” pendiente de autorización · ' + patente + ' · ' + palletsDevol + ' pallets', 'warn', 6000);
       }
 
       obs = (obs ? obs + ' | ' : '') + 'DEVOLUCIÃ“N: ' + motivoDevol?.replace(/_/g,' ') + ' · ' + palletsDevol + ' pallets';
@@ -577,8 +577,8 @@ async function confirmarIngreso() {
       numero_guia: guia, precinto, hora_ingreso: new Date().toISOString(),
       zona_actual: andénLibre ? 'anden' : 'espera_anden',
       dock_id: andénLibre?.id || null, estado: andénLibre ? 'en_anden' : 'en_patio',
-      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId || c.codigo === carrierId)?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.dataset?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.textContent || 'â€”',
-      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || 'â€”',
+      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId || c.codigo === carrierId)?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.dataset?.nombre || document.getElementById('ing-carrier')?.selectedOptions?.[0]?.textContent || '–”',
+      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || '–”',
       temp_cabina: isNaN(tempCabina) ? null : tempCabina,
       temp_producto: isNaN(tempProd) ? null : tempProd,
       tipo_carga: tipoCarga,
@@ -586,7 +586,7 @@ async function confirmarIngreso() {
     };
     if (tempAlerta) {
       addAlert('P1', 'ðŸŒ¡ TEMPERATURA FUERA DE RANGO', 
-        `${patente} / ${tipoCarga.toUpperCase()} â€” Cabina: ${tempCabina}Â°C`, visitId);
+        `${patente} / ${tipoCarga.toUpperCase()} –” Cabina: ${tempCabina}Â°C`, visitId);
       Audio.play('alert');
     }
     STATE.visits.push(newVisit);
@@ -608,7 +608,7 @@ async function confirmarIngreso() {
       created_at: new Date().toISOString(),
     });
   } else {
-    // Supabase â€” con manejo de errores y fallback local
+    // Supabase –” con manejo de errores y fallback local
     const visitData = {
       patente, tipo, carrier_id: carrierId || null, planta_id: plantaId || null,
       numero_guia: guia, precinto, hora_ingreso: new Date().toISOString(),
@@ -625,14 +625,14 @@ async function confirmarIngreso() {
     };
     if (tempAlerta) {
       addAlert('P1', 'ðŸŒ¡ TEMPERATURA FUERA DE RANGO',
-        `${patente} / ${tipoCarga.toUpperCase()} â€” Cabina: ${tempCabina}Â°C`, null);
+        `${patente} / ${tipoCarga.toUpperCase()} –” Cabina: ${tempCabina}Â°C`, null);
     }
 
     // Optimistic state local inmediato
     const localVisit = {
       id: 'v_local_' + Date.now(), ...visitData,
-      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId)?.nombre || 'â€”',
-      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || 'â€”',
+      carrier_nombre: (STATE.carriers || []).find(c => c.id === carrierId)?.nombre || '–”',
+      planta_nombre: (STATE.plants || []).find(p => p.id === plantaId)?.nombre || '–”',
     };
     STATE.visits.push(localVisit);
     visitId = localVisit.id;
@@ -671,7 +671,7 @@ async function confirmarIngreso() {
         `Patente ${patente} ingresó al patio`);
     } catch(e) {
       console.warn('[YMS] confirmarIngreso DB error:', e.message);
-      // El registro ya está en STATE localmente â€” se sincronizará al reconectar
+      // El registro ya está en STATE localmente –” se sincronizará al reconectar
       _pendingOps.push(async () => {
         const { data: vData } = await sb.from('yard_visits').insert(visitData).select().single();
         if (vData && andénLibre) {
@@ -687,9 +687,9 @@ async function confirmarIngreso() {
     Audio.play('dock_free');
     notify(`Andén ${andénLibre.codigo} asignado a ${patente}`, 'ok');
   } else {
-    infoEl.innerHTML = `â³ Sin andén disponible â€” Ticket generado en Turnomático. Enviar a zona espera.`;
+    infoEl.innerHTML = `â³ Sin andén disponible –” Ticket generado en Turnomático. Enviar a zona espera.`;
     Audio.play('alert');
-    notify(`${patente} en cola Turnomático â€” Sin andén disponible`, 'warn');
+    notify(`${patente} en cola Turnomático –” Sin andén disponible`, 'warn');
   }
 
   setTimeout(() => {
@@ -700,10 +700,10 @@ async function confirmarIngreso() {
 
 function openSalida(visitId) {
   const sel = document.getElementById('sal-truck');
-  sel.innerHTML = '<option value="">â€” Seleccionar â€”</option>';
+  sel.innerHTML = '<option value="">–” Seleccionar –”</option>';
   const active = (STATE.visits || []).filter(v => v.estado !== 'salida');
   active.forEach(v => {
-    sel.innerHTML += `<option value="${Utils.esc(v.id)}" ${visitId === v.id ? 'selected' : ''}>${Utils.esc(v.patente)} â€” ${Utils.esc(v.carrier_nombre || '')}</option>`;
+    sel.innerHTML += `<option value="${Utils.esc(v.id)}" ${visitId === v.id ? 'selected' : ''}>${Utils.esc(v.patente)} –” ${Utils.esc(v.carrier_nombre || '')}</option>`;
   });
   document.getElementById('sal-truck-info').textContent = '';
   document.getElementById('sal-dwell').textContent = '';
@@ -723,15 +723,15 @@ function openSalida(visitId) {
 
     // Entrada
     historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
-    historialHtml += 'ðŸ“¥ <strong>INGRESO</strong> â€” ' + fmtTime(v.hora_ingreso);
-    if (v.tipo === 'primaria') historialHtml += '<br>â†³ Planta: ' + (v.planta_nombre || 'â€”');
+    historialHtml += 'ðŸ“¥ <strong>INGRESO</strong> –” ' + fmtTime(v.hora_ingreso);
+    if (v.tipo === 'primaria') historialHtml += '<br>â†³ Planta: ' + (v.planta_nombre || '–”');
     historialHtml += '</div>';
 
     // Andén (si pasó por ahí)
     if (v.dock_id) {
       const dock = (STATE.docks || []).find(d => d.id === v.dock_id);
       historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
-      historialHtml += 'ðŸš› <strong>ANDÃ‰N</strong> â€” ' + (dock?.codigo || 'Andén ?');
+      historialHtml += 'ðŸš› <strong>ANDÃ‰N</strong> –” ' + (dock?.codigo || 'Andén ?');
       historialHtml += '</div>';
     }
 
@@ -819,11 +819,11 @@ async function confirmarSalida() {
   renderGuardia(); renderDashboard(); renderAndenes();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  ANDENES â€” vista cards
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Event delegation â€” fábrica reutilizable por vista (Fase 2 refactor)
+// ──────────────────────────────────────────────
+//  ANDENES –” vista cards
+// ──────────────────────────────────────────────
+/* ────────────────────────────────────────────────────────────────────────────
+   Event delegation –” fábrica reutilizable por vista (Fase 2 refactor)
    â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Reemplaza onclick/onchange inline en las cards generadas dinámicamente.
    - Click:  lee data-action [+ data-id + data-arg2] y delega a window[action].
@@ -831,7 +831,7 @@ async function confirmarSalida() {
    - data-stop="1" replica el event.stopPropagation() original.
    - IDs/args puramente numéricos se convierten a Number automáticamente.
    - Idempotente: sólo enlaza una vez por contenedor.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ──────────────────────────────────────────────────────────────────────────── */
 function _coerceArg(v) {
   if (v == null) return v;
   if (typeof v !== 'string') return v;
@@ -891,13 +891,13 @@ function initCitasEventDelegation()        { createDomainDelegation('view-citas'
 function initTareasEventDelegation()       { createDomainDelegation('view-tareas', 'tareas'); }
 function initGuardiaEventDelegation()      { createDomainDelegation('view-guardia', 'guardia'); }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Fase 3 â€” Funciones puras de cómputo para vista Andenes
+/* ────────────────────────────────────────────────────────────────────────────
+   Fase 3 –” Funciones puras de cómputo para vista Andenes
    â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Separan cálculos del render para facilitar testing y memoización futura.
    Reciben los datos por parámetro (sin leer STATE global). El render llama
    a compute*() primero y luego pinta el DOM con el resultado.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ──────────────────────────────────────────────────────────────────────────── */
 function computeAndenesKPIs(docks, visits) {
   const safeDocks  = docks || [];
   const safeVisits = visits || [];
@@ -923,7 +923,7 @@ function applyAndenesKPIsToDOM(k) {
   set('and-resumen', k.resumen);
 }
 
-/* Resuelve la visita asociada a un dock â€” tres intentos en orden:
+/* Resuelve la visita asociada a un dock –” tres intentos en orden:
    1. Match directo por dock_id o truck_id.
    2. Fallback: visita en 'anden' no reclamada por otro dock busy.
    3. truck_id como patente (cuando no parece UUID).                          */
@@ -980,7 +980,7 @@ function renderAndenes() {
   let docks = STATE.docks;
   if (filterEstado) docks = docks.filter(d => d.estado === filterEstado);
 
-  // KPIs â€” compute puro + apply DOM separados
+  // KPIs –” compute puro + apply DOM separados
   applyAndenesKPIsToDOM(computeAndenesKPIs(STATE.docks, STATE.visits));
 
   const container = document.getElementById('and-cards-container');
@@ -1022,11 +1022,11 @@ function renderAndenes() {
     let body = '';
     if (d.estado === 'busy' && visit) {
       const conductorName = carrier?.nombre || visit.carrier_nombre || '';
-      const ruta = carrier?.numero_ruta || visit.numero_ruta || 'â€”';
+      const ruta = carrier?.numero_ruta || visit.numero_ruta || '–”';
       body = '<div style="margin:10px 0 12px;">' +
-        '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;line-height:1.1;">' + escHtml(visit.patente || 'â€”') + '</div>' +
+        '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;line-height:1.1;">' + escHtml(visit.patente || '–”') + '</div>' +
         (conductorName ? '<div style="font-size: 9px;color:var(--tx-muted);margin-top:4px;">' + escHtml(conductorName) + '</div>' : '') +
-        '<div style="font-size: 8px;color:var(--tx-dim);margin-top:2px;">Ruta ' + escHtml(ruta) + ' · desde ' + (d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : 'â€”') + '</div>' +
+        '<div style="font-size: 8px;color:var(--tx-dim);margin-top:2px;">Ruta ' + escHtml(ruta) + ' · desde ' + (d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : '–”') + '</div>' +
       '</div>' +
       '<div style="margin-bottom:12px;">' +
         '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx-dim);margin-bottom:5px;">' +
@@ -1053,11 +1053,11 @@ function renderAndenes() {
       if (!patenteAnden && taskInstalacion?.patente) patenteAnden = String(taskInstalacion.patente).toUpperCase();
       if (taskInstalacion) {
         const carrierT = (STATE.carriers || []).find(function(c){ return c.codigo === taskInstalacion.patente; });
-        const estadoLabel = taskInstalacion.estado === 'checklist_ok' ? 'âœ“ CHECKLIST OK â€” POSTURA PENDIENTE' :
+        const estadoLabel = taskInstalacion.estado === 'checklist_ok' ? 'âœ“ CHECKLIST OK –” POSTURA PENDIENTE' :
                             taskInstalacion.estado === 'en_ejecucion' ? '⚠™ EN MOVIMIENTO' : 'â³ OFERTADA';
         body = '<div style="margin:10px 0 12px;padding:10px;background:rgba(245,158,11,0.07);border:1px dashed rgba(245,158,11,0.4);border-radius:6px;">' +
           '<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--c-warn);margin-bottom:6px;">' + estadoLabel + '</div>' +
-          '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;">' + escHtml(taskInstalacion.patente || 'â€”') + '</div>' +
+          '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;">' + escHtml(taskInstalacion.patente || '–”') + '</div>' +
           (carrierT?.nombre ? '<div style="font-size: 9px;color:var(--tx-muted);margin-top:3px;">' + escHtml(carrierT.nombre) + '</div>' : '') +
           (taskInstalacion.operador_nombre ? '<div style="font-size: 8px;color:var(--tx-dim);margin-top:2px;">Operador: ' + escHtml(taskInstalacion.operador_nombre) + '</div>' : '') +
         '</div>' +
@@ -1066,19 +1066,19 @@ function renderAndenes() {
           '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
         '</div>' : '');
       } else if (patenteAnden) {
-        // Carro instalado en andén â€” postura confirmada pero sin registro de visita (flujo Carros)
+        // Carro instalado en andén –” postura confirmada pero sin registro de visita (flujo Carros)
         const carrierAnd = (STATE.carriers || []).find(function(c){ return c.codigo === patenteAnden; });
         const carroAnd   = (STATE.carros || []).find(function(c){ return String(c.patente||'').toUpperCase() === patenteAnden; });
         const conductorN = carrierAnd?.nombre || carroAnd?.conductor || '';
-        const rutaN      = carrierAnd?.numero_ruta || carroAnd?.ruta || 'â€”';
+        const rutaN      = carrierAnd?.numero_ruta || carroAnd?.ruta || '–”';
         body = '<div style="margin:10px 0 12px;">' +
           '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;line-height:1.1;">' + escHtml(patenteAnden) + '</div>' +
           (conductorN ? '<div style="font-size: 9px;color:var(--tx-muted);margin-top:4px;">' + escHtml(conductorN) + '</div>' : '') +
           '<div style="font-size: 8px;color:var(--tx-dim);margin-top:2px;">' +
-            (rutaN && rutaN !== 'â€”' ? 'Ruta ' + escHtml(rutaN) + ' · ' : '') +
+            (rutaN && rutaN !== '–”' ? 'Ruta ' + escHtml(rutaN) + ' · ' : '') +
             (carroAnd?.pallets ? 'ðŸ“¦ ' + carroAnd.pallets + ' pallets · ' : '') +
             (carroAnd?.vuelta === 'primera' ? '1ra vuelta · ' : carroAnd?.vuelta === 'segunda' ? '2da vuelta · ' : '') +
-            'desde ' + (d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : 'â€”') +
+            'desde ' + (d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : '–”') +
           '</div>' +
         '</div>' +
         '<div style="margin-bottom:12px;">' +
@@ -1101,7 +1101,7 @@ function renderAndenes() {
           '</div>' : '') +
         '</div>';
       } else {
-        // Andén busy sin patente derivable â€” dato inconsistente
+        // Andén busy sin patente derivable –” dato inconsistente
         body = '<div style="margin:10px 0 12px;">' +
           '<div style="font-size: 10px;font-weight:600;color:var(--c-warn);">Ocupado · sin registro de vehículo</div>' +
           (d.inicio_ocupacion ? '<div style="font-size: 8px;color:var(--tx-dim);margin-top:4px;">Desde ' + fmtTime(d.inicio_ocupacion) + ' · ' + elapsed + ' min</div>' : '') +
@@ -1118,10 +1118,10 @@ function renderAndenes() {
       if (carroAsignadoCard) {
         const carrierA = (STATE.carriers || []).find(function(c){ return c.codigo === carroAsignadoCard.patente; });
         body = '<div style="margin:10px 0 12px;padding:10px;background:rgba(99,102,241,0.07);border:1px dashed rgba(99,102,241,0.35);border-radius:6px;">' +
-          '<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--c-accent);margin-bottom:6px;">â© ASIGNADO â€” PENDIENTE DE LLEGADA</div>' +
-          '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;">' + escHtml(carroAsignadoCard.patente || 'â€”') + '</div>' +
+          '<div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--c-accent);margin-bottom:6px;">â© ASIGNADO –” PENDIENTE DE LLEGADA</div>' +
+          '<div style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:3px;">' + escHtml(carroAsignadoCard.patente || '–”') + '</div>' +
           (carrierA?.nombre || carroAsignadoCard.conductor ? '<div style="font-size: 9px;color:var(--tx-muted);margin-top:3px;">' + escHtml(carrierA?.nombre || carroAsignadoCard.conductor || '') + '</div>' : '') +
-          '<div style="font-size: 8px;color:var(--tx-dim);margin-top:3px;">ðŸ“¦ ' + (carroAsignadoCard.pallets || 'â€”') + ' pallets · ' + (carroAsignadoCard.vuelta === 'primera' ? '1ra' : '2da') + ' vuelta</div>' +
+          '<div style="font-size: 8px;color:var(--tx-dim);margin-top:3px;">ðŸ“¦ ' + (carroAsignadoCard.pallets || '–”') + ' pallets · ' + (carroAsignadoCard.vuelta === 'primera' ? '1ra' : '2da') + ' vuelta</div>' +
         '</div>' +
         (isAdmin ? '<div style="display:flex;gap:6px;">' +
           '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
@@ -1184,8 +1184,8 @@ function renderAndenes() {
           : (docksLibres.length === 0 ? '<span style="font-size:10px;color:var(--c-err);">Sin andenes libres</span>' : '');
         return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg-input);border-radius:6px;flex-wrap:wrap;">' +
           '<span style="font-size: 8px;font-weight:700;color:var(--tx-dim);min-width:22px;">#' + (idx+1) + '</span>' +
-          '<span style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:2px;flex:0 0 auto;">' + escHtml(v.patente || 'â€”') + '</span>' +
-          '<span style="font-size:10px;color:var(--tx-muted);flex:1;min-width:80px;">' + escHtml(carrier?.nombre || v.carrier_nombre || 'â€”') + '</span>' +
+          '<span style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:2px;flex:0 0 auto;">' + escHtml(v.patente || '–”') + '</span>' +
+          '<span style="font-size:10px;color:var(--tx-muted);flex:1;min-width:80px;">' + escHtml(carrier?.nombre || v.carrier_nombre || '–”') + '</span>' +
           '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,0.12);color:var(--c-info);">' + tipoLabel + '</span>' +
           (v.tipo_carga ? '<span style="font-size:9px;padding:2px 7px;border-radius:10px;background:var(--bg-alt);color:var(--tx-muted);">' + escHtml(v.tipo_carga) + tempInfo + '</span>' : '') +
           '<span style="font-size:10px;color:var(--tx-dim);white-space:nowrap;">â± ' + wait + ' min</span>' +
@@ -1204,7 +1204,7 @@ function renderAndenes() {
     }
   }
 
-  // Cola Turnomático â€” tickets mover_anden en espera de andén libre
+  // Cola Turnomático –” tickets mover_anden en espera de andén libre
   const queueContainer = document.getElementById('and-queue-container');
   if (queueContainer) {
     const queueItems = (STATE.queueTickets || []).filter(function(q){ return q.tipo_operacion === 'mover_anden' && q.estado === 'esperando'; });
@@ -1216,7 +1216,7 @@ function renderAndenes() {
         const prioLabel = q.prioridad >= 8 ? 'ðŸ”´ URGENTE' : q.prioridad >= 6 ? 'ðŸŸ¡ ALTA' : 'ðŸŸ¢ NORMAL';
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg-input);border-radius:6px;gap:12px;">' +
           '<span style="font-size: 8px;font-weight:700;color:var(--tx-dim);min-width:20px;">#' + (idx+1) + '</span>' +
-          '<span style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:2px;flex:1;">' + escHtml(q.patente||'â€”') + '</span>' +
+          '<span style="font-size: 9px;font-weight:800;font-family:var(--font);color:var(--tx-head);letter-spacing:2px;flex:1;">' + escHtml(q.patente||'–”') + '</span>' +
           (carrier ? '<span style="font-size:10px;color:var(--tx-muted);flex:2;">' + escHtml(carrier.nombre||'') + '</span>' : '') +
           '<span style="font-size:10px;color:var(--tx-dim);">â± ' + wait + ' min</span>' +
           '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(245,158,11,0.15);color:var(--c-warn);">' + prioLabel + '</span>' +
@@ -1224,7 +1224,7 @@ function renderAndenes() {
       }).join('');
       queueContainer.innerHTML =
         '<div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.35);border-left:4px solid var(--c-warn);border-radius:8px;padding:14px 16px;">' +
-          '<div style="font-size: 8px;font-weight:700;color:var(--c-warn);letter-spacing:1px;margin-bottom:10px;">ðŸ” COLA TURNOMÃTICO â€” EN ESPERA DE ANDÃ‰N LIBRE (' + queueItems.length + ')</div>' +
+          '<div style="font-size: 8px;font-weight:700;color:var(--c-warn);letter-spacing:1px;margin-bottom:10px;">ðŸ” COLA TURNOMÃTICO –” EN ESPERA DE ANDÃ‰N LIBRE (' + queueItems.length + ')</div>' +
           '<div style="display:flex;flex-direction:column;gap:6px;">' + qRows + '</div>' +
         '</div>';
     } else {
@@ -1235,8 +1235,8 @@ function renderAndenes() {
   // Mantener compatibilidad asignación manual
   const selAnden = document.getElementById('asig-anden');
   const selVisita = document.getElementById('asig-visita');
-  if (selAnden) selAnden.innerHTML = (STATE.docks || []).filter(d => d.estado === 'free').map(d => '<option value="' + d.id + '">' + d.codigo + ' â€” ' + d.tipo + '</option>').join('') || '<option>Sin andenes libres</option>';
-  if (selVisita) selVisita.innerHTML = (STATE.visits || []).filter(v => v.estado === 'en_patio' && !v.dock_id).map(v => '<option value="' + v.id + '">' + v.patente + ' â€” ' + (v.carrier_nombre || v.numero_ruta || '') + '</option>').join('') || '<option>Sin visitas en espera</option>';
+  if (selAnden) selAnden.innerHTML = (STATE.docks || []).filter(d => d.estado === 'free').map(d => '<option value="' + d.id + '">' + d.codigo + ' –” ' + d.tipo + '</option>').join('') || '<option>Sin andenes libres</option>';
+  if (selVisita) selVisita.innerHTML = (STATE.visits || []).filter(v => v.estado === 'en_patio' && !v.dock_id).map(v => '<option value="' + v.id + '">' + v.patente + ' –” ' + (v.carrier_nombre || v.numero_ruta || '') + '</option>').join('') || '<option>Sin visitas en espera</option>';
 }
 
 // â”€â”€ Movimiento desde andén (admin/supervisor inicia, patio completa) â”€â”€â”€â”€â”€â”€
@@ -1257,7 +1257,7 @@ function crearRetiroAnden(dockId, destino) {
   if (el('mra-destino'))   el('mra-destino').value   = destino;
   if (el('mra-anden'))     el('mra-anden').textContent = dock.codigo;
   if (el('mra-patente'))   el('mra-patente').textContent = patente;
-  if (el('mra-conductor')) el('mra-conductor').textContent = carrier?.nombre || visit?.carrier_nombre || carroAnd?.conductor || 'â€”';
+  if (el('mra-conductor')) el('mra-conductor').textContent = carrier?.nombre || visit?.carrier_nombre || carroAnd?.conductor || '–”';
   if (el('mra-pallets'))   el('mra-pallets').value   = '';
   if (el('mra-precinto'))  el('mra-precinto').value  = '';
   if (el('mra-destino-sel')) el('mra-destino-sel').value = destino;
@@ -1303,7 +1303,7 @@ async function crearRetiroAndenInmediato(dockId, destino) {
   }
 
   Audio.play('new_task');
-  notify('âœ“ Tarea generada â€” ' + patente + ' â†’ ' + label, 'ok');
+  notify('âœ“ Tarea generada –” ' + patente + ' â†’ ' + label, 'ok');
   auditLog('task', 'RETIRO_ANDEN_CREADO', patente + ' · Andén ' + dock.codigo + ' â†’ ' + destino);
   renderAndenes();
   if (typeof loadTasks === 'function') loadTasks(); else if (typeof renderTareas === 'function') renderTareas();
@@ -1347,7 +1347,7 @@ async function confirmarRetiroAnden() {
 
   closeModal('modal-mover-anden');
   Audio.play('new_task');
-  notify('Tarea creada â€” ' + patente + ' â†’ ' + (destino === 'carros_cargados' ? 'Carros Cargados' : 'Estacionamiento'), 'ok');
+  notify('Tarea creada –” ' + patente + ' â†’ ' + (destino === 'carros_cargados' ? 'Carros Cargados' : 'Estacionamiento'), 'ok');
   auditLog('task', 'RETIRO_ANDEN_CREADO', patente + ' · Andén ' + dock.codigo + ' â†’ ' + destino);
   renderAndenes();
   if (typeof loadTasks === 'function') loadTasks(); else if (typeof renderTareas === 'function') renderTareas();
@@ -1375,8 +1375,8 @@ function selectDock(d) {
         ${visit ? `
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size: 9px;margin-bottom:10px;">
           <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Rampla</div><div style="font-weight:700;font-size: 9px;color:var(--tx-head);font-family:var(--font);">${visit.patente}</div></div>
-          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Empresa / Ruta</div><div style="font-weight:600;color:var(--tx-base);">${carrier?.nombre?.split(' ').slice(-2).join(' ') || visit.carrier_nombre || 'â€”'} · ${carrier?.numero_ruta || visit.numero_ruta || 'â€”'}</div></div>
-          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Inicio en andén</div><div style="color:var(--tx-base);">${d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : 'â€”'}</div></div>
+          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Empresa / Ruta</div><div style="font-weight:600;color:var(--tx-base);">${carrier?.nombre?.split(' ').slice(-2).join(' ') || visit.carrier_nombre || '–”'} · ${carrier?.numero_ruta || visit.numero_ruta || '–”'}</div></div>
+          <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Inicio en andén</div><div style="color:var(--tx-base);">${d.inicio_ocupacion ? fmtTime(d.inicio_ocupacion) : '–”'}</div></div>
           <div><div style="font-size:10px;color:var(--tx-muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;">Tiempo ocupado</div><div style="font-weight:700;color:${pct>85?'var(--c-err)':pct>60?'var(--c-warn)':'var(--c-ok)'};">${elapsed} min</div></div>
         </div>
         <div style="margin-bottom:10px;">
@@ -1393,7 +1393,7 @@ function selectDock(d) {
         </div>` : ''}
         ` : `
         <div style="text-align:center;padding:12px 0;color:var(--tx-muted);font-size: 9px;">
-          ${d.estado === 'blocked' ? '⚠— Andén bloqueado â€” sin operación' : 'âœ“ Andén disponible'}
+          ${d.estado === 'blocked' ? '⚠— Andén bloqueado –” sin operación' : 'âœ“ Andén disponible'}
         </div>
         ${d.estado !== 'blocked'
           ? `<button class="btn btn-warn supv-action admin-action" onclick="bloquearAnden('${d.id}')">BLOQUEAR ANDÃ‰N</button>`
@@ -1419,13 +1419,13 @@ async function liberarAnden(dockId) {
       await loadDocks();
     } catch(e) {
       Object.assign(dock, prev);
-      notify('⚠  Error de conexión â€” reintentando guardar...', 'warn', 3000);
+      notify('⚠  Error de conexión –” reintentando guardar...', 'warn', 3000);
       _pendingOps.push(() => sb.from('docks').update({ estado: 'free', truck_id: null, inicio_ocupacion: null }).eq('id', dockId));
       scheduleReconnect();
     }
   }
   Audio.play('dock_free');
-  notify('âœ“ Andén ' + dock.codigo + ' liberado â€” disponible para asignación', 'ok');
+  notify('âœ“ Andén ' + dock.codigo + ' liberado –” disponible para asignación', 'ok');
   ymsPersistYardConfig();
   renderAndenes(); renderDashboard();
 }
@@ -1444,13 +1444,13 @@ async function bloquearAnden(dockId) {
       await loadDocks();
     } catch(e) {
       dock.estado = prevEstado;
-      notify('⚠  Error de conexión â€” reintentando guardar...', 'warn', 3000);
+      notify('⚠  Error de conexión –” reintentando guardar...', 'warn', 3000);
       _pendingOps.push(() => sb.from('docks').update({ estado: 'blocked' }).eq('id', dockId));
       scheduleReconnect();
     }
   }
   Audio.play('warn');
-  notify('⚠  Andén ' + dock.codigo + ' bloqueado â€” no disponible para operaciones', 'warn');
+  notify('⚠  Andén ' + dock.codigo + ' bloqueado –” no disponible para operaciones', 'warn');
   ymsPersistYardConfig();
   renderAndenes(); renderDashboard();
 }
@@ -1500,9 +1500,9 @@ async function crearAnden() {
   renderAndenes(); renderDashboard();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  PATIO â€” TABS (Playa / Carros)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  PATIO –” TABS (Playa / Carros)
+// ──────────────────────────────────────────────
 let _patioActiveTab = 'playa';
 
 function switchPatioTab(tab) {
@@ -1548,7 +1548,7 @@ function renderVisionGeneral() {
     const maxT = d.max_tiempo || STATE.params?.dwell_max || 180;
     const pct  = Math.min(100, Math.round(mins / maxT * 100));
     const barC = pct > 85 ? 'var(--c-err)' : pct > 60 ? 'var(--c-warn)' : 'var(--c-ok)';
-    rows.push({ zona: 'Andén ' + d.codigo, patente: v?.patente || 'â€”', carrier: v?.carrier_nombre || 'â€”', mins, pct, barC, estado: 'EN ANDÃ‰N', color: 'var(--c-warn)' });
+    rows.push({ zona: 'Andén ' + d.codigo, patente: v?.patente || '–”', carrier: v?.carrier_nombre || '–”', mins, pct, barC, estado: 'EN ANDÃ‰N', color: 'var(--c-warn)' });
   });
 
   // 2. Vehículos en estacionamiento
@@ -1556,13 +1556,13 @@ function renderVisionGeneral() {
     const v = (STATE.visits || []).find(v => v.patente === s.patente && v.estado !== 'salida');
     const mins = s.hora_entrada ? Math.round((now - new Date(s.hora_entrada)) / 60000) : 0;
     const zona = (s.playa_tipo === 'carros_cargados' ? 'Cargado' : s.playa_tipo === 'en_espera' ? 'En Espera' : 'Estac.') + ' F' + s.fila + '-' + String(s.col).padStart(2,'0');
-    rows.push({ zona, patente: s.patente || 'â€”', carrier: v?.carrier_nombre || s.nombre || 'â€”', mins, pct: 0, barC: 'var(--c-info)', estado: (s.playa_tipo === 'carros_cargados' ? 'CARGADO' : 'ESTAC.'), color: 'var(--c-info)' });
+    rows.push({ zona, patente: s.patente || '–”', carrier: v?.carrier_nombre || s.nombre || '–”', mins, pct: 0, barC: 'var(--c-info)', estado: (s.playa_tipo === 'carros_cargados' ? 'CARGADO' : 'ESTAC.'), color: 'var(--c-info)' });
   });
 
   // 3. Visitas activas sin slot ni andén (en espera de asignación)
   (STATE.visits || []).filter(v => v.estado === 'en_patio' && !v.dock_id && !(STATE.playaSlots || []).find(s => s.patente === v.patente && s.ocupado)).forEach(v => {
     const mins = v.hora_ingreso ? Math.round((now - new Date(v.hora_ingreso)) / 60000) : 0;
-    rows.push({ zona: 'Espera Gate', patente: v.patente || 'â€”', carrier: v.carrier_nombre || 'â€”', mins, pct: 0, barC: 'var(--tx-dim)', estado: 'EN PATIO', color: 'var(--c-ok)' });
+    rows.push({ zona: 'Espera Gate', patente: v.patente || '–”', carrier: v.carrier_nombre || '–”', mins, pct: 0, barC: 'var(--tx-dim)', estado: 'EN PATIO', color: 'var(--c-ok)' });
   });
 
   if (!rows.length) {
@@ -1590,15 +1590,15 @@ function renderVisionGeneral() {
   '</div>';
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  PATIO â€” MAPA LÃ“GICO DE ZONAS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   Fase 3 â€” Funciones puras de cómputo para vista Patio
+// ──────────────────────────────────────────────
+//  PATIO –” MAPA LÃ“GICO DE ZONAS
+// ──────────────────────────────────────────────
+/* ────────────────────────────────────────────────────────────────────────────
+   Fase 3 –” Funciones puras de cómputo para vista Patio
    â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    computePatioKPIs devuelve los contadores y porcentajes de utilización
    sin tocar DOM ni STATE global. El render los embebe en el template.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ──────────────────────────────────────────────────────────────────────────── */
 function computePatioKPIs(slots, docks) {
   const safeSlots = slots || [];
   const safeDocks = docks || [];
@@ -1663,7 +1663,7 @@ function renderPatio() {
       const isDed  = slot.cfg_tipo === 'dedicado';
       const playaTipo = slot.playa_tipo || null;
       const playaCol  = coloresPlaya[playaTipo] || null;
-      // Color del rectángulo â€” playa_tipo tiene prioridad visual si está ocupado
+      // Color del rectángulo –” playa_tipo tiene prioridad visual si está ocupado
       let fillColor = 'var(--bg-panel)';
       let strokeColor = 'var(--border-md)';
       let strokeW = 1;
@@ -1694,7 +1694,7 @@ function renderPatio() {
     }
   }
 
-  // KPIs â€” compute puro separado del render
+  // KPIs –” compute puro separado del render
   const _kp = computePatioKPIs(STATE.playaSlots, STATE.docks);
   const libres        = _kp.libres;
   const ocupados      = _kp.ocupados;
@@ -1729,9 +1729,9 @@ function renderPatio() {
       <div class="kpi info"><div class="kpi-lbl">Utilización</div><div class="kpi-val">${utilAndenes}%</div></div>
     </div>
     <div style="padding:0 8px;margin-bottom:4px;">
-      <div style="color:var(--tx-muted);font-size:10px;letter-spacing:2px;margin-bottom:4px;">PLAYA DE ESTACIONAMIENTO â€” CLICK EN SLOT PARA ASIGNAR/LIBERAR</div>
+      <div style="color:var(--tx-muted);font-size:10px;letter-spacing:2px;margin-bottom:4px;">PLAYA DE ESTACIONAMIENTO –” CLICK EN SLOT PARA ASIGNAR/LIBERAR</div>
       <svg width="${svgW}" height="${svgH}" style="background:var(--bg-bar);border:1px solid var(--border);display:block;max-width:100%;">
-        <text x="10" y="24" style="fill:var(--tx-muted);font-size: 8px;font-family:Consolas;">PLAYA MIRAFLORES â€” 72 SLOTS (6 FILAS Ã— 12)</text>
+        <text x="10" y="24" style="fill:var(--tx-muted);font-size: 8px;font-family:Consolas;">PLAYA MIRAFLORES –” 72 SLOTS (6 FILAS Ã— 12)</text>
         <text x="${svgW-10}" y="24" style="fill:var(--c-ok);font-size:10px;font-family:Consolas;text-anchor:end;">â–  LIBRE</text>
         <text x="${svgW-70}" y="24" style="fill:var(--c-warn);font-size:10px;font-family:Consolas;text-anchor:end;">â–  CARGADO</text>
         <text x="${svgW-160}" y="24" style="fill:var(--c-info);font-size:10px;font-family:Consolas;text-anchor:end;">â–  ESPERA</text>
@@ -1790,7 +1790,7 @@ function toggleSlot(idx) {
 
 function seleccionarTipoSlot(tipo) {
   STATE._pendingSlotTipo = tipo;
-  const labels = { carros_cargados:'ðŸ“¦ PLAYA CARROS CARGADOS', en_espera:'â³ PLAYA CARROS EN ESPERA', libre:'â—» SIN RESTRICCIONES' };
+  const labels = { carros_cargados:'ðŸ“¦ PLAYA CARROS CARGADOS', en_espera:'â³ PLAYA CARROS EN ESPERA', libre:'✓» SIN RESTRICCIONES' };
   const btnIds = { carros_cargados:'btn-tipo-cargado', en_espera:'btn-tipo-espera', libre:'btn-tipo-libre' };
   // Highlight seleccionado
   ['btn-tipo-cargado','btn-tipo-espera','btn-tipo-libre'].forEach(function(id){
@@ -1804,7 +1804,7 @@ function seleccionarTipoSlot(tipo) {
   // Cerrar modal y activar modo selección en mapa
   setTimeout(function(){
     closeModal('modal-agregar-slot');
-    notify('âœ“ Tipo "' + (labels[tipo]||tipo) + '" seleccionado â€” haga clic en un slot libre del mapa', 'info', 4000);
+    notify('âœ“ Tipo "' + (labels[tipo]||tipo) + '" seleccionado –” haga clic en un slot libre del mapa', 'info', 4000);
     renderPatio();
   }, 600);
 }
@@ -1812,8 +1812,8 @@ function seleccionarTipoSlot(tipo) {
 function verInfoSlot(idx) {
   const slot = STATE.playaSlots[idx];
   if (!slot) return;
-  const tipoLabel = slot.playa_tipo === 'carros_cargados' ? 'ðŸ“¦ CARRO CARGADO' : slot.playa_tipo === 'en_espera' ? 'â³ EN ESPERA' : 'â—» GENERAL';
-  notify('™¹ Slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' · ' + (slot.patente||'â€”') + ' · ' + tipoLabel + (slot.ruta?' · Ruta: '+slot.ruta:''), 'info', 5000);
+  const tipoLabel = slot.playa_tipo === 'carros_cargados' ? 'ðŸ“¦ CARRO CARGADO' : slot.playa_tipo === 'en_espera' ? 'â³ EN ESPERA' : '✓» GENERAL';
+  notify('™¹ Slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' · ' + (slot.patente||'–”') + ' · ' + tipoLabel + (slot.ruta?' · Ruta: '+slot.ruta:''), 'info', 5000);
 }
 
 
@@ -1825,7 +1825,7 @@ function renderZone(containerId, zones) {
     ? visits.map(v => `
       <div style="border:1px solid var(--border);padding:5px 8px;margin-bottom:4px;">
         <div style="color:var(--tx-head);font-size: 9px;">${v.patente}</div>
-        <div class="c-dim fz10">${v.carrier_nombre || 'â€”'} · ${fmtTime(v.hora_ingreso)}</div>
+        <div class="c-dim fz10">${v.carrier_nombre || '–”'} · ${fmtTime(v.hora_ingreso)}</div>
         <span class="badge ${v.tipo === 'primaria' ? 'b-info' : 'b-warn'}">${v.tipo?.toUpperCase()}</span>
       </div>`).join('')
     : '<span class="c-dim fz10">Sin camiones en esta zona</span>';
@@ -1847,9 +1847,9 @@ function renderMovements() {
     : '<tr><td colspan="6" class="c-dim tc">Sin movimientos registrados hoy</td></tr>';
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  TURNOMÃTICO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderTurno() {
   initTurnoEventDelegation();
   renderQueueList();
@@ -1871,7 +1871,7 @@ function renderQueueList() {
       <div class="queue-item ${urgent ? 'urgent' : ''}">
         <div class="qi-pos" style="color:${urgent ? 'var(--c-err)' : 'var(--tx-muted)'}">${i+1}</div>
         <div class="qi-data">
-          <div class="qi-truck">${t.patente || 'â€”'}</div>
+          <div class="qi-truck">${t.patente || '–”'}</div>
           <div class="qi-sub">${t.tipo_operacion?.replace(/_/g,' ').toUpperCase() || ''}</div>
           <div class="progress-bar" style="width:140px;margin-top:3px;">
             <div class="progress-fill ${urgent ? 'err' : pct > 60 ? 'warn' : ''}" style="width:${pct}%"></div>
@@ -1897,10 +1897,10 @@ function renderQueueHistory() {
     ? history.map((t, i) => `<tr>
         <td class="c-dim">${i+1}</td>
         <td class="c-bright">${t.patente}</td>
-        <td class="c-dim">${t.tipo_operacion?.replace(/_/g,' ') || 'â€”'}</td>
-        <td>${t.minutos_espera || 'â€”'} min</td>
+        <td class="c-dim">${t.tipo_operacion?.replace(/_/g,' ') || '–”'}</td>
+        <td>${t.minutos_espera || '–”'} min</td>
         <td><span class="badge badge-${t.estado === 'atendido' ? 'ok' : 'err'}">${t.estado?.toUpperCase()}</span></td>
-        <td class="c-dim">${t.dock_id ? (STATE.docks || []).find(d => d.id === t.dock_id)?.codigo || 'â€”' : 'â€”'}</td>
+        <td class="c-dim">${t.dock_id ? (STATE.docks || []).find(d => d.id === t.dock_id)?.codigo || '–”' : '–”'}</td>
       </tr>`).join('')
     : '<tr><td colspan="6" class="c-dim tc">Sin historial hoy</td></tr>';
 }
@@ -1943,9 +1943,9 @@ function saveSLA() {
   notify('Parámetros SLA guardados', 'ok');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  TAREAS EN VIVO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderTareas() {
   initTareasEventDelegation();
   var rol = STATE.profile?.rol;
@@ -1972,7 +1972,7 @@ function renderTareas() {
 
 function openNewTask() {
   var tipoSel=document.getElementById('task-tipo'); if(tipoSel)tipoSel.value='';
-  var truckSel=document.getElementById('task-truck'); if(truckSel)truckSel.innerHTML='<option value="">â€” Primero seleccione el tipo â€”</option>';
+  var truckSel=document.getElementById('task-truck'); if(truckSel)truckSel.innerHTML='<option value="">–” Primero seleccione el tipo –”</option>';
   var infoEl=document.getElementById('task-logica-info'); if(infoEl)infoEl.style.display='none';
   var infoTruck=document.getElementById('task-truck-info'); if(infoTruck)infoTruck.style.display='none';
   var msgEl=document.getElementById('task-form-msg'); if(msgEl){msgEl.style.display='none';msgEl.textContent='';}
@@ -2045,9 +2045,9 @@ function ofertarTareaOperador(task) {
   if (fields) {
     fields.innerHTML = `
       <div class="tob-field"><span class="tob-label">Tipo</span><span class="tob-val">${(task.tipo||'').replace(/_/g,' ').toUpperCase()}</span></div>
-      <div class="tob-field"><span class="tob-label">Patente</span><span class="tob-val">${task.patente||'â€”'}</span></div>
-      <div class="tob-field"><span class="tob-label">Origen</span><span class="tob-val">${task.zona_origen||'â€”'}</span></div>
-      <div class="tob-field"><span class="tob-label">Destino</span><span class="tob-val">${task.zona_destino||'â€”'}</span></div>
+      <div class="tob-field"><span class="tob-label">Patente</span><span class="tob-val">${task.patente||'–”'}</span></div>
+      <div class="tob-field"><span class="tob-label">Origen</span><span class="tob-val">${task.zona_origen||'–”'}</span></div>
+      <div class="tob-field"><span class="tob-label">Destino</span><span class="tob-val">${task.zona_destino||'–”'}</span></div>
       <div class="tob-field"><span class="tob-label">Prioridad</span><span class="tob-val">${(task.prioridad||'normal').toUpperCase()}</span></div>`;
   }
   if (sla) sla.textContent = 'SLA: ' + (task.sla_minutos || (STATE.params?.task_sla || 20) || 20) + ' min';
@@ -2145,7 +2145,7 @@ async function rechazarTarea() {
     if (t) { t.estado = 'ofertada'; t.operador_id = null; t.operador_nombre = null; }
   }
 
-  notify('Tarea rechazada â€” disponible para otro operador', 'warn');
+  notify('Tarea rechazada –” disponible para otro operador', 'warn');
 
   // Re-ofertar a otro operador patio disponible (modo seed: mostrar al usuario actual si no hay otro)
   if (STATE.usingSeed) {
@@ -2156,9 +2156,9 @@ async function rechazarTarea() {
   renderTareas();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  DEVOLUCIONES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderDevoluciones() {
   initDevolucionesEventDelegation();
   var roles_autorizados=['administrador','jefe_ops','administrativo_ops'];
@@ -2174,10 +2174,10 @@ function renderDevoluciones() {
 
   pending.innerHTML = pend.length
     ? pend.map(r => `<tr>
-        <td class="c-bright">${Utils.esc(r.numero_ruta || 'â€”')}</td>
-        <td class="c-bright">${Utils.esc(r.patente || 'â€”')}</td>
-        <td class="c-dim">${Utils.esc(r.carrier_nombre || 'â€”')}</td>
-        <td>${Utils.esc(r.motivo?.replace(/_/g,' ') || 'â€”')}</td>
+        <td class="c-bright">${Utils.esc(r.numero_ruta || '–”')}</td>
+        <td class="c-bright">${Utils.esc(r.patente || '–”')}</td>
+        <td class="c-dim">${Utils.esc(r.carrier_nombre || '–”')}</td>
+        <td>${Utils.esc(r.motivo?.replace(/_/g,' ') || '–”')}</td>
         <td class="c-dim">${fmtTime(r.hora_solicitud)}</td>
         <td>${Utils.esc(r.pallets_devolucion)} plt</td>
         <td><span class="badge badge b-warn">PENDIENTE</span></td>
@@ -2192,13 +2192,13 @@ function renderDevoluciones() {
 
   history.innerHTML = hist.length
     ? hist.map(r => `<tr>
-        <td class="c-bright">${Utils.esc(r.numero_ruta || 'â€”')}</td>
-        <td class="c-bright">${Utils.esc(r.patente || 'â€”')}</td>
+        <td class="c-bright">${Utils.esc(r.numero_ruta || '–”')}</td>
+        <td class="c-bright">${Utils.esc(r.patente || '–”')}</td>
         <td><span class="badge badge-${r.estado === 'aprobada' ? 'ok' : 'err'}">${Utils.esc(r.estado?.toUpperCase())}</span></td>
-        <td class="c-dim">${Utils.esc(r.motivo?.replace(/_/g,' ') || 'â€”')}</td>
-        <td class="c-dim">${Utils.esc(r.autorizado_por_nombre || 'â€”')}</td>
-        <td class="c-dim">${r.hora_resolucion ? fmtTime(r.hora_resolucion) : 'â€”'}</td>
-        <td class="c-dim">${Utils.esc(r.comentario) || 'â€”'}</td>
+        <td class="c-dim">${Utils.esc(r.motivo?.replace(/_/g,' ') || '–”')}</td>
+        <td class="c-dim">${Utils.esc(r.autorizado_por_nombre || '–”')}</td>
+        <td class="c-dim">${r.hora_resolucion ? fmtTime(r.hora_resolucion) : '–”'}</td>
+        <td class="c-dim">${Utils.esc(r.comentario) || '–”'}</td>
       </tr>`).join('')
     : '<tr><td colspan="7" class="c-dim tc">Sin historial</td></tr>';
 }
@@ -2222,7 +2222,7 @@ function abrirDevol(id, action) {
     <div class="tob-field"><span class="tob-label">Patente:</span><span class="tob-val">${escHtml(r.patente)}</span></div>
     <div class="tob-field"><span class="tob-label">Motivo:</span><span class="tob-val">${escHtml(r.motivo?.replace(/_/g,' '))}</span></div>
     <div class="tob-field"><span class="tob-label">Pallets:</span><span class="tob-val">${escHtml(String(r.pallets_devolucion))}</span></div>
-    <div class="tob-field"><span class="tob-label">Comentario:</span><span class="tob-val">${escHtml(r.comentario) || 'â€”'}</span></div>`;
+    <div class="tob-field"><span class="tob-label">Comentario:</span><span class="tob-val">${escHtml(r.comentario) || '–”'}</span></div>`;
   document.getElementById('devol-comentario').value = '';
 
   const btns = document.getElementById('devol-accion-btns');
@@ -2251,7 +2251,7 @@ async function confirmarDevol() {
     STATE.auditLog.unshift({
       id: 'a' + Date.now(), categoria: 'devol',
       evento: nuevoEstado === 'aprobada' ? 'DEVOLUCION_APROBADA' : 'DEVOLUCION_RECHAZADA',
-      detalle: `Ruta ${r.numero_ruta} / ${r.patente} â€” ${comentario}`,
+      detalle: `Ruta ${r.numero_ruta} / ${r.patente} –” ${comentario}`,
       user_nombre: STATE.profile.nombre,
       created_at: new Date().toISOString(),
     });
@@ -2262,7 +2262,7 @@ async function confirmarDevol() {
     }).eq('id', currentDevolId);
     await auditLog('devol',
       nuevoEstado === 'aprobada' ? 'DEVOLUCION_APROBADA' : 'DEVOLUCION_RECHAZADA',
-      `Ruta ${r.numero_ruta} â€” ${comentario}`);
+      `Ruta ${r.numero_ruta} –” ${comentario}`);
   }
 
   closeModal('modal-devol');
@@ -2271,9 +2271,9 @@ async function confirmarDevol() {
   renderDevoluciones();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  REPORTES Y KPIs
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function loadReports() {
   const kpis = document.getElementById('rpt-kpis');
   const totalIngresos = (STATE.visits || []).length;
@@ -2311,8 +2311,8 @@ function loadReports() {
     });
     dwellTbl.innerHTML = Object.entries(byCarrier).map(([k, v]) => `<tr>
       <td>${k}</td><td>${v.visits}</td>
-      <td>${v.visits > 0 ? Math.round(v.totalDwell / v.visits) || 'â€”' : 'â€”'} min</td>
-      <td>${v.maxDwell || 'â€”'} min</td>
+      <td>${v.visits > 0 ? Math.round(v.totalDwell / v.visits) || '–”' : '–”'} min</td>
+      <td>${v.maxDwell || '–”'} min</td>
     </tr>`).join('') || '<tr><td colspan="4" class="c-dim tc">Sin datos</td></tr>';
   }
 
@@ -2330,12 +2330,12 @@ function loadReports() {
     opsTbl.innerHTML = Object.entries(byOp).length
       ? Object.entries(byOp).map(([k, v]) => `<tr>
           <td>${k}</td><td>${v.total}</td><td class="c-ok">${v.ok}</td>
-          <td class="c-err">${v.vencidas}</td><td>â€”</td>
+          <td class="c-err">${v.vencidas}</td><td>–”</td>
         </tr>`).join('')
       : '<tr><td colspan="5" class="c-dim tc">Sin datos de operadores</td></tr>';
   }
 
-  // Por hora â€” derivado de STATE.visits
+  // Por hora –” derivado de STATE.visits
   const hourTbl = document.getElementById('rpt-hour-tbl');
   if (hourTbl) {
     const hours = Array.from({length:18}, (_,i) => i + 6); // 06:00 - 23:00
@@ -2373,9 +2373,9 @@ function loadReports() {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  CHAT EN VIVO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderChat() {
   renderChatUsers();
   document.getElementById('chat-badge').style.display = 'none';
@@ -2412,8 +2412,8 @@ function renderChatUsers() {
     item.innerHTML = '<div class="cui-avatar">' + escHtml(getInitials(p.nombre)) +
       (p.online ? '<div class="cui-dot"></div>' : '') + '</div>' +
       '<div class="cui-info">' +
-        '<div class="cui-name">' + escHtml(p.nombre || 'â€”') + '</div>' +
-        '<div class="cui-rol">' + escHtml(p.rol?.replace(/_/g,' ') || '') + ' · ' + (p.online ? '<span style="color:var(--c-ok)">â— online</span>' : '<span style="color:var(--tx-dim)">â—‹ offline</span>') + '</div>' +
+        '<div class="cui-name">' + escHtml(p.nombre || '–”') + '</div>' +
+        '<div class="cui-rol">' + escHtml(p.rol?.replace(/_/g,' ') || '') + ' · ' + (p.online ? '<span style="color:var(--c-ok)">✓ online</span>' : '<span style="color:var(--tx-dim)">✓‹ offline</span>') + '</div>' +
         (lastMsg ? '<div style="font-size:9px;color:var(--tx-dim);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">' + escHtml(lastMsg.mensaje || '') + '</div>' : '') +
       '</div>' +
       (unread ? '<div class="cui-badge">' + unread + '</div>' : '');
@@ -2429,10 +2429,10 @@ function selectChatUser(user) {
   const name   = document.getElementById('chat-target-name');
   const status = document.getElementById('chat-target-status');
   if (avatar) avatar.textContent = getInitials(user.nombre);
-  if (name)   name.textContent   = user.nombre || 'â€”';
+  if (name)   name.textContent   = user.nombre || '–”';
   if (status) status.innerHTML   = user.online
-    ? '<span style="color:var(--c-ok)">â— en línea</span>'
-    : '<span style="color:var(--tx-dim)">â—‹ desconectado</span>';
+    ? '<span style="color:var(--c-ok)">✓ en línea</span>'
+    : '<span style="color:var(--tx-dim)">✓‹ desconectado</span>';
   const input = document.getElementById('chat-input');
   const btn   = document.getElementById('btn-chat-send');
   if (input) input.disabled = false; // permitir escribir aunque esté offline
@@ -2444,7 +2444,7 @@ function selectChatUser(user) {
 }
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   ChatHide â€” Soft-delete por usuario via localStorage
+   ChatHide –” Soft-delete por usuario via localStorage
    â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Mantiene un Set de IDs de mensajes ocultos POR USUARIO (no globalmente).
    Se usa cuando la RLS de Supabase no permite borrar mensajes recibidos:
@@ -2513,7 +2513,7 @@ async function limpiarChatUsuario() {
         const { error } = await sb.from('chat_messages').delete().in('id', mine);
         if (!error) deletedCount = mine.length;
       }
-    } catch(e) { /* RLS u otro â€” no bloquea; caemos al soft-delete local */ }
+    } catch(e) { /* RLS u otro –” no bloquea; caemos al soft-delete local */ }
   } else if (STATE.usingSeed) {
     SEED.chatMessages = SEED.chatMessages.filter(function(m){
       return !((m.from_id === myId && m.to_id === otherId) || (m.from_id === otherId && m.to_id === myId));
@@ -2530,7 +2530,7 @@ async function limpiarChatUsuario() {
   });
 
   auditLog('chat', 'CHAT_LIMPIADO',
-    'Conversación con ' + otherName + ' ocultada para ' + (STATE.profile?.nombre||'â€”') +
+    'Conversación con ' + otherName + ' ocultada para ' + (STATE.profile?.nombre||'–”') +
     ' (borrados BD: ' + deletedCount + ' / ocultados local: ' + allIds.length + ')');
   notify('âœ“ Conversación con ' + otherName + ' eliminada', 'ok');
   loadChatMessages();
@@ -2649,9 +2649,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.activeElement.id === 'inp-pass') login();
 });
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  PRESENCIA
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderPresence() {
   const list = document.getElementById('presence-list');
   if (!list) return;
@@ -2665,9 +2665,9 @@ function renderPresence() {
   set('kpi-online', (STATE.presence || []).filter(p => p.online).length);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  AUDITORÃA
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 async function loadAudit() {
   const filter = document.getElementById('aud-filter')?.value || 'all';
   const container = document.getElementById('audit-list');
@@ -2696,9 +2696,9 @@ async function loadAudit() {
       ? filtered.map(l => `
         <div class=”audit-item”>
           <span class=”ai-ts”>${fmtDateTime(l.created_at || l.createdAt)}</span>
-          <span class=”ai-event”>${escHtml(l.evento || l.action || 'â€”')}</span>
-          <span class=”ai-detail”>${escHtml(l.detalle || l.description || 'â€”')}</span>
-          <span class=”ai-user”>${escHtml(l.user_nombre || l.userEmail || 'â€”')}</span>
+          <span class=”ai-event”>${escHtml(l.evento || l.action || '–”')}</span>
+          <span class=”ai-detail”>${escHtml(l.detalle || l.description || '–”')}</span>
+          <span class=”ai-user”>${escHtml(l.user_nombre || l.userEmail || '–”')}</span>
         </div>`).join('')
       : '<div class=”c-dim tc” style=”padding:16px;”>Sin registros de auditoría</div>';
   } catch (error) {
@@ -2707,9 +2707,9 @@ async function loadAudit() {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  CONFIG
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderConfig() {
   // Render tab activo por defecto (andenes)
   renderConfigDocks();
@@ -2786,7 +2786,7 @@ async function addCarrier() {
         const { error } = await sb.from('carriers').update({ codigo, nombre, tipo, numero_ruta: ruta }).eq('id', editId);
         if (error) throw error;
       }
-      await auditLog('config', 'TRANSPORTE_ACTUALIZADO', codigo + ' â€” ' + nombre);
+      await auditLog('config', 'TRANSPORTE_ACTUALIZADO', codigo + ' –” ' + nombre);
       Audio.play('ok');
       setCarrierMsg('âœ… Transporte actualizado: ' + nombre + ' (' + codigo + ')', 'ok');
       notify('âœ“ Transporte actualizado: ' + nombre + ' (' + codigo + ')', 'ok');
@@ -2800,10 +2800,10 @@ async function addCarrier() {
         if (data) STATE.carriers.push({ ...data, cd });
         else STATE.carriers.push({ ...newC, cd });
       }
-      await auditLog('config', 'TRANSPORTE_CREADO', codigo + ' â€” ' + nombre + ' / ' + tipo + (cd ? ' / ' + cd : ''));
+      await auditLog('config', 'TRANSPORTE_CREADO', codigo + ' –” ' + nombre + ' / ' + tipo + (cd ? ' / ' + cd : ''));
       Audio.play('ok');
-      setCarrierMsg('âœ… Transporte agregado: ' + nombre + ' (' + codigo + ')' + (cd ? ' · ' + cd : ' · Todos los CDs') + ' · Ruta ' + (ruta||'â€”'), 'ok');
-      notify('âœ“ Transporte agregado: ' + nombre + ' (' + codigo + ')' + (cd ? ' â€” ' + cd : ''), 'ok');
+      setCarrierMsg('âœ… Transporte agregado: ' + nombre + ' (' + codigo + ')' + (cd ? ' · ' + cd : ' · Todos los CDs') + ' · Ruta ' + (ruta||'–”'), 'ok');
+      notify('âœ“ Transporte agregado: ' + nombre + ' (' + codigo + ')' + (cd ? ' –” ' + cd : ''), 'ok');
     }
     setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 3000);
     clearCarrierForm();
@@ -2817,7 +2817,7 @@ async function addCarrier() {
 }
 
 function populateCarrierSelects() {
-  const opts = (STATE.carriers || []).map(c => `<option value="${c.codigo}" data-nombre="${c.nombre}" data-ruta="${c.numero_ruta}">${c.codigo} â€” ${c.numero_ruta} â€” ${c.nombre}</option>`).join('');
+  const opts = (STATE.carriers || []).map(c => `<option value="${c.codigo}" data-nombre="${c.nombre}" data-ruta="${c.numero_ruta}">${c.codigo} –” ${c.numero_ruta} –” ${c.nombre}</option>`).join('');
   ['wave-patente','carro-patente'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.innerHTML = '<option value="">-- Seleccionar --</option>' + opts; }
@@ -2850,9 +2850,9 @@ function populateCarrierSelects() {
 // LEGACY: }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  CARROS CARGADOS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderCarros() {
   initPatioEventDelegation();
   populateCarrierSelects();
@@ -2869,9 +2869,9 @@ function renderCarros() {
   const pColors = { alta:'var(--c-err)', normal:'var(--c-info)', baja:'var(--tx-muted)' };
   const isAdmin = ['administrador','administrativo_ops'].includes(STATE.profile?.rol);
   list.innerHTML = (STATE.carros || []).length ? (STATE.carros || []).map(function(cr,i) {
-    const anden = cr.anden_destino ? ((STATE.docks || []).find(d=>d.id===cr.anden_destino)?.codigo||'â€”') : 'â€”';
+    const anden = cr.anden_destino ? ((STATE.docks || []).find(d=>d.id===cr.anden_destino)?.codigo||'–”') : '–”';
     const slot  = cr.slot ? (STATE.playaSlots || []).find(s=>s.id===cr.slot) : null;
-    const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : 'â€”';
+    const slotLabel = slot ? ('F'+slot.fila+'-'+String(slot.col).padStart(2,'0')) : '–”';
     return '<div class="carro-card" style="border-left:3px solid ' + (pColors[cr.prioridad]||'var(--border-md)') + ';">' +
       '<div style="display:flex;flex-direction:column;min-width:80px;">' +
         '<div class="carro-ruta">' + Utils.esc(cr.ruta||cr.patente) + '</div>' +
@@ -2879,7 +2879,7 @@ function renderCarros() {
         '<span class="badge" style="margin-top:4px;font-size:9px;border-color:' + (pColors[cr.prioridad]||'var(--border-md)') + ';color:' + (pColors[cr.prioridad]||'var(--tx-muted)') + ';">' + Utils.esc((cr.prioridad||'normal').toUpperCase()) + '</span>' +
       '</div>' +
       '<div class="carro-data" style="flex:1;">' +
-        '<div><span class="c-dim">Conductor:</span> ' + Utils.esc(cr.conductor||'â€”') + '</div>' +
+        '<div><span class="c-dim">Conductor:</span> ' + Utils.esc(cr.conductor||'–”') + '</div>' +
         '<div><span class="c-dim">Pallets:</span> <b style="color:var(--tx-head);">' + Utils.esc(cr.pallets) + '</b>' +
           ' &nbsp; <span class="c-dim">Estac.:</span> ' + Utils.esc(slotLabel) +
           ' &nbsp; <span class="c-dim">Andén plan:</span> <span style="color:var(--c-accent);">' + Utils.esc(anden) + '</span></div>' +
@@ -2889,7 +2889,7 @@ function renderCarros() {
       '<button class="btn btn-err" style="padding:2px 8px;font-size:10px;" data-action="removeCarro" data-id="' + i + '">âœ•</button>' +
     '</div>';
   }).join('')
-  : '<div class="c-dim" style="padding:16px;text-align:center;">Sin carros registrados â€” use el botón + REGISTRAR CARRO</div>';
+  : '<div class="c-dim" style="padding:16px;text-align:center;">Sin carros registrados –” use el botón + REGISTRAR CARRO</div>';
 
   // KPIs
   const t = (STATE.carros || []).length;
@@ -2906,7 +2906,7 @@ function openNuevoCarro() {
   if (slotSel) {
     slotSel.innerHTML = '<option value=””>Sin slot asignado</option>' +
       (STATE.playaSlots || []).filter(function(s){ return s.ocupado; }).map(function(s){
-        return '<option value=”' + s.id + '”>F' + s.fila + '-' + String(s.col).padStart(2,'0') + ' â€” ' + (s.patente||'libre') + '</option>';
+        return '<option value=”' + s.id + '”>F' + s.fila + '-' + String(s.col).padStart(2,'0') + ' –” ' + (s.patente||'libre') + '</option>';
       }).join('');
   }
   // Andenes libres como destino planificado
@@ -2914,7 +2914,7 @@ function openNuevoCarro() {
   if (andenSel) {
     andenSel.innerHTML = '<option value="">Sin asignar</option>' +
       (STATE.docks || []).filter(function(d){ return d.estado === 'free'; }).map(function(d){
-        return '<option value="' + d.id + '">' + d.codigo + ' â€” ' + (d.tipo||'').toUpperCase() + '</option>';
+        return '<option value="' + d.id + '">' + d.codigo + ' –” ' + (d.tipo||'').toUpperCase() + '</option>';
       }).join('');
   }
   document.getElementById('carro-conductor').value = '';
@@ -2983,9 +2983,9 @@ function removeCarro(idx) {
   renderCarros();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  WAVE PLANNING
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function renderWave() {
   initPatioEventDelegation();
   populateCarrierSelects();
@@ -3003,8 +3003,8 @@ function renderWave() {
     <div class="wave-card">
       <div class="wave-pos">${String(i+1).padStart(2,'0')}</div>
       <div style="flex:1;">
-        <div class="wave-ruta">${Utils.esc(w.ruta || 'â€”')} <span class="c-dim" style="font-size:10px;">â€” ${Utils.esc(w.patente)}</span></div>
-        <div class="wave-data">${Utils.esc(w.conductor || 'â€”')} | Prioridad: <span style="color:${w.prioridad==='alta'?'var(--c-err)':w.prioridad==='baja'?'var(--tx-muted)':'var(--tx-base)'}">${Utils.esc((w.prioridad||'normal').toUpperCase())}</span> ${w.obs ? '| ' + Utils.esc(w.obs) : ''}</div>
+        <div class="wave-ruta">${Utils.esc(w.ruta || '–”')} <span class="c-dim" style="font-size:10px;">–” ${Utils.esc(w.patente)}</span></div>
+        <div class="wave-data">${Utils.esc(w.conductor || '–”')} | Prioridad: <span style="color:${w.prioridad==='alta'?'var(--c-err)':w.prioridad==='baja'?'var(--tx-muted)':'var(--tx-base)'}">${Utils.esc((w.prioridad||'normal').toUpperCase())}</span> ${w.obs ? '| ' + Utils.esc(w.obs) : ''}</div>
       </div>
       <div class="wave-arrows">
         <button class="wave-arrow" data-action="moveWave" data-id="${i}" data-arg2="-1" ${i===0?'disabled':''}>â–²</button>
@@ -3012,7 +3012,7 @@ function renderWave() {
       </div>
       <button class="btn btn-err" style="padding:2px 8px;font-size:10px;" data-action="removeWave" data-id="${i}">âœ•</button>
     </div>`).join('')
-  : '<div class="c-dim" style="padding:24px;text-align:center;">Wave vacío â€” Agregue rutas para planificar</div>';
+  : '<div class="c-dim" style="padding:24px;text-align:center;">Wave vacío –” Agregue rutas para planificar</div>';
 }
 
 function addToWave() {
@@ -3033,7 +3033,7 @@ function addToWave() {
   STATE.wave.push({ patente: pat, ruta, conductor: c?.nombre || '', prioridad: prio, obs });
   document.getElementById('wave-obs').value = '';
   Audio.play('ok');
-  notify('âœ“ Ruta agregada al wave: ' + (ruta || pat) + ' · Conductor: ' + (c?.nombre || 'â€”') + ' · Prioridad: ' + prio.toUpperCase(), 'ok');
+  notify('âœ“ Ruta agregada al wave: ' + (ruta || pat) + ' · Conductor: ' + (c?.nombre || '–”') + ' · Prioridad: ' + prio.toUpperCase(), 'ok');
   renderWave();
 }
 
@@ -3061,7 +3061,7 @@ function saveWave() {
   const turno = document.getElementById('wave-turno')?.value || '';
   const key = 'yms_wave_' + (STATE.currentSite || 'default');
   localStorage.setItem(key, JSON.stringify({ turno, wave: STATE.wave, savedAt: new Date().toISOString() }));
-  notify(`Wave guardado â€” ${(STATE.wave || []).length} rutas / ${turno}`, 'ok');
+  notify(`Wave guardado –” ${(STATE.wave || []).length} rutas / ${turno}`, 'ok');
   auditLog('planificacion', 'WAVE_GUARDADO', `${(STATE.wave || []).length} rutas planificadas`);
 }
 
@@ -3086,9 +3086,9 @@ function clearSLAAlertMarks(refId) {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  ALERTAS POR SLA PARAMETRIZADAS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function checkSLAAlerts() {
   const now = Date.now();
   const P = STATE.params;
@@ -3103,7 +3103,7 @@ function checkSLAAlerts() {
       sessionStorage.setItem(key + '_p1', '1');
       Audio.play('alert');
     } else if (mins >= P.dwell_max - P.dwell_prox && !sessionStorage.getItem(key + '_p2')) {
-      addAlert('P2', '⚠  DWELL PRÃ“XIMO', `Patente ${v.patente} lleva ${mins} min â€” vence en ${P.dwell_max - mins} min`, v.id);
+      addAlert('P2', '⚠  DWELL PRÃ“XIMO', `Patente ${v.patente} lleva ${mins} min –” vence en ${P.dwell_max - mins} min`, v.id);
       sessionStorage.setItem(key + '_p2', '1');
     }
   });
@@ -3113,7 +3113,7 @@ function checkSLAAlerts() {
     const mins = Math.round((now - new Date(t.hora_creacion)) / 60000);
     const key = sessionKey + 'task_' + t.id;
     if (mins > (t.sla_minutos || P.task_sla) && !sessionStorage.getItem(key)) {
-      addAlert('P1', 'ðŸ”´ TAREA VENCIDA', `${t.tipo?.replace(/_/g,' ')} â€” ${t.patente} (${mins}/${t.sla_minutos} min)`, t.id);
+      addAlert('P1', 'ðŸ”´ TAREA VENCIDA', `${t.tipo?.replace(/_/g,' ')} –” ${t.patente} (${mins}/${t.sla_minutos} min)`, t.id);
       sessionStorage.setItem(key, '1');
       if (t.estado !== 'vencida') t.estado = 'vencida';
       Audio.play('alert');
@@ -3128,7 +3128,7 @@ function checkSLAAlerts() {
       addAlert('P1', 'ðŸ”´ COLA SLA VENCIDO', `Ticket ${q.id} esperando ${mins} min (máx: ${P.sla_max} min)`, q.id);
       sessionStorage.setItem(key + '_p1', '1');
     } else if (mins >= P.sla_max - 10 && !sessionStorage.getItem(key + '_p2')) {
-      addAlert('P2', '⚠  COLA SLA PRÃ“XIMO', `Ticket esperando ${mins} min â€” vence en ${P.sla_max - mins} min`, q.id);
+      addAlert('P2', '⚠  COLA SLA PRÃ“XIMO', `Ticket esperando ${mins} min –” vence en ${P.sla_max - mins} min`, q.id);
       sessionStorage.setItem(key + '_p2', '1');
     }
   });
@@ -3199,9 +3199,9 @@ window.resolveAllAlerts = clearAllAlerts;
 // ofertarTareaOperador unificada arriba
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
 //  UBER TASK NOTIFICATION (Operador de Patio)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 let _uberCountdown = 30;
 let _uberInterval = null;
 
@@ -3214,9 +3214,9 @@ function showUberTask(task) {
     showView('tareas');
   }
   document.getElementById('ub-tipo').textContent    = (task.tipo || '').replace(/_/g,' ').toUpperCase();
-  document.getElementById('ub-origen').textContent  = 'Origen: ' + (task.zona_origen || 'â€”');
-  document.getElementById('ub-destino').textContent = 'Destino: ' + (task.zona_destino || 'â€”');
-  document.getElementById('ub-patente').textContent = 'Vehículo: ' + (task.patente || 'â€”');
+  document.getElementById('ub-origen').textContent  = 'Origen: ' + (task.zona_origen || '–”');
+  document.getElementById('ub-destino').textContent = 'Destino: ' + (task.zona_destino || '–”');
+  document.getElementById('ub-patente').textContent = 'Vehículo: ' + (task.patente || '–”');
   document.getElementById('ub-prioridad').textContent = 'Prioridad: ' + (task.prioridad || 'normal').toUpperCase();
   _uberCountdown = 30;
   document.getElementById('ub-countdown').textContent = _uberCountdown;
@@ -3239,7 +3239,7 @@ function uberAccept() {
     task.operador_nombre = STATE.profile?.nombre;
     notify('âœ“ Tarea aceptada: ' + (task.tipo || '').replace(/_/g,' '), 'ok');
     Audio.play('accepted');
-    auditLog('task', 'TAREA_ACEPTADA', `${task.tipo} â€” ${task.patente} â€” por ${STATE.profile?.nombre}`);
+    auditLog('task', 'TAREA_ACEPTADA', `${task.tipo} –” ${task.patente} –” por ${STATE.profile?.nombre}`);
     if (!STATE.usingSeed) {
       const validation = validateStateTransition('yard_tasks', task.estado, 'en_ejecucion', STATE.user?.id);
       if (!validation.valid) { notify('âŒ ' + validation.reason, 'error'); return; }
@@ -3266,8 +3266,8 @@ function uberReject() {
   const task = STATE.uberCurrentTask;
   if (task) {
     task.estado = 'rechazada';
-    notify('Tarea rechazada â€” se escala a supervisor', 'warn');
-    auditLog('task', 'TAREA_RECHAZADA', `${task.tipo} â€” ${task.patente}`);
+    notify('Tarea rechazada –” se escala a supervisor', 'warn');
+    auditLog('task', 'TAREA_RECHAZADA', `${task.tipo} –” ${task.patente}`);
   }
 }
 
@@ -3276,14 +3276,14 @@ function uberTimeout() {
   const task = STATE.uberCurrentTask;
   if (task) {
     task.estado = 'vencida';
-    addAlert('P2', '⚠  TAREA SIN RESPUESTA', 'Tarea ' + (task.tipo||'') + ' no fue aceptada â€” escalada', task.id);
-    notify('⚠  Tarea sin respuesta â€” escalada a supervisor', 'warn');
+    addAlert('P2', '⚠  TAREA SIN RESPUESTA', 'Tarea ' + (task.tipo||'') + ' no fue aceptada –” escalada', task.id);
+    notify('⚠  Tarea sin respuesta –” escalada a supervisor', 'warn');
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  TRAZABILIDAD / REPORTES
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 function initTrazabilidad() {
   populateCarrierSelects();
   // Fechas por defecto: hoy
@@ -3337,18 +3337,18 @@ async function loadTrazabilidad() {
     tbody.innerHTML = visits.length ? visits.map(v => {
       const dw = v.hora_salida && v.hora_ingreso
         ? Math.round((new Date(v.hora_salida) - new Date(v.hora_ingreso)) / 60000) + 'm'
-        : v.hora_ingreso ? Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000) + 'm*' : 'â€”';
+        : v.hora_ingreso ? Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000) + 'm*' : '–”';
       const c = (STATE.carriers || []).find(x => x.codigo === v.patente);
       return `<tr>
-        <td class="c-dim">${v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleDateString('es-CL') : 'â€”'}</td>
-        <td class="c-bright">${v.patente || 'â€”'}</td>
-        <td>${v.carrier?.nombre || v.carrier_nombre || c?.nombre || 'â€”'}</td>
-        <td><span class="badge ${v.tipo==='primaria'?'badge b-ok':'badge b-warn'}">${v.tipo||'â€”'}</span></td>
+        <td class="c-dim">${v.hora_ingreso ? new Date(v.hora_ingreso).toLocaleDateString('es-CL') : '–”'}</td>
+        <td class="c-bright">${v.patente || '–”'}</td>
+        <td>${v.carrier?.nombre || v.carrier_nombre || c?.nombre || '–”'}</td>
+        <td><span class="badge ${v.tipo==='primaria'?'badge b-ok':'badge b-warn'}">${v.tipo||'–”'}</span></td>
         <td class="c-dim">${fmtTime(v.hora_ingreso)}</td>
         <td class="c-dim">${fmtTime(v.hora_salida)}</td>
         <td style="color:${parseInt(dw)>(STATE.params?.dwell_max || 180)?'var(--c-err)':'var(--tx-base)'}">${dw}</td>
-        <td class="c-dim">${v.dock_codigo || v.dock?.codigo || 'â€”'}</td>
-        <td><span class="badge ${v.estado==='en_patio'?'badge b-ok':v.estado==='salida'?'badge b-dim':'badge b-info'}">${v.estado||'â€”'}</span></td>
+        <td class="c-dim">${v.dock_codigo || v.dock?.codigo || '–”'}</td>
+        <td><span class="badge ${v.estado==='en_patio'?'badge b-ok':v.estado==='salida'?'badge b-dim':'badge b-info'}">${v.estado||'–”'}</span></td>
       </tr>`;
     }).join('')
     : '<tr><td colspan="9" class="c-dim" style="text-align:center;padding:12px;">Sin registros para el período seleccionado</td></tr>';
@@ -3384,9 +3384,9 @@ function exportTrazabilidad() {
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  ANDENES â€” CRUD COMPLETO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  ANDENES –” CRUD COMPLETO
+// ──────────────────────────────────────────────
 async function saveAnden() {
   const editId  = document.getElementById('edit-dock-id').value;
   const codigo  = document.getElementById('cfg-dock-code').value.trim().toUpperCase();
@@ -3451,7 +3451,7 @@ function editAnden(id) {
   document.getElementById('cfg-dock-plantas').value  = d.plantas_compat || '';
   document.getElementById('cfg-dock-maxtime').value  = d.max_tiempo || 120;
   document.getElementById('cfg-dock-status').value   = d.estado === 'blocked' ? 'blocked' : 'free';
-  document.getElementById('cfg-dock-form-title').textContent = 'EDITAR ANDÃ‰N â€” ' + d.codigo;
+  document.getElementById('cfg-dock-form-title').textContent = 'EDITAR ANDÃ‰N –” ' + d.codigo;
   notify('Editando andén ' + d.codigo, 'info');
 }
 
@@ -3496,7 +3496,7 @@ function renderConfigDocks() {
   const selDevol = document.getElementById('cfg-devol-anden');
   if (selDevol) {
     selDevol.innerHTML = '<option value="">Sin andén fijo</option>' +
-      (STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('');
+      (STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} –” ${d.tipo}</option>`).join('');
   }
   // Poblar tabla devolución
   const devTbl = document.getElementById('cfg-devol-docks-tbl');
@@ -3509,9 +3509,9 @@ function renderConfigDocks() {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CONFIG â€” TABS + RENDER COMPLETO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  CONFIG –” TABS + RENDER COMPLETO
+// ──────────────────────────────────────────────
 function switchCfgTab(btn) {
   document.querySelectorAll('.cfg-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.cfg-panel').forEach(p => p.classList.remove('active'));
@@ -3528,9 +3528,9 @@ function switchCfgTab(btn) {
   if (tab === 'cfg-checklist')    renderChecklistConfig();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CONFIG â€” CHECKLIST DE PATIO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  CONFIG –” CHECKLIST DE PATIO
+// ──────────────────────────────────────────────
 function renderChecklistConfig() {
   const list = document.getElementById('cfg-checklist-list');
   if (!list) return;
@@ -3626,13 +3626,13 @@ function renderConfigCarriers() {
       '<option value="' + Utils.esc(s.codigo) + '"' + (c.cd === s.codigo ? ' selected' : '') + '>' + Utils.esc(s.nombre) + '</option>'
     ).join('');
     const enPatio = (STATE.visits || []).find(v => v.patente === c.codigo && v.estado !== 'salida');
-    const andenActual = enPatio?.dock_id ? ((STATE.docks || []).find(d => d.id === enPatio.dock_id)?.codigo || 'â€”') : 'â€”';
+    const andenActual = enPatio?.dock_id ? ((STATE.docks || []).find(d => d.id === enPatio.dock_id)?.codigo || '–”') : '–”';
     const isAdmin = STATE.profile?.rol === 'administrador';
     return '<tr>' +
       '<td class="c-bright fw">' + Utils.esc(c.codigo) + '</td>' +
       '<td style="font-size: 8px;">' + Utils.esc(c.nombre) + '</td>' +
-      '<td class="c-dim">' + Utils.esc(c.tipo||'â€”') + '</td>' +
-      '<td class="c-dim">' + Utils.esc(c.numero_ruta||'â€”') + '</td>' +
+      '<td class="c-dim">' + Utils.esc(c.tipo||'–”') + '</td>' +
+      '<td class="c-dim">' + Utils.esc(c.numero_ruta||'–”') + '</td>' +
       '<td>' + (isAdmin
         ? '<select style="font-size:10px;padding:1px 4px;background:var(--bg-input);border:1px solid var(--border);color:var(--tx-base);font-family:var(--font);" onchange="moverCarrierCD(\'' + c.id + '\',this.value)">' + cdOpts + '</select>'
         : (c.cd ? Utils.esc(SITES_DISPONIBLES.find(s=>s.codigo===c.cd)?.nombre||c.cd) : 'Todos')) + '</td>' +
@@ -3668,11 +3668,11 @@ function editCarrier(id) {
 async function deleteCarrier(id) {
   const c = (STATE.carriers || []).find(x => x.id === id);
   if (!c) return;
-  if (!confirm('Â¿ELIMINAR transporte ' + c.codigo + ' â€” ' + c.nombre + '?')) return;
+  if (!confirm('Â¿ELIMINAR transporte ' + c.codigo + ' –” ' + c.nombre + '?')) return;
   STATE.carriers = (STATE.carriers || []).filter(x => x.id !== id);
   if (!STATE.usingSeed) {
     await sb.from('carriers').delete().eq('id', id);
-    await auditLog('config', 'TRANSPORTE_ELIMINADO', c.codigo + ' â€” ' + c.nombre);
+    await auditLog('config', 'TRANSPORTE_ELIMINADO', c.codigo + ' –” ' + c.nombre);
   }
   notify('Transporte ' + c.codigo + ' eliminado', 'ok');
   renderConfigCarriers();
@@ -3697,8 +3697,8 @@ function renderConfigPlantas() {
   tbody.innerHTML = (STATE.plants || []).map(p => `<tr>
     <td class="c-bright">${Utils.esc(p.codigo)}</td>
     <td>${Utils.esc(p.nombre)}</td>
-    <td class="c-dim">${Utils.esc(p.region || 'â€”')}</td>
-    <td class="c-dim">${Utils.esc(p.tipo || 'â€”')}</td>
+    <td class="c-dim">${Utils.esc(p.region || '–”')}</td>
+    <td class="c-dim">${Utils.esc(p.tipo || '–”')}</td>
     <td>
       <button class="btn btn-err" style="font-size:9px;padding:1px 5px;" onclick="deletePlanta('${p.id}')">ELIMINAR</button>
     </td>
@@ -3726,7 +3726,7 @@ async function addPlanta() {
   STATE.plants.push(newP);
   if (!STATE.usingSeed) {
     await sb.from('plants').insert({ codigo: cod, nombre, region, tipo }).select().single();
-    await auditLog('config', 'PLANTA_CREADA', cod + ' â€” ' + nombre);
+    await auditLog('config', 'PLANTA_CREADA', cod + ' –” ' + nombre);
   }
   ['plt-codigo','plt-nombre','plt-region'].forEach(id => document.getElementById(id).value = '');
   Audio.play('ok');
@@ -3824,8 +3824,8 @@ async function aceptarTareaById(taskId) {
       }
     }
     Audio.play('ok');
-    notify('âœ“ Tarea aceptada â€” ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + (t.patente ? ' · ' + t.patente : ''), 'ok');
-    await auditLog('task','TAREA_ACEPTADA', (t.tipo||'') + ' · ' + (t.patente||'â€”') + ' por ' + (STATE.profile?.nombre||'â€”'));
+    notify('âœ“ Tarea aceptada –” ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + (t.patente ? ' · ' + t.patente : ''), 'ok');
+    await auditLog('task','TAREA_ACEPTADA', (t.tipo||'') + ' · ' + (t.patente||'–”') + ' por ' + (STATE.profile?.nombre||'–”'));
     renderTareas();
     // Abrir modal correcto segÃºn tipo de tarea
     const esRetiro = t.tipo === 'retirar_anden' || t.tipo === 'anden_a_carros_vacios' || t.zona_destino === 'carros_cargados' || t.zona_destino === 'estacionamiento_carros_vacios';
@@ -3887,15 +3887,15 @@ function renderCitas() {
     const dock = (STATE.docks || []).find(d => d.id === c.dock_id);
     const carrier = (STATE.carriers || []).find(x => x.codigo === c.patente);
     return `<tr>
-      <td class="c-bright fw">${Utils.esc(c.hora_inicio || 'â€”')}</td>
-      <td class="c-dim">${Utils.esc(c.hora_inicio || 'â€”')}â€“${Utils.esc(c.hora_fin || 'â€”')}</td>
-      <td class="c-bright">${Utils.esc(dock?.codigo || 'â€”')}</td>
-      <td class="c-bright">${Utils.esc(c.patente || 'â€”')}</td>
-      <td class="c-dim">${Utils.esc(carrier?.nombre || c.empresa || 'â€”')}</td>
+      <td class="c-bright fw">${Utils.esc(c.hora_inicio || '–”')}</td>
+      <td class="c-dim">${Utils.esc(c.hora_inicio || '–”')}–“${Utils.esc(c.hora_fin || '–”')}</td>
+      <td class="c-bright">${Utils.esc(dock?.codigo || '–”')}</td>
+      <td class="c-bright">${Utils.esc(c.patente || '–”')}</td>
+      <td class="c-dim">${Utils.esc(carrier?.nombre || c.empresa || '–”')}</td>
       <td class="c-dim">${Utils.esc((c.tipo_operacion||'').replace(/_/g,' ').toUpperCase())}</td>
-      <td class="c-dim">${Utils.esc((c.tipo_carga||'').toUpperCase() || 'â€”')}</td>
-      <td class="c-dim">${Utils.esc(c.pallets_estimados || 'â€”')}</td>
-      <td><span class="badge ${stCls}">${Utils.esc(c.estado?.toUpperCase() || 'â€”')}</span></td>
+      <td class="c-dim">${Utils.esc((c.tipo_carga||'').toUpperCase() || '–”')}</td>
+      <td class="c-dim">${Utils.esc(c.pallets_estimados || '–”')}</td>
+      <td><span class="badge ${stCls}">${Utils.esc(c.estado?.toUpperCase() || '–”')}</span></td>
       <td style="white-space:nowrap;">
         ${c.estado === 'programada' ? `
           <button class="btn btn-ok" style="font-size:9px;padding:1px 5px;" data-action="confirmCita" data-id="${c.id}">CONFIRMAR</button>
@@ -3919,7 +3919,7 @@ function openNuevaCita() {
         </div>
         <div class="fr">
           <div class="fg"><label>Andén *</label>
-            <select id="nc-anden">${(STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} â€” ${d.tipo}</option>`).join('')}</select>
+            <select id="nc-anden">${(STATE.docks || []).map(d => `<option value="${d.id}">${d.codigo} –” ${d.tipo}</option>`).join('')}</select>
           </div>
           <div class="fg"><label>Patente rampla PRIMARIA * <span style="color:var(--tx-muted);font-size:9px;">(NO secundaria)</span></label>
             <input type="text" id="nc-patente" placeholder="Ej: XXYY00" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();buscarDatosCita(this.value)">
@@ -4016,7 +4016,7 @@ function saveCita() {
 
   closeModal('modal-cita');
   Audio.play('ok');
-  notify('âœ“ Cita registrada: ' + patente + ' · ' + (dock?.codigo||'?') + ' · ' + fecha + ' ' + horaIni + ' â€” ' + tipoOp.replace(/_/g,' ').toUpperCase() + ' · ' + pallets + ' pallets', 'ok');
+  notify('âœ“ Cita registrada: ' + patente + ' · ' + (dock?.codigo||'?') + ' · ' + fecha + ' ' + horaIni + ' –” ' + tipoOp.replace(/_/g,' ').toUpperCase() + ' · ' + pallets + ' pallets', 'ok');
   auditLog('citas', 'CITA_CREADA', `${patente} / ${dock?.codigo} / ${fecha} ${horaIni}`);
   renderCitas();
 }
@@ -4037,9 +4037,9 @@ function cancelCita(id) {
   renderCitas();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CADENA FRÃO â€” RENDER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  CADENA FRÃO –” RENDER
+// ──────────────────────────────────────────────
 function renderTemperatura() {
   const cont = document.getElementById('view-temperatura');
   if (!cont) return;
@@ -4055,10 +4055,10 @@ function renderTemperatura() {
       return `<tr>
         <td class="c-dim">${fmtDateTime(v.hora_ingreso)}</td>
         <td class="c-bright fw">${v.patente}</td>
-        <td>${v.carrier_nombre || 'â€”'}</td>
-        <td class="${cls}">${v.temp_cabina != null ? v.temp_cabina + 'Â°C' : 'â€”'} ${v.temp_alerta ? '⚠ ' : 'âœ“'}</td>
-        <td class="c-dim">${v.temp_producto != null ? v.temp_producto + 'Â°C' : 'â€”'}</td>
-        <td><span class="badge ${v.tipo_carga==='congelado'?'badge b-info':'badge b-warn'}">${(v.tipo_carga||'â€”').toUpperCase()}</span></td>
+        <td>${v.carrier_nombre || '–”'}</td>
+        <td class="${cls}">${v.temp_cabina != null ? v.temp_cabina + 'Â°C' : '–”'} ${v.temp_alerta ? '⚠ ' : 'âœ“'}</td>
+        <td class="c-dim">${v.temp_producto != null ? v.temp_producto + 'Â°C' : '–”'}</td>
+        <td><span class="badge ${v.tipo_carga==='congelado'?'badge b-info':'badge b-warn'}">${(v.tipo_carga||'–”').toUpperCase()}</span></td>
         <td class="${v.temp_alerta?'c-err':'c-ok'}">${v.temp_alerta ? '⚠  FUERA DE RANGO' : 'âœ“ OK'}</td>
       </tr>`;
     }).join('')
@@ -4073,11 +4073,11 @@ function renderTemperatura() {
   set('temp-k-adh', pct + '%');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  FUNCIONES FALTANTES â€” closeModal, resolveAllAlerts,
+// ──────────────────────────────────────────────
+//  FUNCIONES FALTANTES –” closeModal, resolveAllAlerts,
 //  openNewPlaya, openNewCarro, aprobarDevolucion,
 //  asignarAndén (con tilde)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 
 function closeModal(id) {
   const el = document.getElementById(id);
@@ -4112,7 +4112,7 @@ function openNewCarro() {
   const sel = document.getElementById('carro-patente');
   if (sel) {
     sel.innerHTML = '<option value="">-- Seleccionar --</option>' +
-      (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
+      (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} –” ${c.nombre}</option>`).join('');
   }
   const slotSel = document.getElementById('carro-slot');
   if (slotSel) {
@@ -4197,7 +4197,7 @@ async function aprobarDevolucion(id, aprobada) {
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 const MOBILE_ACCESS_ROLES = ['guardia', 'operador_patio'];
 
 function getAccessLink() {
@@ -4240,9 +4240,9 @@ function showCreatedLink(nombre, email, rol) {
   box.scrollIntoView({ behavior: 'smooth' });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CREACIÃ“N USUARIOS â€” SOLO ADMINISTRADOR
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  CREACIÃ“N USUARIOS –” SOLO ADMINISTRADOR
+// ──────────────────────────────────────────────
 async function createUser() {
   if (STATE.profile?.rol !== 'administrador') {
     notify('â›” Solo el administrador puede crear usuarios', 'error'); return;
@@ -4378,7 +4378,7 @@ async function editUserRol(userId, newRol) {
       return;
     }
   }
-  await auditLog('config', 'ROL_CAMBIADO', (u.nombre||'â€”') + ' â†’ ' + newRol);
+  await auditLog('config', 'ROL_CAMBIADO', (u.nombre||'–”') + ' â†’ ' + newRol);
   notify('Rol de ' + u.nombre + ' â†’ ' + newRol.replace(/_/g,' ').toUpperCase(), 'ok');
 }
 
@@ -4405,13 +4405,13 @@ function renderConfigUsuarios() {
     const hasLink = MOBILE_ACCESS_ROLES.includes(u.rol);
     const appUrl = getAccessLink();
     return `<tr>
-      <td class="c-bright fw">${Utils.esc(u.nombre||'â€”')}</td>
-      <td class="c-dim fz10">${Utils.esc(u.email||u.username||'â€”')}</td>
+      <td class="c-bright fw">${Utils.esc(u.nombre||'–”')}</td>
+      <td class="c-dim fz10">${Utils.esc(u.email||u.username||'–”')}</td>
       <td><select style="font-size:10px;padding:1px 3px;background:var(--bg-input);border:1px solid var(--border);color:var(--tx-base);font-family:var(--font);" onchange="editUserRol('${u.id}',this.value)">${rolOpts}</select></td>
       <td><select style="font-size:10px;padding:1px 3px;background:var(--bg-input);border:1px solid var(--border);color:var(--tx-base);font-family:var(--font);" onchange="editUserCD('${u.id}',this.value)">${sitioOpts}</select></td>
       <td><span class="badge ${u.activo?'b-ok':'b-err'}">${u.activo?'ACTIVO':'INACT.'}</span></td>
-      <td class="c-dim fz10">${u.ultimo_acceso?fmtDateTime(u.ultimo_acceso):'â€”'}</td>
-      <td>${hasLink ? `<span class="al-url fz10" onclick="navigator.clipboard.writeText('${Utils.esc(appUrl)}').then(()=>notify('Link copiado','ok'))" title="Copiar link de acceso">ðŸ”— COPIAR</span>` : 'â€”'}</td>
+      <td class="c-dim fz10">${u.ultimo_acceso?fmtDateTime(u.ultimo_acceso):'–”'}</td>
+      <td>${hasLink ? `<span class="al-url fz10" onclick="navigator.clipboard.writeText('${Utils.esc(appUrl)}').then(()=>notify('Link copiado','ok'))" title="Copiar link de acceso">ðŸ”— COPIAR</span>` : '–”'}</td>
       <td style="display:flex;gap:3px;">
         <button class="btn btn-info" style="font-size:9px;padding:1px 5px;" onclick="openUserModal('${u.id}')" title="Editar">âœï¸ EDITAR</button>
         <button class="btn btn-warn" style="font-size:9px;padding:1px 5px;" onclick="toggleUser('${u.id}')">${u.activo?'DESACT.':'ACTIVAR'}</button>
@@ -4434,7 +4434,7 @@ async function editUserCD(userId, newCD) {
       return;
     }
   }
-  await auditLog('config', 'CD_CAMBIADO', (u.nombre||'â€”') + ' â†’ ' + (site?.nombre || newCD));
+  await auditLog('config', 'CD_CAMBIADO', (u.nombre||'–”') + ' â†’ ' + (site?.nombre || newCD));
   Audio.play('ok');
   notify('âœ“ CD de ' + (u.nombre||'?') + ' â†’ ' + (site?.nombre || newCD), 'ok');
 }
@@ -4678,9 +4678,9 @@ function saveChangePassword() {
   }, 800);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  SINCRONIZAR USUARIOS A SUPABASE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 // LEGACY: async function syncUsersToSupabase() {
 // LEGACY:   if (!sb) { notify('⚠ ï¸ Supabase no configurado', 'warn'); return; }
 // LEGACY:   if (STATE.profile?.rol !== 'administrador') { notify('⚠ ï¸ Solo administradores pueden sincronizar', 'error'); return; }
@@ -4735,9 +4735,9 @@ function saveChangePassword() {
 // LEGACY:   }
 // LEGACY: }
 // LEGACY: 
-// LEGACY: // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// LEGACY: // ──────────────────────────────────────────────
 // LEGACY: //  WORKFLOWS
-// LEGACY: // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// LEGACY: // ──────────────────────────────────────────────
 // LEGACY: const WF_DEFAULTS = [
 // LEGACY:   { id:'wf1', nombre:'Aprobación Devoluciones', tipo:'devoluciones',
 // LEGACY:     paso1:['guardia','operador_patio'], paso2:['administrativo_ops'], paso3:['administrador'],
@@ -4787,7 +4787,7 @@ function renderWorkflows() {
   const tbody = document.getElementById('workflows-tbl');
   if (!tbody) return;
   set('wf-count', STATE_WORKFLOWS.length);
-  const fmt = arr => (arr||[]).filter(Boolean).map(r=>r.replace(/_/g,' ')).join(', ') || 'â€”';
+  const fmt = arr => (arr||[]).filter(Boolean).map(r=>r.replace(/_/g,' ')).join(', ') || '–”';
   tbody.innerHTML = STATE_WORKFLOWS.map(w => `<tr>
     <td class="c-bright fw">${w.nombre}</td>
     <td class="c-dim">${w.tipo}</td>
@@ -4812,8 +4812,8 @@ function renderWorkflows() {
       const p2 = (wf?.paso2||[]).filter(Boolean).map(x=>x.replace(/_/g,' ')).join(', ')||'Administrador';
       return `<tr>
         <td class="c-bright">${wf?.nombre||'Devoluciones'}</td>
-        <td class="c-bright fw">${r.patente||'â€”'}</td>
-        <td class="c-dim">${(STATE.users || []).find(u=>u.id===r.solicitado_por)?.nombre||'â€”'}</td>
+        <td class="c-bright fw">${r.patente||'–”'}</td>
+        <td class="c-dim">${(STATE.users || []).find(u=>u.id===r.solicitado_por)?.nombre||'–”'}</td>
         <td><span class="badge b-warn">PASO 1â†’2</span></td>
         <td><span class="badge b-info fz10">${p2}</span></td>
         <td class="${elapsed>(wf?.sla_horas||4)*60?'c-err':'c-ok'}">${elapsed}min</td>
@@ -4895,9 +4895,9 @@ function canActInWorkflow(tipo, paso) {
   return (wf['paso'+paso]||[]).includes(STATE.profile?.rol);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 //  SUPABASE CONFIG desde UI
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
 // LEGACY: function saveSupabaseConfig() {
 // LEGACY:   const url = (document.getElementById('sb-url-input')?.value||'').trim();
 // LEGACY:   const key = (document.getElementById('sb-key-input')?.value||'').trim();
@@ -4936,18 +4936,18 @@ function renderConfigSistema() {
   if(keyEl) keyEl.value = SUPABASE_ANON_KEY.includes('TU_ANON_KEY') ? '' : SUPABASE_ANON_KEY;
   if(svcEl) { const sv = localStorage.getItem('sb_service_key')||''; svcEl.value = sv; }
   const el = document.getElementById('sb-status');
-  if(el) el.innerHTML = _sbConfigured ? '<span class="c-ok">â— Supabase configurado</span>' : '<span class="c-warn">⚠  Modo demo â€” Supabase no configurado</span>';
+  if(el) el.innerHTML = _sbConfigured ? '<span class="c-ok">✓ Supabase configurado</span>' : '<span class="c-warn">⚠  Modo demo –” Supabase no configurado</span>';
 }
 
 // Stubs duplicados eliminados: se conservan las versiones funcionales declaradas arriba.
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  EXPORTAR AL SCOPE GLOBAL â€” necesario para onclick inline en HTML
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  EXPORTAR AL SCOPE GLOBAL –” necesario para onclick inline en HTML
+// ──────────────────────────────────────────────
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  IMPORTACIÃ“N MASIVA â€” TRANSPORTES Y PLANTAS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────
+//  IMPORTACIÃ“N MASIVA –” TRANSPORTES Y PLANTAS
+// ───────────────────────────────────────────────────────
 let _importType = null;
 let _importParsed = [];
 
@@ -5025,7 +5025,7 @@ function previewImport() {
     prev.innerHTML = '<div style="font-weight:600;margin-bottom:4px;color:var(--tx-head);">CÃ“DIGO | NOMBRE | REGIÃ“N | TIPO</div>' +
       _importParsed.map(r => `<div style="padding:2px 0;border-bottom:1px solid var(--border);">${r.codigo} | ${r.nombre} | ${r.region} | ${r.tipo}</div>`).join('');
   }
-  if (stats) stats.innerHTML = `<span class="c-ok">âœ“ ${_importParsed.length} registros detectados</span> â€” Revise y haga clic en IMPORTAR para confirmar.`;
+  if (stats) stats.innerHTML = `<span class="c-ok">âœ“ ${_importParsed.length} registros detectados</span> –” Revise y haga clic en IMPORTAR para confirmar.`;
 }
 
 async function confirmImport() {
@@ -5088,9 +5088,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  INGRESO SECUNDARIO â€” lógica pallets vacíos / devolución
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
+//  INGRESO SECUNDARIO –” lógica pallets vacíos / devolución
+// ───────────────────────────────────────────────────────────────
 function toggleDevolucionSecundaria() {
   const tiene = document.getElementById('ing2-tiene-devolucion')?.checked;
   const panel = document.getElementById('devolucion-sec-panel');
@@ -5100,7 +5100,7 @@ function toggleDevolucionSecundaria() {
     info.style.color = tiene ? 'var(--c-warn)' : 'var(--c-ok)';
     info.textContent = tiene
       ? '⚠  Se iniciará workflow de autorización de devolución al confirmar ingreso'
-      : 'âœ“ Ingreso normal â€” camión retorna con pallets VACÃOS';
+      : 'âœ“ Ingreso normal –” camión retorna con pallets VACÃOS';
   }
 }
 
@@ -5122,14 +5122,14 @@ function autoFillSecPatente() {
 function fillSecundariaCarriers() {
   const sel = document.getElementById('ing2-carrier');
   if (!sel) return;
-  sel.innerHTML = '<option value="">â€” Seleccionar desde flota â€”</option>' +
-    (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} â€” ${c.nombre}</option>`).join('');
+  sel.innerHTML = '<option value="">–” Seleccionar desde flota –”</option>' +
+    (STATE.carriers || []).map(c => `<option value="${c.codigo}">${c.codigo} –” ${c.nombre}</option>`).join('');
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  INICIALIZAR PLAYA CON CARRIERS DEL CD â€” carros vacíos
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
+//  INICIALIZAR PLAYA CON CARRIERS DEL CD –” carros vacíos
+// ───────────────────────────────────────────────────────────────
 function initPlayaConCarriers() {
   if (STATE._playaIniciada) return;
   const yaOcupados = (STATE.playaSlots || []).filter(s => s.ocupado).length;
@@ -5143,7 +5143,7 @@ function initPlayaConCarriers() {
     if (idx >= (STATE.playaSlots || []).length) return;
     const slot = STATE.playaSlots[idx];
     slot.ocupado = true; slot.patente = carrier.codigo;
-    slot.ruta = carrier.numero_ruta || 'â€”'; slot.nombre = carrier.nombre;
+    slot.ruta = carrier.numero_ruta || '–”'; slot.nombre = carrier.nombre;
     slot.tipo = carrier.tipo; slot.estado = carrier.estado || '';
   });
   STATE._playaIniciada = true;
@@ -5205,7 +5205,7 @@ function renderTareasMobile() {
         '<span style="color:var(--tx-head);font-size: 10px;font-weight:700;flex:1;">' + Utils.esc((t.tipo||'').replace(/_/g,' ').toUpperCase()) + '</span>' +
         '<span style="color:' + (stColor[t.estado]||'var(--tx-muted)') + ';font-size:10px;font-weight:600;padding:2px 6px;background:var(--bg-alt);">' + Utils.esc((t.estado||'').toUpperCase()) + '</span>' +
       '</div>' +
-      '<div style="font-size: 10px;font-weight:800;color:var(--tx-head);letter-spacing:3px;margin:6px 0 4px;font-family:var(--font);line-height:1;">ðŸš› ' + escHtml(t.patente||'â€”') + '</div>' +
+      '<div style="font-size: 10px;font-weight:800;color:var(--tx-head);letter-spacing:3px;margin:6px 0 4px;font-family:var(--font);line-height:1;">ðŸš› ' + escHtml(t.patente||'–”') + '</div>' +
       '<div style="font-size: 9px;font-weight:600;color:var(--c-accent);letter-spacing:0.5px;margin-bottom:4px;">ðŸ“ ' + Utils.esc((t.zona_origen||'').replace(/_/g,' ').toUpperCase()) + ' â†’ ' + Utils.esc((t.zona_destino||'').replace(/_/g,' ').toUpperCase()) + '</div>' +
       (t.notas ? '<div style="font-size: 8px;color:var(--tx-dim);margin-top:3px;">ðŸ“ ' + escHtml(t.notas||'') + '</div>' : '');
     card.appendChild(hdr);
@@ -5268,9 +5268,9 @@ function renderTareasMobile() {
 
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CHECKLIST â€” WIZARD PASO A PASO
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ──────────────────────────────────────────────
+//  CHECKLIST –” WIZARD PASO A PASO
+// ──────────────────────────────────────────────
 function abrirChecklistTarea(taskId) {
   _checklistTaskId = taskId;
   const t = (STATE.tasks || []).find(x => x.id === taskId);
@@ -5279,8 +5279,8 @@ function abrirChecklistTarea(taskId) {
   _clActiveItems = CL_ITEMS_CONFIG.filter(i => i.enabled !== false);
   const patEl = document.getElementById('cl-patente');
   const tipEl = document.getElementById('cl-tipo');
-  if (patEl) patEl.textContent = t?.patente || 'â€”';
-  if (tipEl) tipEl.textContent = (t?.tipo || 'â€”').replace(/_/g,' ').toUpperCase();
+  if (patEl) patEl.textContent = t?.patente || '–”';
+  if (tipEl) tipEl.textContent = (t?.tipo || '–”').replace(/_/g,' ').toUpperCase();
   clShowStep(0);
   const modal = document.getElementById('modal-checklist');
   if (modal) { modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center'; }
@@ -5297,7 +5297,7 @@ function clShowStep(step) {
   const tipoLbl = { critico:'CRÃTICO', cadena_frio:'CADENA FRÃO', requerido:'REQUERIDO' }[item.tipo] || item.tipo.toUpperCase();
 
   const titleEl = document.getElementById('cl-step-title');
-  if (titleEl) titleEl.textContent = 'Inspección Pre-Andén â€” ' + (step + 1) + ' de ' + total;
+  if (titleEl) titleEl.textContent = 'Inspección Pre-Andén –” ' + (step + 1) + ' de ' + total;
 
   const savedVal = _clStepData[item.id] !== undefined ? _clStepData[item.id] : '';
   let inputHtml = '';
@@ -5305,7 +5305,7 @@ function clShowStep(step) {
     inputHtml = '<div style="text-align:center;margin-top:20px;">' +
       '<input type="number" id="cl-step-input" value="' + savedVal + '" step="0.5" min="-30" max="60" ' +
       'style="font-size: 8px;font-weight:700;width:140px;text-align:center;font-family:var(--font);padding:8px;border-radius:8px;border:2px solid var(--border);background:var(--bg-input);color:var(--tx-head);" ' +
-      'placeholder="â€”" oninput="clSaveCurrentValue()">' +
+      'placeholder="–”" oninput="clSaveCurrentValue()">' +
       '<div style="font-size: 10px;color:var(--tx-muted);margin-top:6px;">' + (item.unidad || '') + '</div>' +
     '</div>';
   } else {
@@ -5399,7 +5399,7 @@ function clPrevStep() {
   if (_clCurrentStep > 0) clShowStep(_clCurrentStep - 1);
 }
 
-function updateChecklist() { /* no-op â€” reemplazado por wizard */ }
+function updateChecklist() { /* no-op –” reemplazado por wizard */ }
 
 async function confirmarChecklistTarea() {
   clSaveCurrentValue();
@@ -5426,7 +5426,7 @@ async function confirmarChecklistTarea() {
   }
 
   const resumenChecklist = _clActiveItems.map(function(item) {
-    const val = _clStepData[item.id] || 'â€”';
+    const val = _clStepData[item.id] || '–”';
     return item.label + ': ' + val + (item.esNumerico && item.unidad ? item.unidad : '');
   }).join(' | ');
 
@@ -5461,11 +5461,11 @@ async function confirmarChecklistTarea() {
   }
 
   await auditLog('task', 'CHECKLIST_APROBADO',
-    (t.tipo||'').replace(/_/g,' ') + ' · ' + (t.patente||'â€”') + ' | ' + resumenChecklist);
+    (t.tipo||'').replace(/_/g,' ') + ' · ' + (t.patente||'–”') + ' | ' + resumenChecklist);
 
   closeModal('modal-checklist');
   Audio.play('ok');
-  notify('Checklist aprobado â€” confirme postura en andén', 'ok', 4000);
+  notify('Checklist aprobado –” confirme postura en andén', 'ok', 4000);
   renderTareas();
   setTimeout(function() { abrirPosturaAnden(_checklistTaskId); }, 500);
 }
@@ -5478,8 +5478,8 @@ function abrirPosturaAnden(taskId) {
   const infoEl = document.getElementById('pa-info-camion');
   if (infoEl) {
     infoEl.innerHTML =
-      '<strong style="color:var(--tx-head);">' + escHtml(t.patente || 'â€”') + '</strong>' +
-      (carrier ? ' â€” ' + escHtml(carrier.nombre) + (carrier.numero_ruta && carrier.numero_ruta !== '0' ? ' · Ruta ' + carrier.numero_ruta : '') : '') +
+      '<strong style="color:var(--tx-head);">' + escHtml(t.patente || '–”') + '</strong>' +
+      (carrier ? ' –” ' + escHtml(carrier.nombre) + (carrier.numero_ruta && carrier.numero_ruta !== '0' ? ' · Ruta ' + carrier.numero_ruta : '') : '') +
       '<br><span style="color:var(--tx-muted);font-size:10px;">Tarea: ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + '</span>';
   }
   // Poblar select: andenes libres + andén pre-asignado en la tarea (aunque ya esté reservado/busy)
@@ -5489,12 +5489,12 @@ function abrirPosturaAnden(taskId) {
     const andenesSel = (STATE.docks || []).filter(function(d) {
       return d.estado === 'free' || (preAsignado && d.id === preAsignado.id);
     });
-    andenSel.innerHTML = '<option value="">â€” Seleccionar andén â€”</option>' +
+    andenSel.innerHTML = '<option value="">–” Seleccionar andén –”</option>' +
       andenesSel.map(function(d) {
         const esReservado = preAsignado && d.id === preAsignado.id && d.estado !== 'free';
         return '<option value="' + d.id + '">' + d.codigo +
-          ' â€” ' + (d.tipo||'').toUpperCase() +
-          ' â€” ' + (d.operacion_permitida||'').replace(/_/g,' ').toUpperCase() +
+          ' –” ' + (d.tipo||'').toUpperCase() +
+          ' –” ' + (d.operacion_permitida||'').replace(/_/g,' ').toUpperCase() +
           (esReservado ? ' [RESERVADO PARA ESTA TAREA]' : '') + '</option>';
       }).join('') +
       (!andenesSel.length ? '<option value="" disabled>⚠  Sin andenes disponibles</option>' : '');
@@ -5568,7 +5568,7 @@ async function confirmarPosturaAnden() {
     } catch(e) { console.warn('update dock busy:', e); }
   }
 
-  // Completar tarea â€” PASO 2 finalizado
+  // Completar tarea –” PASO 2 finalizado
   const notaPostura = 'Postura confirmada andén ' + dock.codigo + (obs ? ' · ' + obs : '');
   const oldEstado = t.estado;
   t.estado   = 'completada';
@@ -5602,7 +5602,7 @@ async function confirmarPosturaAnden() {
 
   ymsPersistYardConfig();
   await auditLog('task', 'POSTURA_ANDÃ‰N_CONFIRMADA',
-    (t.patente||'â€”') + ' â†’ Andén ' + dock.codigo + (obs ? ' · ' + obs : ''));
+    (t.patente||'–”') + ' â†’ Andén ' + dock.codigo + (obs ? ' · ' + obs : ''));
 
   // â”€â”€ CREAR AUTOMÃTICAMENTE la siguiente tarea: mover a carros cargados â”€â”€
   const nuevaTareaCarroCargado = {
@@ -5638,10 +5638,10 @@ async function confirmarPosturaAnden() {
     } catch(e) { console.warn('crear tarea carro cargado:', e); }
   }
   await auditLog('task', 'TAREA_CARRO_CARGADO_CREADA',
-    (t.patente||'â€”') + ' â€” Mover de andén ' + dock.codigo + ' a carros cargados');
+    (t.patente||'–”') + ' –” Mover de andén ' + dock.codigo + ' a carros cargados');
 
   Audio.play('ok');
-  notify('âœ… Postura confirmada â€” ' + (t.patente||'') + ' en andén ' + dock.codigo + ' â€¢ â­ Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
+  notify('âœ… Postura confirmada –” ' + (t.patente||'') + ' en andén ' + dock.codigo + ' –¢ â­ Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
   closeModal('modal-postura-anden');
   renderTareas(); renderAndenes(); renderDashboard();
 
@@ -5652,9 +5652,9 @@ async function confirmarPosturaAnden() {
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  GESTIÃ“N DE TAREAS â€” ADMIN
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
+//  GESTIÃ“N DE TAREAS –” ADMIN
+// ───────────────────────────────────────────────────────────────────────────
 
 function abrirEdicionTarea(taskId) {
   const t = (STATE.tasks || []).find(x => x.id === taskId);
@@ -5669,7 +5669,7 @@ function abrirEdicionTarea(taskId) {
   el('edit-task-notas').value = t.notas || '';
   // Poblar operadores
   const selOp = el('edit-task-operador');
-  selOp.innerHTML = '<option value="">â€” Sin asignar â€”</option>' +
+  selOp.innerHTML = '<option value="">–” Sin asignar –”</option>' +
     (STATE.users || []).filter(u => u.activo && ['operador_patio','supervisor_andenes'].includes(u.rol))
       .map(u => '<option value="' + u.id + '" ' + (t.operador_id === u.id ? 'selected' : '') + '>' +
         u.nombre + ' (' + u.rol.replace(/_/g,' ') + ')</option>').join('');
@@ -5753,14 +5753,14 @@ async function desasignarTarea(taskId) {
     } catch(e) { console.warn('desasignarTarea:', e); }
   }
   Audio.play('warn');
-  notify('⚠  Operador desasignado â€” tarea vuelve a pendiente', 'warn');
+  notify('⚠  Operador desasignado –” tarea vuelve a pendiente', 'warn');
   closeModal('modal-edit-task');
   renderTareas();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  UBER TASK PATIO â€” aparece centrado en pantalla de tareas
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
+//  UBER TASK PATIO –” aparece centrado en pantalla de tareas
+// ───────────────────────────────────────────────────────────────────────────
 let _utpTask = null;
 let _utpInterval = null;
 let _utpSeconds = 10;
@@ -5801,9 +5801,9 @@ function utpCerrar() {
   _utpTask = null;
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 //  FLUJO PATIO: Andén â†’ Carros Cargados (sello + pallets)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 
 // Punto de entrada unificado para supervisor/admin: acepta la tarea si no está
 // en ejecución y luego abre el modal de registro de sello y pallets.
@@ -5826,7 +5826,7 @@ async function registrarRetiroAnden(taskId) {
       } catch(e) { console.warn('auto-accept task:', e.message); }
     }
     await auditLog('task', 'TAREA_TOMADA_SUPERVISOR',
-      (t.tipo||'') + ' · ' + (t.patente||'â€”') + ' por ' + (STATE.profile?.nombre||'â€”'));
+      (t.tipo||'') + ' · ' + (t.patente||'–”') + ' por ' + (STATE.profile?.nombre||'–”'));
   }
   abrirCarroCargado(taskId);
 }
@@ -5843,10 +5843,10 @@ function abrirCarroCargado(taskId) {
   const slotLabelEl = document.getElementById('cc-slot-label');
   if (slotLabelEl) slotLabelEl.innerHTML = (esCarrosVacios ? 'Estacionamiento Carros Vacíos *' : 'Estacionamiento Carros Cargados *') + ' <span style="color:var(--c-err);font-size:9px;">(requerido)</span>';
   document.getElementById('cc-info-camion').innerHTML =
-    '<strong style="color:var(--tx-head);">' + (t.patente || 'â€”') + '</strong>' +
-    (carrier ? ' â€” ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'â€”') : '') +
+    '<strong style="color:var(--tx-head);">' + (t.patente || '–”') + '</strong>' +
+    (carrier ? ' –” ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'–”') : '') +
     '<br><span style="color:var(--tx-muted);">Tarea: ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + '</span>';
-  // Poblar slots â€” solo posiciones tipo L (Carros Cargados) disponibles
+  // Poblar slots –” solo posiciones tipo L (Carros Cargados) disponibles
   const slotSel = document.getElementById('cc-slot-destino');
   const todosSlots = STATE.playaSlots;
   const slotsL     = todosSlots.filter(function(s) {
@@ -5865,12 +5865,12 @@ function abrirCarroCargado(taskId) {
       (badge||'') + 'Pos L-F' + s.fila + '-' + String(s.col).padStart(2,'0') + pat + nota + '</option>';
   };
   const tieneL = slotsLLibres.length > 0 || slotsLOcupados.length > 0;
-  slotSel.innerHTML = '<option value="">â€” Seleccionar posición L de destino * â€”</option>' +
+  slotSel.innerHTML = '<option value="">–” Seleccionar posición L de destino * –”</option>' +
     (slotsLLibres.length  ? '<optgroup label="âœ… Posiciones L disponibles (Carros Cargados)">' + slotsLLibres.map(function(s){ return mkOpt(s,'ðŸ“¦ ', false); }).join('') + '</optgroup>' : '') +
     (slotsLOcupados.length ? '<optgroup label="â›” Posiciones L ocupadas (no disponibles)">' + slotsLOcupados.map(function(s){ return mkOpt(s,'ðŸ”´ ', true); }).join('') + '</optgroup>' : '') +
-    (!tieneL && slotsOtrosLibres.length ? '<optgroup label="⚠  Sin posiciones L â€” otros slots libres (usar con cuidado)">' + slotsOtrosLibres.map(function(s){
+    (!tieneL && slotsOtrosLibres.length ? '<optgroup label="⚠  Sin posiciones L –” otros slots libres (usar con cuidado)">' + slotsOtrosLibres.map(function(s){
       const nota = s.cfg_notas ? ' · ' + s.cfg_notas.slice(0,18) : '';
-      return '<option value="' + s.id + '">â—» Slot F' + s.fila + '-' + String(s.col).padStart(2,'0') + nota + '</option>';
+      return '<option value="' + s.id + '">✓» Slot F' + s.fila + '-' + String(s.col).padStart(2,'0') + nota + '</option>';
     }).join('') + '</optgroup>' : '') +
     (!tieneL && !slotsOtrosLibres.length ? '<option value="" disabled>⚠  Sin posiciones disponibles en playa</option>' : '');
   document.getElementById('cc-sello').value = '';
@@ -5919,19 +5919,19 @@ async function confirmarCarroCargado() {
   // Registrar en carros
   const carrier = (STATE.carriers || []).find(x => x.codigo === t.patente);
   const nuevoCarro = {
-    patente: t.patente, conductor: carrier?.nombre || 'â€”',
-    ruta: carrier?.numero_ruta || 'â€”', pallets: pallets,
+    patente: t.patente, conductor: carrier?.nombre || '–”',
+    ruta: carrier?.numero_ruta || '–”', pallets: pallets,
     vuelta: 'primera', slot: slotId, sello: sello, obs: obs,
     hora: new Date().toISOString()
   };
   STATE.carros.push(nuevoCarro);
 
-  // Marcar slot si se asignó â€” siempre tipo carros_cargados para trazabilidad
+  // Marcar slot si se asignó –” siempre tipo carros_cargados para trazabilidad
   if (slotId) {
     const slot = (STATE.playaSlots || []).find(s => s.id === slotId);
     if (slot) {
       slot.ocupado = true; slot.patente = t.patente;
-      slot.ruta = carrier?.numero_ruta || 'â€”'; slot.nombre = carrier?.nombre || 'â€”';
+      slot.ruta = carrier?.numero_ruta || '–”'; slot.nombre = carrier?.nombre || '–”';
       slot.playa_tipo = 'carros_cargados';
     }
   }
@@ -6009,14 +6009,14 @@ async function confirmarCarroCargado() {
   ymsPersistYardConfig();
   Audio.play('ok');
   const zonaLabel = (t.tipo === 'anden_a_carros_vacios') ? 'Estac. Carros Vacíos' : 'Carros Cargados';
-  notify('âœ… ' + t.patente + ' â†’ ' + zonaLabel + ' â€” Precinto: ' + sello + ' · ' + pallets + ' pallets' + (dock ? ' · Andén ' + dock.codigo + ' libre' : ''), 'ok', 5000);
+  notify('âœ… ' + t.patente + ' â†’ ' + zonaLabel + ' –” Precinto: ' + sello + ' · ' + pallets + ' pallets' + (dock ? ' · Andén ' + dock.codigo + ' libre' : ''), 'ok', 5000);
   closeModal('modal-carro-cargado');
   renderTareas(); renderCarros(); renderAndenes(); renderDashboard();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  VERIFICACIÃ“N PALLETS â€” SUPERVISOR (retorno secundaria)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
+//  VERIFICACIÃ“N PALLETS –” SUPERVISOR (retorno secundaria)
+// ───────────────────────────────────────────────────────────────────────────
 let _pcPatente = null;
 
 function abrirPalletCheck(patente, visitId) {
@@ -6030,7 +6030,7 @@ function abrirPalletCheck(patente, visitId) {
   document.getElementById('pc-pallets-recibidos').value  = esperados;
   document.getElementById('pc-info-camion').innerHTML =
     '<strong style="color:var(--tx-head);">' + patente + '</strong>' +
-    (carrier ? ' â€” ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'â€”') : '');
+    (carrier ? ' –” ' + carrier.nombre + ' | Ruta: ' + (carrier.numero_ruta||'–”') : '');
   const deudaEl = document.getElementById('pc-deuda-info');
   deudaEl.textContent = deuda.deuda !== 0
     ? (deuda.deuda > 0 ? '⚠  Deuda acumulada: ' + deuda.deuda + ' pallets' : 'âœ“ Crédito: ' + Math.abs(deuda.deuda) + ' pallets')
@@ -6053,7 +6053,7 @@ function agregarItemPallet() {
   item.innerHTML =
     '<span style="color:var(--tx-muted);font-size: 8px;min-width:60px;">Pallet ' + idx + '</span>' +
     '<select style="flex:1;font-size: 8px;" onchange="calcDiffPallets()">' +
-      '<option value="ok">âœ“ OK â€” En buen estado</option>' +
+      '<option value="ok">âœ“ OK –” En buen estado</option>' +
       '<option value="dañado">⚠  Dañado</option>' +
       '<option value="faltante">âœ— Faltante</option>' +
     '</select>' +
@@ -6071,13 +6071,13 @@ function calcDiffPallets() {
   diffEl.style.display = 'block';
   if (diff === 0) {
     diffMsg.style.color = 'var(--c-ok)';
-    diffMsg.textContent = 'âœ“ Cantidades correctas â€” sin diferencia';
+    diffMsg.textContent = 'âœ“ Cantidades correctas –” sin diferencia';
   } else if (diff < 0) {
     diffMsg.style.color = 'var(--c-err)';
-    diffMsg.textContent = '⚠  FALTANTE: ' + Math.abs(diff) + ' pallets â€” se registrará deuda';
+    diffMsg.textContent = '⚠  FALTANTE: ' + Math.abs(diff) + ' pallets –” se registrará deuda';
   } else {
     diffMsg.style.color = 'var(--c-warn)';
-    diffMsg.textContent = 'â†‘ EXCEDENTE: ' + diff + ' pallets â€” se neteará con deuda existente';
+    diffMsg.textContent = 'â†‘ EXCEDENTE: ' + diff + ' pallets –” se neteará con deuda existente';
   }
 }
 
@@ -6103,16 +6103,16 @@ async function confirmarPalletCheck() {
     (diff !== 0 ? ' · Diferencia: ' + diff + ' (deuda acum: ' + STATE.palletDeuda[patente].deuda + ')' : '');
   await auditLog('task', 'PALLET_CHECK_RETORNO', resumen);
   Audio.play('ok');
-  const msg = diff === 0 ? 'âœ“ Pallets verificados â€” sin diferencia' :
+  const msg = diff === 0 ? 'âœ“ Pallets verificados –” sin diferencia' :
     diff < 0 ? '⚠  Deuda de ' + Math.abs(diff) + ' pallets registrada · Acumulada: ' + STATE.palletDeuda[patente].deuda :
-    'â†‘ Excedente de ' + diff + ' pallets â€” deuda neteada: ' + STATE.palletDeuda[patente].deuda;
+    'â†‘ Excedente de ' + diff + ' pallets –” deuda neteada: ' + STATE.palletDeuda[patente].deuda;
   notify(msg, diff === 0 ? 'ok' : 'warn', 6000);
   closeModal('modal-pallet-check');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 //  SLOTS DEDICADOS / DINÃMICOS (Admin)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 function configurarSlot(slotId) {
   if (STATE.profile?.rol !== 'administrador') { notify('â›” Solo el administrador puede configurar slots', 'error'); return; }
   const slot = (STATE.playaSlots || []).find(s => s.id === slotId);
@@ -6131,10 +6131,10 @@ function configurarSlot(slotId) {
   renderPatio();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 //  INTEGRACIÃ“N: renderTareas muestra botones correctos segÃºn tipo de tarea
 //  y muestra el uber patio para operador_patio
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
 function getAccionesTareaDesktop(t, myId, myRol) {
   const miaTarea = t.operador_id === myId || t.operador_nombre === STATE.profile?.nombre;
   const rolesSupervision = ['administrador', 'supervisor_andenes', 'jefe_ops'];
@@ -6145,7 +6145,7 @@ function getAccionesTareaDesktop(t, myId, myRol) {
   const puedeCompletar = estadoActivo && (miaTarea || esSupervisor);
   const esRetiroAnden = t.tipo === 'retirar_anden' || t.tipo === 'anden_a_carros_vacios' || t.zona_destino === 'carros_cargados' || t.zona_destino === 'estacionamiento_carros_vacios';
   const esCarroCargado = esRetiroAnden && puedeCompletar;
-  // Tarea en estado intermedio checklist aprobado â€” requiere confirmar postura en andén
+  // Tarea en estado intermedio checklist aprobado –” requiere confirmar postura en andén
   const esChecklistOk = t.estado === 'checklist_ok' && (miaTarea || esSupervisor);
   let html = '<div class="tc-actions">';
   if (puedeEditar) {
@@ -6168,9 +6168,9 @@ function getAccionesTareaDesktop(t, myId, myRol) {
 // Intercept crearTarea para mostrar uber al patio
 const _origCrearTarea = crearTarea;
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  DATOS DE PRUEBA â€” Visitas primaria y secundaria
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────────────────
+//  DATOS DE PRUEBA –” Visitas primaria y secundaria
+// ───────────────────────────────────────────────────────────────────────────
 function cargarDatosPrueba() {
   const now = Date.now();
   // Limpiar visits de demo que puedan existir
@@ -6228,7 +6228,7 @@ function cargarDatosPrueba() {
   // Tareas de prueba
   const tareasPrueba = [
     { id:'tp1', tipo:'mover_anden', patente:'BFWX20', zona_origen:'espera_anden', zona_destino:'anden',
-      prioridad:'urgente', sla_minutos:20, estado:'ofertada', notas:'Prioritario â€” planta Rancagua',
+      prioridad:'urgente', sla_minutos:20, estado:'ofertada', notas:'Prioritario –” planta Rancagua',
       hora_creacion: new Date(now - 5*60000).toISOString(), operador_nombre:null, _prueba:true },
     { id:'tp2', tipo:'retirar_anden', patente:'CXLW85', zona_origen:'anden', zona_destino:'carros_cargados',
       prioridad:'normal', sla_minutos:20, estado:'pendiente', notas:'Descarga completa',
@@ -6265,20 +6265,20 @@ function abrirPalletCheckDesdeIngreso() {
   abrirPalletCheck(pat, null);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  GESTIÃ“N CARRIERS â€” Mover CD y Asignar Andén desde Config
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
+//  GESTIÃ“N CARRIERS –” Mover CD y Asignar Andén desde Config
+// ───────────────────────────────────────────────────────────────
 async function moverCarrierCD(carrierId, newCD) {
   const carrier = (STATE.carriers || []).find(x => x.id === carrierId);
   if (!carrier) return;
-  const oldCD = carrier.cd || 'â€”';
+  const oldCD = carrier.cd || '–”';
   carrier.cd = newCD;
   const site = SITES_DISPONIBLES.find(s => s.codigo === newCD);
   if (!STATE.usingSeed && sb) {
     try { await sb.from('carriers').update({ cd: newCD }).eq('id', carrierId); } catch(e) {}
   }
   Audio.play('ok');
-  notify('âœ“ ' + carrier.codigo + ' â€” ' + carrier.nombre.split(' ')[0] + ' movido a ' + (site?.nombre || newCD), 'ok');
+  notify('âœ“ ' + carrier.codigo + ' –” ' + carrier.nombre.split(' ')[0] + ' movido a ' + (site?.nombre || newCD), 'ok');
   await auditLog('config', 'CARRIER_CD_CAMBIADO', carrier.codigo + ' de ' + oldCD + ' â†’ ' + newCD);
   renderConfigCarriers();
 }
@@ -6297,7 +6297,7 @@ function abrirAsignacionAnden(carrierId, patente) {
   }
 
   const opts = docksLibres.map(d =>
-    '<option value="' + d.id + '">' + d.codigo + ' â€” ' + d.tipo.toUpperCase() + ' â€” ' + d.operacion_permitida + '</option>'
+    '<option value="' + d.id + '">' + d.codigo + ' –” ' + d.tipo.toUpperCase() + ' –” ' + d.operacion_permitida + '</option>'
   ).join('');
 
   // Crear modal inline
@@ -6306,13 +6306,13 @@ function abrirAsignacionAnden(carrierId, patente) {
 
   const modalHtml = '<div id="modal-asignar-anden" class="modal-overlay" style="display:flex;">' +
     '<div class="modal-box" style="max-width:420px;">' +
-      '<div class="mh"><span class="mh-title">â–¦ ASIGNAR ANDÃ‰N â€” ' + patente + '</span>' +
+      '<div class="mh"><span class="mh-title">â–¦ ASIGNAR ANDÃ‰N –” ' + patente + '</span>' +
         '<button class="btn btn-err" onclick="closeModal(&quot;modal-asignar-anden&quot;)">âœ•</button></div>' +
       '<div class="mb-inner">' +
         '<div style="margin-bottom:12px;font-size: 8px;color:var(--tx-muted);">' +
           'Conductor: <strong style="color:var(--tx-head);">' + carrier.nombre + '</strong><br>' +
-          'Ruta: <strong style="color:var(--tx-head);">' + (carrier.numero_ruta||'â€”') + '</strong> &nbsp;·&nbsp; ' +
-          'Zona: <strong style="color:var(--tx-head);">' + (visit.zona_actual||'â€”').replace(/_/g,' ').toUpperCase() + '</strong>' +
+          'Ruta: <strong style="color:var(--tx-head);">' + (carrier.numero_ruta||'–”') + '</strong> &nbsp;·&nbsp; ' +
+          'Zona: <strong style="color:var(--tx-head);">' + (visit.zona_actual||'–”').replace(/_/g,' ').toUpperCase() + '</strong>' +
         '</div>' +
         '<div class="fg"><label>SELECCIONAR ANDÃ‰N LIBRE</label>' +
           '<select id="sel-anden-asignar" style="font-size: 9px;padding:8px;">' + opts + '</select>' +
@@ -6360,10 +6360,10 @@ async function confirmarAsignacionAnden(visitId, patente) {
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
 //  CONFIG CENTROS DE DISTRIBUCIÃ“N
 //  Solo administrador puede crear/editar/eliminar CDs
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
 let _cdSeleccionado = null;
 
 function renderConfigCD() {
@@ -6532,7 +6532,7 @@ function crearNuevoCD() {
   document.getElementById('modal-nuevo-cd')?.remove();
   Audio.play('ok');
   notify('âœ“ CD ' + nombre + ' creado con ' + numAnd + ' andenes y ' + numSlots + ' slots de playa', 'ok');
-  auditLog('config', 'CD_CREADO', codigo + ' â€” ' + nombre + ' · ' + numAnd + ' andenes');
+  auditLog('config', 'CD_CREADO', codigo + ' –” ' + nombre + ' · ' + numAnd + ' andenes');
   renderConfigCD();
 }
 
@@ -6547,7 +6547,7 @@ function abrirModalNuevoAnden() {
   box.className = 'modal-box';
   box.style.maxWidth = '380px';
   box.innerHTML =
-    '<div class="mh"><span class="mh-title">+ NUEVO ANDÃ‰N â€” ' + _cdSeleccionado + '</span></div>' +
+    '<div class="mh"><span class="mh-title">+ NUEVO ANDÃ‰N –” ' + _cdSeleccionado + '</span></div>' +
     '<div class="mb-inner">' +
       '<div class="fr"><div class="fg"><label>Código *</label><input type="text" id="na-codigo" placeholder="A01" style="text-transform:uppercase;"></div>' +
         '<div class="fg"><label>Tipo</label><select id="na-tipo"><option value="frigorifico">Frigorífico</option><option value="seco">Seco</option><option value="mixto">Mixto</option></select></div>' +
@@ -6674,20 +6674,20 @@ function solicitarMovimientoCarro(idx) {
   }
 
   Audio.play('new_task');
-  notify('âœ“ Movimiento solicitado: ' + carro.patente + ' â€” ' + slotLabel + ' â†’ Andén ' + anden, 'ok');
+  notify('âœ“ Movimiento solicitado: ' + carro.patente + ' –” ' + slotLabel + ' â†’ Andén ' + anden, 'ok');
   auditLog('task','MOVIMIENTO_SOLICITADO', carro.patente + ' · ' + slotLabel + ' â†’ ' + anden);
   renderCarros();
   loadTasks();
 }
 
 
-// â•â•â• LÃ“GICA YMS â€” REGLAS DE MOVIMIENTO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ─── LÃ“GICA YMS –” REGLAS DE MOVIMIENTO ────────────────────────────
 const YMS_MOVIMIENTOS = {
   mover_anden: {
     label:'ðŸ— Estacionamiento â†’ Andén',origen:'playa',destino:'anden',sla:15,
     info:'Seleccione una patente secundaria dedicada desde un slot de estacionamiento. Si hay andén libre se genera movimiento a Patio; si no, queda en Turnomático hasta liberación de andén.',
     filtro:function(v){ return (v.zona_actual==='playa'||v.zona_actual==='espera_anden')&&v.estado!=='salida'; },
-    validar:function(v){ if(v.zona_actual==='anden') return 'â›” Ya está en andén'; if(v.zona_actual==='carros_cargados') return 'â›” Cargada â€” debe ir a lavado primero'; return null; }
+    validar:function(v){ if(v.zona_actual==='anden') return 'â›” Ya está en andén'; if(v.zona_actual==='carros_cargados') return 'â›” Cargada –” debe ir a lavado primero'; return null; }
   },
   retirar_anden: {
     label:'ðŸ“¦ Andén â†’ Carros cargados',origen:'anden',destino:'carros_cargados',sla:20,
@@ -6738,13 +6738,13 @@ function onTaskTipoChange() {
   var destinoSel=document.getElementById('task-destino');
   var slaEl=document.getElementById('task-sla');
   var infoTruck=document.getElementById('task-truck-info');
-  if(!tipo||!mov){if(infoEl)infoEl.style.display='none';if(truckSel)truckSel.innerHTML='<option value="">â€” Primero seleccione el tipo â€”</option>';return;}
+  if(!tipo||!mov){if(infoEl)infoEl.style.display='none';if(truckSel)truckSel.innerHTML='<option value="">–” Primero seleccione el tipo –”</option>';return;}
   // Verificar disponibilidad específica
   var extraInfo = '';
   if(tipo === 'mover_anden') {
     var andLibres = (STATE.docks || []).filter(function(d){ return d.estado==='free'; });
     if(andLibres.length === 0) {
-      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;">â›” SIN ANDENES DISPONIBLES â€” la rampla irá al Turnomático automáticamente.</span>';
+      extraInfo = '<br><span style="color:var(--c-err);font-weight:bold;">â›” SIN ANDENES DISPONIBLES –” la rampla irá al Turnomático automáticamente.</span>';
     } else {
       extraInfo = '<br><span style="color:var(--c-ok);">âœ“ ' + andLibres.length + ' andén(es) disponible(s): ' + andLibres.map(function(d){return d.codigo;}).join(', ') + '</span>';
     }
@@ -6767,9 +6767,9 @@ function onTaskTipoChange() {
     andWrap.style.display=tipo==='mover_anden'?'':'none';
     if(tipo==='mover_anden'){
       var andSel=document.getElementById('task-anden-dest');
-      andSel.innerHTML='<option value="">â€” Auto (primer libre) â€”</option>'+
+      andSel.innerHTML='<option value="">–” Auto (primer libre) –”</option>'+
         (STATE.docks || []).filter(function(d){return d.estado==='free';}).map(function(d){
-          return '<option value="'+d.id+'">'+d.codigo+' â€” '+d.tipo.toUpperCase()+'</option>';
+          return '<option value="'+d.id+'">'+d.codigo+' –” '+d.tipo.toUpperCase()+'</option>';
         }).join('');
     }
   }
@@ -6780,13 +6780,13 @@ function onTaskTipoChange() {
     if(tipo==='mover_anden'){
       slotConCamion.forEach(function(s){
         var carrier=(STATE.carriers || []).find(function(x){return x.codigo===s.patente;});
-        opts.push('<option value="slot:'+s.id+':'+s.patente+'">'+s.patente+' â€” '+(carrier?carrier.nombre.split(' ').slice(-2).join(' '):'â€”')+' (F'+s.fila+'-'+String(s.col).padStart(2,'0')+')</option>');
+        opts.push('<option value="slot:'+s.id+':'+s.patente+'">'+s.patente+' –” '+(carrier?carrier.nombre.split(' ').slice(-2).join(' '):'–”')+' (F'+s.fila+'-'+String(s.col).padStart(2,'0')+')</option>');
       });
     }
     visitsValidas.forEach(function(v){
-      opts.push('<option value="'+v.id+'">'+v.patente+' â€” '+(v.carrier_nombre||'â€”').split(' ').slice(-2).join(' ')+' ['+((v.zona_actual||'').replace(/_/g,' ').toUpperCase())+']</option>');
+      opts.push('<option value="'+v.id+'">'+v.patente+' –” '+(v.carrier_nombre||'–”').split(' ').slice(-2).join(' ')+' ['+((v.zona_actual||'').replace(/_/g,' ').toUpperCase())+']</option>');
     });
-    truckSel.innerHTML=(opts.length?'<option value="">â€” Seleccionar rampla â€”</option>':'<option value="">⚠  Sin ramplas válidas para este tipo</option>')+opts.join('');
+    truckSel.innerHTML=(opts.length?'<option value="">–” Seleccionar rampla –”</option>':'<option value="">⚠  Sin ramplas válidas para este tipo</option>')+opts.join('');
     if(hintEl)hintEl.textContent='('+opts.length+' disponibles)';
   }
   if(infoTruck)infoTruck.style.display='none';
@@ -6804,7 +6804,7 @@ function onTaskTruckChange(){
     var patente=parts[2]||'';
     var slot=(STATE.playaSlots || []).find(function(s){return s.id===parts[1];});
     var carrier=(STATE.carriers || []).find(function(x){return x.codigo===patente;});
-    html='<strong style="color:var(--tx-head);">'+patente+'</strong>'+(carrier?' â€” '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'â€”'):'')+(slot?'<br>ðŸ“ F'+slot.fila+'-'+String(slot.col).padStart(2,'0'):'');
+    html='<strong style="color:var(--tx-head);">'+patente+'</strong>'+(carrier?' –” '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'–”'):'')+(slot?'<br>ðŸ“ F'+slot.fila+'-'+String(slot.col).padStart(2,'0'):'');
   } else {
     var visit=(STATE.visits || []).find(function(v){return v.id===truckVal;});
     if(visit){
@@ -6812,7 +6812,7 @@ function onTaskTruckChange(){
       if(error){html='<span style="color:var(--c-err);">'+error+'</span>';}
       else{
         var carrier2=(STATE.carriers || []).find(function(x){return x.codigo===visit.patente;});
-        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong> â€” '+(visit.carrier_nombre||'â€”')+'<br>ðŸ“ Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?' · Andén: '+((STATE.docks || []).find(function(d){return d.id===visit.dock_id;})?.codigo||'â€”'):'')+(carrier2?' · Ruta: '+(carrier2.numero_ruta||'â€”'):'');
+        html='<strong style="color:var(--tx-head);">'+visit.patente+'</strong> –” '+(visit.carrier_nombre||'–”')+'<br>ðŸ“ Zona: <strong style="color:var(--c-warn);">'+(visit.zona_actual||'').replace(/_/g,' ').toUpperCase()+'</strong>'+(visit.dock_id?' · Andén: '+((STATE.docks || []).find(function(d){return d.id===visit.dock_id;})?.codigo||'–”'):'')+(carrier2?' · Ruta: '+(carrier2.numero_ruta||'–”'):'');
       }
     }
   }
@@ -6829,10 +6829,10 @@ function buscarDatosCita(patente){
   if(carrier){
     var enPatio=(STATE.visits || []).find(function(v){return v.patente===patente&&v.tipo==='secundaria'&&v.estado!=='salida';});
     infoEl.style.color=enPatio?'var(--c-warn)':'var(--c-ok)';
-    infoEl.innerHTML='ðŸš› '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'â€”')+(enPatio?'<br>⚠  SECUNDARIA â€” Las citas son solo para ramplas PRIMARIAS (desde plantas)':'');
+    infoEl.innerHTML='ðŸš› '+carrier.nombre+' · Ruta: '+(carrier.numero_ruta||'–”')+(enPatio?'<br>⚠  SECUNDARIA –” Las citas son solo para ramplas PRIMARIAS (desde plantas)':'');
   } else {
     infoEl.style.color='var(--tx-muted)';
-    infoEl.textContent='Patente no en flota â€” puede ingresarla de todos modos';
+    infoEl.textContent='Patente no en flota –” puede ingresarla de todos modos';
   }
 }
 
@@ -6844,9 +6844,9 @@ function validarElegibleDevolucion(patente){
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  SINCRONIZAR SLOTS CON VISITAS â€” refresco tiempo real
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ────────────────────────────────────────────────────────────────
+//  SINCRONIZAR SLOTS CON VISITAS –” refresco tiempo real
+// ────────────────────────────────────────────────────────────────
 function sincronizarSlotsConVisitas() {
   // Solo sincroniza slots ya ocupados: verifica que la visita sigue activa
   (STATE.playaSlots || []).forEach(function(slot) {
@@ -6884,9 +6884,9 @@ function sincronizarSlotsConVisitas() {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  FILTER TAREAS â€” columna Ãºnica
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ────────────────────────────────────────────────────────────────
+//  FILTER TAREAS –” columna Ãºnica
+// ────────────────────────────────────────────────────────────────
 var _taskFilter = 'todos';
 
 function flashLiveIndicator() {
@@ -6910,9 +6910,9 @@ function setTaskFilter(filtro) {
   renderTareasLista();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ────────────────────────────────────────────────────────────────
 //  RENDER TAREAS LISTA ÃšNICA
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ────────────────────────────────────────────────────────────────
 function renderTareasLista() {
   initTareasEventDelegation();
   var container = document.getElementById('tasks-list-single');
@@ -6966,7 +6966,7 @@ function renderTareasLista() {
         '<span class="badge badge-' + ({'normal':'info','urgente':'warn','critica':'err'}[t.prioridad]||'dim') + '" style="font-size:9px;">' + Utils.esc((t.prioridad||'').toUpperCase()) + '</span>' +
       '</div>' +
       '<div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px;flex-wrap:wrap;">' +
-        '<span style="font-size: 8px;font-weight:800;color:var(--tx-head);letter-spacing:2px;font-family:var(--font);">ðŸš› ' + escHtml(t.patente||'â€”') + '</span>' +
+        '<span style="font-size: 8px;font-weight:800;color:var(--tx-head);letter-spacing:2px;font-family:var(--font);">ðŸš› ' + escHtml(t.patente||'–”') + '</span>' +
         '<span style="font-size: 8px;font-weight:600;color:var(--c-accent);">ðŸ“ ' + escHtml((t.zona_origen||'').replace(/_/g,' ').toUpperCase()) + ' â†’ ' + escHtml((t.zona_destino||'').replace(/_/g,' ').toUpperCase()) + '</span>' +
       '</div>' +
       '<div style="font-size: 8px;color:var(--tx-muted);margin-bottom:4px;">' +
@@ -6982,9 +6982,9 @@ function renderTareasLista() {
   }).join('');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-//  CONFIG SLOTS â€” Administrador
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ────────────────────────────────────────────────────────────────
+//  CONFIG SLOTS –” Administrador
+// ────────────────────────────────────────────────────────────────
 function renderConfigSlots() {
   var slots = STATE.playaSlots;
   var filterTipo   = document.getElementById('cs-filter-tipo')?.value || '';
@@ -7042,11 +7042,11 @@ function renderConfigSlots() {
       '<td class="c-bright fw">' + s.id + '</td>' +
       '<td class="c-dim">F' + fila + '-' + String(col).padStart(2,'0') + '</td>' +
       '<td><span class="badge ' + (tipoCls[s.cfg_tipo]||'b-dim') + '">' + (s.cfg_tipo||'dinamico').toUpperCase() + '</span></td>' +
-      '<td class="c-dim">' + (s.cfg_motivo||'â€”') + '</td>' +
-      '<td class="c-bright">' + (s.cfg_tipo==='dedicado'&&s.cfg_patente ? s.cfg_patente : (s.patente||'â€”')) + '</td>' +
+      '<td class="c-dim">' + (s.cfg_motivo||'–”') + '</td>' +
+      '<td class="c-bright">' + (s.cfg_tipo==='dedicado'&&s.cfg_patente ? s.cfg_patente : (s.patente||'–”')) + '</td>' +
       '<td class="c-dim fz10">' + (s.cfg_permitidas||['todas']).join(', ') + '</td>' +
       '<td><span class="badge ' + (s.ocupado?'b-warn':s.cfg_tipo==='bloqueado'?'b-err':'b-ok') + '">' + (s.ocupado?'OCUPADO':s.cfg_tipo==='bloqueado'?'BLOQ':'LIBRE') + '</span></td>' +
-      '<td class="c-dim fz10">' + (s.cfg_notas||'â€”') + '</td>' +
+      '<td class="c-dim fz10">' + (s.cfg_notas||'–”') + '</td>' +
       '<td><button class="btn" style="font-size:9px;padding:1px 5px;" onclick="abrirConfigSlot(' + (s.num-1) + ')">EDITAR</button>' +
         (s.ocupado ? '<button class="btn btn-warn" style="font-size:9px;padding:1px 5px;margin-left:2px;" onclick="liberarSlotIdx(' + (s.num-1) + ')">LIBERAR</button>' : '') +
       '</td>' +
@@ -7061,7 +7061,7 @@ function abrirConfigSlot(idx) {
   // Info del slot
   var fila = Math.floor(idx/12)+1, col = (idx%12)+1;
   document.getElementById('cfg-slot-info').innerHTML =
-    '<strong>Slot ' + slot.id + '</strong> â€” F' + fila + '-' + String(col).padStart(2,'0') +
+    '<strong>Slot ' + slot.id + '</strong> –” F' + fila + '-' + String(col).padStart(2,'0') +
     (slot.ocupado ? ' · <span style="color:var(--c-warn);">OCUPADO por ' + slot.patente + '</span>' : ' · <span style="color:var(--c-ok);">LIBRE</span>');
   // Poblar valores actuales
   var tipoSel = document.getElementById('cfg-slot-tipo');
@@ -7073,9 +7073,9 @@ function abrirConfigSlot(idx) {
   // Poblar select patente
   var patSel = document.getElementById('cfg-slot-patente');
   if (patSel) {
-    patSel.innerHTML = '<option value="">â€” Seleccionar â€”</option>' +
+    patSel.innerHTML = '<option value="">–” Seleccionar –”</option>' +
       (STATE.carriers || []).map(function(ca) {
-        return '<option value="' + ca.codigo + '" ' + (slot.cfg_patente === ca.codigo ? 'selected' : '') + '>' + ca.codigo + ' â€” ' + ca.nombre + '</option>';
+        return '<option value="' + ca.codigo + '" ' + (slot.cfg_patente === ca.codigo ? 'selected' : '') + '>' + ca.codigo + ' –” ' + ca.nombre + '</option>';
       }).join('');
   }
   // Permitidas
@@ -7108,9 +7108,9 @@ function abrirModalNuevoSlot() {
   document.getElementById('ns-msg').textContent = '';
   // Poblar patentes
   var patSel = document.getElementById('ns-patente');
-  patSel.innerHTML = '<option value="">â€” Seleccionar â€”</option>' +
+  patSel.innerHTML = '<option value="">–” Seleccionar –”</option>' +
     (STATE.carriers || []).map(function(ca){
-      return '<option value="' + ca.codigo + '">' + ca.codigo + ' â€” ' + ca.nombre + '</option>';
+      return '<option value="' + ca.codigo + '">' + ca.codigo + ' –” ' + ca.nombre + '</option>';
     }).join('');
   // Reset checkboxes
   document.querySelectorAll('input[name="ns-perm"]').forEach(function(cb){ cb.checked = cb.value === 'todas'; });
@@ -7155,7 +7155,7 @@ function guardarNuevoSlot() {
   };
   STATE.playaSlots.push(newSlot);
   Audio.play('ok');
-  notify('âœ“ Slot ' + codigo + ' creado â€” F' + fila + '-' + String(col).padStart(2,'0') + ' · ' + tipo.toUpperCase(), 'ok');
+  notify('âœ“ Slot ' + codigo + ' creado –” F' + fila + '-' + String(col).padStart(2,'0') + ' · ' + tipo.toUpperCase(), 'ok');
   auditLog('config', 'SLOT_CREADO', codigo + ' · F' + fila + '-' + String(col).padStart(2,'0') + ' · ' + tipo + ' · ' + motivo);
   ymsPersistYardConfig();
   closeModal('modal-crear-slot');
@@ -7229,13 +7229,13 @@ function clickSlotAdmin(idx) {
 }
 
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
 //  CORRECCIÃ“N FLUJO PATIO: estacionamiento dedicado â†’ andén
 //  Regla: solo slots dedicados de secundaria con patente asignada;
 //  si no hay andén libre, queda en Turnomático y no se oferta a patio.
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ───────────────────────────────────────────────────────────────
 function ymsSlotLabel(slot) {
-  if (!slot) return 'â€”';
+  if (!slot) return '–”';
   return 'Est. F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' / Slot ' + slot.num;
 }
 
@@ -7348,7 +7348,7 @@ async function ymsDespacharTurnomaticoPatio(dockLiberado) {
   const slot = ymsGetMovPatioSlots().find(function(s) { return ymsSlotPatente(s) === String(ticket.patente || '').toUpperCase(); });
   if (!slot) {
     ticket.estado = 'cancelado';
-    notify('Turnomático cancelado: patente sin estacionamiento dedicado asignado (' + (ticket.patente || 'â€”') + ')', 'warn', 7000);
+    notify('Turnomático cancelado: patente sin estacionamiento dedicado asignado (' + (ticket.patente || '–”') + ')', 'warn', 7000);
     return false;
   }
   const visit = (STATE.visits || []).find(function(v){ return v.patente === ticket.patente && v.estado !== 'salida'; });
@@ -7414,7 +7414,7 @@ async function crearTarea() {
       if (tareaActivaMov) {
         Audio.play('error');
         setTaskMsg('â›” La patente <strong>' + patente + '</strong> ya tiene una tarea activa (' +
-          tareaActivaMov.estado.toUpperCase() + ') â€” ' + (tareaActivaMov.tipo||'').replace(/_/g,' ').toUpperCase() + '. Completa esa tarea primero.', 'err');
+          tareaActivaMov.estado.toUpperCase() + ') –” ' + (tareaActivaMov.tipo||'').replace(/_/g,' ').toUpperCase() + '. Completa esa tarea primero.', 'err');
         if (btn) btn.disabled = false; return;
       }
       const dockPreferido = document.getElementById('task-anden-dest')?.value || '';
@@ -7441,7 +7441,7 @@ async function crearTarea() {
       }
       setTaskMsg('âŒ› Creando movimiento Patio hacia andén '+dock.codigo+'...', 'warn');
       const task = await ymsCrearTareaPatioDesdeSlot(slot, dock, prio, sla, notas, visit?.id || null, null);
-      await auditLog('task', 'TAREA_CREADA', 'mover anden â€” ' + patente + ' â€” ' + ymsSlotLabel(slot) + ' â†’ ' + dock.codigo);
+      await auditLog('task', 'TAREA_CREADA', 'mover anden –” ' + patente + ' –” ' + ymsSlotLabel(slot) + ' â†’ ' + dock.codigo);
       Audio.play('new_task');
       setTaskMsg('âœ… Movimiento enviado a Patio: '+patente+' · '+ymsSlotLabel(slot)+' â†’ Andén '+dock.codigo, 'ok');
       notify('âœ“ Movimiento Patio creado: '+patente+' â†’ Andén '+dock.codigo, 'ok', 6000);
@@ -7464,7 +7464,7 @@ async function crearTarea() {
       if (tareaActiva) {
         Audio.play('error');
         setTaskMsg('â›” La patente <strong>' + patente + '</strong> ya tiene una tarea activa en estado <strong>' +
-          tareaActiva.estado.toUpperCase() + '</strong> â€” tipo: ' + (tareaActiva.tipo||'').replace(/_/g,' ').toUpperCase() +
+          tareaActiva.estado.toUpperCase() + '</strong> –” tipo: ' + (tareaActiva.tipo||'').replace(/_/g,' ').toUpperCase() +
           '. Completa o cancela esa tarea antes de generar una nueva.', 'err');
         if (btn) btn.disabled = false;
         return;
@@ -7477,8 +7477,8 @@ async function crearTarea() {
     if (STATE.usingSeed) {
       STATE.tasks.unshift(newTask);
       Audio.play('new_task');
-      setTaskMsg('âœ… Tarea creada y ofertada · ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' â€” ' + patente : '') + ' · Prioridad: ' + prio.toUpperCase() + ' · SLA: ' + sla + ' min', 'ok');
-      notify('âœ“ Tarea ofertada: ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' â€” ' + patente : ''), 'ok');
+      setTaskMsg('âœ… Tarea creada y ofertada · ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' –” ' + patente : '') + ' · Prioridad: ' + prio.toUpperCase() + ' · SLA: ' + sla + ' min', 'ok');
+      notify('âœ“ Tarea ofertada: ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' –” ' + patente : ''), 'ok');
       if (STATE.profile?.rol === 'operador_patio') setTimeout(function(){ mostrarUberTaskPatio(newTask); }, 400);
       renderTareas();
       setTimeout(function(){ closeModal('modal-task'); if(btn)btn.disabled=false; }, 1500);
@@ -7500,10 +7500,10 @@ async function crearTarea() {
         () => { const idx = STATE.tasks.indexOf(newTask); if (idx !== -1) STATE.tasks.splice(idx, 1); }
       );
 
-      await auditLog('task', 'TAREA_CREADA', tipo.replace(/_/g,' ') + ' â€” ' + (patente||'sin patente') + ' â€” Prio: ' + prio);
+      await auditLog('task', 'TAREA_CREADA', tipo.replace(/_/g,' ') + ' –” ' + (patente||'sin patente') + ' –” Prio: ' + prio);
       Audio.play('new_task');
-      setTaskMsg('âœ… Tarea creada y ofertada · ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' â€” ' + patente : '') + ' · Prioridad: ' + prio.toUpperCase() + ' · SLA: ' + sla + ' min', 'ok');
-      notify('âœ“ Tarea ofertada: ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' â€” ' + patente : ''), 'ok');
+      setTaskMsg('âœ… Tarea creada y ofertada · ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' –” ' + patente : '') + ' · Prioridad: ' + prio.toUpperCase() + ' · SLA: ' + sla + ' min', 'ok');
+      notify('âœ“ Tarea ofertada: ' + tipo.replace(/_/g,' ').toUpperCase() + (patente ? ' –” ' + patente : ''), 'ok');
       if (STATE.profile?.rol === 'operador_patio') setTimeout(function(){ mostrarUberTaskPatio(STATE.tasks[0] || newTask); }, 400);
       renderTareas();
       setTimeout(function(){ closeModal('modal-task'); if(btn)btn.disabled=false; }, 1500);
@@ -7578,7 +7578,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogin = document.getElementById('btn-login');
   if (btnLogin) btnLogin.addEventListener('click', login);
 
-  // URL params â€” soporte para link de acceso directo con rol
+  // URL params –” soporte para link de acceso directo con rol
   const urlParams = new URLSearchParams(window.location.search);
   const roleParam = urlParams.get('role') || urlParams.get('rol');
 
