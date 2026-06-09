@@ -5230,7 +5230,7 @@ function showApp() {
   document.getElementById('app-body').style.display = 'flex';
 
   const rol = STATE.profile?.rol;
-  const isMobile = MOBILE_ROLES.includes(rol);
+  const isMobile = window.innerWidth < 768 || MOBILE_ROLES.includes(rol);
 
   // operador_patio siempre tablet; guardia si pantalla >= 768px
   const isTablet = isMobile && (rol === 'operador_patio' || window.innerWidth >= 768);
