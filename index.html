@@ -614,12 +614,9 @@
     </div>
   </div>
 
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4"></script>
-
   <script>
     // ═══════════════════════════════════════════════════════════════
-    // CONFIGURACIÓN SUPABASE
+    // CONFIGURACIÓN SUPABASE (Cargará más tarde)
     // ═══════════════════════════════════════════════════════════════
 
     const SUPABASE_URL = 'https://puhifcigfsmsnqytdlhb.supabase.co';
@@ -627,13 +624,6 @@
 
     let supabase = null;
     let isSupabaseReady = false;
-
-    try {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      isSupabaseReady = true;
-    } catch (e) {
-      console.warn('[YMS] Supabase no disponible, usando modo local:', e.message);
-    }
 
     // ═══════════════════════════════════════════════════════════════
     // BASE DE DATOS DE USUARIOS LOCALES
@@ -920,6 +910,33 @@
     });
 
     // ═══════════════════════════════════════════════════════════════
+    // CARGAR SUPABASE SDK
+    // ═══════════════════════════════════════════════════════════════
+
+    function loadSupabaseSDK() {
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4';
+        script.onload = () => {
+          try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            isSupabaseReady = true;
+            console.log('[YMS] Supabase SDK cargado');
+            resolve(true);
+          } catch (e) {
+            console.warn('[YMS] Error inicializando Supabase:', e.message);
+            resolve(false);
+          }
+        };
+        script.onerror = () => {
+          console.warn('[YMS] No se pudo cargar Supabase SDK');
+          resolve(false);
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // MONITOREAR ESTADO SUPABASE
     // ═══════════════════════════════════════════════════════════════
 
@@ -927,7 +944,6 @@
       if (!isSupabaseReady || !supabase) return;
 
       try {
-        // Intentar una consulta simple
         const { data, error } = await supabase.from('yms_presencia').select('count').single();
         if (!error) {
           APP_STATE.supabaseConnected = true;
@@ -938,7 +954,6 @@
         }
       } catch (e) {
         APP_STATE.supabaseConnected = false;
-        console.log('[YMS] No se pudo conectar a Supabase. Ejecuta setup.html para configurar.');
       }
     }
 
@@ -948,7 +963,8 @@
     // INIT
     // ═══════════════════════════════════════════════════════════════
 
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
+      await loadSupabaseSDK();
       checkSupabaseConnection();
       if (!restoreSession()) {
         showLoginUI();
