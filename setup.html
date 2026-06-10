@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YMS Setup - Configuración de Supabase</title>
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .container {
+      background: white;
+      border: 2px solid #0066cc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    h1 { color: #003d7a; }
+    h2 { color: #1084d7; margin-top: 30px; }
+    .sql-box {
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin: 15px 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    button {
+      background: #1084d7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 10px 5px 10px 0;
+    }
+    button:hover {
+      background: #0b5394;
+    }
+    .step {
+      background: #f9f9f9;
+      border-left: 4px solid #1084d7;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .info {
+      background: #cfe8f3;
+      color: #003d7a;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏢 Configuración de YMS - Supabase</h1>
+    <p>Este setup crea automáticamente las tablas y la seguridad necesarias en tu proyecto Supabase.</p>
+
+    <div class="info">
+      ℹ️ <strong>El proceso es simple:</strong> Copia el SQL, ve a tu Supabase, pégalo en el SQL Editor y ejecútalo. ¡Eso es todo!
+    </div>
+
+    <h2>📋 Paso 1: SQL de Configuración</h2>
+
+    <div class="step">
+      <h3>Copia este SQL completo:</h3>
+      <button onclick="copiarSQL()">📋 Copiar SQL</button>
+      <button onclick="descargarSQL()">💾 Descargar archivo</button>
+
+      <div class="sql-box" id="sql-content">-- YMS Supabase Setup
+-- Copia todo esto y ejecuta en: tu_proyecto.supabase.co → SQL Editor → New Query
+
+-- Crear tabla principal de operaciones
+CREATE TABLE IF NOT EXISTS yms_operations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario VARCHAR(100) NOT NULL,
+  rol VARCHAR(100) NOT NULL,
+  area VARCHAR(100),
+  tipo_evento VARCHAR(100),
+  descripcion TEXT,
+  datos JSONB DEFAULT '{}',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla de presencia
+CREATE TABLE IF NOT EXISTS yms_presencia (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario VARCHAR(100) NOT NULL UNIQUE,
+  nombre VARCHAR(200),
+  rol VARCHAR(100),
+  online BOOLEAN DEFAULT false,
+  ultima_actividad TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla de chat
+CREATE TABLE IF NOT EXISTS yms_chat (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario_origen VARCHAR(100) NOT NULL,
+  usuario_destino VARCHAR(100),
+  mensaje TEXT,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  leido BOOLEAN DEFAULT false
+);
+
+-- Habilitar Row Level Security
+ALTER TABLE yms_operations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE yms_presencia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE yms_chat ENABLE ROW LEVEL SECURITY;
+
+-- ═══════════════════════════════════════════════════════════════
+-- POLÍTICAS DE SEGURIDAD (Row Level Security)
+-- ═══════════════════════════════════════════════════════════════
+
+-- Operaciones: Admin ve todo, otros ven solo sus datos
+DROP POLICY IF EXISTS "admin_see_all_operations" ON yms_operations;
+CREATE POLICY "admin_see_all_operations" ON yms_operations
+  FOR SELECT USING (
+    (SELECT rol FROM yms_presencia WHERE usuario = session_user LIMIT 1) = 'Administrador'
+    OR session_user IN ('gherrera', 'asenn')
+  );
+
+DROP POLICY IF EXISTS "users_see_own_operations" ON yms_operations;
+CREATE POLICY "users_see_own_operations" ON yms_operations
+  FOR SELECT USING (
+    usuario = session_user OR
+    (SELECT rol FROM yms_presencia WHERE usuario = session_user LIMIT 1) = 'Administrador'
+  );
+
+DROP POLICY IF EXISTS "users_insert_own_operations" ON yms_operations;
+CREATE POLICY "users_insert_own_operations" ON yms_operations
+  FOR INSERT WITH CHECK (usuario = session_user);
+
+DROP POLICY IF EXISTS "users_update_own_operations" ON yms_operations;
+CREATE POLICY "users_update_own_operations" ON yms_operations
+  FOR UPDATE USING (usuario = session_user OR session_user IN ('gherrera', 'asenn'));
+
+-- Presencia: Todos ven, cada uno edita el suyo
+DROP POLICY IF EXISTS "presencia_select_all" ON yms_presencia;
+CREATE POLICY "presencia_select_all" ON yms_presencia
+  FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "presencia_insert" ON yms_presencia;
+CREATE POLICY "presencia_insert" ON yms_presencia
+  FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "presencia_update_own" ON yms_presencia;
+CREATE POLICY "presencia_update_own" ON yms_presencia
+  FOR UPDATE USING (usuario = session_user OR session_user IN ('gherrera', 'asenn'));
+
+-- Chat: Cada uno ve sus mensajes, admin ve todo
+DROP POLICY IF EXISTS "chat_select" ON yms_chat;
+CREATE POLICY "chat_select" ON yms_chat
+  FOR SELECT USING (
+    usuario_origen = session_user OR
+    usuario_destino = session_user OR
+    session_user IN ('gherrera', 'asenn')
+  );
+
+DROP POLICY IF EXISTS "chat_insert_own" ON yms_chat;
+CREATE POLICY "chat_insert_own" ON yms_chat
+  FOR INSERT WITH CHECK (usuario_origen = session_user);
+
+-- ═══════════════════════════════════════════════════════════════
+-- INSERTAR USUARIOS
+-- ═══════════════════════════════════════════════════════════════
+
+INSERT INTO yms_presencia (usuario, nombre, rol, online) VALUES
+  ('gherrera', 'Gonzalo Herrera', 'Administrador', false),
+  ('asenn', 'Álvaro Senn', 'Administrador', false),
+  ('lpadilla', 'Lorenzo Padilla', 'Patio', false),
+  ('Supervisor', 'Supervisor de Andenes', 'Supervisor de andenes', false),
+  ('Portero', 'Portería', 'Guardia', false),
+  ('Administrativo', 'Administrativo', 'Administrativo de operaciones', false),
+  ('Jefeturno', 'Jefe de Turno', 'Jefe de operaciones', false)
+ON CONFLICT (usuario) DO UPDATE SET nombre = EXCLUDED.nombre, rol = EXCLUDED.rol;
+</div>
+    </div>
+
+    <h2>🔗 Paso 2: Ejecutar en Supabase</h2>
+    <div class="step">
+      <ol>
+        <li>Ve a <strong>tu_proyecto.supabase.co</strong></li>
+        <li>Haz clic en <strong>SQL Editor</strong> (lado izquierdo)</li>
+        <li>Haz clic en <strong>New Query</strong></li>
+        <li>Pega el SQL que copiaste</li>
+        <li>Haz clic en <strong>▶ Run</strong></li>
+      </ol>
+    </div>
+
+    <h2>✅ Verificación</h2>
+    <div class="step">
+      <p>Cuando termines, verás en Supabase:</p>
+      <ul>
+        <li>✓ Tabla <code>yms_operations</code></li>
+        <li>✓ Tabla <code>yms_presencia</code> (con 7 usuarios registrados)</li>
+        <li>✓ Tabla <code>yms_chat</code></li>
+        <li>✓ Row Level Security habilitado en las 3 tablas</li>
+      </ul>
+    </div>
+
+    <h2>📱 Paso 3: Acceder a la Aplicación</h2>
+    <div class="step">
+      <p>Una vez configurado Supabase, la aplicación estará disponible en:</p>
+      <p><strong>https://gaherrerar-boop.github.io/yms-coldchain/</strong></p>
+      <p>Todos los datos se sincronizarán en tiempo real entre dispositivos. ✨</p>
+    </div>
+
+    <h2>🔐 Credenciales de Conexión (para referencia)</h2>
+    <div class="step">
+      <p><strong>URL:</strong> https://puhifcigfsmsnqytdlhb.supabase.co</p>
+      <p><strong>Anon Key:</strong> sb_publishable_Zru3Ot1b6bV4DOCwlKxKEA_DczhHw00</p>
+      <p><em>⚠️ Estas credenciales ya están configuradas en la aplicación</em></p>
+    </div>
+  </div>
+
+  <script>
+    function copiarSQL() {
+      const sql = document.getElementById('sql-content').innerText;
+      navigator.clipboard.writeText(sql).then(() => {
+        alert('✅ SQL copiado al portapapeles');
+      });
+    }
+
+    function descargarSQL() {
+      const sql = document.getElementById('sql-content').innerText;
+      const blob = new Blob([sql], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'yms-setup.sql';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

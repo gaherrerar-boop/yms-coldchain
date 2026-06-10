@@ -614,7 +614,27 @@
     </div>
   </div>
 
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.4"></script>
+
   <script>
+    // ═══════════════════════════════════════════════════════════════
+    // CONFIGURACIÓN SUPABASE
+    // ═══════════════════════════════════════════════════════════════
+
+    const SUPABASE_URL = 'https://puhifcigfsmsnqytdlhb.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_Zru3Ot1b6bV4DOCwlKxKEA_DczhHw00';
+
+    let supabase = null;
+    let isSupabaseReady = false;
+
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      isSupabaseReady = true;
+    } catch (e) {
+      console.warn('[YMS] Supabase no disponible, usando modo local:', e.message);
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // BASE DE DATOS DE USUARIOS LOCALES
     // ═══════════════════════════════════════════════════════════════
@@ -678,14 +698,16 @@
     let APP_STATE = {
       currentUser: null,
       currentProfile: null,
-      isAuthenticated: false
+      isAuthenticated: false,
+      isOnline: false,
+      supabaseConnected: false
     };
 
     // ═══════════════════════════════════════════════════════════════
-    // AUTENTICACIÓN LOCAL
+    // AUTENTICACIÓN LOCAL + SUPABASE
     // ═══════════════════════════════════════════════════════════════
 
-    function login(username, password) {
+    async function login(username, password) {
       username = (username || '').trim();
       password = (password || '').trim();
 
@@ -718,11 +740,40 @@
       }));
 
       console.log('[YMS] Login exitoso:', username);
+
+      // Registrar presencia en Supabase
+      if (isSupabaseReady && supabase) {
+        try {
+          await supabase.from('yms_presencia').upsert({
+            usuario: username,
+            nombre: user.nombre,
+            rol: user.rol,
+            online: true,
+            ultima_actividad: new Date().toISOString()
+          }, { onConflict: 'usuario' });
+          APP_STATE.supabaseConnected = true;
+        } catch (e) {
+          console.warn('[YMS] No se pudo registrar presencia en Supabase:', e.message);
+        }
+      }
+
       showUI();
       return true;
     }
 
-    function logout() {
+    async function logout() {
+      // Marcar como offline en Supabase
+      if (isSupabaseReady && supabase && APP_STATE.currentUser) {
+        try {
+          await supabase.from('yms_presencia').update({
+            online: false,
+            ultima_actividad: new Date().toISOString()
+          }).eq('usuario', APP_STATE.currentUser.username);
+        } catch (e) {
+          console.warn('[YMS] No se pudo actualizar presencia:', e.message);
+        }
+      }
+
       APP_STATE.currentUser = null;
       APP_STATE.currentProfile = null;
       APP_STATE.isAuthenticated = false;
@@ -787,9 +838,21 @@
 
       // Actualizar taskbar
       document.getElementById('user-tray').textContent = `👤 ${APP_STATE.currentProfile.username}`;
+      updateSyncStatus();
 
       // Activar primera sección
       activateView('patio');
+    }
+
+    function updateSyncStatus() {
+      const syncEl = document.getElementById('sync-tray');
+      if (APP_STATE.supabaseConnected) {
+        syncEl.textContent = '☁️ Sincronizado';
+        syncEl.title = 'Conectado a Supabase - datos en tiempo real';
+      } else {
+        syncEl.textContent = '💾 Local';
+        syncEl.title = 'Modo local - necesita ejecutar SQL setup';
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -797,17 +860,14 @@
     // ═══════════════════════════════════════════════════════════════
 
     function activateView(viewName) {
-      // Desactivar todos
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-      // Activar seleccionado
       const viewEl = document.getElementById(`view-${viewName}`);
       if (viewEl) {
         viewEl.classList.add('active');
       }
 
-      // Marcar nav como activo
       document.querySelectorAll('[data-view]').forEach(btn => {
         if (btn.dataset.view === viewName) {
           btn.classList.add('active');
@@ -833,7 +893,6 @@
     // EVENT LISTENERS
     // ═══════════════════════════════════════════════════════════════
 
-    // Form login
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
       clearError();
@@ -844,17 +903,14 @@
       }
     });
 
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    // Navegación
     document.querySelectorAll('[data-view]').forEach(btn => {
       btn.addEventListener('click', () => {
         activateView(btn.dataset.view);
       });
     });
 
-    // Theme selector
     document.getElementById('theme-select').addEventListener('change', (e) => {
       if (e.target.value === 'dark') {
         document.body.style.background = '#1a1a1a';
@@ -864,10 +920,36 @@
     });
 
     // ═══════════════════════════════════════════════════════════════
+    // MONITOREAR ESTADO SUPABASE
+    // ═══════════════════════════════════════════════════════════════
+
+    async function checkSupabaseConnection() {
+      if (!isSupabaseReady || !supabase) return;
+
+      try {
+        // Intentar una consulta simple
+        const { data, error } = await supabase.from('yms_presencia').select('count').single();
+        if (!error) {
+          APP_STATE.supabaseConnected = true;
+          console.log('[YMS] ✅ Conectado a Supabase');
+          if (APP_STATE.isAuthenticated) {
+            updateSyncStatus();
+          }
+        }
+      } catch (e) {
+        APP_STATE.supabaseConnected = false;
+        console.log('[YMS] No se pudo conectar a Supabase. Ejecuta setup.html para configurar.');
+      }
+    }
+
+    setInterval(checkSupabaseConnection, 5000);
+
+    // ═══════════════════════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════════════════════
 
     window.addEventListener('load', () => {
+      checkSupabaseConnection();
       if (!restoreSession()) {
         showLoginUI();
       }
