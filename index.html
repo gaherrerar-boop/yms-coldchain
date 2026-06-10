@@ -883,12 +883,13 @@
     // EVENT LISTENERS
     // ═══════════════════════════════════════════════════════════════
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       clearError();
       const username = document.getElementById('login-user-input').value;
       const password = document.getElementById('login-password-input').value;
-      if (login(username, password)) {
+      const result = await login(username, password);
+      if (result) {
         document.getElementById('login-form').reset();
       }
     });
