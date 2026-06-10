@@ -730,40 +730,11 @@
       }));
 
       console.log('[YMS] Login exitoso:', username);
-
-      // Registrar presencia en Supabase
-      if (isSupabaseReady && supabase) {
-        try {
-          await supabase.from('yms_presencia').upsert({
-            usuario: username,
-            nombre: user.nombre,
-            rol: user.rol,
-            online: true,
-            ultima_actividad: new Date().toISOString()
-          }, { onConflict: 'usuario' });
-          APP_STATE.supabaseConnected = true;
-        } catch (e) {
-          console.warn('[YMS] No se pudo registrar presencia en Supabase:', e.message);
-        }
-      }
-
       showUI();
       return true;
     }
 
-    async function logout() {
-      // Marcar como offline en Supabase
-      if (isSupabaseReady && supabase && APP_STATE.currentUser) {
-        try {
-          await supabase.from('yms_presencia').update({
-            online: false,
-            ultima_actividad: new Date().toISOString()
-          }).eq('usuario', APP_STATE.currentUser.username);
-        } catch (e) {
-          console.warn('[YMS] No se pudo actualizar presencia:', e.message);
-        }
-      }
-
+    function logout() {
       APP_STATE.currentUser = null;
       APP_STATE.currentProfile = null;
       APP_STATE.isAuthenticated = false;
