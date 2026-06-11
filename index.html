@@ -1285,7 +1285,7 @@ select{appearance:auto;cursor:pointer;}
 .kpi-val{color:var(--tx-head);font-size: 8px;font-weight:800;line-height:1;font-family:var(--font-sans);}
 .kpi-sub{color:var(--tx-dim);font-size:10px;margin-top:6px;font-family:var(--font-sans);font-weight:500;}
 
-.tbl-wrap{overflow-x:auto;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size: 10px;}
 thead tr{background:linear-gradient(135deg,var(--bg-bar),#0e102a);border-bottom:1px solid var(--border);}
 th{
@@ -3662,7 +3662,7 @@ body[data-winui="true"] #y-taskbar{display:flex;}
                 <div class="fg"><label>Anon Key</label><input type="password" id="sb-key-input" placeholder="eyJ..."></div>
               </div>
               <div class="fr">
-                <div class="fg" style="font-size:11px;color:var(--tx-muted);">🔒 La creación de usuarios se realiza de forma segura vía Edge Function — no se requiere Service Key en el cliente.</div>
+                <div class="fg"><label>Service Role Key <span style="color:var(--c-warn);font-size:10px;">(necesario para crear usuarios desde la app)</span></label><input type="password" id="sb-service-key-input" placeholder="eyJ... → Supabase: Project Settings → API → service_role secret"></div>
               </div>
               <div style="display:flex;gap:8px;margin-top:8px;">
                 <button class="btn btn-ok" onclick="saveSupabaseConfig()">GUARDAR Y RECONECTAR</button>
@@ -3891,7 +3891,7 @@ body[data-winui="true"] #y-taskbar{display:flex;}
         </div>
         <div class="fr"><div class="fg"><label>Observaciones</label><textarea id="ing2-obs" rows="2" placeholder="Observaciones..."></textarea></div></div>
       </div>
-      <div id="ing-andén-info" style="margin-top:8px;font-size: 8px;color:var(--c-ok);min-height:18px;"></div>
+      <div id="ing-anden-info" style="margin-top:8px;font-size: 8px;color:var(--c-ok);min-height:18px;"></div>
     </div>
     <div class="mf"><button class="btn" onclick="closeModal('modal-ingreso')">CANCELAR</button><button class="btn btn-ok" onclick="confirmarIngreso()">[ CONFIRMAR INGRESO ]</button></div>
   </div>
@@ -4224,7 +4224,7 @@ body[data-winui="true"] #y-taskbar{display:flex;}
       <div id="pa-msg" style="font-size: 8px;min-height:16px;margin-top:8px;color:var(--c-err);padding:0 2px;"></div>
     </div>
     <div class="mf">
-      <button class="btn" onclick="closeModal('modal-postura-anden')">CANCELAR</button>
+      <button class="btn" onclick="cancelarPosturaAnden()">CANCELAR POSTURA</button>
       <button class="btn btn-ok" style="flex:1;" onclick="confirmarPosturaAnden()">📍 CONFIRMAR POSTURA EN ANDÉN</button>
     </div>
   </div>
@@ -4733,9 +4733,10 @@ let _clActiveItems = [];
 // ║  Fallback: localStorage para desarrollo local               ║
 // ╚══════════════════════════════════════════════════════════════╝
 // ── SUPABASE REACTIVADO: Sincronización en la nube habilitada ──
-const SUPABASE_URL         = 'https://vitpurzrdraviixdvbdo.supabase.co';
-const SUPABASE_ANON_KEY    = 'sb_publishable_i1zkN_GJS3iwaKTwQW_nIA_OiB_CBkn';
-// SERVICE KEY ELIMINADA por seguridad — la creación de usuarios ahora usa la Edge Function 'create-user' (server-side).
+const SUPABASE_URL         = 'https://vitpurzrdravixdvbdo.supabase.co';
+const SUPABASE_ANON_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdHB1cnpyZHJhdmljeGR2YmRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTg0NTEsImV4cCI6MjA5MjI5NDQ1MX0.ccH0OUjCGgv9CPk8MYjd6yOi53v4Jo6LyLzMuMuE7n8';
+// SERVICE_KEY removido del frontend por seguridad — las operaciones admin
+// deben ejecutarse desde Supabase Edge Functions con secrets de servidor.
 
 // ══════════════════════════════════════════════
 //  SQL SCHEMA — Copiar y ejecutar en Supabase
@@ -6192,6 +6193,8 @@ async function login() {
 }
 
 async function logout() {
+  // Limpiar todos los intervalos antes de cerrar sesión
+  clearAllIntervals();
   if (sb && STATE.user) {
     await sb.from('user_presence').upsert({
       id: STATE.user.id, online: false, updated_at: new Date().toISOString(),
@@ -6564,9 +6567,11 @@ async function loadReturns() {
   } catch(e) { console.warn('[YMS] loadReturns exception:', e.message); }
 }
 
+const _ymsIntervals = [];
+
 function startAutoRefresh() {
   // Datos generales: cada 15s — tolerante a fallos de red
-  setInterval(async () => {
+  _ymsIntervals.push(setInterval(async () => {
     if (STATE.usingSeed || !sb || !STATE.user) return;
     try {
       await Promise.allSettled([loadDocks(), loadVisits(), loadQueue(), loadTasks(), loadPresence()]);
@@ -6575,12 +6580,17 @@ function startAutoRefresh() {
     } catch(e) {
       console.warn('[YMS] autoRefresh error:', e.message);
     }
-  }, 15000);
+  }, 15000));
   // Chat: cada 8s
-  setInterval(() => {
+  _ymsIntervals.push(setInterval(() => {
     if (STATE.usingSeed || !_rtConnected) return;
     if (STATE.chatTarget) loadChatMessages();
-  }, 8000);
+  }, 8000));
+}
+
+function clearAllIntervals() {
+  _ymsIntervals.forEach(function(id) { try { clearInterval(id); } catch(_) {} });
+  _ymsIntervals.length = 0;
 }
 
 // ══════════════════════════════════════════════
@@ -6751,7 +6761,11 @@ async function flushPendingOps() {
   if (!sb || STATE.usingSeed) return;
   const ops = _pendingOps.splice(0);
   for (const op of ops) {
-    try { await op(); } catch(_) { _pendingOps.push(op); }
+    try { await op(); } catch(_) {
+      // Solo re-encolar si no excede el límite máximo de 50 operaciones pendientes
+      if (_pendingOps.length < 50) _pendingOps.push(op);
+      else console.warn('[YMS] _pendingOps limit reached — oldest operation dropped');
+    }
   }
   // Sincronizar cola offline persistente
   await offlineStore.flushAll(sb);
@@ -7160,7 +7174,7 @@ function openIngreso() {
   // Reset devolución
   const cbDev = document.getElementById('ing2-tiene-devolucion');
   if (cbDev) { cbDev.checked = false; toggleDevolucionSecundaria(); }
-  document.getElementById('ing-andén-info').textContent = '';
+  document.getElementById('ing-anden-info').textContent = '';
 }
 
 function setTipoIngreso(tipo) {
@@ -7385,7 +7399,7 @@ async function confirmarIngreso() {
   
   // Buscar andén disponible compatible con tipo de operación y carga.
   const andénLibre = buscarAndenCompatible(tipo, tipoCarga);
-  const infoEl = document.getElementById('ing-andén-info');
+  const infoEl = document.getElementById('ing-anden-info');
 
   let visitId, dockId = null;
 
@@ -7522,40 +7536,67 @@ function openSalida(visitId) {
   const sel = document.getElementById('sal-truck');
   sel.innerHTML = '<option value="">— Seleccionar —</option>';
   const active = STATE.visits.filter(v => v.estado !== 'salida');
+  const zonasSalidaValida = ['anden', 'carros_cargados', 'estacionamiento_carros_vacios', 'playa', 'zona_lavado', 'gate'];
   active.forEach(v => {
-    sel.innerHTML += `<option value="${Utils.esc(v.id)}" ${visitId === v.id ? 'selected' : ''}>${Utils.esc(v.patente)} — ${Utils.esc(v.carrier_nombre || '')}</option>`;
+    // Para secundaria validar zona — solo se puede procesar si está en andén o carros_cargados
+    const esSec = v.tipo === 'secundaria';
+    const zonaOk = !esSec || ['anden','carros_cargados','estacionamiento_carros_vacios'].includes(v.zona_actual);
+    const label = Utils.esc(v.patente) + ' — ' + Utils.esc(v.carrier_nombre || '') + (zonaOk ? '' : ' ⚠ (requiere aprobación)');
+    sel.innerHTML += `<option value="${Utils.esc(v.id)}" ${visitId === v.id ? 'selected' : ''} data-zona="${Utils.esc(v.zona_actual||'')}" data-tipo="${Utils.esc(v.tipo||'')}">${label}</option>`;
   });
   document.getElementById('sal-truck-info').textContent = '';
   document.getElementById('sal-dwell').textContent = '';
   document.getElementById('sal-historial').innerHTML = '';
+  // Panel de advertencia de excepción (oculto por defecto)
+  let warnEl = document.getElementById('sal-exception-warn');
+  if (!warnEl) {
+    warnEl = document.createElement('div');
+    warnEl.id = 'sal-exception-warn';
+    warnEl.style.cssText = 'display:none;background:rgba(244,63,94,0.08);border:1.5px solid var(--c-err);border-radius:8px;padding:12px 14px;margin-bottom:12px;';
+    const mbInner = document.querySelector('#modal-salida .mb-inner');
+    if (mbInner) mbInner.insertBefore(warnEl, mbInner.firstChild);
+  }
 
   sel.onchange = () => {
     const v = STATE.visits.find(x => x.id === sel.value);
-    if (!v) return;
+    if (!v) { warnEl.style.display = 'none'; return; }
     const elapsed = Math.round((Date.now() - new Date(v.hora_ingreso)) / 60000);
     document.getElementById('sal-truck-info').innerHTML =
       `Patente: <strong>${v.patente}</strong> · Tipo: ${v.tipo} · Ingreso: ${fmtTime(v.hora_ingreso)} · Zona: ${v.zona_actual?.replace(/_/g,' ')}`;
     document.getElementById('sal-dwell').textContent = `Dwell time: ${elapsed} min`;
 
-    // ── Mostrar historial de movimientos del carro ──
+    // Validación zona para secundaria
+    const esSec = v.tipo === 'secundaria';
+    const zonaOk = !esSec || ['anden','carros_cargados','estacionamiento_carros_vacios'].includes(v.zona_actual);
+    if (!zonaOk) {
+      warnEl.style.display = 'block';
+      warnEl.innerHTML = '<div style="color:var(--c-err);font-size: 8px;font-weight:700;letter-spacing:1px;margin-bottom:6px;">⚠ EXCEPCIÓN — SALIDA SECUNDARIA FUERA DE FLUJO</div>' +
+        '<div style="font-size: 8px;color:var(--tx-base);margin-bottom:8px;">La patente <strong>' + v.patente + '</strong> está en zona <strong>' + (v.zona_actual||'—').replace(/_/g,' ').toUpperCase() + '</strong>.<br>Para proceder se requiere motivo de autorización:</div>' +
+        '<select id="sal-motivo-excepcion" style="width:100%;font-size: 8px;padding:6px;border:1px solid var(--c-err);background:var(--bg-input);color:var(--tx-base);border-radius:var(--r);">' +
+          '<option value="">— Seleccionar motivo de excepción —</option>' +
+          '<option value="anden_ocupado">Andén ocupado — no pudo completar flujo</option>' +
+          '<option value="anden_malo">Andén en mal estado — se canceló operación</option>' +
+          '<option value="anden_bloqueado">Andén bloqueado — supervisión autorizó salida</option>' +
+          '<option value="emergencia">Emergencia operacional — salida inmediata</option>' +
+          '<option value="supervisor_autoriza">Supervisor autoriza salida excepcional</option>' +
+        '</select>';
+    } else {
+      warnEl.style.display = 'none';
+    }
+
+    // Historial de movimientos
     let historialHtml = '<div style="font-size: 8px;border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">';
     historialHtml += '<strong style="color:var(--tx-head);">📍 TRAZADO DEL CARRO:</strong><br>';
-
-    // Entrada
     historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
     historialHtml += '📥 <strong>INGRESO</strong> — ' + fmtTime(v.hora_ingreso);
     if (v.tipo === 'primaria') historialHtml += '<br>↳ Planta: ' + (v.planta_nombre || '—');
     historialHtml += '</div>';
-
-    // Andén (si pasó por ahí)
     if (v.dock_id) {
       const dock = STATE.docks.find(d => d.id === v.dock_id);
       historialHtml += '<div style="margin:8px 0;padding:6px;background:rgba(14,158,109,0.08);border-left:3px solid var(--c-ok);border-radius:2px;">';
       historialHtml += '🚛 <strong>ANDÉN</strong> — ' + (dock?.codigo || 'Andén ?');
       historialHtml += '</div>';
     }
-
-    // Tareas completadas
     const tareasDelCarro = STATE.tasks.filter(t => t.patente === v.patente && t.estado === 'completada');
     if (tareasDelCarro.length > 0) {
       tareasDelCarro.forEach(t => {
@@ -7565,7 +7606,6 @@ function openSalida(visitId) {
         historialHtml += '</div>';
       });
     }
-
     historialHtml += '</div>';
     document.getElementById('sal-historial').innerHTML = historialHtml;
   };
@@ -7581,6 +7621,24 @@ async function confirmarSalida() {
 
   const visit = STATE.visits.find(v => v.id === visitId);
   if (!visit) return;
+
+  // Validar excepción de zona para secundaria
+  const esSec = visit.tipo === 'secundaria';
+  const zonaOk = !esSec || ['anden','carros_cargados','estacionamiento_carros_vacios'].includes(visit.zona_actual);
+  if (!zonaOk) {
+    const motivoEl = document.getElementById('sal-motivo-excepcion');
+    const motivo = motivoEl?.value || '';
+    if (!motivo) {
+      Audio.play('error');
+      notify('⛔ Debe seleccionar un motivo de excepción para autorizar esta salida secundaria', 'error', 5000);
+      return;
+    }
+    // Registrar excepción en auditoría antes de proceder
+    await auditLog('gate', 'SALIDA_EXCEPCION',
+      visit.patente + ' · Zona: ' + (visit.zona_actual||'—') + ' · Motivo: ' + motivo.replace(/_/g,' ') +
+      (obs ? ' · ' + obs : '') + ' · Autorizado por: ' + (STATE.profile?.nombre || '—'));
+  }
+
   const elapsed = Math.round((Date.now() - new Date(visit.hora_ingreso)) / 60000);
 
   if (STATE.usingSeed) {
@@ -7589,7 +7647,7 @@ async function confirmarSalida() {
     visit.dwell_minutes = elapsed;
     // Liberar andén si estaba ocupado
     const dock = STATE.docks.find(d => d.truck_id === visitId || d.id === visit.dock_id);
-    if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; }
+    if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; dock.hora_liberacion = new Date().toISOString(); }
     clearSLAAlertMarks(visitId);
     STATE.visits = STATE.visits.filter(v => v.id !== visitId);
     if (dock) { ymsDespacharTurnomaticoPatio(dock); }
@@ -7604,7 +7662,7 @@ async function confirmarSalida() {
     visit.estado = 'salida';
     visit.hora_salida = new Date().toISOString();
     visit.dwell_minutes = elapsed;
-    if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; }
+    if (dock) { dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null; dock.hora_liberacion = new Date().toISOString(); }
     clearSLAAlertMarks(visitId);
     STATE.visits = STATE.visits.filter(v => v.id !== visitId);
 
@@ -7858,10 +7916,10 @@ function renderAndenes() {
         '</div>' +
       '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;">' +
-        (isAdmin ? '<div style="display:flex;gap:6px;">' +
+        '<div style="display:flex;gap:6px;">' +
           '<button class="btn btn-ok" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="carros_cargados" data-stop="1">→ Carros Cargados</button>' +
           '<button class="btn" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="playa" data-stop="1">→ Estacionamiento</button>' +
-        '</div>' : '') +
+        '</div>' +
         (isAdmin ? '<div style="display:flex;gap:6px;">' +
           '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andén</button>' +
           '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
@@ -7911,10 +7969,10 @@ function renderAndenes() {
           '</div>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:6px;">' +
-          (isAdmin ? '<div style="display:flex;gap:6px;">' +
+          '<div style="display:flex;gap:6px;">' +
             '<button class="btn btn-ok" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="carros_cargados" data-stop="1">→ Carros Cargados</button>' +
             '<button class="btn" style="flex:1;font-size: 8px;justify-content:center;" data-action="crearRetiroAndenInmediato" data-id="' + d.id + '" data-arg2="playa" data-stop="1">→ Estacionamiento</button>' +
-          '</div>' : '') +
+          '</div>' +
           (isAdmin ? '<div style="display:flex;gap:6px;">' +
             '<button class="btn btn-warn" style="flex:1;font-size:10px;" data-action="liberarAnden" data-id="' + d.id + '" data-stop="1">Liberar andén</button>' +
             '<button class="btn btn-err" style="font-size:10px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
@@ -7948,7 +8006,14 @@ function renderAndenes() {
           '<button class="btn" style="font-size: 8px;" data-action="editAnden" data-id="' + d.id + '" data-stop="1">Editar</button>' +
         '</div>' : '');
       } else {
-        body = '<div style="padding:24px 0 12px;text-align:center;color:var(--tx-dim);font-size: 9px;">Disponible para asignación</div>' +
+        // Andén libre — calcular tiempo disponible desde que fue liberado
+        const tiempoLibre = d.hora_liberacion
+          ? Math.round((now - new Date(d.hora_liberacion)) / 60000)
+          : null;
+        const tiempoLibreStr = tiempoLibre !== null
+          ? '<span style="font-size:10px;color:var(--c-ok);font-weight:600;">✓ Libre hace ' + tiempoLibre + ' min</span>'
+          : '<span style="font-size:10px;color:var(--tx-dim);">Disponible para asignación</span>';
+        body = '<div style="padding:16px 0 12px;text-align:center;">' + tiempoLibreStr + '</div>' +
           (isAdmin ? '<div style="display:flex;gap:6px;">' +
             '<button class="btn btn-warn" style="flex:1;font-size: 8px;" data-action="bloquearAnden" data-id="' + d.id + '" data-stop="1">Bloquear</button>' +
             '<button class="btn" style="font-size: 8px;" data-action="editAnden" data-id="' + d.id + '" data-stop="1">Editar</button>' +
@@ -8061,9 +8126,6 @@ function renderAndenes() {
 
 // ── Movimiento desde andén (admin/supervisor inicia, patio completa) ──────
 function crearRetiroAnden(dockId, destino) {
-  if (!['administrador','jefe_ops','supervisor_andenes'].includes(STATE.profile?.rol)) {
-    notify('⛔ Solo administrador, jefe de operaciones o supervisor pueden generar la tarea de retiro', 'error'); return;
-  }
   const dock = STATE.docks.find(d => d.id === dockId);
   if (!dock || dock.estado !== 'busy') { notify('El andén no está ocupado', 'warn'); return; }
   const visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
@@ -8089,9 +8151,6 @@ function crearRetiroAnden(dockId, destino) {
 }
 
 async function crearRetiroAndenInmediato(dockId, destino) {
-  if (!['administrador','jefe_ops','supervisor_andenes'].includes(STATE.profile?.rol)) {
-    notify('⛔ Solo administrador, jefe de operaciones o supervisor pueden generar la tarea de retiro', 'error'); return;
-  }
   const dock = STATE.docks.find(d => d.id === dockId);
   if (!dock || dock.estado !== 'busy') { notify('El andén no está ocupado', 'warn'); return; }
   let visit = STATE.visits.find(v => (v.dock_id === dockId || v.id === dock.truck_id) && v.estado !== 'salida');
@@ -8136,9 +8195,6 @@ async function crearRetiroAndenInmediato(dockId, destino) {
 }
 
 async function confirmarRetiroAnden() {
-  if (!['administrador','jefe_ops','supervisor_andenes'].includes(STATE.profile?.rol)) {
-    notify('⛔ Solo administrador, jefe de operaciones o supervisor pueden generar la tarea de retiro', 'error'); return;
-  }
   const dockId  = document.getElementById('mra-dock-id')?.value;
   const destino = document.getElementById('mra-destino-sel')?.value || document.getElementById('mra-destino')?.value || 'carros_cargados';
   const pallets = document.getElementById('mra-pallets')?.value || '';
@@ -8238,10 +8294,12 @@ async function liberarAnden(dockId) {
 
   if (STATE.usingSeed) {
     dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null;
+    dock.hora_liberacion = new Date().toISOString();
   } else {
     // Optimistic update
     const prev = { estado: dock.estado, truck_id: dock.truck_id, inicio_ocupacion: dock.inicio_ocupacion };
     dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null;
+    dock.hora_liberacion = new Date().toISOString();
     try {
       await sb.from('docks').update({ estado: 'free', truck_id: null, inicio_ocupacion: null }).eq('id', dockId);
       await auditLog('dock', 'LIBERACION_ANDEN', `Andén ${dock.codigo} liberado manualmente`);
@@ -8590,8 +8648,18 @@ function toggleSlot(idx) {
     const tipoAsignar = STATE._pendingSlotTipo || null;
     const pat = prompt('Ingrese patente a asignar al slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ':');
     if (!pat) return;
+    // CORRECCIÓN: Validar unicidad de patente — no puede existir en otro slot
+    const patUpper = pat.trim().toUpperCase();
+    const slotDuplicado = STATE.playaSlots.find(function(s) {
+      return s.id !== slot.id && s.ocupado && s.patente === patUpper;
+    });
+    if (slotDuplicado) {
+      Audio.play('error');
+      notify('⛔ La patente ' + patUpper + ' ya está asignada al slot F' + slotDuplicado.fila + '-' + String(slotDuplicado.col).padStart(2,'0') + ' — una patente solo puede existir en un slot', 'error', 6000);
+      return;
+    }
     slot.ocupado = true;
-    slot.patente = pat.toUpperCase();
+    slot.patente = patUpper;
     slot.playa_tipo = tipoAsignar;
     const carr = STATE.carriers.find(x => x.codigo === slot.patente);
     slot.ruta   = carr?.numero_ruta || null;
@@ -8734,11 +8802,14 @@ function renderQueueHistory() {
     : '<tr><td colspan="6" class="c-dim tc">Sin historial hoy</td></tr>';
 }
 
-async function llamarTicket(ticketId) {
+// llamarTicket se define más abajo con lógica completa ymsGetFreeDockForPatio (ver línea ~14082)
+// Esta versión Turnomático queda como llamarTicketCompatible para uso desde botones del queue
+async function llamarTicketCompatible(ticketId) {
   const t = STATE.queueTickets.find(x => x.id === ticketId);
   if (!t) return;
+  // Solo buscar andenes LIBRES — no ocupados ni bloqueados
   const dock = buscarAndenCompatible(t.tipo_operacion === 'carga' ? 'secundaria' : 'primaria', t.tipo_carga || 'seco');
-  if (!dock) { notify('No hay andenes compatibles disponibles para este ticket', 'warn'); return; }
+  if (!dock) { notify('No hay andenes libres disponibles para este ticket', 'warn'); return; }
 
   if (STATE.usingSeed) {
     t.estado = 'llamado'; t.dock_id = dock.id; t.hora_llamado = new Date().toISOString();
@@ -11002,15 +11073,41 @@ async function createUser() {
     return;
   }
 
-  // ── Con Supabase: Admin API directo con Service Key ──
+  // ── Con Supabase: Admin API — service key leído desde localStorage (configurado en Config → Supabase) ──
+  const runtimeServiceKey = localStorage.getItem('sb_service_key') || '';
+  if (!runtimeServiceKey) {
+    setMsg('⛔ Service Role Key no configurado — vaya a Configuración → Supabase e ingrese el Service Role Key para crear usuarios desde la app. Alternativamente créelos directamente en Supabase Auth → Users.', 'c-err');
+    notify('⛔ Service Key no configurado — ver Config → Supabase', 'error', 8000);
+    return;
+  }
   let userId = null;
   try {
-    setMsg('⌛ Creando usuario de forma segura...', 'c-warn');
-    const { data: adminData, error: rpcErr } = await sb.rpc('admin_create_user', {
-      p_email: email, p_password: pass, p_nombre: nombre, p_rol: rol, p_sitio: sitio
+    setMsg('⌛ Creando usuario vía Admin API...', 'c-warn');
+    const adminRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': runtimeServiceKey,
+        'Authorization': `Bearer ${runtimeServiceKey}`,
+      },
+      body: JSON.stringify({
+        email,
+        password: pass,
+        email_confirm: true,
+        user_metadata: { nombre, rol, sitio },
+      }),
     });
-    if (rpcErr) throw new Error(rpcErr.message);
+    const adminData = await adminRes.json();
+    if (!adminRes.ok) throw new Error(adminData.message || adminData.msg || adminData.error_description || JSON.stringify(adminData));
     userId = adminData.id;
+
+    const { error: profErr } = await sb.from('profiles').upsert({
+      id: userId, nombre, email, rol, sitio, activo: true,
+      username: email.split('@')[0],
+    }, { onConflict: 'id' });
+    if (profErr) console.warn('Profile upsert warning:', profErr.message);
+
+    await sb.from('user_presence').upsert({ id: userId, online: false, updated_at: new Date().toISOString() });
 
     STATE.users.push({ id: userId, nombre, email, rol, sitio, activo: true, ultimo_acceso: null });
     setMsg('✅ Usuario <b>' + nombre + '</b> creado correctamente.', 'c-ok');
@@ -11251,10 +11348,11 @@ function canActInWorkflow(tipo, paso) {
 function saveSupabaseConfig() {
   const url = (document.getElementById('sb-url-input')?.value||'').trim();
   const key = (document.getElementById('sb-key-input')?.value||'').trim();
+  const svc = (document.getElementById('sb-service-key-input')?.value||'').trim();
   if (!url||!key) { notify('Ingrese URL y Anon Key','error'); return; }
   localStorage.setItem('sb_url', url);
   localStorage.setItem('sb_key', key);
-  localStorage.removeItem('sb_service_key'); // purga de seguridad: eliminar copias antiguas
+  if (svc) localStorage.setItem('sb_service_key', svc);
   notify('Configuración guardada. Recargando...','ok');
   setTimeout(()=>location.reload(), 1200);
 }
@@ -11280,9 +11378,10 @@ function copySqlSchema() {
 function renderConfigSistema() {
   const urlEl = document.getElementById('sb-url-input');
   const keyEl = document.getElementById('sb-key-input');
+  const svcEl = document.getElementById('sb-service-key-input');
   if(urlEl) urlEl.value = SUPABASE_URL.includes('TU_PROYECTO') ? '' : SUPABASE_URL;
   if(keyEl) keyEl.value = SUPABASE_ANON_KEY.includes('TU_ANON_KEY') ? '' : SUPABASE_ANON_KEY;
-  localStorage.removeItem('sb_service_key'); // purga de seguridad: eliminar copias antiguas
+  if(svcEl) { const sv = localStorage.getItem('sb_service_key')||''; svcEl.value = sv; }
   const el = document.getElementById('sb-status');
   if(el) el.innerHTML = _sbConfigured ? '<span class="c-ok">● Supabase configurado</span>' : '<span class="c-warn">⚠ Modo demo — Supabase no configurado</span>';
 }
@@ -11811,13 +11910,17 @@ function abrirPosturaAnden(taskId) {
       (carrier ? ' — ' + escHtml(carrier.nombre) + (carrier.numero_ruta && carrier.numero_ruta !== '0' ? ' · Ruta ' + carrier.numero_ruta : '') : '') +
       '<br><span style="color:var(--tx-muted);font-size:10px;">Tarea: ' + (t.tipo||'').replace(/_/g,' ').toUpperCase() + '</span>';
   }
-  // Poblar select: andenes libres + andén pre-asignado en la tarea (aunque ya esté reservado/busy)
+
+  const tienePredefinido = !!(t?.dock_id);
+  const preAsignado = tienePredefinido ? STATE.docks.find(function(d){ return d.id === t.dock_id; }) : null;
+
+  // Poblar select: solo andenes libres + andén predefinido (si existe)
   const andenSel = document.getElementById('pa-anden-select');
   if (andenSel) {
-    const preAsignado = t?.dock_id ? STATE.docks.find(function(d){ return d.id === t.dock_id; }) : null;
-    const andenesSel = STATE.docks.filter(function(d) {
-      return d.estado === 'free' || (preAsignado && d.id === preAsignado.id);
-    });
+    const andenesSel = tienePredefinido && preAsignado
+      ? [preAsignado]  // Solo el predefinido — patio no puede cambiar
+      : STATE.docks.filter(function(d) { return d.estado === 'free'; });
+
     andenSel.innerHTML = '<option value="">— Seleccionar andén —</option>' +
       andenesSel.map(function(d) {
         const esReservado = preAsignado && d.id === preAsignado.id && d.estado !== 'free';
@@ -11827,9 +11930,34 @@ function abrirPosturaAnden(taskId) {
           (esReservado ? ' [RESERVADO PARA ESTA TAREA]' : '') + '</option>';
       }).join('') +
       (!andenesSel.length ? '<option value="" disabled>⚠ Sin andenes disponibles</option>' : '');
-    // Pre-seleccionar el andén asignado en la tarea
-    if (preAsignado) andenSel.value = preAsignado.id;
+
+    // Si es predefinido: pre-seleccionar y deshabilitar cambio
+    if (preAsignado) {
+      andenSel.value = preAsignado.id;
+      andenSel.disabled = tienePredefinido;  // Solo lectura cuando viene predefinido
+    } else {
+      andenSel.disabled = false;
+    }
   }
+
+  // Banner informativo cuando hay andén predefinido
+  let bannerPred = document.getElementById('pa-predefinido-banner');
+  if (!bannerPred) {
+    bannerPred = document.createElement('div');
+    bannerPred.id = 'pa-predefinido-banner';
+    bannerPred.style.cssText = 'display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.4);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size: 8px;color:var(--tx-base);line-height:1.5;';
+    const mbInner = document.querySelector('#modal-postura-anden .mb-inner');
+    if (mbInner && andenSel) mbInner.insertBefore(bannerPred, andenSel.parentElement || andenSel);
+  }
+  if (tienePredefinido && preAsignado) {
+    bannerPred.style.display = 'block';
+    bannerPred.innerHTML = '<strong style="color:var(--c-warn);">⚠ ANDÉN PREDEFINIDO — SOLO CONFIRMAR O CANCELAR</strong><br>' +
+      'Esta solicitud nació con andén <strong>' + preAsignado.codigo + '</strong> pre-asignado. ' +
+      'Patio no puede cambiar el andén de destino.';
+  } else {
+    bannerPred.style.display = 'none';
+  }
+
   const obsEl = document.getElementById('pa-obs');
   const msgEl = document.getElementById('pa-msg');
   if (obsEl) obsEl.value = '';
@@ -11914,55 +12042,108 @@ async function confirmarPosturaAnden() {
   await auditLog('task', 'POSTURA_ANDÉN_CONFIRMADA',
     (t.patente||'—') + ' → Andén ' + dock.codigo + (obs ? ' · ' + obs : ''));
 
-  // ── CREAR la siguiente tarea (mover a carros cargados) SOLO si el usuario es
-  //    administrador, jefe de operaciones o supervisor. El operador de patio
-  //    NO genera la tarea de retiro al posicionar el carro en el andén. ──
-  const ROLES_GENERAN_RETIRO = ['administrador', 'jefe_ops', 'supervisor_andenes'];
-  const puedeGenerarRetiro = ROLES_GENERAN_RETIRO.includes(STATE.profile?.rol);
-
-  if (puedeGenerarRetiro) {
-    const nuevaTareaCarroCargado = {
-      id: 't' + Date.now(),
-      tipo: 'anden_a_carros_cargados',
-      prioridad: t.prioridad || 'normal',
-      zona_origen: 'anden',
-      zona_destino: 'carros_cargados',
-      patente: t.patente || '',
-      sla_minutos: t.sla_minutos || 20,
-      estado: 'ofertada',
-      notas: 'Tarea generada automáticamente después de postura en andén ' + dock.codigo,
-      hora_creacion: new Date().toISOString(),
-      operador_nombre: null,
-      dock_id: andenId
-    };
-    STATE.tasks.push(nuevaTareaCarroCargado);
-    if (!STATE.usingSeed && sb) {
-      try {
-        const { data, error } = await sb.from('yard_tasks').insert({
-          tipo: nuevaTareaCarroCargado.tipo,
-          prioridad: nuevaTareaCarroCargado.prioridad,
-          zona_origen: nuevaTareaCarroCargado.zona_origen,
-          zona_destino: nuevaTareaCarroCargado.zona_destino,
-          visit_id: visit?.id || null,
-          patente: nuevaTareaCarroCargado.patente,
-          sla_minutos: nuevaTareaCarroCargado.sla_minutos,
-          estado: 'ofertada',
-          notas: nuevaTareaCarroCargado.notas,
-          creado_por: STATE.user?.id
-        }).select().single();
-        if (!error && data) Object.assign(nuevaTareaCarroCargado, data);
-      } catch(e) { console.warn('crear tarea carro cargado:', e); }
-    }
-    await auditLog('task', 'TAREA_CARRO_CARGADO_CREADA',
-      (t.patente||'—') + ' — Mover de andén ' + dock.codigo + ' a carros cargados');
+  // ── CREAR AUTOMÁTICAMENTE la siguiente tarea: mover a carros cargados ──
+  const nuevaTareaCarroCargado = {
+    id: 't' + Date.now(),
+    tipo: 'anden_a_carros_cargados',
+    prioridad: t.prioridad || 'normal',
+    zona_origen: 'anden',
+    zona_destino: 'carros_cargados',
+    patente: t.patente || '',
+    sla_minutos: t.sla_minutos || 20,
+    estado: 'ofertada',
+    notas: 'Tarea generada automáticamente después de postura en andén ' + dock.codigo,
+    hora_creacion: new Date().toISOString(),
+    operador_nombre: null,
+    dock_id: andenId
+  };
+  STATE.tasks.push(nuevaTareaCarroCargado);
+  if (!STATE.usingSeed && sb) {
+    try {
+      const { data, error } = await sb.from('yard_tasks').insert({
+        tipo: nuevaTareaCarroCargado.tipo,
+        prioridad: nuevaTareaCarroCargado.prioridad,
+        zona_origen: nuevaTareaCarroCargado.zona_origen,
+        zona_destino: nuevaTareaCarroCargado.zona_destino,
+        visit_id: visit?.id || null,
+        patente: nuevaTareaCarroCargado.patente,
+        sla_minutos: nuevaTareaCarroCargado.sla_minutos,
+        estado: 'ofertada',
+        notas: nuevaTareaCarroCargado.notas,
+        creado_por: STATE.user?.id
+      }).select().single();
+      if (!error && data) Object.assign(nuevaTareaCarroCargado, data);
+    } catch(e) { console.warn('crear tarea carro cargado:', e); }
   }
+  await auditLog('task', 'TAREA_CARRO_CARGADO_CREADA',
+    (t.patente||'—') + ' — Mover de andén ' + dock.codigo + ' a carros cargados');
 
   Audio.play('ok');
-  if (puedeGenerarRetiro) {
-    notify('✅ Postura confirmada — ' + (t.patente||'') + ' en andén ' + dock.codigo + ' • ⏭ Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
-  } else {
-    notify('✅ Postura confirmada — ' + (t.patente||'') + ' en andén ' + dock.codigo, 'ok', 4000);
+  notify('✅ Postura confirmada — ' + (t.patente||'') + ' en andén ' + dock.codigo + ' • ⏭ Siguiente tarea: trasladar a carros cargados', 'ok', 5000);
+  closeModal('modal-postura-anden');
+  renderTareas(); renderAndenes(); renderDashboard();
+}
+
+// ── Cancelar postura con motivo obligatorio (aplica para andén predefinido y libre) ──
+async function cancelarPosturaAnden() {
+  const motivos = [
+    { v: 'anden_ocupado',   l: 'Andén ocupado — llegó otro camión' },
+    { v: 'anden_malo',      l: 'Andén en mal estado — problema estructural' },
+    { v: 'anden_bloqueado', l: 'Andén bloqueado — acceso impedido' },
+    { v: 'camion_no_apto',  l: 'Camión no apto para la postura' },
+    { v: 'otro',            l: 'Otro motivo (especificar en observaciones)' },
+  ];
+  const optHtml = motivos.map(function(m) { return '<option value="' + m.v + '">' + m.l + '</option>'; }).join('');
+  // Usar un modal inline simple para capturar el motivo
+  const msgEl = document.getElementById('pa-msg');
+  if (msgEl) {
+    msgEl.innerHTML = '<div style="margin-top:8px;padding:10px;background:var(--bg-alt);border:1px solid var(--border);border-radius:6px;">' +
+      '<div style="font-size: 8px;font-weight:600;color:var(--c-warn);margin-bottom:6px;">Motivo de cancelación <span style="color:var(--c-err);">*</span></div>' +
+      '<select id="pa-cancel-motivo" style="width:100%;font-size: 8px;padding:5px;margin-bottom:8px;background:var(--bg-input);border:1px solid var(--border);color:var(--tx-base);border-radius:var(--r);">' +
+        '<option value="">— Seleccionar motivo —</option>' + optHtml +
+      '</select>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button class="btn btn-err" style="flex:1;font-size: 8px;" onclick="confirmarCancelacionPostura()">Confirmar cancelación</button>' +
+        '<button class="btn" style="font-size: 8px;" onclick="document.getElementById(\'pa-msg\').innerHTML=\'\'">Volver</button>' +
+      '</div>' +
+    '</div>';
   }
+}
+
+async function confirmarCancelacionPostura() {
+  const motivoEl = document.getElementById('pa-cancel-motivo');
+  const motivo = motivoEl?.value || '';
+  if (!motivo) {
+    Audio.play('error');
+    notify('⛔ Debe seleccionar un motivo para cancelar la postura', 'error');
+    return;
+  }
+  const taskId = _posturaAndenTaskId;
+  const obsEl = document.getElementById('pa-obs');
+  const obs = (obsEl?.value || '').trim();
+  const t = STATE.tasks.find(x => x.id === taskId);
+  if (t) {
+    t.estado = 'cancelada';
+    t.hora_fin = new Date().toISOString();
+    t.notas = (t.notas ? t.notas + ' | ' : '') + 'Cancelado en postura: ' + motivo.replace(/_/g,' ') + (obs ? ' · ' + obs : '');
+    if (!STATE.usingSeed && sb) {
+      try { await sb.from('yard_tasks').update({ estado: 'cancelada', hora_fin: t.hora_fin, notas: t.notas }).eq('id', taskId); } catch(e) {}
+    }
+    // Liberar andén si estaba reservado
+    if (t.dock_id) {
+      const dock = STATE.docks.find(function(d) { return d.id === t.dock_id; });
+      if (dock && dock.estado !== 'busy') {
+        dock.estado = 'free';
+        if (!STATE.usingSeed && sb) {
+          try { await sb.from('docks').update({ estado: 'free' }).eq('id', dock.id); } catch(e) {}
+        }
+      }
+    }
+  }
+  await auditLog('task', 'CANCELACION_POSTURA',
+    (t?.patente||'—') + ' · Motivo: ' + motivo.replace(/_/g,' ') + (obs ? ' · ' + obs : ''));
+  Audio.play('warn');
+  notify('⚠ Postura cancelada — ' + motivo.replace(/_/g,' '), 'warn');
   closeModal('modal-postura-anden');
   renderTareas(); renderAndenes(); renderDashboard();
 }
@@ -12252,6 +12433,7 @@ async function confirmarCarroCargado() {
     // ── Liberar el andén ──
     if (dock) {
       dock.estado = 'free'; dock.truck_id = null; dock.inicio_ocupacion = null;
+      dock.hora_liberacion = new Date().toISOString();
       if (!STATE.usingSeed && sb) {
         try {
           await sb.from('docks').update({
@@ -12388,8 +12570,20 @@ function configurarSlot(slotId) {
   if (tipo === '2') {
     const pat = prompt('Ingrese patente o ruta dedicada al slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ':');
     if (!pat) return;
-    STATE.slotsDedicados[slotId] = { tipo: 'dedicado', patente: pat.toUpperCase(), slotId };
-    notify('✓ Slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' dedicado a ' + pat.toUpperCase(), 'ok');
+    const patUpper = pat.trim().toUpperCase();
+    // Validar que no exista otra dedicación a la misma patente en otro slot
+    const yaAsignado = Object.entries(STATE.slotsDedicados).find(function(entry) {
+      return entry[0] !== slotId && entry[1]?.patente === patUpper;
+    });
+    if (yaAsignado) {
+      const slotExist = STATE.playaSlots.find(function(s) { return s.id === yaAsignado[0]; });
+      const lblExist = slotExist ? ('F' + slotExist.fila + '-' + String(slotExist.col).padStart(2,'0')) : yaAsignado[0];
+      Audio.play('error');
+      notify('⛔ La patente ' + patUpper + ' ya está dedicada al slot ' + lblExist + ' — una patente solo puede tener un slot dedicado', 'error', 6000);
+      return;
+    }
+    STATE.slotsDedicados[slotId] = { tipo: 'dedicado', patente: patUpper, slotId };
+    notify('✓ Slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' dedicado a ' + patUpper, 'ok');
   } else {
     delete STATE.slotsDedicados[slotId];
     notify('✓ Slot F' + slot.fila + '-' + String(slot.col).padStart(2,'0') + ' configurado como dinámico', 'ok');
@@ -13133,8 +13327,12 @@ function sincronizarSlotsConVisitas() {
   }).forEach(function(v) {
     const yaEnSlot = STATE.playaSlots.find(function(s) { return s.patente === v.patente && s.ocupado; });
     if (!yaEnSlot) {
-      // Buscar slot libre compatible
-      const slotLibre = STATE.playaSlots.find(function(s) {
+      // CORRECCIÓN: Priorizar slot dedicado para esta patente antes de buscar dinámico
+      const slotDedicado = STATE.playaSlots.find(function(s) {
+        return s.cfg_tipo === 'dedicado' && s.cfg_patente === v.patente && !s.ocupado;
+      });
+      // Buscar slot libre compatible (con prioridad al dedicado)
+      const slotLibre = slotDedicado || STATE.playaSlots.find(function(s) {
         if (s.ocupado || s.cfg_tipo === 'bloqueado') return false;
         if (s.cfg_tipo === 'dedicado' && s.cfg_patente && s.cfg_patente !== v.patente) return false;
         return true;
@@ -13145,6 +13343,10 @@ function sincronizarSlotsConVisitas() {
         slotLibre.nombre = carrier ? carrier.nombre : null;
         slotLibre.ruta = carrier ? carrier.numero_ruta : null;
         slotLibre.tipo_v = carrier ? carrier.tipo : null;
+        // Si el slot dedicado estaba ocupado por otra patente, notificar
+        if (slotDedicado && slotDedicado.ocupado && slotDedicado.patente !== v.patente) {
+          notify('⚠ Slot dedicado de ' + v.patente + ' está ocupado por ' + slotDedicado.patente + ' — usando slot alternativo', 'warn', 6000);
+        }
       }
     }
   });
@@ -13883,7 +14085,8 @@ async function llamarTicket(ticketId) {
   const t = STATE.queueTickets.find(x => x.id === ticketId);
   if (!t) return;
   const dock = ymsGetFreeDockForPatio();
-  if (!dock) { notify('No hay andenes disponibles para llamar este ticket', 'warn'); return; }
+  // Validar que el andén obtenido esté realmente libre (doble check)
+  if (!dock || dock.estado !== 'free') { notify('No hay andenes libres disponibles para llamar este ticket', 'warn'); return; }
   if (t.tipo_operacion === 'mover_anden') {
     await ymsDespacharTurnomaticoPatio(dock);
     return;
@@ -13924,14 +14127,14 @@ Object.assign(window, {
   sincronizarSlotsConVisitas,
   onTaskTipoChange, onTaskTruckChange, buscarDatosCita, validarElegibleDevolucion, cancelarTarea, aceptarTarea, rechazarTarea, aceptarTareaById,
   abrirChecklistTarea, confirmarChecklistTarea, updateChecklist,
-  abrirPosturaAnden, confirmarPosturaAnden,
+  abrirPosturaAnden, confirmarPosturaAnden, cancelarPosturaAnden, confirmarCancelacionPostura,
   abrirEdicionTarea, guardarEdicionTarea, eliminarTarea, desasignarTarea,
   abrirCarroCargado, confirmarCarroCargado, registrarRetiroAnden, crearRetiroAndenInmediato,
   abrirPalletCheck, confirmarPalletCheck, agregarItemPallet, calcDiffPallets,
   mostrarUberTaskPatio, utpAceptar, utpCerrar,
   configurarSlot, cargarDatosPrueba, getAccionesTareaDesktop,
   loadTasks, renderTareas,
-  refreshQueue, llamarTicket, cancelarTicket, saveSLA,
+  refreshQueue, llamarTicket, llamarTicketCompatible, cancelarTicket, saveSLA,
   openNuevaCita, saveCita, confirmCita, cancelCita, renderCitas,
   abrirDevol, confirmarDevol, aprobarDevolucion, renderDevoluciones,
   initTrazabilidad, loadTrazabilidad,
