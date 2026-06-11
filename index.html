@@ -4734,7 +4734,7 @@ let _clActiveItems = [];
 // ╚══════════════════════════════════════════════════════════════╝
 // ── SUPABASE REACTIVADO: Sincronización en la nube habilitada ──
 const SUPABASE_URL         = 'https://vitpurzrdraviixdvbdo.supabase.co';
-const SUPABASE_ANON_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpdHB1cnpyZHJhdmlpeGR2YmRvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3MTg0NTEsImV4cCI6MjA5MjI5NDQ1MX0.ccH0OUjCGgv9CPk8MYjd6yOi53v4Jo6LyLzMuMuE7n8';
+const SUPABASE_ANON_KEY    = 'sb_publishable_i1zkN_GJS3iwaKTwQW_nIA_OiB_CBkn';
 // SERVICE KEY ELIMINADA por seguridad — la creación de usuarios ahora usa la Edge Function 'create-user' (server-side).
 
 // ══════════════════════════════════════════════
@@ -10996,30 +10996,12 @@ async function createUser() {
   // ── Con Supabase: Admin API directo con Service Key ──
   let userId = null;
   try {
-    setMsg('⌛ Creando usuario vía Admin API...', 'c-warn');
-    const { data: _sess } = await sb.auth.getSession();
-    const _tok = _sess?.session?.access_token;
-    if (!_tok) throw new Error('Sesión expirada — vuelve a iniciar sesión');
-    const adminRes = await fetch(`${SUPABASE_URL}/functions/v1/create-user`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${_tok}`,
-      },
-      body: JSON.stringify({ email, password: pass, nombre, rol, sitio }),
+    setMsg('⌛ Creando usuario de forma segura...', 'c-warn');
+    const { data: adminData, error: rpcErr } = await sb.rpc('admin_create_user', {
+      p_email: email, p_password: pass, p_nombre: nombre, p_rol: rol, p_sitio: sitio
     });
-    const adminData = await adminRes.json();
-    if (!adminRes.ok) throw new Error(adminData.message || adminData.msg || adminData.error_description || JSON.stringify(adminData));
+    if (rpcErr) throw new Error(rpcErr.message);
     userId = adminData.id;
-
-    const { error: profErr } = await sb.from('profiles').upsert({
-      id: userId, nombre, email, rol, sitio, activo: true,
-      username: email.split('@')[0],
-    }, { onConflict: 'id' });
-    if (profErr) console.warn('Profile upsert warning:', profErr.message);
-
-    await sb.from('user_presence').upsert({ id: userId, online: false, updated_at: new Date().toISOString() });
 
     STATE.users.push({ id: userId, nombre, email, rol, sitio, activo: true, ultimo_acceso: null });
     setMsg('✅ Usuario <b>' + nombre + '</b> creado correctamente.', 'c-ok');
