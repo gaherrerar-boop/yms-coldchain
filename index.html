@@ -3662,7 +3662,7 @@ body[data-winui="true"] #y-taskbar{display:flex;}
                 <div class="fg"><label>Anon Key</label><input type="password" id="sb-key-input" placeholder="eyJ..."></div>
               </div>
               <div class="fr">
-                <div class="fg"><label>Service Role Key <span style="color:var(--c-warn);font-size:10px;">(necesario para crear usuarios desde la app)</span></label><input type="password" id="sb-service-key-input" placeholder="eyJ... → Supabase: Project Settings → API → service_role secret"></div>
+                <div class="fg" style="font-size:11px;color:var(--tx-muted);">🔒 La creación de usuarios se realiza de forma segura vía Edge Function — no se requiere Service Key en el cliente.</div>
               </div>
               <div style="display:flex;gap:8px;margin-top:8px;">
                 <button class="btn btn-ok" onclick="saveSupabaseConfig()">GUARDAR Y RECONECTAR</button>
@@ -11260,11 +11260,10 @@ function canActInWorkflow(tipo, paso) {
 function saveSupabaseConfig() {
   const url = (document.getElementById('sb-url-input')?.value||'').trim();
   const key = (document.getElementById('sb-key-input')?.value||'').trim();
-  const svc = (document.getElementById('sb-service-key-input')?.value||'').trim();
   if (!url||!key) { notify('Ingrese URL y Anon Key','error'); return; }
   localStorage.setItem('sb_url', url);
   localStorage.setItem('sb_key', key);
-  if (svc) localStorage.setItem('sb_service_key', svc);
+  localStorage.removeItem('sb_service_key'); // purga de seguridad: eliminar copias antiguas
   notify('Configuración guardada. Recargando...','ok');
   setTimeout(()=>location.reload(), 1200);
 }
@@ -11290,10 +11289,9 @@ function copySqlSchema() {
 function renderConfigSistema() {
   const urlEl = document.getElementById('sb-url-input');
   const keyEl = document.getElementById('sb-key-input');
-  const svcEl = document.getElementById('sb-service-key-input');
   if(urlEl) urlEl.value = SUPABASE_URL.includes('TU_PROYECTO') ? '' : SUPABASE_URL;
   if(keyEl) keyEl.value = SUPABASE_ANON_KEY.includes('TU_ANON_KEY') ? '' : SUPABASE_ANON_KEY;
-  if(svcEl) { const sv = localStorage.getItem('sb_service_key')||''; svcEl.value = sv; }
+  localStorage.removeItem('sb_service_key'); // purga de seguridad: eliminar copias antiguas
   const el = document.getElementById('sb-status');
   if(el) el.innerHTML = _sbConfigured ? '<span class="c-ok">● Supabase configurado</span>' : '<span class="c-warn">⚠ Modo demo — Supabase no configurado</span>';
 }
