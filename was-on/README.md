@@ -7,17 +7,17 @@ Clon exacto de la aplicación publicada en
 
 | Archivo | Origen | Estado |
 |---|---|---|
-| `slotting.html` | `/slotting` (485 KB) | Idéntico al original |
-| `was-on.html` | `/was-on.html?v=chatgpt-auth` | Idéntico al original |
-| `local-api.js` | `/local-api.js` | Idéntico al original |
-| `favicon.svg` | `/favicon.svg` | Idéntico al original |
-| `index.html` | `/` | Reescrito como HTML estático |
+| `public/slotting.html` | `/slotting` (485 KB) | Idéntico al original |
+| `public/was-on.html` | `/was-on.html?v=chatgpt-auth` | Idéntico al original |
+| `public/local-api.js` | `/local-api.js` | Idéntico al original |
+| `public/favicon.svg` | `/favicon.svg` | Idéntico al original |
+| `public/index.html` | `/` | Reescrito como HTML estático |
 
-`slotting.html` y `was-on.html` conservan el código original byte a byte; lo
+`public/slotting.html` y `public/was-on.html` conservan el código original byte a byte; lo
 único removido es el script de challenge que Cloudflare inyecta en el borde
 (`__CF$cv$params`), que no forma parte de la aplicación.
 
-`index.html` es la única pieza reescrita. La página raíz original la renderiza
+`public/index.html` es la única pieza reescrita. La página raíz original la renderiza
 el runtime React/RSC de ChatGPT Sites, cuyos bundles (`/assets/framework-*.js`,
 `/assets/index-*.js`) son plataforma de OpenAI y no funcionan fuera de ese
 hosting. Su salida es un contenedor con un `<iframe>`, que aquí se reproduce en
@@ -37,52 +37,109 @@ index.html          host, solo layout
 adicionales. Todo el estado vive en `localStorage` y se sincroniza contra la API
 de abajo.
 
-## Requisito: servir desde la raíz del dominio
 
-Las rutas internas son absolutas (`/was-on.html`, `/slotting.html`,
-`/local-api.js`, `/api/...`). Servir este directorio en un subdirectorio rompe
-la navegación. Para una prueba local:
+## Backend
 
-```bash
-cd was-on && python3 -m http.server 8080
+ChatGPT Sites proveía la autenticación y la persistencia. Ese código es del lado
+del servidor y no era accesible, así que aquí está reimplementado como funciones
+de Netlify sobre Supabase, respetando el contrato que la aplicación ya esperaba:
+`public/slotting.html` y `public/was-on.html` no necesitaron ni un cambio.
+
+```
+netlify/functions/
+  auth-login.mjs   POST   /api/auth/login
+  auth-me.mjs      GET    /api/auth/me
+  signout.mjs      GET    /signout-with-chatgpt
+  state.mjs        GET    /api/state          PUT /api/state
+  users.mjs        GET    /api/users          POST   /api/users
+                   PATCH  /api/users/:id      DELETE /api/users/:id
+  _lib/            db.mjs · session.mjs · password.mjs · http.mjs
 ```
 
-La UI cargará, pero se quedará en el login: falta el backend.
+Sin dependencias de npm: `fetch` contra PostgREST y `node:crypto` para hash y
+firma.
 
-## Backend requerido
-
-ChatGPT Sites proveía la persistencia y la autenticación. Ese código es del lado
-del servidor y no es accesible desde fuera, así que **no está en este clon**.
-Este es el contrato que la aplicación espera, derivado de sus llamadas:
-
-### Autenticación (cookie de sesión, `credentials: include`)
+### Contrato
 
 | Método | Ruta | Cuerpo | Respuesta |
 |---|---|---|---|
-| `POST` | `/api/auth/login` | `{username, password}` | Cookie de sesión |
+| `POST` | `/api/auth/login` | `{username, password}` | `{user}` + cookie |
 | `GET` | `/api/auth/me` | — | `{user:{id, username, role}}`, `401` sin sesión |
-
-`role` es `admin` (edita y graba) o cualquier otro valor (solo lectura).
-El botón de cerrar sesión apunta a `/signout-with-chatgpt?return_to=/`, ruta
-propia de Sites que hay que reemplazar.
-
-### Estado compartido del plano
-
-| Método | Ruta | Cuerpo | Respuesta |
-|---|---|---|---|
 | `GET` | `/api/state` | — | `{state, updatedAt, updatedBy}` |
-| `PUT` | `/api/state` | `{state}` | `{updatedAt, updatedBy}` |
-
-`state` es el documento JSON completo de la aplicación (cámaras, ubicaciones,
-configuración del motor de slotting). Un `401` en el `PUT` redirige al login.
-
-### Administración de usuarios (solo `admin`)
-
-| Método | Ruta | Cuerpo | Respuesta |
-|---|---|---|---|
+| `PUT` | `/api/state` | `{state}` | `{updatedAt, updatedBy}`, `403` si no es admin |
 | `GET` | `/api/users` | — | `{users:[{id, username, role}]}` |
 | `POST` | `/api/users` | `{username, password}` | Crea visualizador |
-| `PATCH` | `/api/users/:id` | `{username, password?}` | `{reauthenticate?}` |
+| `PATCH` | `/api/users/:id` | `{username, password?}` | `{reauthenticate}` |
 | `DELETE` | `/api/users/:id` | — | Elimina el usuario |
 
-Los errores se devuelven como `{error: "mensaje"}` y la UI muestra ese texto.
+Los errores viajan como `{error:"mensaje"}` y la interfaz muestra ese texto.
+
+### Sesión
+
+Cookie `was_on_session` firmada con HMAC-SHA256: lleva el id del usuario y la
+fecha de emisión, así que no hace falta tabla de sesiones. Es `HttpOnly`,
+`Secure` y `SameSite=Lax`, y dura 12 horas.
+
+Cambiar una contraseña actualiza `password_changed_at`, y todo token emitido
+antes de esa marca deja de valer. Por eso `iat` se guarda en milisegundos: con
+precisión de segundos, cambiar la contraseña dentro del mismo segundo en que se
+emitió el token dejaba viva la sesión anterior.
+
+Las contraseñas se guardan con scrypt (`N=16384, r=8, p=1`) y salt por usuario.
+
+### Roles
+
+`admin` edita y graba el plano; `viewer` solo consulta. La interfaz ya oculta los
+controles de edición a los visualizadores, y el servidor lo vuelve a exigir:
+`PUT /api/state` y todo `/api/users` responden `403` a un visualizador.
+
+No se puede eliminar a un administrador ni al usuario con el que se está dentro,
+para no dejar el plano sin nadie que pueda editarlo.
+
+## Puesta en marcha
+
+### 1. Base de datos
+
+Aplicar `supabase/migrations/0001_was_on_backend.sql`. Crea `was_on_users` y
+`was_on_state` con RLS activo y sin políticas: solo la clave secreta —es decir,
+solo estas funciones— llega a los datos. Ningún cliente con clave publishable
+puede leer hashes ni el plano.
+
+### 2. Variables de entorno
+
+En Netlify, *Site settings → Environment variables* (ver `.env.example`):
+
+| Variable | Para qué |
+|---|---|
+| `SUPABASE_URL` | URL del proyecto |
+| `SUPABASE_SECRET_KEY` | Clave secreta; solo la usa el servidor |
+| `SESSION_SECRET` | Firma de la cookie, mínimo 32 caracteres |
+| `WAS_ON_ADMIN_USERNAME` | Administrador inicial (por defecto `ON`) |
+| `WAS_ON_ADMIN_PASSWORD` | Su contraseña inicial |
+
+`SESSION_SECRET` se genera con `openssl rand -base64 48`. Cambiarlo cierra todas
+las sesiones abiertas.
+
+El administrador inicial solo funciona mientras la tabla de usuarios esté vacía:
+con el primer inicio de sesión queda creado en la base y esas dos variables dejan
+de tener efecto. Desde ahí, los usuarios se administran desde la propia interfaz.
+
+### 3. Despliegue
+
+Sitio propio de Netlify con **Base directory = `was-on`**. No sirve desplegarlo
+junto al YMS: la aplicación usa rutas absolutas (`/was-on.html`, `/slotting.html`,
+`/api/...`) y necesita la raíz del dominio, y el `netlify.toml` del YMS manda
+todo `/*` a su propio `index.html`.
+
+`netlify.toml` ya deja `publish = "public"` y las funciones en
+`netlify/functions`.
+
+### Desarrollo local
+
+```bash
+cd was-on
+npm install -g netlify-cli   # si no está
+netlify dev
+```
+
+`netlify dev` toma las variables de `.env` y enruta `/api/*` a las funciones.

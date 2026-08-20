@@ -1,0 +1,23 @@
+# Sitio WAS ON Slotting. Se despliega como sitio propio de Netlify con
+# "Base directory" = was-on, no junto al YMS: la aplicacion usa rutas
+# absolutas y necesita la raiz del dominio.
+
+[build]
+  publish = "public"
+  command = "echo 'sitio estatico: sin build'"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Sin redirect comodin a index.html: las rutas /api las resuelven las
+# funciones y el resto debe devolver 404 real.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # La aplicacion se monta en iframes de su mismo origen.
+    Content-Security-Policy = "frame-ancestors 'self'"

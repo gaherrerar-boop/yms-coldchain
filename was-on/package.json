@@ -1,0 +1,14 @@
+{
+  "name": "was-on-slotting",
+  "version": "1.0.0",
+  "description": "WAS ON Slotting: gestión de ubicaciones y motor de slotting",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev",
+    "check": "node --check netlify/functions/state.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
