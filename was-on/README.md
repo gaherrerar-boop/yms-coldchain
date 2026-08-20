@@ -100,10 +100,19 @@ para no dejar el plano sin nadie que pueda editarlo.
 
 ### 1. Base de datos
 
-Aplicar `supabase/migrations/0001_was_on_backend.sql`. Crea `was_on_users` y
-`was_on_state` con RLS activo y sin políticas: solo la clave secreta —es decir,
-solo estas funciones— llega a los datos. Ningún cliente con clave publishable
-puede leer hashes ni el plano.
+Ya está aplicada en un proyecto Supabase propio de WAS ON, separado del YMS:
+
+| | |
+|---|---|
+| Proyecto | `WAS ON Slotting` |
+| Referencia | `fzohppdhwfemrnikaojy` |
+| URL | `https://fzohppdhwfemrnikaojy.supabase.co` |
+| Región | `sa-east-1` |
+
+La migración es `supabase/migrations/0001_was_on_backend.sql`. Crea
+`was_on_users` y `was_on_state` con RLS activo y sin políticas: solo la clave
+secreta —es decir, solo estas funciones— llega a los datos. Ningún cliente con
+clave publishable puede leer hashes ni el plano.
 
 ### 2. Variables de entorno
 
