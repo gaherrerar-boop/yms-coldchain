@@ -317,7 +317,7 @@ footer .m{font-size:.72rem}
 <div class="wrap">
 
 <div class="dochead">
-  <!--__LOGO__-->
+  <div class="logoslot">Espacio reservado<br>logo Operaciones Nacionales</div>
   <div class="docmeta">Operaciones Nacionales · Red de Frío<br><span>Modelo de saturación · v3.0</span></div>
 </div>
 
@@ -440,14 +440,12 @@ footer .m{font-size:.72rem}
   </div>
   <div class="card">
     <h3>Antofagasta abastece a Arica, Iquique y Calama</h3>
-    <div class="eq">
-<b>D<sup>ef</sup><sub>i</sub> = D<sub>i</sub> + Σ<sub>j ∈ abastecidas(i)</sub> θ · D<sub>j</sub></b>
+    <div class="eq"><b>D<sup>ef</sup><sub>i</sub> = D<sub>i</sub> + Σ<sub>j ∈ abastecidas(i)</sub> θ · D<sub>j</sub></b>
 
 <span class="cmt">θ = fracción del volumen de la abastecida que pasa por el hub (parámetro, 1,00)</span>
 
 Antofagasta:  D<sup>ef</sup> = 2.888.208 + 557.203 + 951.578 + 612.155 = <b>5.009.144 kg/mes</b>
-              factor sobre su demanda propia: <b>×1,73</b>
-    </div>
+              factor sobre su demanda propia: <b>×1,73</b></div>
     <p class="prosa lt" style="font-size:.93rem">Las sucursales abastecidas <b>conservan su propio volumen</b> en su propio cálculo. No es doble contabilidad: el kilo pasa por la cámara del hub y además se guarda en la cámara del destino. Son dos ocupaciones físicas distintas, en dos momentos distintos.</p>
     <p class="nota" style="margin-top:14px">El efecto es material: sin considerar el abastecimiento, Antofagasta aparecía con ρ* = 0,94 y holgura. Con el volumen que despacha al resto del norte, su ρ* es <b>1,63</b> y su cámara crítica cambia de congelado a refrigerado.</p>
   </div>
@@ -463,8 +461,7 @@ Antofagasta:  D<sup>ef</sup> = 2.888.208 + 557.203 + 951.578 + 612.155 = <b>5.00
   <div class="card">
     <h3>El proxy evidente está sesgado</h3>
     <p class="prosa lt" style="margin-top:10px;font-size:.93rem">Es tentador estimar φ como la fracción de capacidad congelada, <span class="m">K<sub>C</sub>/K = 0,2756</span>. Está mal: el espacio que ocupa un régimen es su volumen <b>multiplicado por los días que se guarda</b>. Si la red se dimensionó para la política, entonces</p>
-    <div class="eq">
-K<sub>C</sub> / K<sub>R</sub>  =  (φ · DOH<sub>C</sub>) / ((1 − φ) · DOH<sub>R</sub>)
+    <div class="eq">K<sub>C</sub> / K<sub>R</sub>  =  (φ · DOH<sub>C</sub>) / ((1 − φ) · DOH<sub>R</sub>)
 
 <span class="cmt">y despejando φ:</span>
 
@@ -473,8 +470,7 @@ K<sub>C</sub> / K<sub>R</sub>  =  (φ · DOH<sub>C</sub>) / ((1 − φ) · DOH<s
 <span class="cmt">con los DOH ponderados por demanda propia de la red:</span>
 K<sub>R</sub>/K<sub>C</sub> = 2,6286     DOH<sub>C</sub> = 3,6977     DOH<sub>R</sub> = 2,2876
 
-φ = [ 1 + 2,6286 × 1,6165 ]<sup>−1</sup> = <b>0,190513</b>
-    </div>
+φ = [ 1 + 2,6286 × 1,6165 ]<sup>−1</sup> = <b>0,190513</b></div>
     <p class="prosa lt" style="font-size:.93rem">El proxy de capacidad sobreestima el congelado en <b>1,4465×</b>, que es exactamente el cociente <span class="m">DOH<sub>C</sub>/DOH<sub>R</sub></span>. Con φ = 0,2756 las 20 sucursales aparecerían con déficit de congelado: un artefacto del proxy, no un hallazgo.</p>
     <p class="nota" style="margin-top:14px">La ponderación usa la demanda <b>propia</b>, no la efectiva: el mix es una propiedad del producto que se vende, y el volumen que cruza un hub no debe contarse dos veces al estimarlo.</p>
   </div>
@@ -521,20 +517,16 @@ K<sub>R</sub>/K<sub>C</sub> = 2,6286     DOH<sub>C</sub> = 3,6977     DOH<sub>R<
     <div class="paso"><div class="n">6</div><div>
       <h3>Saturación por cámara</h3>
       <p>Dos rutas de cálculo que dan el mismo racional exacto: posiciones sobre posiciones, o días sobre días. Que coincidan es la verificación V1.</p>
-      <div class="eq blanco">
-<b>ρ<sub>C</sub> = n<sub>C</sub> / P<sub>C</sub> = DOH<sub>C</sub> / DOH<sup>fís</sup><sub>C</sub></b>        <b>ρ<sub>R</sub> = n<sub>R</sub> / P<sub>R</sub> = DOH<sub>R</sub> / DOH<sup>fís</sup><sub>R</sub></b>
-      </div>
+      <div class="eq blanco"><b>ρ<sub>C</sub> = n<sub>C</sub> / P<sub>C</sub> = DOH<sub>C</sub> / DOH<sup>fís</sup><sub>C</sub></b>        <b>ρ<sub>R</sub> = n<sub>R</sub> / P<sub>R</sub> = DOH<sub>R</sub> / DOH<sup>fís</sup><sub>R</sub></b></div>
       <span class="unidad">adimensional</span>
     </div></div>
     <div class="paso"><div class="n">7</div><div>
       <h3>Saturación estructural</h3>
       <p>Las cámaras son fijas: la sucursal está tan saturada como su cámara más apretada. El máximo, no la media. En paralelo se calcula la ocupación de la superficie total, que es lo que abre o cierra la etapa 2.</p>
-      <div class="eq blanco">
-<b>ρ* = máx( ρ<sub>C</sub> , ρ<sub>R</sub> )</b>        ρ<sub>flex</sub> = n / P<sub>tot</sub>
+      <div class="eq blanco"><b>ρ* = máx( ρ<sub>C</sub> , ρ<sub>R</sub> )</b>        ρ<sub>flex</sub> = n / P<sub>tot</sub>
 
 <span class="cmt">Desigualdad del mediante, verificación V5:</span>
-mín(ρ<sub>C</sub>, ρ<sub>R</sub>)  ≤  ρ<sub>flex</sub>  ≤  máx(ρ<sub>C</sub>, ρ<sub>R</sub>) = ρ*
-      </div>
+mín(ρ<sub>C</sub>, ρ<sub>R</sub>)  ≤  ρ<sub>flex</sub>  ≤  máx(ρ<sub>C</sub>, ρ<sub>R</sub>) = ρ*</div>
       <span class="unidad">adimensional</span>
     </div></div>
   </div>
@@ -551,60 +543,50 @@ mín(ρ<sub>C</sub>, ρ<sub>R</sub>)  ≤  ρ<sub>flex</sub>  ≤  máx(ρ<sub>C
     <div class="paso"><div class="n">8</div><div>
       <h3>Superficie ocupada y superficie libre</h3>
       <p>Las posiciones requeridas se traducen a m² a la densidad instalada de la propia sucursal. Lo que queda es la superficie de operación.</p>
-      <div class="eq blanco">
-δ = P / A        A<sub>uso</sub> = n / δ = n · A / P        A<sub>libre</sub> = A − A<sub>uso</sub>
+      <div class="eq blanco">δ = P / A        A<sub>uso</sub> = n / δ = n · A / P        A<sub>libre</sub> = A − A<sub>uso</sub>
 
 <span class="cmt">Identidad de acoplamiento (verificación V3) — el único canal por el que
 la política alcanza a la etapa operacional:</span>
-<b>A<sub>libre</sub> = A · ( 1 − ρ<sub>flex</sub> )</b>
-      </div>
+<b>A<sub>libre</sub> = A · ( 1 − ρ<sub>flex</sub> )</b></div>
       <span class="unidad">m²</span>
     </div></div>
     <div class="paso"><div class="n">9</div><div>
       <h3>Superficie que exige la operación</h3>
       <p>El reparto de turnos entra aquí y solo aquí, porque lo que importa es la <b>concurrencia</b>: cuánta gente está dentro de la cámara al mismo tiempo. Manda el turno más cargado.</p>
-      <div class="eq blanco">
-N<sub>peak</sub> = N · máx<sub>t</sub>(σ<sub>t</sub>) = N · 0,40   <span class="cmt">turno tarde o noche</span>
-<b>A<sub>operación</sub> = N<sub>peak</sub> · a₀</b>                   <span class="cmt">a₀ = 36 m² por persona</span>
-      </div>
+      <div class="eq blanco">N<sub>peak</sub> = N · máx<sub>t</sub>(σ<sub>t</sub>) = N · 0,40   <span class="cmt">turno tarde o noche</span>
+<b>A<sub>operación</sub> = N<sub>peak</sub> · a₀</b>                   <span class="cmt">a₀ = 36 m² por persona</span></div>
       <span class="unidad">m²</span>
     </div></div>
     <div class="paso"><div class="n">10</div><div>
       <h3>La compuerta</h3>
       <p>Si no queda superficie libre, la etapa 2 no se calcula: no existe el objeto sobre el cual preguntar. No se sustituye por cero ni por infinito — queda sin definir, y así se reporta.</p>
-      <div class="eq blanco">
-<b>ρ<sub>op</sub> = A<sub>operación</sub> / A<sub>libre</sub></b>   <span class="cmt">definido si y solo si A<sub>libre</sub> &gt; 0</span>
+      <div class="eq blanco"><b>ρ<sub>op</sub> = A<sub>operación</sub> / A<sub>libre</sub></b>   <span class="cmt">definido si y solo si A<sub>libre</sub> &gt; 0</span>
 
 <span class="cmt">Forma equivalente, que muestra cómo la política empuja la operación:</span>
-ρ<sub>op</sub> = ( N · σ<sub>peak</sub> · a₀ )  /  ( A · (1 − ρ<sub>flex</sub>) )
-      </div>
+ρ<sub>op</sub> = ( N · σ<sub>peak</sub> · a₀ )  /  ( A · (1 − ρ<sub>flex</sub>) )</div>
       <span class="unidad">adimensional</span>
     </div></div>
     <div class="paso"><div class="n">11</div><div>
       <h3>Sensibilidad a la política</h3>
       <p>A medida que ρ<sub>flex</sub> se acerca a 1, la superficie libre tiende a cero y ρ<sub>op</sub> crece sin cota. La derivada es exacta y de forma cerrada.</p>
-      <div class="eq blanco">
-∂ρ<sub>op</sub>/∂DOH<sub>C</sub>  =  ρ<sub>op</sub> · ( ∂ρ<sub>flex</sub>/∂DOH<sub>C</sub> ) / ( 1 − ρ<sub>flex</sub> )
+      <div class="eq blanco">∂ρ<sub>op</sub>/∂DOH<sub>C</sub>  =  ρ<sub>op</sub> · ( ∂ρ<sub>flex</sub>/∂DOH<sub>C</sub> ) / ( 1 − ρ<sub>flex</sub> )
 
 <span class="cmt">Política que satura la operación, despejada:</span>
 ρ<sub>op</sub> = 1  ⟺  ρ<sub>flex</sub> = 1 − A<sub>operación</sub>/A
-<b>DOH<sub>pol</sub>* = DOH<sup>fís</sup> · ( 1 − A<sub>operación</sub>/A )</b>
-      </div>
+<b>DOH<sub>pol</sub>* = DOH<sup>fís</sup> · ( 1 − A<sub>operación</sub>/A )</b></div>
       <span class="unidad">personas · días</span>
     </div></div>
     <div class="paso"><div class="n">12</div><div>
       <h3>Diagnóstico</h3>
       <p>Tres estados mutuamente excluyentes y exhaustivos. Nunca se combinan en un mismo número.</p>
-      <div class="eq blanco">
-<span class="cmt">Dos veredictos independientes, uno por etapa:</span>
+      <div class="eq blanco"><span class="cmt">Dos veredictos independientes, uno por etapa:</span>
 S<sub>1</sub> = [ ρ* &gt; 1 ]                      S<sub>2</sub> = [ ρ<sub>op</sub> &gt; 1 ]   <span class="cmt">indefinido si A<sub>libre</sub> ≤ 0</span>
 
 <span class="cmt">La etiqueta es funcion exacta del par (S<sub>1</sub>, S<sub>2</sub>):</span>
 (V, V)              →  <b>estructural y operacional</b>
 (V, F) o (V, n/d)   →  <b>saturación estructural</b>
 (F, V)              →  <b>saturación operacional</b>
-(F, F) o (F, n/d)   →  <b>sin saturación</b>
-      </div>
+(F, F) o (F, n/d)   →  <b>sin saturación</b></div>
     </div></div>
   </div>
   <p class="nota prosa" style="margin-top:18px">Caso borde que el álgebra expone: si <span class="m">N · σ<sub>peak</sub> · a₀ ≥ A</span>, entonces ni con inventario cero cabe la gente del turno peak, y ninguna política alcanza ρ<sub>op</sub> = 1. El modelo lo marca como <b>inalcanzable</b> en vez de entregar un DOH negativo.</p>
@@ -618,8 +600,7 @@ S<sub>1</sub> = [ ρ* &gt; 1 ]                      S<sub>2</sub> = [ ρ<sub>op<
     <p class="prosa">ρ es <b>lineal</b> en (DOH<sub>C</sub>, DOH<sub>R</sub>). Eso hace que la participación de cada régimen tenga forma cerrada y sume exactamente 100 %, sin residuo.</p>
   </div>
   <div class="card">
-    <div class="eq">
-<span class="cmt">La saturación, escrita como función explícita de la política:</span>
+    <div class="eq"><span class="cmt">La saturación, escrita como función explícita de la política:</span>
 
 <b>ρ<sub>flex</sub>(DOH<sub>C</sub>, DOH<sub>R</sub>)  =  [ φ·DOH<sub>C</sub> + (1−φ)·DOH<sub>R</sub> ] / DOH<sup>fís</sup></b>
 
@@ -627,8 +608,7 @@ S<sub>1</sub> = [ ρ* &gt; 1 ]                      S<sub>2</sub> = [ ρ<sub>op<
 ∂ρ/∂DOH<sub>C</sub> = φ / DOH<sup>fís</sup>              ∂ρ/∂DOH<sub>R</sub> = (1−φ) / DOH<sup>fís</sup>
 
 <span class="cmt">Elasticidades — la participación de cada régimen:</span>
-<b>E<sub>C</sub> = φ·DOH<sub>C</sub> / DOH<sub>pol</sub></b>        <b>E<sub>R</sub> = (1−φ)·DOH<sub>R</sub> / DOH<sub>pol</sub></b>        E<sub>C</sub> + E<sub>R</sub> = 1
-    </div>
+<b>E<sub>C</sub> = φ·DOH<sub>C</sub> / DOH<sub>pol</sub></b>        <b>E<sub>R</sub> = (1−φ)·DOH<sub>R</sub> / DOH<sub>pol</sub></b>        E<sub>C</sub> + E<sub>R</sub> = 1</div>
     <p class="prosa lt" style="font-size:.93rem">La elasticidad es exactamente la fracción del DOH ponderado que aporta cada régimen. Si <span class="m">E<sub>C</sub> = 0,28</span>, bajar la política de congelado un 10 % baja la saturación un 2,8 %. Se lee sin calcular nada más.</p>
     <p class="nota" style="margin-top:14px">Las <b>políticas de abastecimiento entregadas son las que miden la saturación</b>. Los controles de la sección 9 escalan la política solo para simular escenarios, y la página avisa cuando el resultado mostrado ya no corresponde a la política vigente.</p>
   </div>
@@ -651,8 +631,7 @@ S<sub>1</sub> = [ ρ* &gt; 1 ]                      S<sub>2</sub> = [ ρ<sub>op<
     <p class="prosa">La pregunta inversa: qué política hace que cada sucursal sature exactamente. Como ρ es lineal y estrictamente creciente en DOH, la solución es única y de forma cerrada.</p>
   </div>
   <div class="card">
-    <div class="eq">
-<span class="cmt">Escalar ambos DOH de la sucursal por un factor común κ:</span>
+    <div class="eq"><span class="cmt">Escalar ambos DOH de la sucursal por un factor común κ:</span>
 <b>κ* = 1 / ρ*</b>   <span class="cmt">κ* &gt; 1 admite subir la política · κ* &lt; 1 obliga a bajarla</span>
 
 <span class="cmt">DOH de quiebre por cámara — coincide con el DOH físico de esa cámara:</span>
@@ -660,8 +639,7 @@ S<sub>1</sub> = [ ρ* &gt; 1 ]                      S<sub>2</sub> = [ ρ<sub>op<
 ρ<sub>R</sub> = 1  ⟺  DOH<sub>R</sub>* = DOH<sup>fís</sup><sub>R</sub> = P<sub>R</sub> · γ / d<sub>R</sub>
 
 <span class="cmt">DOH ponderado que satura la etapa operacional:</span>
-DOH<sub>pol</sub>* = DOH<sup>fís</sup> · ( 1 − A<sub>operación</sub> / A )
-    </div>
+DOH<sub>pol</sub>* = DOH<sup>fís</sup> · ( 1 − A<sub>operación</sub> / A )</div>
   </div>
   <div class="tw" style="margin-top:16px"><table>
     <thead><tr>
@@ -884,9 +862,240 @@ DOH<sub>pol</sub>* = DOH<sup>fís</sup> · ( 1 − A<sub>operación</sub> / A )
 </div>
 
 <script type="module">
-/*__CORE__*/
+// Nucleo del modelo de saturacion — Operaciones Nacionales, red de frio.
+// Espejo exacto de analytics/saturacion/modelo_saturacion.py.
+// paridad_saturacion.mjs compara este archivo contra la salida de Python.
+//
+// El calculo es POR SUCURSAL. No se agregan magnitudes entre sucursales: solo
+// rho es comparable, porque cada una se mide contra su propia capacidad.
+//
+// Dos etapas que nunca se mezclan en un mismo numero:
+//   ETAPA 1  estructural   — el inventario de politica, ¿cabe en las camaras?
+//   ETAPA 2  operacional   — condicional: solo si quedan m2 libres, ¿alcanzan
+//                            esos m2 para que opere el turno mas cargado?
 
-const DATOS = /*__DATOS__*/;
+const RED_ABASTECIMIENTO = { 'Antofagasta': ['Arica', 'Iquique', 'Calama'] };
+
+const PARAMETROS_BASE = {
+  diasMes: 30.44,
+  kgPorPosicion: 459,
+  aprovechamiento: 1,
+  m2PorPersona: 36,
+  turnos: [
+    { nombre: 'mañana', sigma: 0.20 },
+    { nombre: 'tarde', sigma: 0.40 },
+    { nombre: 'noche', sigma: 0.40 }
+  ],
+  mixCongelado: null,   // null = deducir de los datos
+  factorDohC: 1,        // escalado de politica: SOLO simulacion
+  factorDohR: 1,
+  fraccionHub: 1        // porcion del volumen abastecido que pasa por el hub
+};
+
+function validarParametros(p) {
+  const suma = p.turnos.reduce((a, t) => a + t.sigma, 0);
+  if (Math.abs(suma - 1) > 1e-9) throw new Error(`los turnos deben sumar 1, suman ${suma}`);
+  if (p.turnos.some((t) => t.sigma < 0)) throw new Error('ningun turno puede ser negativo');
+  for (const k of ['diasMes', 'kgPorPosicion', 'm2PorPersona', 'factorDohC', 'factorDohR']) {
+    if (!(p[k] > 0)) throw new Error(`${k} debe ser positivo, es ${p[k]}`);
+  }
+  if (!(p.aprovechamiento > 0 && p.aprovechamiento <= 1)) {
+    throw new Error(`aprovechamiento debe estar en (0,1], es ${p.aprovechamiento}`);
+  }
+  if (p.mixCongelado !== null && !(p.mixCongelado > 0 && p.mixCongelado < 1)) {
+    throw new Error(`mixCongelado debe estar en (0,1), es ${p.mixCongelado}`);
+  }
+  if (!(p.fraccionHub >= 0 && p.fraccionHub <= 1)) {
+    throw new Error(`fraccionHub debe estar en [0,1], es ${p.fraccionHub}`);
+  }
+}
+
+const clave = (n) =>
+  String(n).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+function esEvaluable(s) {
+  return ['m2', 'posiciones', 'capCongKg', 'capRefrKg', 'capTotalKg',
+          'personas', 'demandaMes', 'dohCongelado', 'dohRefrigerado']
+    .every((k) => typeof s[k] === 'number' && s[k] > 0);
+}
+
+// El espacio que ocupa un regimen es su volumen por los dias que se guarda.
+// De  K_C/K_R = (phi·DOH_C)/((1-phi)·DOH_R)  se despeja phi. Se pondera con la
+// demanda PROPIA: el mix es del producto, no del flujo que cruza un hub.
+function deducirMix(sucursales) {
+  const v = sucursales.filter(esEvaluable);
+  const suma = (f) => v.reduce((a, s) => a + f(s), 0);
+  const kC = suma((s) => s.capCongKg);
+  const kR = suma((s) => s.capRefrKg);
+  const peso = suma((s) => s.demandaMes);
+  const dohC = suma((s) => s.dohCongelado * s.demandaMes) / peso;
+  const dohR = suma((s) => s.dohRefrigerado * s.demandaMes) / peso;
+  const phi = 1 / (1 + (kR / kC) * (dohC / dohR));
+  return {
+    phi,
+    shareCapacidadCongelado: kC / (kC + kR),
+    dohCPonderado: dohC,
+    dohRPonderado: dohR,
+    sesgoProxyCapacidad: (kC / (kC + kR)) / phi
+  };
+}
+
+function evaluarSucursal(s, par, phi, indice) {
+  if (!esEvaluable(s)) return { sucursal: s.nombre, evaluable: false };
+
+  const a0 = par.m2PorPersona, gamma = par.kgPorPosicion, u = par.aprovechamiento;
+  const dohC = s.dohCongelado * par.factorDohC;
+  const dohR = s.dohRefrigerado * par.factorDohR;
+  const sigmaPeak = Math.max(...par.turnos.map((t) => t.sigma));
+  const turnoPeak = par.turnos.reduce((a, b) => (b.sigma > a.sigma ? b : a)).nombre;
+
+  // (0) Red de abastecimiento: el flujo incluye lo que se despacha a terceros.
+  const abastece = RED_ABASTECIMIENTO[s.nombre] || [];
+  let aporte = 0;
+  for (const n of abastece) {
+    const otra = indice[clave(n)];
+    if (otra && otra.demandaMes) aporte += par.fraccionHub * otra.demandaMes;
+  }
+  const dEf = s.demandaMes + aporte;
+
+  // ============== ETAPA 1 — SATURACION ESTRUCTURAL ==============
+
+  const d = dEf / par.diasMes;                       // (1) flujo diario
+  const dC = phi * d, dR = (1 - phi) * d;
+  const dohPol = phi * dohC + (1 - phi) * dohR;      // (2) politica ponderada
+
+  const beta = s.capCongKg / s.capTotalKg;           // (3) capacidad en posiciones
+  const posTot = s.posiciones * u;
+  const posC = posTot * beta, posR = posTot * (1 - beta);
+
+  const nC = dC * dohC / gamma;                      // (4) requerimiento
+  const nR = dR * dohR / gamma;
+  const nTot = nC + nR;
+
+  const dohFisC = posC * gamma / dC;                 // (5) DOH fisico
+  const dohFisR = posR * gamma / dR;
+  const dohFisTot = posTot * gamma / d;
+
+  const rhoC = nC / posC;                            // (6) saturacion estructural
+  const rhoR = nR / posR;
+  const rhoEstructural = Math.max(rhoC, rhoR);
+  const rhoFlex = nTot / posTot;
+
+  const eC = phi * dohC / dohPol;                    // (7) participacion politica
+  const eR = (1 - phi) * dohR / dohPol;
+
+  // ======= ETAPA 2 — SATURACION OPERACIONAL (condicional) =======
+
+  const densidad = s.posiciones / s.m2;              // (8) superficie
+  const m2Uso = nTot / densidad;
+  const m2Libre = s.m2 - m2Uso;                      // = A · (1 − rhoFlex)
+
+  const personasPeak = s.personas * sigmaPeak;       // (9) concurrencia del peak
+  const m2Operacion = personasPeak * a0;
+
+  const hayEspacioM2 = m2Libre > 0;                  // (10) compuerta
+  const rhoOperacional = hayEspacioM2 ? m2Operacion / m2Libre : null;
+  const personasQueCaben = hayEspacioM2 ? m2Libre / a0 : 0;
+
+  // (11) Diagnostico. Los dos veredictos son INDEPENDIENTES: fundirlos en una
+  //      sola etiqueta esconderia una camara desbordada detras de un diagnostico
+  //      operacional, o al reves.
+  const camaraCritica = rhoC >= rhoR ? 'congelado' : 'refrigerado';
+  const saturadoEstructural = rhoEstructural > 1;
+  const saturadoOperacional = hayEspacioM2 ? rhoOperacional > 1 : null;
+
+  let estado, detalleEstado;
+  if (saturadoEstructural && saturadoOperacional) {
+    estado = 'estructural y operacional';
+    detalleEstado = `la camara de ${camaraCritica} desborda y la operacion no cabe`;
+  } else if (saturadoEstructural) {
+    estado = 'saturacion estructural';
+    detalleEstado = hayEspacioM2
+      ? `la camara de ${camaraCritica} desborda`
+      : 'el inventario de politica no cabe en la superficie';
+  } else if (saturadoOperacional) {
+    estado = 'saturacion operacional';
+    detalleEstado = 'el inventario cabe, la operacion no';
+  } else {
+    estado = 'sin saturacion';
+    detalleEstado = hayEspacioM2
+      ? 'cabe el inventario y cabe la operacion'
+      : 'el inventario cabe justo, sin superficie libre';
+  }
+
+  // (12) Politicas de quiebre, en forma cerrada
+  const dohCQuiebreFlex = (dohFisTot - (1 - phi) * dohR) / phi;
+  const rhoFlexQuiebreOp = 1 - m2Operacion / s.m2;
+  const dohPolQuiebreOp = dohFisTot * rhoFlexQuiebreOp;
+
+  const turnos = par.turnos.map((t) => ({
+    turno: t.nombre,
+    sigma: t.sigma,
+    personas: s.personas * t.sigma,
+    m2Requeridos: s.personas * t.sigma * a0,
+    holguraM2: m2Libre - s.personas * t.sigma * a0,
+    esPeak: t.sigma === sigmaPeak
+  }));
+
+  return {
+    sucursal: s.nombre, evaluable: true, abastece,
+    demandaPropia: s.demandaMes, demandaAportada: aporte, demandaEfectiva: dEf,
+    factorHub: dEf / s.demandaMes,
+    demandaDiaKg: d, mixCongelado: phi,
+    dohPoliticaC: dohC, dohPoliticaR: dohR, dohPoliticaPonderado: dohPol,
+    dohFisicoC: dohFisC, dohFisicoR: dohFisR, dohFisicoTotal: dohFisTot,
+    posReqC: nC, posReqR: nR, posReqTotal: nTot,
+    posDispC: posC, posDispR: posR, posDispTotal: posTot,
+    rhoCongelado: rhoC, rhoRefrigerado: rhoR,
+    rhoEstructural, rhoFlex,
+    camaraCritica,
+    shareCongInstalado: beta, shareCongRequerido: nC / nTot,
+    desbalanceCamara: nC / nTot - beta,
+    elasticidadDohC: eC, elasticidadDohR: eR,
+    derivadaRhoDohC: phi / dohFisTot, derivadaRhoDohR: (1 - phi) / dohFisTot,
+    densidadPosM2: densidad,
+    m2Total: s.m2, m2Uso, m2Libre, m2Operacion,
+    personasTotal: s.personas, personasPeak, personasQueCaben,
+    turnoPeak, turnos,
+    hayEspacioM2, rhoOperacional, saturadoEstructural, saturadoOperacional,
+    estado, detalleEstado,
+    kappaEstructural: 1 / rhoEstructural,
+    dohCQuiebre: dohFisC, dohRQuiebre: dohFisR,
+    dohCQuiebreFlexible: dohCQuiebreFlex,
+    dohCQuiebreFlexibleFactible: dohCQuiebreFlex >= 0,
+    dohPolQuiebreOperacional: dohPolQuiebreOp,
+    operacionAlcanzable: rhoFlexQuiebreOp > 0
+  };
+}
+
+function evaluarRed(sucursales, parciales = {}) {
+  const par = { ...PARAMETROS_BASE, ...parciales };
+  validarParametros(par);
+  const indice = Object.fromEntries(sucursales.map((s) => [clave(s.nombre), s]));
+  const ded = deducirMix(sucursales);
+  const phi = par.mixCongelado === null ? ded.phi : par.mixCongelado;
+
+  const filas = sucursales.map((s) => evaluarSucursal(s, par, phi, indice));
+  const ev = filas.filter((r) => r.evaluable).sort((a, b) => b.rhoEstructural - a.rhoEstructural);
+
+  // Conteos de sucursales, nunca sumas de magnitudes: las sucursales no son
+  // comparables en kg, m2 ni posiciones.
+  return {
+    parametros: par, phi, deduccion: ded, resultados: ev,
+    noEvaluables: filas.filter((r) => !r.evaluable),
+    conteo: {
+      evaluadas: ev.length,
+      saturadasEstructural: ev.filter((r) => r.saturadoEstructural).length,
+      saturadasOperacional: ev.filter((r) => r.saturadoOperacional === true).length,
+      sinSaturacion: ev.filter((r) => r.estado === 'sin saturacion').length,
+      sinEtapa2: ev.filter((r) => !r.hayEspacioM2).length,
+      camaraCongelado: ev.filter((r) => r.camaraCritica === 'congelado').length,
+      camaraRefrigerado: ev.filter((r) => r.camaraCritica === 'refrigerado').length
+    }
+  };
+}
+
+const DATOS = [{"nombre":"Miraflores","m2":2693.0,"posiciones":1864.0,"capCongKg":226644.0,"capRefrKg":628767.0,"capTotalKg":855411.0,"personas":62.0,"demandaMes":4863144.0,"dohCongelado":3.0887475701994496,"dohRefrigerado":2.2980752712096217},{"nombre":"Antofagasta","m2":1108.0,"posiciones":708.0,"capCongKg":128000.0,"capRefrKg":197000.0,"capTotalKg":325000.0,"personas":32.0,"demandaMes":2888208.0,"dohCongelado":5.648945859330309,"dohRefrigerado":2.411822300969038},{"nombre":"Arica","m2":352.0,"posiciones":94.0,"capCongKg":12000.0,"capRefrKg":31000.0,"capTotalKg":43000.0,"personas":6.0,"demandaMes":557203.0,"dohCongelado":5.215003816896563,"dohRefrigerado":1.9497198317167044},{"nombre":"Calama","m2":287.0,"posiciones":59.0,"capCongKg":7009.0,"capRefrKg":19859.0,"capTotalKg":26869.0,"personas":7.0,"demandaMes":612155.0,"dohCongelado":5.5286329872129185,"dohRefrigerado":1.7403855339961425},{"nombre":"Chillán","m2":720.0,"posiciones":216.0,"capCongKg":21825.0,"capRefrKg":77462.0,"capTotalKg":99287.0,"personas":21.0,"demandaMes":2190528.0,"dohCongelado":3.41350443118266,"dohRefrigerado":2.116756294590039},{"nombre":"Concepción","m2":669.0,"posiciones":566.0,"capCongKg":70000.0,"capRefrKg":190000.0,"capTotalKg":260000.0,"personas":27.0,"demandaMes":2667973.0,"dohCongelado":3.0609520127996284,"dohRefrigerado":2.2057271907303564},{"nombre":"Copiapó","m2":1098.0,"posiciones":348.0,"capCongKg":71222.0,"capRefrKg":88562.0,"capTotalKg":159784.0,"personas":11.0,"demandaMes":811319.0,"dohCongelado":3.6881791390065857,"dohRefrigerado":2.4847820745443556},{"nombre":"Coquimbo","m2":1035.0,"posiciones":620.0,"capCongKg":68755.0,"capRefrKg":216013.0,"capTotalKg":284768.0,"personas":23.0,"demandaMes":1838374.0,"dohCongelado":3.326055931526626,"dohRefrigerado":2.3218605356117443},{"nombre":"Hijuelas","m2":584.0,"posiciones":203.0,"capCongKg":23000.0,"capRefrKg":70000.0,"capTotalKg":93000.0,"personas":17.0,"demandaMes":1415978.0,"dohCongelado":3.547149261838425,"dohRefrigerado":2.2911874132267256},{"nombre":"Huechuraba","m2":1057.0,"posiciones":562.0,"capCongKg":70200.0,"capRefrKg":187600.0,"capTotalKg":257800.0,"personas":50.0,"demandaMes":3622088.0,"dohCongelado":2.8019271943560904,"dohRefrigerado":2.289667540927903},{"nombre":"Iquique","m2":486.0,"posiciones":144.0,"capCongKg":20000.0,"capRefrKg":46000.0,"capTotalKg":66000.0,"personas":10.0,"demandaMes":951578.0,"dohCongelado":5.49130238281382,"dohRefrigerado":1.858162727849742},{"nombre":"Los Ángeles","m2":723.0,"posiciones":384.0,"capCongKg":26775.0,"capRefrKg":149668.0,"capTotalKg":176443.0,"personas":18.0,"demandaMes":1570386.0,"dohCongelado":3.5162250412173615,"dohRefrigerado":2.276467749892043},{"nombre":"Osorno","m2":427.0,"posiciones":190.0,"capCongKg":10000.0,"capRefrKg":77000.0,"capTotalKg":87000.0,"personas":14.0,"demandaMes":1026269.0,"dohCongelado":3.455553373991302,"dohRefrigerado":2.3886425646603406},{"nombre":"Puerto Montt","m2":735.0,"posiciones":260.0,"capCongKg":37821.0,"capRefrKg":81470.0,"capTotalKg":119291.0,"personas":18.0,"demandaMes":1714082.0,"dohCongelado":3.5112581550748483,"dohRefrigerado":2.528931715102929},{"nombre":"Punta Arenas","m2":560.0,"posiciones":283.0,"capCongKg":70000.0,"capRefrKg":60000.0,"capTotalKg":130000.0,"personas":9.0,"demandaMes":626355.0,"dohCongelado":9.713041205946958,"dohRefrigerado":3.573662459268064},{"nombre":"Rancagua","m2":840.0,"posiciones":600.0,"capCongKg":75925.0,"capRefrKg":199655.0,"capTotalKg":275580.0,"personas":29.0,"demandaMes":2445343.0,"dohCongelado":3.113827772084543,"dohRefrigerado":2.326023657171945},{"nombre":"San Antonio","m2":550.0,"posiciones":174.0,"capCongKg":16000.0,"capRefrKg":63863.0,"capTotalKg":79863.0,"personas":14.0,"demandaMes":881050.0,"dohCongelado":3.469757558734177,"dohRefrigerado":2.5130685963592434},{"nombre":"Temuco","m2":656.0,"posiciones":422.0,"capCongKg":51367.0,"capRefrKg":142286.0,"capTotalKg":193653.0,"personas":28.0,"demandaMes":2755707.0,"dohCongelado":3.762267375535856,"dohRefrigerado":2.2093822868519357},{"nombre":"Valdivia","m2":336.0,"posiciones":196.0,"capCongKg":5000.0,"capRefrKg":85000.0,"capTotalKg":90000.0,"personas":9.0,"demandaMes":816946.0,"dohCongelado":3.635103921319831,"dohRefrigerado":1.8289386991035026},{"nombre":"Viña del Mar","m2":680.0,"posiciones":547.0,"capCongKg":56000.0,"capRefrKg":195000.0,"capTotalKg":251000.0,"personas":26.0,"demandaMes":2070303.0,"dohCongelado":3.074174382075525,"dohRefrigerado":2.225285087030298},{"nombre":"San Bernardo","m2":3252.0,"posiciones":2860.0,"capCongKg":null,"capRefrKg":null,"capTotalKg":null,"personas":34.0,"demandaMes":null,"dohCongelado":null,"dohRefrigerado":null}];
 
 const nf = (v, d = 2) => (v === null || v === undefined || !Number.isFinite(v)
   ? '—' : v.toLocaleString('es-CL', { minimumFractionDigits: d, maximumFractionDigits: d }));

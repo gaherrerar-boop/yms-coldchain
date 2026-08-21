@@ -29,3 +29,7 @@ yarn-error.log*
 # Misc
 .claude
 YMSGPT.zip
+
+# Python
+__pycache__/
+*.pyc
