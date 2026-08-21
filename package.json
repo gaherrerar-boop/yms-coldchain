@@ -9,8 +9,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "echo 'No linter configured'",
-    "test": "node analytics/saturacion/paridad.mjs",
-    "saturacion": "python3 analytics/saturacion/modelo.py"
+    "test": "node analytics/saturacion/paridad.mjs && node analytics/saturacion/paridad_estructural.mjs && python3 analytics/saturacion/verificar.py",
+    "saturacion": "python3 analytics/saturacion/modelo.py",
+    "estructural": "python3 analytics/saturacion/modelo_estructural.py && python3 analytics/saturacion/construir_pagina.py"
   },
   "dependencies": {
     "firebase": "^10.12.0"
