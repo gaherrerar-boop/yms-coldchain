@@ -1,0 +1,56 @@
+{
+  "_comentario": "Parametros del modelo de saturacion. Todo supuesto del modelo vive aqui, no en el codigo.",
+
+  "dias_mes": 30.44,
+
+  "mix_congelado": {
+    "modo": "deducido",
+    "_modos": "deducido | global | capacidad | custom",
+    "_nota": "'deducido' resuelve phi desde la capacidad instalada corrigiendo por DOH. 'capacidad' usa K_C/K_total directo y sobreestima el congelado: es el proxy incorrecto, se deja solo para comparar. Cualquier sucursal listada en 'custom' usa ese valor y tiene prioridad sobre el modo.",
+    "global": 0.20,
+    "custom": {}
+  },
+
+  "pallet": {
+    "kg_por_posicion_congelado": 459.0,
+    "kg_por_posicion_refrigerado": 459.0,
+    "factor_llenado": 1.0
+  },
+
+  "fraccion_en_sitio": {
+    "_nota": "Porcion del DOH de politica que fisicamente ocupa camara en la sucursal. Si el DOH incluye transito, bajar el valor del regimen que corresponda.",
+    "congelado": 1.0,
+    "refrigerado": 1.0
+  },
+
+  "ocupacion_maxima_util": 0.85,
+
+  "mano_obra": {
+    "horas_mes_por_persona": 180.0
+  },
+
+  "densificacion": {
+    "percentil_benchmark": 75
+  },
+
+  "composicion": {
+    "pesos": { "almacenamiento": 0.6, "mano_obra": 0.4 },
+    "orden_p": 4
+  },
+
+  "umbrales": [
+    { "hasta": 0.70, "clase": "holgada" },
+    { "hasta": 0.85, "clase": "normal" },
+    { "hasta": 0.95, "clase": "tensionada" },
+    { "hasta": 1.05, "clase": "critica" },
+    { "hasta": null, "clase": "desbordada" }
+  ],
+
+  "escenarios": {
+    "P0_politica": { "factor_estacional": 1.0,  "nivel_servicio": 0.50, "cv_inventario": 0.22 },
+    "P1_operativo": { "factor_estacional": 1.15, "nivel_servicio": 0.85, "cv_inventario": 0.22 },
+    "P2_peak":      { "factor_estacional": 1.30, "nivel_servicio": 0.95, "cv_inventario": 0.22 }
+  },
+
+  "escenario_base": "P1_operativo"
+}
