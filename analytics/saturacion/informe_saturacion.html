@@ -55,11 +55,15 @@ a{color:var(--naranja)}
   padding:26px 0 12px;border-bottom:1px solid var(--naranja);
 }
 .logoslot{
-  width:121px;height:34px;border:1px dashed var(--azul-25);border-radius:2px;
-  display:flex;align-items:center;justify-content:center;text-align:center;
-  font-size:.5rem;font-weight:600;letter-spacing:.06em;color:var(--azul-55);
-  text-transform:uppercase;line-height:1.25;padding:2px;flex:none;
+  min-width:150px;height:52px;border:1px dashed var(--azul-25);border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:3px;padding:4px 12px;flex:none;
 }
+.logoslot b{
+  font-size:.56rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--azul-75);line-height:1.1;
+}
+.logoslot span{font-size:.5rem;font-weight:300;color:var(--azul-55);line-height:1.1}
 .docmeta{font-size:.72rem;font-weight:600;text-align:right;letter-spacing:.02em}
 .docmeta span{display:block;font-weight:300;color:var(--azul-75)}
 
@@ -317,7 +321,7 @@ footer .m{font-size:.72rem}
 <div class="wrap">
 
 <div class="dochead">
-  <div class="logoslot">Espacio reservado<br>logo Operaciones Nacionales</div>
+  <div class="logoslot" title="Dejar el archivo del logo en analytics/saturacion/logo.png y ejecutar: npm run saturacion"><b>Logo Operaciones Nacionales</b><span>espacio reservado &middot; 52 px de alto</span></div>
   <div class="docmeta">Operaciones Nacionales · Red de Frío<br><span>Modelo de saturación · v3.0</span></div>
 </div>
 

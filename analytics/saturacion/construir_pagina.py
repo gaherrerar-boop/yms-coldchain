@@ -7,6 +7,7 @@ CORE>>>, que es el mismo archivo que ejecuta paridad_estructural.mjs. Asi lo
 que se publica es literalmente lo que se verifico, no una transcripcion.
 """
 
+import argparse
 import base64
 import json
 import re
@@ -23,22 +24,74 @@ def extraer_nucleo(ruta: Path) -> str:
     return m.group(1)
 
 
-def bloque_logo() -> str:
+MIME_LOGO = {
+    ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+    ".webp": "image/webp", ".svg": "image/svg+xml",
+}
+
+# Donde buscar el logo, en orden. La pagina es autocontenida, asi que el archivo
+# se inlinea como data URI; nunca se referencia por URL.
+DIRECTORIOS_LOGO = (
+    RAIZ,                       # analytics/saturacion/
+    RAIZ.parent,                # analytics/
+    RAIZ.parents[1],            # raiz del repositorio
+    RAIZ.parents[1] / "assets",
+    RAIZ.parents[1] / "src" / "assets",
+)
+
+
+def buscar_logo(explicito: Path | None) -> Path | None:
     """
-    Inlinea el logo del area como data URI si el archivo esta presente. La pagina
-    debe ser autocontenida, y el brandbook prohibe reproducciones no oficiales:
-    por eso el logo se toma del archivo entregado o no se dibuja.
+    Ubica el archivo del logo. Si se pasa una ruta explicita y no existe, se
+    detiene: es un error del operador, no algo que convenga resolver en silencio
+    cayendo al espacio reservado.
     """
-    for nombre in ("logo.png", "logo.jpg", "logo.jpeg", "logo.webp", "logo.svg"):
-        ruta = RAIZ / nombre
-        if not ruta.exists():
-            continue
-        mime = {"png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg",
-                "webp": "image/webp", "svg": "image/svg+xml"}[nombre.rsplit(".", 1)[1]]
-        b64 = base64.b64encode(ruta.read_bytes()).decode("ascii")
-        return (f'<img class="logo" src="data:{mime};base64,{b64}" '
-                f'alt="Operaciones Nacionales">')
-    return ('<div class="logoslot">Espacio reservado<br>logo Operaciones Nacionales</div>')
+    if explicito is not None:
+        if not explicito.exists():
+            raise SystemExit(f"no se encuentra el logo indicado: {explicito}")
+        if explicito.suffix.lower() not in MIME_LOGO:
+            raise SystemExit(f"formato de logo no soportado: {explicito.suffix} "
+                             f"(usar {', '.join(sorted(MIME_LOGO))})")
+        return explicito
+
+    for carpeta in DIRECTORIOS_LOGO:
+        for ext in MIME_LOGO:
+            for base in ("logo-operaciones-nacionales", "logo_operaciones_nacionales", "logo"):
+                ruta = carpeta / f"{base}{ext}"
+                if ruta.exists():
+                    return ruta
+    return None
+
+
+def bloque_logo(explicito: Path | None = None) -> str:
+    """
+    Inlinea el logo del area como data URI. El brandbook prohibe reproducciones
+    no oficiales, asi que el logo sale del archivo entregado o no se dibuja: en
+    su lugar queda el espacio reservado, con la medida correcta.
+    """
+    ruta = buscar_logo(explicito)
+    if ruta is None:
+        print("logo: no encontrado — se deja el espacio reservado. "
+              "Dejar 'logo.png' en analytics/saturacion/ y volver a construir, "
+              "o pasar --logo <ruta>.")
+        return ('<div class="logoslot" title="Dejar el archivo del logo en '
+                'analytics/saturacion/logo.png y ejecutar: npm run saturacion">'
+                '<b>Logo Operaciones Nacionales</b>'
+                '<span>espacio reservado &middot; 52 px de alto</span></div>')
+
+    datos = ruta.read_bytes()
+    if not datos:
+        raise SystemExit(f"el archivo de logo esta vacio: {ruta}")
+    # Un logo muy pesado infla la pagina sin necesidad; el limite de un Artifact
+    # es 16 MB y el data URI crece un tercio al codificar en base64.
+    if len(datos) > 4_000_000:
+        raise SystemExit(f"el logo pesa {len(datos)/1e6:.1f} MB; exportarlo mas liviano "
+                         f"(un PNG de ~200 px de alto basta)")
+
+    b64 = base64.b64encode(datos).decode("ascii")
+    print(f"logo: {ruta.name} ({len(datos)/1024:.0f} KB) inlineado como data URI")
+    return (f'<img class="logo" src="data:{MIME_LOGO[ruta.suffix.lower()]};base64,{b64}" '
+            f'alt="Operaciones Nacionales">')
 
 
 def recortar_formulas(html: str) -> str:
@@ -52,7 +105,7 @@ def recortar_formulas(html: str) -> str:
     return re.sub(r'<div class="(eq[^"]*)">(.*?)</div>', limpiar, html, flags=re.S)
 
 
-def main() -> None:
+def construir(logo: Path | None = None) -> None:
     plantilla = (RAIZ / "plantilla.html").read_text(encoding="utf-8")
     nucleo = extraer_nucleo(RAIZ / "saturacion.core.js")
     datos = json.loads((RAIZ / "salidas" / "entrada.json").read_text(encoding="utf-8"))
@@ -61,7 +114,7 @@ def main() -> None:
     if len(evaluables) != 20:
         raise SystemExit(f"se esperaban 20 sucursales evaluables, hay {len(evaluables)}")
 
-    salida = plantilla.replace("<!--__LOGO__-->", bloque_logo())
+    salida = plantilla.replace("<!--__LOGO__-->", bloque_logo(logo))
 
     for marca in ("/*__CORE__*/", "/*__DATOS__*/"):
         if marca not in plantilla:
@@ -79,6 +132,15 @@ def main() -> None:
     destino = RAIZ / "informe_saturacion.html"
     destino.write_text(salida, encoding="utf-8")
     print(f"pagina escrita: {destino}  ({len(salida.encode('utf-8')):,} bytes)")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Arma la pagina autocontenida")
+    ap.add_argument("--logo", type=Path, default=None,
+                    help="ruta del logo de Operaciones Nacionales (png, jpg, webp o svg). "
+                         "Si se omite, se busca 'logo.*' en la carpeta del modelo, en "
+                         "assets/ y en la raiz del repositorio.")
+    construir(ap.parse_args().logo)
 
 
 if __name__ == "__main__":
