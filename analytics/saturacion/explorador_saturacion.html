@@ -391,15 +391,28 @@
       }
     }
 
-    .logo-placeholder {
-      text-align: center;
-      padding: 20px;
-      background: var(--color-light);
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      color: #9ca3af;
+    /* Marca — el logo sale del archivo entregado o queda el espacio reservado.
+       Mismo mecanismo que informe_saturacion.html: se inlinea como data URI. */
+    .marca {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
     }
+    .logo { height: 52px; width: auto; flex: none; }
+    .logoslot {
+      min-width: 150px; height: 52px; flex: none;
+      border: 1px dashed var(--color-border); border-radius: 2px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 3px; padding: 4px 12px;
+    }
+    .logoslot b {
+      font-size: .56rem; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: #6b7280; line-height: 1.1;
+    }
+    .logoslot span { font-size: .5rem; font-weight: 300; color: #9ca3af; line-height: 1.1; }
 
     .close-detail {
       float: right;
@@ -417,9 +430,12 @@
 <body>
 
 <header>
-  <div class="container">
-    <h1>📊 Explorador de Saturación</h1>
-    <p>Guía completa del modelo matemático de saturación para la red de frío</p>
+  <div class="container marca">
+    <div>
+      <h1>Explorador de Saturación</h1>
+      <p>Guía completa del modelo matemático de saturación para la red de frío</p>
+    </div>
+    <!--__LOGO__-->
   </div>
 </header>
 
@@ -442,12 +458,6 @@
 
       <!-- PAGE: Inicio -->
       <div id="inicio" class="page active">
-        <div class="logo-placeholder" style="text-align: center; padding: 40px; background: white; border: 1px solid var(--color-border);">
-          <div style="font-size: 48px; margin-bottom: 20px;">🏛️</div>
-          <h3>Operaciones Nacionales</h3>
-          <p>Red de Frío - Modelo de Saturación</p>
-        </div>
-
         <h2>¿Qué es la saturación?</h2>
         <p>
           La saturación es una medida matemática que indica <strong>cuánto espacio disponible en las cámaras frías
@@ -963,7 +973,7 @@ Saturación_operacional = Espacio_requerido_gente / Espacio_libre
 
 <script>
 // Datos de ejemplo - se renderizarán con JavaScript
-const datos = /*__DATOS__*/[];
+const datos = /*__DATOS__*/;
 
 // Sucursales HUB (identificadas automáticamente por la red de abastecimiento)
 const hubSucursales = ['Antofagasta'];
@@ -990,7 +1000,9 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 // Inicializar ejemplos
 function initEjemplos() {
   const grid = document.getElementById('ejemplos-grid');
-  if (grid.innerHTML) return; // Ya se inicializó
+  // Se cuentan ELEMENTOS, no innerHTML: un contenedor vacio puede traer nodos de
+  // texto o comentarios, y entonces innerHTML es truthy y nada se llegaria a dibujar.
+  if (grid.childElementCount) return; // Ya se inicializó
 
   const ejemplos = [
     { nombre: 'Miraflores', tipo: 'Normal', razon: 'Sucursal grande, demanda alta' },
@@ -1062,7 +1074,7 @@ function cerrarEjemplo() {
 // Inicializar selector
 function initSelector() {
   const list = document.getElementById('sucursales-list');
-  if (list.innerHTML) return; // Ya se inicializó
+  if (list.childElementCount) return; // Ya se inicializó
 
   const evaluables = datos.filter(s => s.demandaMes);
   mostrarSucursales(evaluables);

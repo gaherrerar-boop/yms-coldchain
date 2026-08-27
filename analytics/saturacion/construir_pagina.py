@@ -11,6 +11,8 @@ import argparse
 import base64
 import json
 import re
+import subprocess
+import tempfile
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -129,20 +131,54 @@ def construir(logo: Path | None = None) -> None:
         if prohibido in salida:
             raise SystemExit(f"la pagina quedo con residuo: {prohibido}")
 
+    verificar_js(salida, "informe_saturacion.html")
+
     destino = RAIZ / "informe_saturacion.html"
     destino.write_text(salida, encoding="utf-8")
     print(f"pagina escrita: {destino}  ({len(salida.encode('utf-8')):,} bytes)")
+
+
+def verificar_js(html: str, nombre: str) -> None:
+    """
+    Parsea el JavaScript de la pagina con node --check. Sin esto, un marcador mal
+    sustituido deja la pagina muda: el navegador aborta el <script> entero y no
+    funciona ni la navegacion, sin mostrar nada al usuario.
+    """
+    guiones = re.findall(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)
+    if not guiones:
+        raise SystemExit(f"{nombre}: no se encontro ningun <script> que verificar")
+    with tempfile.NamedTemporaryFile("w", suffix=".mjs", encoding="utf-8", delete=False) as f:
+        f.write("\n;\n".join(guiones))
+        tmp = f.name
+    try:
+        r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
+    except FileNotFoundError:
+        print(f"{nombre}: node no disponible, se omite la verificacion de JS")
+        return
+    finally:
+        Path(tmp).unlink(missing_ok=True)
+    if r.returncode != 0:
+        raise SystemExit(f"{nombre}: el JavaScript no parsea\n{r.stderr.strip()}")
+    print(f"{nombre}: JavaScript verificado con node --check")
 
 
 def construir_explorador(logo: Path | None = None) -> None:
     plantilla = (RAIZ / "explorador_saturacion.html").read_text(encoding="utf-8")
     datos = json.loads((RAIZ / "salidas" / "entrada.json").read_text(encoding="utf-8"))
 
-    salida = plantilla.replace("/*__DATOS__*/", json.dumps(datos, ensure_ascii=False, separators=(",", ":")))
+    for marca in ("/*__DATOS__*/", "<!--__LOGO__-->"):
+        if marca not in plantilla:
+            raise SystemExit(f"falta el marcador {marca} en explorador_saturacion.html")
 
-    # La pagina debe quedar sin dependencias de red mas alla de Google Fonts.
-    if "/*__DATOS__*/" in salida:
-        raise SystemExit("la pagina quedo con residuo: /*__DATOS__*/")
+    salida = plantilla.replace("<!--__LOGO__-->", bloque_logo(logo))
+    salida = salida.replace(
+        "/*__DATOS__*/", json.dumps(datos, ensure_ascii=False, separators=(",", ":")))
+
+    for prohibido in ("__DATOS__", "__LOGO__"):
+        if prohibido in salida:
+            raise SystemExit(f"la pagina quedo con residuo: {prohibido}")
+
+    verificar_js(salida, "explorador_saturacion_compilado.html")
 
     destino = RAIZ / "explorador_saturacion_compilado.html"
     destino.write_text(salida, encoding="utf-8")
