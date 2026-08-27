@@ -80,6 +80,9 @@ class Parametros:
     factor_doh_c: Q = Q(1)              # escalado de politica, solo simulacion
     factor_doh_r: Q = Q(1)
     fraccion_hub: Q = Q(1)              # porcion del volumen abastecido que pasa por el hub
+    # Fórmula unificada: factor de empuje por sobrestocks
+    factor_empuje_alpha: Q = Q(0)       # fracción de sobrestocks que llega (0 a 1)
+    sobrestocks_ratio: Q = Q(0)         # ratio de sobrestocks en planta / demanda base
 
     def validar(self) -> None:
         s = sum(w for _, w in self.turnos)
@@ -102,6 +105,10 @@ class Parametros:
                 raise ValueError(f"{nombre} debe ser positivo, es {v}")
         if not (0 <= self.fraccion_hub <= 1):
             raise ValueError(f"fraccion_hub debe estar en [0,1], es {self.fraccion_hub}")
+        if not (0 <= self.factor_empuje_alpha <= 1):
+            raise ValueError(f"factor_empuje_alpha debe estar en [0,1], es {self.factor_empuje_alpha}")
+        if not (0 <= self.sobrestocks_ratio <= 1):
+            raise ValueError(f"sobrestocks_ratio debe estar en [0,1], es {self.sobrestocks_ratio}")
 
     @property
     def sigma_peak(self) -> Q:
@@ -286,10 +293,15 @@ def evaluar(s: Sucursal, par: Parametros, phi: Q, indice: dict[str, Sucursal]) -
     # (0) Red de abastecimiento: el flujo incluye lo que se despacha a terceros.
     d_ef, aporte = demanda_efectiva(s, indice, par)
 
+    # Factor de empuje (sobrestocks): amplía la demanda por kilos no demandados
+    # que llegan a la sucursal. Fórmula unificada: ρ = Demanda_eff * (1 + α*s) / Capacidad
+    factor_empuje = 1 + par.factor_empuje_alpha * par.sobrestocks_ratio
+    d_ef_ajustado = d_ef * factor_empuje
+
     # ================= ETAPA 1 — SATURACION ESTRUCTURAL =====================
 
     # (1) Flujo diario por regimen
-    d = d_ef / par.dias_mes
+    d = d_ef_ajustado / par.dias_mes
     d_c, d_r = phi * d, (1 - phi) * d
 
     # (2) Politica: DOH ponderado por el mix
@@ -391,6 +403,8 @@ def evaluar(s: Sucursal, par: Parametros, phi: Q, indice: dict[str, Sucursal]) -
         "demanda_propia": s.demanda_mes,
         "demanda_aportada": aporte,
         "demanda_efectiva": d_ef,
+        "demanda_efectiva_ajustada": d_ef_ajustado,
+        "factor_empuje": factor_empuje,
         "factor_hub": d_ef / s.demanda_mes,
         "demanda_dia_kg": d, "mix_congelado": phi,
         "doh_politica_c": doh_c, "doh_politica_r": doh_r,
