@@ -134,13 +134,30 @@ def construir(logo: Path | None = None) -> None:
     print(f"pagina escrita: {destino}  ({len(salida.encode('utf-8')):,} bytes)")
 
 
+def construir_explorador(logo: Path | None = None) -> None:
+    plantilla = (RAIZ / "explorador_saturacion.html").read_text(encoding="utf-8")
+    datos = json.loads((RAIZ / "salidas" / "entrada.json").read_text(encoding="utf-8"))
+
+    salida = plantilla.replace("/*__DATOS__*/", json.dumps(datos, ensure_ascii=False, separators=(",", ":")))
+
+    # La pagina debe quedar sin dependencias de red mas alla de Google Fonts.
+    if "/*__DATOS__*/" in salida:
+        raise SystemExit("la pagina quedo con residuo: /*__DATOS__*/")
+
+    destino = RAIZ / "explorador_saturacion_compilado.html"
+    destino.write_text(salida, encoding="utf-8")
+    print(f"explorador escrito: {destino}  ({len(salida.encode('utf-8')):,} bytes)")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Arma la pagina autocontenida")
     ap.add_argument("--logo", type=Path, default=None,
                     help="ruta del logo de Operaciones Nacionales (png, jpg, webp o svg). "
                          "Si se omite, se busca 'logo.*' en la carpeta del modelo, en "
                          "assets/ y en la raiz del repositorio.")
-    construir(ap.parse_args().logo)
+    args = ap.parse_args()
+    construir(args.logo)
+    construir_explorador(args.logo)
 
 
 if __name__ == "__main__":
