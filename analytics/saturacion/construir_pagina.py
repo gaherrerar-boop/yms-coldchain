@@ -162,27 +162,52 @@ def verificar_js(html: str, nombre: str) -> None:
     print(f"{nombre}: JavaScript verificado con node --check")
 
 
+# El renderizador de Artifacts envuelve el archivo en su propio <!doctype>/<head>/
+# <body>, asi que la plantilla del explorador es contenido de body. Para abrirla
+# como archivo suelto hay que envolverla; de ahi que se emitan dos salidas desde
+# una sola fuente, en vez de mantener dos plantillas casi identicas.
+ENVOLTORIO = """<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+{cuerpo}
+</body>
+</html>
+"""
+
+
 def construir_explorador(logo: Path | None = None) -> None:
     plantilla = (RAIZ / "explorador_saturacion.html").read_text(encoding="utf-8")
+    nucleo = extraer_nucleo(RAIZ / "saturacion.core.js")
     datos = json.loads((RAIZ / "salidas" / "entrada.json").read_text(encoding="utf-8"))
 
-    for marca in ("/*__DATOS__*/", "<!--__LOGO__-->"):
+    for marca in ("/*__CORE__*/", "/*__DATOS__*/", "<!--__LOGO__-->"):
         if marca not in plantilla:
             raise SystemExit(f"falta el marcador {marca} en explorador_saturacion.html")
 
-    salida = plantilla.replace("<!--__LOGO__-->", bloque_logo(logo))
-    salida = salida.replace(
+    cuerpo = plantilla.replace("<!--__LOGO__-->", bloque_logo(logo))
+    cuerpo = cuerpo.replace("/*__CORE__*/", nucleo).replace(
         "/*__DATOS__*/", json.dumps(datos, ensure_ascii=False, separators=(",", ":")))
 
-    for prohibido in ("__DATOS__", "__LOGO__"):
-        if prohibido in salida:
+    for prohibido in ("__CORE__", "__DATOS__", "__LOGO__", "export {"):
+        if prohibido in cuerpo:
             raise SystemExit(f"la pagina quedo con residuo: {prohibido}")
 
-    verificar_js(salida, "explorador_saturacion_compilado.html")
+    verificar_js(cuerpo, "explorador (nucleo + interfaz)")
 
+    # 1) Artifact: solo el cuerpo, sin envoltorio de documento.
+    art = RAIZ / "salidas" / "artifact_explorador.html"
+    art.write_text(cuerpo, encoding="utf-8")
+    print(f"artifact escrito:   {art}  ({len(cuerpo.encode('utf-8')):,} bytes)")
+
+    # 2) Archivo suelto: el mismo cuerpo dentro de un documento completo.
+    suelto = ENVOLTORIO.format(cuerpo=cuerpo)
     destino = RAIZ / "explorador_saturacion_compilado.html"
-    destino.write_text(salida, encoding="utf-8")
-    print(f"explorador escrito: {destino}  ({len(salida.encode('utf-8')):,} bytes)")
+    destino.write_text(suelto, encoding="utf-8")
+    print(f"explorador escrito: {destino}  ({len(suelto.encode('utf-8')):,} bytes)")
 
 
 def main() -> None:
