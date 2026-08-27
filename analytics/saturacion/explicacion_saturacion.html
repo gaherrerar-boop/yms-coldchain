@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo Funciona la Saturación — Red de Frío Agrosuper</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --border: #e0e0e0;
+    --accent: #d83a3a;
+    --accent-light: #f5e6e6;
+    --code-bg: #f5f5f5;
+    --code-text: #333;
+    --success: #27ae60;
+    --warning: #e67e22;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --text: #e0e0e0;
+      --border: #333;
+      --accent: #ff6b6b;
+      --code-bg: #2a2a2a;
+      --code-text: #e0e0e0;
+      --success: #2ecc71;
+      --warning: #f39c12;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    padding: 0;
+    margin: 0;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--accent), #a82a2a);
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+  }
+  header p {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 1.1rem;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  nav {
+    background: var(--code-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 3rem;
+    border: 1px solid var(--border);
+  }
+  nav h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  nav li {
+    margin: 0;
+  }
+  nav a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  nav a:hover {
+    opacity: 0.9;
+  }
+
+  section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 2rem;
+  }
+
+  h2 {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    color: var(--accent);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .formula {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+  }
+
+  .formula-latex {
+    font-style: italic;
+    background: var(--code-bg);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .example-box {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+  }
+
+  .example-box h4 {
+    margin-top: 0;
+    color: var(--success);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: var(--code-bg);
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    border: 1px solid var(--border);
+    padding: 1rem;
+    text-align: left;
+  }
+
+  .comparison-table th {
+    background: var(--accent);
+    color: white;
+    font-weight: bold;
+  }
+
+  .comparison-table tr:nth-child(even) {
+    background: var(--bg);
+  }
+
+  .flow-diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 8px;
+    font-family: monospace;
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.4;
+    color: var(--code-text);
+  }
+
+  .key-point {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+  }
+
+  .key-point strong {
+    color: var(--accent);
+  }
+
+  .input-example {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    font-family: monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .verdict-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .verdict {
+    border: 2px solid var(--border);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .verdict.both {
+    border-color: #c0392b;
+    background: rgba(192, 57, 43, 0.05);
+  }
+
+  .verdict.structural {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .verdict.operational {
+    border-color: var(--warning);
+    background: rgba(230, 126, 34, 0.05);
+  }
+
+  .verdict.none {
+    border-color: var(--success);
+    background: rgba(46, 204, 113, 0.05);
+  }
+
+  .verdict strong {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .verdict .emoji {
+    font-size: 1.5rem;
+    display: block;
+    margin: 0.5rem 0;
+  }
+
+  code {
+    background: var(--code-bg);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+  }
+
+  a:hover {
+    opacity: 0.8;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--code-bg);
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+  }
+
+  .back-link:hover {
+    background: var(--border);
+  }
+
+  footer {
+    background: var(--code-bg);
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 4rem;
+    color: var(--text);
+  }
+
+  footer p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    main { padding: 1rem; }
+    nav ul { flex-direction: column; }
+    nav a { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Cómo Funciona la Saturación</h1>
+  <p>Explicación detallada del modelo matemático de saturación de la cadena de frío</p>
+</header>
+
+<main>
+  <a href="javascript:history.back()" class="back-link">← Volver al informe</a>
+
+  <nav>
+    <h3>Índice de contenidos</h3>
+    <ul>
+      <li><a href="#concepto">Concepto</a></li>
+      <li><a href="#formula">Fórmula</a></li>
+      <li><a href="#componentes">Componentes</a></li>
+      <li><a href="#ejemplos">Ejemplos</a></li>
+      <li><a href="#hub-vs-normal">HUB vs Normal</a></li>
+      <li><a href="#verdicts">Verdicts</a></li>
+      <li><a href="#simulacion">Simulación</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONCEPTO -->
+  <section id="concepto">
+    <h2>1. Concepto Fundamental</h2>
+
+    <p>La <strong>saturación (ρ)</strong> es un número sin unidades que responde una pregunta simple:</p>
+
+    <div class="key-point">
+      <strong>¿Qué porcentaje de la capacidad instalada está siendo utilizada por la demanda?</strong>
+    </div>
+
+    <p>Si ρ = 0.8, significa que el 80% de la capacidad se ocupa; queda 20% libre.</p>
+    <p>Si ρ = 1.2, significa que se necesitaría 120% de la capacidad; falta espacio.</p>
+
+    <h3>Por qué una fórmula unificada</h3>
+    <p>Antes, la saturación se calculaba de forma separada según el tipo de sucursal. Ahora usamos una fórmula que captura:</p>
+    <ul>
+      <li><strong>Demanda real, variable:</strong> Algunos meses son "valle" para una sucursal, "estival" para otra. El promedio ponderado lo captura.</li>
+      <li><strong>Sobrestocks invisibles:</strong> La planta envía SKUs no demandados (factor de empuje). Antes desaparecían en el promedio; ahora son explícitos.</li>
+      <li><strong>Dos modelos de operación:</strong> Sucursales normales almacenan (se miden en DOH = días). Hubs distribuyen (se miden en flujo diario).</li>
+      <li><strong>Dos etapas de crisis:</strong> Puede faltar espacio EN CÁMARAS (estructural) o espacio PARA OPERAR (operacional). Ambas son independientes.</li>
+    </ul>
+  </section>
+
+  <!-- FÓRMULA GENERAL -->
+  <section id="formula">
+    <h2>2. La Fórmula Unificada</h2>
+
+    <div class="formula">
+ρ = Demanda_efectiva / Capacidad_física_efectiva
+    </div>
+
+    <p>Parece simple, pero cada término tiene una definición precisa:</p>
+
+    <h3>2.1 Demanda Efectiva</h3>
+    <p>No es sólo lo que se vende. Incluye:</p>
+    <div class="formula">
+Demanda_efectiva = DOH_policy_ponderado × (1 + α × s_exceso) + Volumen_hub
+    </div>
+
+    <p>Donde:</p>
+    <ul>
+      <li><code>DOH_policy_ponderado</code> = promedio de los 12 meses ponderado por demanda de cada mes</li>
+      <li><code>α</code> = fracción de sobrestocks que llegan (0.0 a 1.0)</li>
+      <li><code>s_exceso</code> = ratio de sobrestocks en planta vs demanda base</li>
+      <li><code>Volumen_hub</code> = solo si la sucursal es HUB (distribuye a otras)</li>
+    </ul>
+
+    <h3>2.2 Capacidad Física Efectiva</h3>
+    <p>La capacidad se divide en dos regímenes: congelado y refrigerado. NO se suman; se usan en paralelo.</p>
+    <div class="formula">
+DOH_física = 1 / (φ/(DOH_C × u) + (1-φ)/(DOH_R × u))
+    </div>
+
+    <p>Donde:</p>
+    <ul>
+      <li><code>φ</code> = porcentaje de congelado en la mezcla (deducido de capacidades)</li>
+      <li><code>DOH_C</code> = días de oferta en cámaras de congelado</li>
+      <li><code>DOH_R</code> = días de oferta en cámaras de refrigerado</li>
+      <li><code>u</code> = aprovechamiento (típicamente 1.0)</li>
+    </ul>
+
+    <div class="key-point">
+      <strong>Nota:</strong> Es una media armónica ponderada, no una media simple. Esto refleja que ambos regímenes deben estar simultáneamente disponibles.
+    </div>
+  </section>
+
+  <!-- COMPONENTES -->
+  <section id="componentes">
+    <h2>3. Componentes en Detalle</h2>
+
+    <h3>3.1 Demanda Mensual Ponderada (Estacionalidad)</h3>
+
+    <p>La demanda varía por mes. En lugar de usar un único valor, promediamos los 12 meses ponderados por el peso de cada mes:</p>
+
+    <div class="formula">
+DOH_ponderado = Σ(DOH_m × w_m)  para m = enero a diciembre
+
+donde w_m = Demanda_m / Σ(Demanda_total_12_meses)
+    </div>
+
+    <div class="example-box">
+      <h4>Ejemplo: Valdivia</h4>
+      <p><strong>Demanda mensual (kg):</strong></p>
+      <div class="input-example">
+enero:    500 kg  (invierno, bajo)
+febrero:  480 kg
+...
+diciembre: 520 kg (verano, alto)
+
+Promedio simple: 510 kg/mes (pierde información)
+Promedio ponderado: 512 kg/mes (captura la estacionalidad)
+      </div>
+      <p>Si enero tiene peso 0.08 y DOH_enero=7.5, contribuye 0.08 × 7.5 = 0.6 al promedio final.</p>
+    </div>
+
+    <h3>3.2 Factor de Empuje (Push)</h3>
+
+    <p>La realidad: la planta envía kilos según política DOH, pero ocasionalmente agrega SKUs de sobrestocks que no estaban en el plan.</p>
+
+    <div class="formula">
+Factor_empuje = 1 + α × s_exceso
+
+donde:
+  α     = fracción de sobrestocks que llegan (0 a 1)
+  s_exceso = ratio de sobrestocks en planta / demanda base
+    </div>
+
+    <div class="example-box">
+      <h4>Ejemplo: Antofagasta con sobrestocks</h4>
+      <p><strong>Datos:</strong></p>
+      <div class="input-example">
+Demanda base:      700 kg/día
+Sobrestocks en planta: 15% (105 kg extra)
+Fracción que llega:    20% (α = 0.20)
+
+Factor_empuje = 1 + 0.20 × 0.15 = 1.03
+Demanda efectiva = 700 × 1.03 = 721 kg/día
+Aumento real: 21 kg/día (3%)
+      </div>
+      <p><strong>Interpretación:</strong> Sin este factor, los 21 kg desaparecerían en el promedio. Con la fórmula, son explícitos.</p>
+    </div>
+
+    <h3>3.3 Red de Abastecimiento (Hub)</h3>
+
+    <p>Si una sucursal es HUB, su demanda incluye la de sus abastecidas. Por ejemplo, Antofagasta abastece a Arica, Iquique y Calama.</p>
+
+    <div class="formula">
+Demanda_hub = Demanda_propia + θ × Σ(Demanda_abastecidas)
+
+donde θ = fracción del volumen abastecido que transita el hub
+    </div>
+
+    <div class="key-point">
+      <strong>Importante:</strong> Las abastecidas NO pierden su volumen. Arica tiene su propia demanda para guardar; además, parte de ella transita Antofagasta para distribución. Esto evita doble conteo.
+    </div>
+  </section>
+
+  <!-- EJEMPLOS -->
+  <section id="ejemplos">
+    <h2>4. Ejemplo Completo: Valdivia</h2>
+
+    <div class="example-box">
+      <h4>Entrada de datos</h4>
+      <div class="input-example">
+Nombre: Valdivia
+Tipo: Normal (no HUB)
+Capacidad congelado: 6,000 kg → 8 DOH
+Capacidad refrigerado: 4,000 kg → 6 DOH
+Demanda promedio ponderada: 700 kg/día
+Personas (turno máximo): 12
+Metros cuadrados: 300 m²
+
+Parámetros de simulación:
+  - Sobrestocks en planta: 15% (s_exceso = 0.15)
+  - Fracción que llega: 20% (α = 0.20)
+  - Aprovechamiento: 1.0
+      </div>
+    </div>
+
+    <h3>Paso 1: Deducir el mix de congelado (φ)</h3>
+    <div class="formula">
+φ = 1 / (1 + (K_R / K_C) × (DOH_C / DOH_R))
+  = 1 / (1 + (4000 / 6000) × (8 / 6))
+  = 1 / (1 + 0.667 × 1.333)
+  = 1 / (1 + 0.889)
+  = 0.529
+
+→ 52.9% congelado, 47.1% refrigerado
+    </div>
+
+    <h3>Paso 2: Calcular DOH física (media armónica)</h3>
+    <div class="formula">
+DOH_física = 1 / (φ/(DOH_C × u) + (1-φ)/(DOH_R × u))
+           = 1 / (0.529/8 + 0.471/6)
+           = 1 / (0.0661 + 0.0785)
+           = 1 / 0.1446
+           = 6.91 días
+    </div>
+
+    <h3>Paso 3: Factor de empuje</h3>
+    <div class="formula">
+Factor_empuje = 1 + 0.20 × 0.15 = 1.03
+    </div>
+
+    <h3>Paso 4: Demanda efectiva</h3>
+    <div class="formula">
+Demanda_efectiva = 8.2 × 1.03 = 8.45 DOH
+(donde 8.2 es el DOH_ponderado del mes)
+    </div>
+
+    <h3>Paso 5: Saturación estructural</h3>
+    <div class="formula">
+ρ_estructural = 8.45 / 6.91 = 1.22
+
+→ SATURADA ESTRUCTURALMENTE (se necesita 122% de capacidad)
+    </div>
+
+    <h3>Paso 6: Etapa operacional (condicional)</h3>
+    <p>Como ρ_estructural = 1.22 > 1, no hay metros cuadrados libres. NO se calcula ρ_operacional.</p>
+
+    <h3>Resultado final</h3>
+    <div class="verdict-box">
+      <div class="verdict structural">
+        <strong>ρ_estructural = 1.22</strong>
+        <div class="emoji">🔴</div>
+        Saturada en cámara
+      </div>
+      <div class="verdict">
+        <strong>ρ_operacional = N/A</strong>
+        <div class="emoji">➖</div>
+        No evaluable
+      </div>
+    </div>
+
+    <p><strong>Veredicto: "Estructural solo"</strong> — Valdivia no tiene espacio para guardar el inventario requerido por política.</p>
+  </section>
+
+  <!-- HUB VS NORMAL -->
+  <section id="hub-vs-normal">
+    <h2>5. Sucursales HUB vs Sucursales Normales</h2>
+
+    <p>Una sucursal HUB funciona en modelo de "cross-dock": recibe, desagrega, y distribuye el mismo día o en 24-48 horas. Una sucursal normal almacena.</p>
+
+    <table class="comparison-table">
+      <tr>
+        <th>Aspecto</th>
+        <th>Sucursal Normal</th>
+        <th>Sucursal HUB (Cross-Dock)</th>
+      </tr>
+      <tr>
+        <td><strong>Modelo</strong></td>
+        <td>Almacenaje</td>
+        <td>Distribución</td>
+      </tr>
+      <tr>
+        <td><strong>Métrica</strong></td>
+        <td>Días de oferta (DOH)</td>
+        <td>Flujo diario (kg/día)</td>
+      </tr>
+      <tr>
+        <td><strong>Fórmula ρ</strong></td>
+        <td>Demanda_mes / DOH_física</td>
+        <td>Flujo_día / Capacidad_día</td>
+      </tr>
+      <tr>
+        <td><strong>Saturación = "falta..."</strong></td>
+        <td>...espacio de cámara</td>
+        <td>...velocidad de movimiento</td>
+      </tr>
+      <tr>
+        <td><strong>Incluye abastecidas</strong></td>
+        <td>No (cada una se mide sola)</td>
+        <td>Sí (θ × demanda de abastecidas)</td>
+      </tr>
+      <tr>
+        <td><strong>Etapa operacional</strong></td>
+        <td>Se evalúa siempre (si queda espacio)</td>
+        <td>Se adapta a flujo diario</td>
+      </tr>
+    </table>
+
+    <h3>Fórmula para HUB (Cross-Dock)</h3>
+    <div class="formula">
+ρ_hub = Flujo_diario_efectivo / Capacidad_throughput_diario
+
+donde:
+  Flujo_diario_efectivo = (DOH_ponderado × (1 + α × s_exceso)) / 30.44 días/mes
+                        + Volumen_abastecidas
+
+  Capacidad_throughput_diario = Capacidad_total_kg / u
+    </div>
+
+    <div class="example-box">
+      <h4>Ejemplo: Antofagasta como HUB</h4>
+      <div class="input-example">
+Demanda propia: 800 kg/día
+Abastecidas (Arica + Iquique + Calama): 600 kg/día
+Factor empuje: 1.03
+Capacidad total: 15,000 kg
+
+Flujo_diario = (800 + 600) × 1.03 = 1,448 kg/día
+Capacidad_día = 15,000 / 1.0 = 15,000 kg/día
+
+ρ_hub = 1,448 / 15,000 = 0.097 ≈ 10%
+
+→ Sin saturación (90% de capacidad libre para movimiento)
+      </div>
+    </div>
+
+    <h3>Cómo seleccionar sucursales HUB</h3>
+    <p>En la interfaz de usuario, hay un checkbox por cada sucursal: "¿Es HUB?" Al marcar, la fórmula cambia automáticamente al modelo cross-dock.</p>
+    <p><strong>Recomendación:</strong> Marcar como HUB solo las sucursales que realmente distribuyen a otras (ej: Antofagasta, Valparaíso, Santiago).</p>
+  </section>
+
+  <!-- VERDICTS -->
+  <section id="verdicts">
+    <h2>6. Los Cuatro Verdicts</h2>
+
+    <p>Cada sucursal recibe uno de estos cuatro etiquetas:</p>
+
+    <div class="verdict-box">
+      <div class="verdict both">
+        <strong>Estructural y Operacional</strong>
+        <div class="emoji">🔴🔴</div>
+        ρ_estructura > 1<br>
+        Y ρ_operacional > 1<br>
+        Crisis doble: falta cámara Y espacio para trabajar
+      </div>
+
+      <div class="verdict structural">
+        <strong>Estructural Solo</strong>
+        <div class="emoji">🔴</div>
+        ρ_estructura > 1<br>
+        Y ρ_operacional ≤ 1 (o N/A)<br>
+        El problema es la capacidad de almacén
+      </div>
+
+      <div class="verdict operational">
+        <strong>Operacional Solo</strong>
+        <div class="emoji">🟠</div>
+        ρ_estructura ≤ 1<br>
+        Pero ρ_operacional > 1<br>
+        Caben los kilos, pero no hay espacio para trabajar
+      </div>
+
+      <div class="verdict none">
+        <strong>Sin Saturación</strong>
+        <div class="emoji">🟢</div>
+        ρ_estructura ≤ 1<br>
+        Y ρ_operacional ≤ 1 (o N/A)<br>
+        Todo en orden
+      </div>
+    </div>
+
+    <h3>¿Por qué cuatro y no uno?</h3>
+    <p>Porque son problemas distintos:</p>
+    <ul>
+      <li><strong>Estructural:</strong> Necesita más cámaras frías (inversión en infraestructura)</li>
+      <li><strong>Operacional:</strong> Necesita más espacio para personas (puede resolver con layout, turno extra, etc.)</li>
+    </ul>
+    <p>Si los fusionara en un solo número, ocultaría información crítica (como en Valdivia: ρ=3.72 estructural + ρ=1.10 operacional quedaba etiquetado "operacional" solo).</p>
+  </section>
+
+  <!-- SIMULACIÓN -->
+  <section id="simulacion">
+    <h2>7. Panel de Simulación</h2>
+
+    <p>El informe incluye controles para explorar escenarios sin cambiar los datos base:</p>
+
+    <h3>Factores ajustables</h3>
+    <ul>
+      <li><strong>Factor DOH (0.5 a 2.0):</strong> Simula cambios en la política de demanda. 1.2 = 20% más demanda.</li>
+      <li><strong>Mix de congelado (0.3 a 0.7):</strong> Cambia la proporción de congelado vs refrigerado.</li>
+      <li><strong>Ocupación (36 a 50 m²/persona):</strong> Norma de espacio operacional.</li>
+      <li><strong>Distribuye de turnos (20%, 40%, 40%):</strong> Carga horaria de cada turno.</li>
+      <li><strong>Fracción hub (0 a 1):</strong> Qué porcentaje del volumen abastecido pasa por el hub.</li>
+    </ul>
+
+    <h3>Cómo funciona</h3>
+    <div class="flow-diagram">
+┌─────────────────────────┐
+│ Datos base de sucursal  │
+│ (sin cambios)           │
+└────────────┬────────────┘
+             │
+             ▼
+    ┌────────────────────┐
+    │ Factor DOH × 1.2   │
+    │ Factor ocupación   │
+    │ etc.               │
+    └────────────┬───────┘
+             │
+             ▼
+    ┌────────────────────┐
+    │ Recalcular ρ       │
+    │ con factores       │
+    └────────────┬───────┘
+             │
+             ▼
+    ┌────────────────────┐
+    │ Mostrar resultado  │
+    │ "Si aumenta 20%... │
+    │  ρ sería 1.40"     │
+    └────────────────────┘
+    </div>
+
+    <h3>Interpretación</h3>
+    <p>Si mueves el factor DOH a 1.5 (50% más demanda), los valores de ρ se recalculan. Esto te permite contestar preguntas como:</p>
+    <ul>
+      <li>"¿Qué pasa si la demanda sube un 20%?"</li>
+      <li>"¿Cuántos turnos más necesitaríamos si aumenta 30%?"</li>
+      <li>"¿Si reducimos personal, cuál sería la ocupación mínima viable?"</li>
+    </ul>
+
+    <div class="key-point">
+      <strong>Nota:</strong> Los factores son solo para exploración. No cambian los datos base ni se guardan. Al recargar la página, vuelves a los parámetros de referencia.
+    </div>
+  </section>
+
+  <!-- ALGORITMO COMPLETO -->
+  <section>
+    <h2>8. Algoritmo Completo (Paso a Paso)</h2>
+
+    <h3>Entrada</h3>
+    <div class="formula">
+Para cada sucursal:
+  - Nombre
+  - Capacidad (congelado kg, refrigerado kg)
+  - Demanda (promedio ponderado de 12 meses)
+  - Personas (por turno)
+  - Metros cuadrados
+  - Tipo (Normal o HUB)
+  - Red de abastecimiento (si es HUB, qué abastecidas)
+
+Parámetros globales:
+  - Sobrestocks (α, s_exceso)
+  - Aprovechamiento (u)
+  - Norma ocupación (m²/persona)
+  - Distribuye de turnos
+    </div>
+
+    <h3>Proceso</h3>
+    <div class="flow-diagram">
+1. Filtrar sucursales evaluables (datos completos)
+2. Deducir mix φ de capacidades instaladas
+3. Para cada sucursal:
+   a. Calcular DOH_ponderado (12 meses)
+   b. Calcular Factor_empuje
+   c. Calcular Demanda_efectiva
+   d. ¿Es HUB?
+      - Sí: calcular flujo_día, ρ = flujo_día / capacidad_día
+      - No: calcular DOH_física, ρ = demanda / DOH_física
+   e. ¿ρ_estructural > 1? ¿Hay m² libres?
+      - Sí: calcular ρ_operacional
+      - No: ρ_operacional = N/A
+   f. Asignar veredicto (uno de los cuatro)
+4. Generar KPI (conteos por veredicto)
+5. Renderizar tabla y gráficos
+    </div>
+
+    <h3>Salida</h3>
+    <div class="formula">
+Por sucursal:
+  {
+    nombre: string,
+    tipo: "normal" | "hub",
+    rhoEstructural: number,
+    rhoOperacional: number | null,
+    veredicto: "estructural_y_operacional" | "estructural_solo"
+             | "operacional_solo" | "sin_saturación",
+    saturadoEstructural: boolean,
+    saturadoOperacional: boolean | null
+  }
+
+KPI:
+  - Sucursales en cada veredicto
+  - Promedio de ρ por tipo
+  - Máximo/mínimo ρ
+    </div>
+  </section>
+
+  <!-- FÓRMULA RESUMIDA -->
+  <section>
+    <h2>9. Resumen: La Fórmula en Una Página</h2>
+
+    <div class="formula">
+════════════════════════════════════════════════════════════
+                  FÓRMULA UNIFICADA DE SATURACIÓN
+════════════════════════════════════════════════════════════
+
+Para sucursales NORMALES:
+
+  ρ = (DOH_ponderado × (1 + α×s)) / DOH_física
+
+  Donde:
+    DOH_ponderado = Σ DOH_m × (Demanda_m / Σ Demanda_total)
+    α = fracción de sobrestocks que llega (0-1)
+    s = ratio de sobrestocks en planta
+    DOH_física = 1/(φ/(D_C×u) + (1-φ)/(D_R×u))
+    φ = mix de congelado deducido de capacidades
+
+════════════════════════════════════════════════════════════
+
+Para sucursales HUB (cross-dock):
+
+  ρ_hub = Flujo_día / Capacidad_día
+
+  Donde:
+    Flujo_día = Demanda_diaria × (1 + α×s)
+              + Σ(Demanda_abastecidas × θ)
+    Capacidad_día = Capacidad_total_kg / u
+    θ = fracción del flujo abastecido que transita hub
+
+════════════════════════════════════════════════════════════
+
+Etapa Operacional (condicional, si ρ_estructura < 1):
+
+  ρ_operacional = (Personas_pico × 36) / m²_libres
+
+  Donde:
+    m²_libres = m²_total × (1 - ρ_estructura)
+
+════════════════════════════════════════════════════════════
+    </div>
+
+    <h3>Interpretación de ρ</h3>
+    <ul>
+      <li><code>ρ < 0.7:</code> Capacidad ociosa. Considerar consolidación.</li>
+      <li><code>0.7 ≤ ρ < 0.85:</code> Operación holgada. Margen de seguridad.</li>
+      <li><code>0.85 ≤ ρ < 1.0:</code> Operación eficiente. Sin saturación.</li>
+      <li><code>1.0 ≤ ρ < 1.3:</code> Saturación moderada. Requiere atención.</li>
+      <li><code>ρ ≥ 1.3:</code> Saturación crítica. Necesita acción inmediata.</li>
+    </ul>
+  </section>
+
+  <!-- CONCLUSIÓN -->
+  <section>
+    <h2>10. Conclusión: Una Fórmula, Todos los Escenarios</h2>
+
+    <p>La fórmula unificada de saturación captura:</p>
+
+    <ul>
+      <li>✓ <strong>Variabilidad estacional:</strong> Promedios ponderados de 12 meses</li>
+      <li>✓ <strong>Sobrestocks invisibles:</strong> Factor de empuje explícito</li>
+      <li>✓ <strong>Dos modelos operacionales:</strong> Normal (DOH) y HUB (flujo diario)</li>
+      <li>✓ <strong>Red de distribución:</strong> Abastecidas incluidas en HUB</li>
+      <li>✓ <strong>Dos crisis distintas:</strong> Estructural (cámara) y operacional (espacio)</li>
+      <li>✓ <strong>Replicabilidad exacta:</strong> Matemática pura, sin aproximaciones</li>
+    </ul>
+
+    <p>Es entendible porque cada variable tiene un significado físico claro. Es replicable porque está documentada al detalle. Y es única porque no hay casos especiales: la misma fórmula funciona para Antofagasta (hub con 2,000 kg/día) y Calama (normal con 150 kg/día).</p>
+
+    <div class="key-point">
+      <strong>Próximo paso:</strong> Abre el informe de saturación, selecciona qué sucursales son HUB (checkboxes arriba), ajusta los factores si quieres explorar escenarios, y observa cómo la fórmula predice la realidad de cada sucursal. La matemática hace el trabajo; tú interpretas el resultado.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>Documentación:</strong> Fórmula Unificada de Saturación — Red de Frío Agrosuper</p>
+  <p>Para más detalles técnicos, consulta <code>FORMULA_UNIFICADA.md</code> en el repositorio.</p>
+  <p>© 2026 Agrosuper Operaciones Nacionales</p>
+</footer>
+
+</body>
+</html>

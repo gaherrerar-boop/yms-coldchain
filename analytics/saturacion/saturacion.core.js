@@ -26,7 +26,10 @@ const PARAMETROS_BASE = {
   mixCongelado: null,   // null = deducir de los datos
   factorDohC: 1,        // escalado de politica: SOLO simulacion
   factorDohR: 1,
-  fraccionHub: 1        // porcion del volumen abastecido que pasa por el hub
+  fraccionHub: 1,       // porcion del volumen abastecido que pasa por el hub
+  // Fórmula unificada: factor de empuje por sobrestocks
+  factorEmpujeAlpha: 0, // fracción de sobrestocks que llega (0 a 1)
+  sobrestocksRatio: 0   // ratio de sobrestocks en planta / demanda base (0 a 1)
 };
 
 function validarParametros(p) {
@@ -44,6 +47,12 @@ function validarParametros(p) {
   }
   if (!(p.fraccionHub >= 0 && p.fraccionHub <= 1)) {
     throw new Error(`fraccionHub debe estar en [0,1], es ${p.fraccionHub}`);
+  }
+  if (!(p.factorEmpujeAlpha >= 0 && p.factorEmpujeAlpha <= 1)) {
+    throw new Error(`factorEmpujeAlpha debe estar en [0,1], es ${p.factorEmpujeAlpha}`);
+  }
+  if (!(p.sobrestocksRatio >= 0 && p.sobrestocksRatio <= 1)) {
+    throw new Error(`sobrestocksRatio debe estar en [0,1], es ${p.sobrestocksRatio}`);
   }
 }
 
@@ -95,9 +104,17 @@ function evaluarSucursal(s, par, phi, indice) {
   }
   const dEf = s.demandaMes + aporte;
 
+  // Factor de empuje (sobrestocks): amplía la demanda por kilos no demandados
+  // que llegan a la sucursal. Fórmula unificada: ρ = Demanda_eff / Capacidad
+  const factorEmpuje = 1 + par.factorEmpujeAlpha * par.sobrestocksRatio;
+  const dEfAjustado = dEf * factorEmpuje;
+
+  // Detectar si es sucursal HUB (modelo cross-dock) o Normal (almacenaje)
+  const esHub = abastece.length > 0; // Es HUB si abastece a otras
+
   // ============== ETAPA 1 — SATURACION ESTRUCTURAL ==============
 
-  const d = dEf / par.diasMes;                       // (1) flujo diario
+  const d = dEfAjustado / par.diasMes;                       // (1) flujo diario (con empuje)
   const dC = phi * d, dR = (1 - phi) * d;
   const dohPol = phi * dohC + (1 - phi) * dohR;      // (2) politica ponderada
 
@@ -176,7 +193,10 @@ function evaluarSucursal(s, par, phi, indice) {
 
   return {
     sucursal: s.nombre, evaluable: true, abastece,
+    tipo: esHub ? 'hub' : 'normal',
     demandaPropia: s.demandaMes, demandaAportada: aporte, demandaEfectiva: dEf,
+    demandaEfectivaAjustada: dEfAjustado,
+    factorEmpuje: factorEmpuje,
     factorHub: dEf / s.demandaMes,
     demandaDiaKg: d, mixCongelado: phi,
     dohPoliticaC: dohC, dohPoliticaR: dohR, dohPoliticaPonderado: dohPol,
