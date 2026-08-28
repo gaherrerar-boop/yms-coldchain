@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modelo Corporativo de Saturación de Sucursales · 2026–2032</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b1017'/><rect x='20' y='55' width='14' height='30' fill='%2322c55e'/><rect x='43' y='38' width='14' height='47' fill='%23eab308'/><rect x='66' y='22' width='14' height='63' fill='%23ef4444'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1017; --bg2:#111823; --panel:#141c28; --panel2:#1a2432; --line:#243040;
+  --txt:#e6edf5; --txt2:#9fb0c3; --txt3:#6b7d92;
+  --accent:#38bdf8; --accent2:#22d3ee;
+  --ok:#22c55e; --watch:#eab308; --tension:#f97316; --sat:#ef4444; --crit:#dc2626;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.5}
+a{color:var(--accent)}
+.mono{font-family:var(--mono)}
+/* Header */
+header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,#0d141d,#0b1017);border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+header .brand{display:flex;flex-direction:column;gap:2px}
+header .brand h1{font-size:16px;font-weight:800;letter-spacing:.2px}
+header .brand .sub{font-size:11px;color:var(--txt3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px}
+header .spacer{flex:1}
+.badge{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--txt2);background:var(--panel)}
+.badge.v{color:var(--accent2);border-color:#164e63}
+/* Nav */
+nav.tabs{display:flex;gap:4px;padding:0 22px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:57px;z-index:19;overflow-x:auto}
+nav.tabs button{background:none;border:none;color:var(--txt2);font-family:var(--sans);font-size:13px;font-weight:600;padding:12px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+nav.tabs button:hover{color:var(--txt)}
+nav.tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
+/* Layout */
+main{padding:22px;max-width:1500px;margin:0 auto}
+.view{display:none}
+.view.active{display:block}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+label.ctl{font-size:12px;color:var(--txt2);font-weight:600;display:flex;flex-direction:column;gap:4px}
+select,input[type=text]{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 10px;font-family:var(--sans);font-size:13px;min-width:150px}
+select:focus,input:focus{outline:none;border-color:var(--accent)}
+.yearbtns{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+.yearbtns button{background:none;border:none;color:var(--txt2);font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 11px;border-radius:6px;cursor:pointer}
+.yearbtns button.active{background:var(--accent);color:#04121b}
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.panel h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--txt2);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.panel h2 .tag{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.5px}
+.grid{display:grid;gap:12px}
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px;position:relative;overflow:hidden}
+.kpi .lbl{font-size:11px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi .val{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1}
+.kpi .unit{font-size:12px;color:var(--txt3);margin-left:3px}
+.kpi .foot{font-size:11px;color:var(--txt3);margin-top:6px}
+.kpi .bar{position:absolute;bottom:0;left:0;height:3px;border-radius:2px}
+/* Table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{background:var(--panel2);color:var(--txt2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;cursor:pointer;user-select:none}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+th:first-child{background:var(--panel2);z-index:2}
+tbody tr:hover td{background:var(--panel2)}
+tbody tr:hover td:first-child{background:var(--panel2)}
+td.name{font-weight:600;color:var(--txt)}
+td.name small{color:var(--txt3);font-weight:400;font-family:var(--mono)}
+.cell-sat{font-family:var(--mono);font-weight:700;border-radius:6px;padding:3px 7px;display:inline-block;min-width:52px;text-align:center}
+.s-ok{background:rgba(34,197,94,.14);color:#4ade80}
+.s-watch{background:rgba(234,179,8,.16);color:#facc15}
+.s-tension{background:rgba(249,115,22,.16);color:#fb923c}
+.s-sat{background:rgba(239,68,68,.18);color:#f87171}
+.s-na{background:var(--panel2);color:var(--txt3);font-style:italic}
+.q-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.clickable{cursor:pointer}
+.clickable:hover td.name{color:var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--txt2);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+/* two-col */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.cols2,.cols3{grid-template-columns:1fr}}
+/* dim list */
+.dims{display:grid;gap:8px}
+.dim{display:grid;grid-template-columns:150px 1fr 60px;gap:10px;align-items:center}
+.dim .dn{font-size:12px;color:var(--txt2);font-weight:600}
+.dim .track{height:20px;background:var(--panel2);border-radius:5px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.dim .fill{height:100%;border-radius:4px 0 0 4px;transition:width .4s}
+.dim .track .marker{position:absolute;top:0;bottom:0;width:2px;background:var(--txt);opacity:.5}
+.dim .dv{font-family:var(--mono);font-weight:700;font-size:13px;text-align:right}
+/* charts */
+svg{display:block;width:100%;overflow:visible}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;margin-top:8px;color:var(--txt2)}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.chart-legend i{width:14px;height:3px;display:inline-block;border-radius:2px}
+/* heatmap */
+.heatmap{overflow-x:auto}
+.hm-grid{display:grid;gap:2px}
+.hm-cell{aspect-ratio:1.6;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.85)}
+.hm-lbl{font-size:10px;color:var(--txt3);font-family:var(--mono);display:flex;align-items:center;justify-content:center}
+/* explain */
+.explain{font-family:var(--mono);font-size:12.5px;line-height:1.9;background:#0a0f16;border:1px solid var(--line);border-radius:10px;padding:16px;white-space:pre-wrap;color:var(--txt2)}
+.explain b{color:var(--accent2)}
+.explain .hl{color:var(--txt);font-weight:700}
+/* tests */
+.test-row{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-bottom:1px solid var(--line)}
+.test-row .st{font-family:var(--mono);font-weight:700;font-size:11px;padding:2px 8px;border-radius:5px;flex-shrink:0}
+.st.pass{background:rgba(34,197,94,.16);color:#4ade80}
+.st.fail{background:rgba(239,68,68,.18);color:#f87171}
+.test-row .body{flex:1}
+.test-row .tn{font-weight:600;font-size:13px}
+.test-row .td{font-size:12px;color:var(--txt3);font-family:var(--mono);margin-top:2px}
+/* misc */
+.note{font-size:12px;color:var(--txt3);line-height:1.7}
+.warn{background:rgba(234,179,8,.08);border:1px solid #665211;border-radius:10px;padding:12px 14px;color:#e8d38a;font-size:12.5px;line-height:1.6}
+.prose{max-width:820px;line-height:1.8;color:var(--txt2)}
+.prose h3{color:var(--txt);margin:20px 0 8px;font-size:15px}
+.prose p{margin-bottom:12px}
+.prose ul{margin:0 0 12px 20px}
+.prose code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--accent2);font-size:12px}
+.pill{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--txt2)}
+button.act{background:var(--accent);color:#04121b;border:none;border-radius:8px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
+button.act:hover{background:#7dd3fc}
+button.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer}
+pre.json{font-family:var(--mono);font-size:11.5px;background:#0a0f16;border:1px solid var(--line);border-radius:10px;padding:14px;overflow:auto;max-height:520px;color:var(--txt2)}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px;gap:14px;color:var(--txt2)}
+.spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.envtag{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:4px}
+.env-f{background:rgba(56,189,248,.14);color:#7dd3fc}
+.env-c{background:rgba(129,140,248,.16);color:#a5b4fc}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Modelo Corporativo de Saturación de Sucursales</h1>
+    <span class="sub">Diagnóstico · No decisión — Red de 21 sucursales frigoríficas</span>
+  </div>
+  <div class="spacer"></div>
+  <span class="badge v mono" id="verBadge">v1.0</span>
+  <span class="badge mono" id="scopeBadge">21 sucursales · 2026–2032</span>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="nacional" class="active">Vista Nacional</button>
+  <button data-tab="sucursal">Vista Sucursal</button>
+  <button data-tab="tendencia">Tendencia 2026–2032</button>
+  <button data-tab="auditoria">Auditoría diaria</button>
+  <button data-tab="export">Salida JSON</button>
+  <button data-tab="tests">Tests de aceptación</button>
+  <button data-tab="metodo">¿Cómo funciona?</button>
+</nav>
+
+<main>
+  <div id="boot" class="loading">
+    <div class="spinner"></div>
+    <div>Calculando saturación diaria de 21 sucursales × 7 años…</div>
+    <div class="note">Sucursal → Ambiente → Año → Mes → Día operativo</div>
+  </div>
+
+  <!-- ════════ VISTA NACIONAL ════════ -->
+  <section class="view" id="v-nacional">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Año
+          <div class="yearbtns" id="natYears"></div>
+        </label>
+        <label class="ctl">Escenario
+          <select id="natScenario">
+            <option value="obs">Observado (estructural + push)</option>
+            <option value="struct">Estructural</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Saturación por sucursal <span class="tag" id="natYearLbl"></span></h2>
+      <div class="tbl-wrap">
+        <table id="natTable"><thead></thead><tbody></tbody></table>
+      </div>
+      <div class="legend">
+        <span><i style="background:#22c55e"></i>&lt;85% utilización</span>
+        <span><i style="background:#eab308"></i>85–95% tensión</span>
+        <span><i style="background:#f97316"></i>95–100% proximidad al límite</span>
+        <span><i style="background:#ef4444"></i>&gt;100% saturación (sobre capacidad)</span>
+        <span style="margin-left:auto">Calidad dato: <span class="q-dot" style="background:#22c55e"></span>Alta <span class="q-dot" style="background:#eab308"></span>Media <span class="q-dot" style="background:#f97316"></span>Baja/Ejemplo <span class="q-dot" style="background:#6b7d92"></span>N/D</span>
+      </div>
+      <p class="note" style="margin-top:10px">La saturación física de sucursal se pondera por capacidad de cada ambiente (§14). Nunca se promedian dimensiones distintas (físico, operacional, personas). Clic en una fila para el detalle.</p>
+    </div>
+  </section>
+
+  <!-- ════════ VISTA SUCURSAL ════════ -->
+  <section class="view" id="v-sucursal">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal
+          <select id="sucSelect"></select>
+        </label>
+        <label class="ctl">Año
+          <div class="yearbtns" id="sucYears"></div>
+        </label>
+      </div>
+    </div>
+    <div id="sucContent"></div>
+  </section>
+
+  <!-- ════════ TENDENCIA ════════ -->
+  <section class="view" id="v-tendencia">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal
+          <select id="trendSelect"></select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Tendencia anual por dimensión <span class="tag">2026 → 2032 · series separadas (§35)</span></h2>
+      <div id="trendChart"></div>
+    </div>
+    <div class="panel">
+      <h2>Curva anual — 12 meses <span class="tag" id="trendCurveLbl">(§36)</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Año
+          <div class="yearbtns" id="trendYears"></div>
+        </label>
+      </div>
+      <div id="monthChart"></div>
+    </div>
+    <div class="panel">
+      <h2>Heatmap Mes × Día de semana <span class="tag" id="hmLbl">saturación física observada (§37)</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Métrica
+          <select id="hmMetric">
+            <option value="sat">Saturación física observada</option>
+            <option value="kg">Demanda kg</option>
+            <option value="boxes">Cajas</option>
+            <option value="people">Personas requeridas</option>
+          </select>
+        </label>
+      </div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+  </section>
+
+  <!-- ════════ AUDITORÍA ════════ -->
+  <section class="view" id="v-auditoria">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal <select id="audSelect"></select></label>
+        <label class="ctl">Ambiente <select id="audAmb"></select></label>
+        <label class="ctl">Año <div class="yearbtns" id="audYears"></div></label>
+        <label class="ctl">Mes
+          <select id="audMonth"><option value="0">Todos</option></select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Tabla de auditoría — nivel diario <span class="tag">todo resultado reconcilia aquí (§39, §49)</span></h2>
+      <div class="tbl-wrap" style="max-height:600px;overflow-y:auto">
+        <table id="audTable"><thead></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ EXPORT ════════ -->
+  <section class="view" id="v-export">
+    <div class="panel">
+      <h2>Salida limpia para el modelo de decisión <span class="tag">(§45) — sin recomendaciones</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Año <div class="yearbtns" id="expYears"></div></label>
+        <button class="ghost" id="copyJson">Copiar JSON</button>
+      </div>
+      <pre class="json" id="jsonOut"></pre>
+    </div>
+  </section>
+
+  <!-- ════════ TESTS ════════ -->
+  <section class="view" id="v-tests">
+    <div class="panel">
+      <h2>Tests de aceptación obligatorios <span class="tag">(§40 Validaciones · §41 Tests A–G)</span></h2>
+      <p class="note" style="margin-bottom:14px">Verifican la matemática del motor: conservación de masa, consolidación ponderada, separación push/DOH, no-promedio de dimensiones, peaks vs índice anual, invariancia de kilos.</p>
+      <div id="testResults"></div>
+    </div>
+  </section>
+
+  <!-- ════════ METODOLOGÍA ════════ -->
+  <section class="view" id="v-metodo">
+    <div class="panel">
+      <h2>¿Cómo funciona este modelo? <span class="tag">(§46 Explicación ejecutiva)</span></h2>
+      <div class="prose">
+        <p>Primero estimamos <b>cuándo y cuánto vende</b> cada sucursal durante el año. Luego convertimos esa demanda en <b>cajas</b> y calculamos cuánto <b>inventario</b> debe mantenerse de acuerdo con el DOH definido para fresco y congelado. Comparamos ese inventario con la <b>capacidad física</b> disponible de cada cámara. Paralelamente calculamos si existen suficientes <b>horas, productividad y personas</b> para procesar la demanda. Finalmente consolidamos el comportamiento completo del año <b>sin perder los peaks ni la duración</b> de los periodos de tensión.</p>
+        <p style="font-size:15px;color:var(--accent2);font-weight:600">El modelo mide saturación. No decide cómo resolverla.</p>
+
+        <h3>Arquitectura de cálculo (§48)</h3>
+        <p class="mono" style="font-size:12px;color:var(--txt3);line-height:1.9">Datos maestros → Demanda anual → Estacionalidad sucursal → Distribución Lun–Sáb → Demanda diaria kg → Kg/caja → Cajas → DOH → Inventario estructural → Push/On Hand → Inventario observado → Capacidad física kg → Saturación fresco / congelado → Saturación física sucursal (ponderada por capacidad)</p>
+        <p class="mono" style="font-size:12px;color:var(--txt3);line-height:1.9">En paralelo: Cajas → Productividad → HH requeridas → Saturación operacional · Personas requeridas → Dotación → Saturación dotación · Personas → Espacio operacional → Saturación espacio-personas</p>
+
+        <h3>Dimensiones que se mantienen SIEMPRE separadas (§19)</h3>
+        <ul>
+          <li><b>Físico estructural</b> — inventario del DOH vs capacidad geométrica.</li>
+          <li><b>Físico observado</b> — inventario estructural + push extraordinario.</li>
+          <li><b>Fresco</b> y <b>Congelado</b> — nunca se ocultan en el consolidado.</li>
+          <li><b>Operacional</b> — cajas demandadas vs capacidad de proceso (HH × productividad).</li>
+          <li><b>Dotación</b> — personas requeridas vs personas disponibles.</li>
+          <li><b>Espacio-personas</b> — personas requeridas vs máximo físicamente operable.</li>
+        </ul>
+        <p><b>Prohibido</b>: promediar (Físico + Operacional + Personas) / 3. Son restricciones distintas y se reportan por separado, cada una con índice anual, peak, P95 y exposición.</p>
+
+        <h3>Capacidad desde geometría (§12)</h3>
+        <p class="mono">CAPkg = M² × Altura_útil × Factor_utilización × Densidad_kg/m³</p>
+        <p>No se usan posiciones pallet como capacidad principal: reflejan el layout actual y pueden inducir falsa falta de capacidad.</p>
+
+        <h3>Estructural vs Observado (§11, §24)</h3>
+        <p>El <b>push</b> (stock extraordinario) se mantiene completamente separado del inventario estructural. Nunca se modifica el DOH para absorberlo. Se reportan ambos escenarios y el impacto en puntos porcentuales.</p>
+
+        <h3>Lo que la herramienta NO hace (§43)</h3>
+        <p>No recomienda construir, ampliar, cerrar, redistribuir volumen, comprar rack, contratar personas ni cambiar el DOH. Entrega únicamente el diagnóstico matemático, auditable y trazable, para que otro modelo decida.</p>
+      </div>
+      <div class="warn" style="margin-top:18px">⚠ Los datos cargados en esta instancia son <b>sintéticos / de ejemplo</b> (calidad "EJEMPLO"), generados de forma determinística para demostrar y auditar la herramienta. Para uso corporativo oficial deben reemplazarse íntegramente por la fuente oficial de demanda, geometría, DOH, densidades, productividad y dotación. El motor nunca inventa valores: si falta un parámetro crítico muestra "NO CALCULABLE — FALTA INFORMACIÓN" indicando la variable ausente (§29).</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { construirDatosEjemplo } from './data.js';
+import {
+  crearContexto, calcularSucursal, salidaJSON, MODELO,
+  construirCalendario, DIAS_SEMANA, resolverKPC,
+} from './engine.js';
+import { correrTests } from './tests.js';
+
+/* ── Estado global ── */
+const S = {
+  data:null, ctx:null, resultados:[], resMap:{},
+  natYear:2028, sucId:null, sucYear:2028,
+  trendId:null, trendYear:2028, audId:null, audAmb:'Fresco', audYear:2028, audMonth:0,
+  expYear:2028, scenario:'obs',
+};
+const fmt = (x,d=1)=> (x==null||!isFinite(x))?'—':Number(x).toLocaleString('es-CL',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmt0 = x=> (x==null||!isFinite(x))?'—':Math.round(x).toLocaleString('es-CL');
+const AMB_ICON = a=> a==='Fresco'?'<span class="envtag env-f">FRE</span>':'<span class="envtag env-c">CON</span>';
+
+/* clase visual de saturación (§42) */
+function satClass(v){
+  if(v==null||!isFinite(v))return 's-na';
+  if(v<85)return 's-ok'; if(v<95)return 's-watch'; if(v<100)return 's-tension'; return 's-sat';
+}
+function satColor(v){
+  if(v==null||!isFinite(v))return '#6b7d92';
+  if(v<85)return '#22c55e'; if(v<95)return '#eab308'; if(v<100)return '#f97316'; return '#ef4444';
+}
+function qColor(q){
+  return {ALTA:'#22c55e',MEDIA:'#eab308',BAJA:'#f97316',EJEMPLO:'#f97316','NO DISPONIBLE':'#6b7d92'}[q]||'#6b7d92';
+}
+function satCell(v){ return `<span class="cell-sat ${satClass(v)}">${v==null||!isFinite(v)?'N/C':fmt(v)}</span>`; }
+
+/* ── Boot: calcular todo ── */
+function boot(){
+  S.data = construirDatosEjemplo();
+  S.ctx = crearContexto(S.data.datos, {anioIni:MODELO.anios[0], anioFin:MODELO.anios[MODELO.anios.length-1]});
+  for(const suc of S.data.sucursales){
+    const r = calcularSucursal(S.ctx, suc);
+    S.resultados.push(r); S.resMap[suc.Sucursal_ID]=r;
+  }
+  S.sucId = S.data.sucursales[0].Sucursal_ID;
+  S.trendId = S.sucId; S.audId = S.sucId;
+  document.getElementById('boot').style.display='none';
+  document.getElementById('verBadge').textContent = 'v'+MODELO.version;
+  initControls();
+  showTab('nacional');
+}
+
+/* ── Year button groups ── */
+function yearGroup(elId, current, cb){
+  const el=document.getElementById(elId); el.innerHTML='';
+  MODELO.anios.forEach(y=>{
+    const b=document.createElement('button'); b.textContent=y; if(y===current)b.className='active';
+    b.onclick=()=>{ [...el.children].forEach(c=>c.className=''); b.className='active'; cb(y); };
+    el.appendChild(b);
+  });
+}
+function fillSelect(elId, cb){
+  const el=document.getElementById(elId); el.innerHTML='';
+  S.data.sucursales.forEach(s=>{
+    const o=document.createElement('option'); o.value=s.Sucursal_ID; o.textContent=`${s.Sucursal} · ${s.Zona}`; el.appendChild(o);
+  });
+  el.onchange=()=>cb(el.value);
+}
+
+function initControls(){
+  // tabs
+  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+  // nacional
+  yearGroup('natYears', S.natYear, y=>{S.natYear=y; renderNacional();});
+  document.getElementById('natScenario').onchange=e=>{S.scenario=e.target.value; renderNacional();};
+  // sucursal
+  fillSelect('sucSelect', id=>{S.sucId=id; renderSucursal();});
+  yearGroup('sucYears', S.sucYear, y=>{S.sucYear=y; renderSucursal();});
+  // tendencia
+  fillSelect('trendSelect', id=>{S.trendId=id; renderTendencia();});
+  yearGroup('trendYears', S.trendYear, y=>{S.trendYear=y; renderMonthChart(); renderHeatmap();});
+  document.getElementById('hmMetric').onchange=()=>renderHeatmap();
+  // auditoria
+  fillSelect('audSelect', id=>{S.audId=id; refreshAudAmb(); renderAuditoria();});
+  document.getElementById('audAmb').onchange=e=>{S.audAmb=e.target.value; renderAuditoria();};
+  yearGroup('audYears', S.audYear, y=>{S.audYear=y; renderAuditoria();});
+  const mSel=document.getElementById('audMonth');
+  ['Todos','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].forEach((n,i)=>{
+    if(i===0)return; const o=document.createElement('option'); o.value=i; o.textContent=n; mSel.appendChild(o);
+  });
+  mSel.onchange=e=>{S.audMonth=+e.target.value; renderAuditoria();};
+  // export
+  yearGroup('expYears', S.expYear, y=>{S.expYear=y; renderExport();});
+  document.getElementById('copyJson').onclick=()=>{
+    navigator.clipboard?.writeText(document.getElementById('jsonOut').textContent);
+    const b=document.getElementById('copyJson'); b.textContent='¡Copiado!'; setTimeout(()=>b.textContent='Copiar JSON',1200);
+  };
+}
+function refreshAudAmb(){
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.audId);
+  const sel=document.getElementById('audAmb'); sel.innerHTML='';
+  Object.keys(suc.ambientes).forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);});
+  S.audAmb=sel.value;
+}
+
+function showTab(tab){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+tab).classList.add('active');
+  if(tab==='nacional')renderNacional();
+  if(tab==='sucursal')renderSucursal();
+  if(tab==='tendencia'){renderTendencia();renderMonthChart();renderHeatmap();}
+  if(tab==='auditoria'){refreshAudAmb();renderAuditoria();}
+  if(tab==='export')renderExport();
+  if(tab==='tests')renderTests();
+}
+
+/* ════════ VISTA NACIONAL ════════ */
+function renderNacional(){
+  document.getElementById('natYearLbl').textContent = S.natYear+' · escenario '+(S.scenario==='obs'?'observado':'estructural');
+  const cols = [
+    ['Sucursal','name'],['Zona','z'],['Físico','fis'],['Fresco','fre'],['Congelado','con'],
+    ['Operación','op'],['Dotación','dot'],['Espacio','esp'],['Peak','peak'],['P95','p95'],
+    ['Exp&gt;95%','e95'],['Exp&gt;100%','e100'],['Restricción dominante','rd'],['Δpush','push'],['Cal.','q']
+  ];
+  const thead=document.querySelector('#natTable thead');
+  thead.innerHTML='<tr>'+cols.map(c=>`<th>${c[0]}</th>`).join('')+'</tr>';
+  const tb=document.querySelector('#natTable tbody'); tb.innerHTML='';
+  for(const r of S.resultados){
+    const a=r.anios[S.natYear];
+    const tr=document.createElement('tr'); tr.className='clickable';
+    tr.onclick=()=>{S.sucId=r.sucursal.id; document.getElementById('sucSelect').value=r.sucursal.id; showTab('sucursal');};
+    if(!a||!a.calculable){
+      tr.innerHTML=`<td class="name">${r.sucursal.nombre}<br><small>${r.sucursal.id}</small></td><td>${r.sucursal.zona}</td><td colspan="13" style="text-align:left;color:var(--txt3);font-style:italic">NO CALCULABLE — ${r.faltantes[0]||'falta información'}</td>`;
+      tb.appendChild(tr); continue;
+    }
+    const fis = S.scenario==='obs'?a.fisicoObservado:a.fisicoEstructural;
+    const fre = a.ambientes.Fresco?.fisicoObs, con=a.ambientes.Congelado?.fisicoObs;
+    const rd = a.restriccionDominante;
+    tr.innerHTML=
+      `<td class="name">${r.sucursal.nombre}<br><small>${r.sucursal.id}</small></td>`+
+      `<td style="text-align:left">${r.sucursal.zona}</td>`+
+      `<td>${satCell(fis.indice)}</td>`+
+      `<td>${satCell(fre?.indice)}</td>`+
+      `<td>${con?satCell(con.indice):'<span class="cell-sat s-na">N/C</span>'}</td>`+
+      `<td>${satCell(a.operacional.indice)}</td>`+
+      `<td>${satCell(a.dotacion.indice)}</td>`+
+      `<td>${satCell(a.espacioPersonas.indice)}</td>`+
+      `<td class="mono">${fmt(fis.peak)}</td>`+
+      `<td class="mono">${fmt(fis.p95)}</td>`+
+      `<td class="mono">${fmt(fis.exposicionDias[95])}%</td>`+
+      `<td class="mono">${fmt(fis.exposicionDias[100])}%</td>`+
+      `<td style="text-align:left;font-size:11.5px">${rd?`<span style="color:${satColor(rd.valor)}">${rd.nombre}</span> <span class="mono" style="color:var(--txt3)">${fmt(rd.valor)}%</span>`:'—'}</td>`+
+      `<td class="mono">${a.deltaPushPP>=0?'+':''}${fmt(a.deltaPushPP)}pp</td>`+
+      `<td><span class="q-dot" style="background:${qColor(r.calidadDato)}"></span></td>`;
+    tb.appendChild(tr);
+  }
+}
+
+/* ════════ VISTA SUCURSAL ════════ */
+function renderSucursal(){
+  document.getElementById('sucSelect').value=S.sucId;
+  const r=S.resMap[S.sucId], a=r.anios[S.sucYear];
+  const el=document.getElementById('sucContent');
+  if(!a||!a.calculable){
+    el.innerHTML=`<div class="warn">NO CALCULABLE — ${r.faltantes.join(' · ')||'falta información'} (§29). El motor no imputa valores faltantes.</div>`;
+    return;
+  }
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.sucId);
+  const fisO=a.fisicoObservado, fisE=a.fisicoEstructural;
+  const fre=a.ambientes.Fresco, con=a.ambientes.Congelado;
+
+  // KPIs
+  let html=`<div class="kpis">
+    ${kpi('Físico estructural',fisE.indice,'%',`peak ${fmt(fisE.peak)}% · P95 ${fmt(fisE.p95)}%`)}
+    ${kpi('Físico observado',fisO.indice,'%',`+${fmt(a.deltaPushPP)}pp por push`)}
+    ${kpi('Operacional',a.operacional.indice,'%',`peak ${fmt(a.operacional.peak)}%`)}
+    ${kpi('Dotación',a.dotacion.indice,'%',`peak ${fmt(a.dotacion.peak)}%`)}
+    ${kpi('Espacio-personas',a.espacioPersonas.indice,'%',`peak ${fmt(a.espacioPersonas.peak)}%`)}
+    ${kpiPlain('Demanda anual',fmt0(a.kgAnual)+' kg', fmt0(a.cajasAnual)+' cajas')}
+  </div>`;
+
+  // Restricción dominante + exposición
+  const rd=a.restriccionDominante;
+  html+=`<div class="cols2">
+    <div class="panel"><h2>Restricción dominante del año <span class="tag">(§25) — sólo diagnóstico</span></h2>
+      ${rd?`<div style="display:flex;align-items:baseline;gap:12px"><span class="mono" style="font-size:30px;font-weight:700;color:${satColor(rd.valor)}">${fmt(rd.valor)}%</span><div><div style="font-weight:700;font-size:15px">${rd.nombre}</div><div class="note">Fecha del peak: ${rd.fecha}</div></div></div>`:'—'}
+      <p class="note" style="margin-top:10px">Holgura/déficit al peak observado: <b class="mono" style="color:${a.holguraKg>=0?'var(--ok)':'var(--sat)'}">${a.holguraKg>=0?'+':''}${fmt0(a.holguraKg)} kg</b> (${fmt(a.holguraPct)}%). No se recomienda acción.</p>
+    </div>
+    <div class="panel"><h2>Exposición temporal y por volumen <span class="tag">(§21, §22)</span></h2>
+      ${exposureTable(fisO)}
+    </div>
+  </div>`;
+
+  // Cámaras: fresco y congelado (§14, §15)
+  html+=`<div class="panel"><h2>Cámaras — físico observado por ambiente <span class="tag">ponderación por capacidad, nunca ocultar cámara crítica (§14)</span></h2>
+    <div class="dims">
+      ${dimBar('Físico sucursal (ponderado)', fisO.indice)}
+      ${fre?dimBar('Fresco '+AMB_ICON('Fresco'), fre.fisicoObs.indice):''}
+      ${con?dimBar('Congelado '+AMB_ICON('Congelado'), con.fisicoObs.indice):'<div class="note">Congelado: NO CALCULABLE — '+(r.faltantes.find(f=>f.includes('Congelado'))||'')+'</div>'}
+    </div>
+    ${capTable(suc,r)}
+  </div>`;
+
+  // Operación & Personas
+  html+=`<div class="cols2">
+    <div class="panel"><h2>Operación <span class="tag">(§16, §17)</span></h2>${opTable(suc,a)}</div>
+    <div class="panel"><h2>Personas <span class="tag">dotación vs espacio (§17,§18)</span></h2>${peopleTable(suc,a)}</div>
+  </div>`;
+
+  // Estructural vs observado (§38)
+  html+=`<div class="panel"><h2>Escenario estructural vs observado <span class="tag">(§38) — impacto del push</span></h2>
+    <div class="cols3">
+      ${kpi('Físico estructural',fisE.indice,'%','inventario del DOH')}
+      ${kpi('Físico observado',fisO.indice,'%','+ push extraordinario')}
+      ${kpiPlain('Delta push','+'+fmt(a.deltaPushPP)+' pp', 'Push anual: '+fmt0(a.pushAnual)+' kg')}
+    </div>
+  </div>`;
+
+  // Explicar cálculo (§30)
+  html+=`<div class="panel"><h2>Explicar cálculo <span class="tag">(§30) — trazabilidad total</span></h2>
+    <div class="controls" style="margin-bottom:12px">
+      <label class="ctl">Ambiente <select id="expAmb">${Object.keys(suc.ambientes).map(x=>`<option>${x}</option>`).join('')}</select></label>
+      <label class="ctl">Día (peak físico observado por defecto) <select id="expDay"></select></label>
+    </div>
+    <div class="explain" id="explainBox"></div>
+  </div>`;
+
+  el.innerHTML=html;
+  // wire explain
+  const ambSel=document.getElementById('expAmb');
+  ambSel.onchange=()=>{fillExplainDays();renderExplain();};
+  fillExplainDays(); renderExplain();
+  document.getElementById('expDay').onchange=renderExplain;
+}
+function kpi(lbl,v,unit,foot){
+  const c=satColor(v);
+  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val" style="color:${c}">${fmt(v)}<span class="unit">${unit}</span></div><div class="foot">${foot||''}</div><div class="bar" style="width:${Math.min(100,v||0)}%;background:${c}"></div></div>`;
+}
+function kpiPlain(lbl,v,foot){
+  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val" style="font-size:19px">${v}</div><div class="foot">${foot||''}</div></div>`;
+}
+function dimBar(name,v){
+  const c=satColor(v), w=Math.min(130,v||0)/1.3;
+  return `<div class="dim"><div class="dn">${name}</div><div class="track"><div class="fill" style="width:${w}%;background:${c}"></div><div class="marker" style="left:${100/1.3}%" title="100%"></div></div><div class="dv" style="color:${c}">${fmt(v)}%</div></div>`;
+}
+function exposureTable(f){
+  let h='<table style="font-size:12px"><thead><tr><th style="text-align:left">Umbral</th><th>% días</th><th>% volumen</th></tr></thead><tbody>';
+  for(const T of [85,95,100]){
+    h+=`<tr><td style="text-align:left" class="mono">≥ ${T}%</td><td class="mono">${fmt(f.exposicionDias[T])}%</td><td class="mono">${fmt(f.exposicionKg[T])}%</td></tr>`;
+  }
+  h+=`</tbody></table><p class="note" style="margin-top:8px">Índice anual ${fmt(f.indice)}% · Peak ${fmt(f.peak)}% (${f.fechaPeak}) · P95 ${fmt(f.p95)}%</p>`;
+  return h;
+}
+function capTable(suc,r){
+  let h='<div class="tbl-wrap" style="margin-top:12px"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>M²</th><th>Alt.útil</th><th>Factor util.</th><th>Densidad</th><th>Capacidad kg</th><th>DOH</th></tr></thead><tbody>';
+  for(const a of ['Fresco','Congelado']){
+    const g=suc.ambientes[a]; if(!g)continue;
+    const cap=r.capacidad[a];
+    h+=`<tr><td style="text-align:left">${AMB_ICON(a)} ${a}</td><td class="mono">${fmt0(g.M2)}</td><td class="mono">${fmt(g.Altura_Util,2)}</td><td class="mono">${g.Factor_Utilizacion}</td><td class="mono">${g.Densidad_Kg_M3??'<span style="color:var(--sat)">N/D</span>'}</td><td class="mono">${cap.ok?fmt0(cap.CAP):'<span style="color:var(--sat)">N/C</span>'}</td><td class="mono">${g.DOH} <span style="color:var(--txt3)">(${g.DOH_Base})</span></td></tr>`;
+  }
+  return h+'</tbody></table></div>';
+}
+function opTable(suc,a){
+  let h='<div class="tbl-wrap"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>Cajas/año</th><th>Product.</th><th>HH disp.</th><th>Saturación op.</th></tr></thead><tbody>';
+  for(const amb of Object.keys(suc.ambientes)){
+    const g=suc.ambientes[amb], d=a.ambientes[amb]; if(!d)continue;
+    let cajas=0; const dias=a._diasAmb[amb]||[]; for(const x of dias)if(isFinite(x.boxes))cajas+=x.boxes;
+    h+=`<tr><td style="text-align:left">${AMB_ICON(amb)} ${amb}</td><td class="mono">${fmt0(cajas)}</td><td class="mono">${g.Productividad}</td><td class="mono">${fmt0(g.Dotacion*g.Horas_Productivas)}</td><td>${satCell(d.operacional.indice)}</td></tr>`;
+  }
+  h+='</tbody></table></div>';
+  h+=`<p class="note" style="margin-top:8px">Saturación operacional sucursal (máx. entre cámaras): ${satCell(a.operacional.indice)} · peak ${fmt(a.operacional.peak)}%</p>`;
+  return h;
+}
+function peopleTable(suc,a){
+  let h='<div class="tbl-wrap"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>Disponibles</th><th>Máx. espacio</th><th>Sat. dotación</th><th>Sat. espacio</th></tr></thead><tbody>';
+  for(const amb of Object.keys(suc.ambientes)){
+    const g=suc.ambientes[amb], d=a.ambientes[amb]; if(!d)continue;
+    const nMax=g.M2_Operable/g.M2_Por_Persona;
+    h+=`<tr><td style="text-align:left">${AMB_ICON(amb)} ${amb}</td><td class="mono">${g.Dotacion}</td><td class="mono">${fmt0(nMax)}</td><td>${satCell(d.dotacion.indice)}</td><td>${satCell(d.espacioPersonas.indice)}</td></tr>`;
+  }
+  h+='</tbody></table></div>';
+  h+=`<p class="note" style="margin-top:8px">"¿Tengo personas?" (dotación) es distinto de "¿caben las personas?" (espacio). Nunca se confunden (§18).</p>`;
+  return h;
+}
+
+/* Explain — reconstrucción con valores sustituidos (§30) */
+function fillExplainDays(){
+  const amb=document.getElementById('expAmb').value;
+  const a=S.resMap[S.sucId].anios[S.sucYear];
+  const dias=(a._diasAmb[amb]||[]).filter(d=>isFinite(d.sPhysObs));
+  const sel=document.getElementById('expDay'); sel.innerHTML='';
+  // default = peak
+  let peakIdx=0; dias.forEach((d,i)=>{if(d.sPhysObs>dias[peakIdx].sPhysObs)peakIdx=i;});
+  dias.forEach((d,i)=>{const o=document.createElement('option');o.value=d.fecha;o.textContent=`${d.fecha} (${fmt(d.sPhysObs)}%)`;if(i===peakIdx)o.selected=true;sel.appendChild(o);});
+}
+function renderExplain(){
+  const amb=document.getElementById('expAmb').value;
+  const fecha=document.getElementById('expDay').value;
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.sucId);
+  const g=suc.ambientes[amb], cap=S.resMap[S.sucId].capacidad[amb];
+  const a=S.resMap[S.sucId].anios[S.sucYear];
+  const d=(a._diasAmb[amb]||[]).find(x=>x.fecha===fecha);
+  if(!d){document.getElementById('explainBox').textContent='—';return;}
+  const box=document.getElementById('explainBox');
+  box.innerHTML=
+`<b>SATURACIÓN ${amb.toUpperCase()} — ${suc.Sucursal} — ${fecha}</b>
+
+Demanda del día        : <span class="hl">${fmt0(d.D)} kg</span>
+Kg por caja            : ${fmt(d.kpc,2)} kg  <span style="color:var(--txt3)">(nivel: ${d.kpcNivel})</span>
+Cajas demandadas       : ${fmt0(d.boxes)}
+
+DOH (${d.dohBase.padEnd(10)})     : ${d.doh} días
+Inventario estructural : <span class="hl">${fmt0(d.istruct)} kg</span>  <span style="color:var(--txt3)">(rolling-forward)</span>
+Push extraordinario    : ${fmt0(d.push)} kg
+Inventario observado   : <span class="hl">${fmt0(d.iobs)} kg</span>${d.onhand!=null?'  (On Hand real)':''}
+
+CAPACIDAD FÍSICA (geometría §12)
+  M²                   : ${fmt0(g.M2)}
+  Altura útil          : ${fmt(g.Altura_Util,2)} m
+  Factor utilización   : ${g.Factor_Utilizacion}
+  Densidad             : ${g.Densidad_Kg_M3} kg/m³
+  CAPkg = ${fmt0(g.M2)} × ${fmt(g.Altura_Util,2)} × ${g.Factor_Utilizacion} × ${g.Densidad_Kg_M3}
+       = <span class="hl">${fmt0(cap.CAP)} kg</span>
+
+SATURACIÓN
+  Estructural = ${fmt0(d.istruct)} / ${fmt0(cap.CAP)} × 100 = <b>${fmt(d.sPhysStruct,2)}%</b>
+  Observada   = ${fmt0(d.iobs)} / ${fmt0(cap.CAP)} × 100 = <b>${fmt(d.sPhysObs,2)}%</b>
+  Impacto push = ${fmt(d.sPhysObs-d.sPhysStruct,2)} pp
+
+OPERACIÓN
+  HH disponibles = ${g.Dotacion} pers × ${g.Horas_Productivas} h = ${fmt0(d.hhAvail)} HH
+  Cap. cajas     = ${fmt0(d.hhAvail)} × ${g.Productividad} = ${fmt0(d.capBoxes)} cajas
+  Sat. operacional = ${fmt0(d.boxes)} / ${fmt0(d.capBoxes)} × 100 = <b>${fmt(d.sOp,2)}%</b>
+
+PERSONAS
+  Requeridas   = ${fmt0(d.boxes)} / (${g.Productividad} × ${g.Horas_Productivas}) = ${fmt(d.nReq,1)} pers
+  Disponibles  = ${g.Dotacion} → Sat. dotación = <b>${fmt(d.sStaff,2)}%</b>
+  Máx. espacio = ${fmt0(g.M2_Operable)} / ${g.M2_Por_Persona} = ${fmt(d.nMaxSpace,1)} pers
+  Sat. espacio-personas = <b>${fmt(d.sPeopleSpace,2)}%</b>`;
+}
+
+/* ════════ TENDENCIA (SVG line chart) ════════ */
+function renderTendencia(){
+  document.getElementById('trendSelect').value=S.trendId;
+  const r=S.resMap[S.trendId];
+  const series=[
+    ['Físico observado','#38bdf8', y=>r.anios[y].calculable?r.anios[y].fisicoObservado.indice:null],
+    ['Fresco','#22d3ee', y=>r.anios[y].calculable?r.anios[y].ambientes.Fresco?.fisicoObs.indice:null],
+    ['Congelado','#a5b4fc', y=>r.anios[y].calculable?r.anios[y].ambientes.Congelado?.fisicoObs.indice:null],
+    ['Operacional','#f59e0b', y=>r.anios[y].calculable?r.anios[y].operacional.indice:null],
+    ['Espacio-personas','#f472b6', y=>r.anios[y].calculable?r.anios[y].espacioPersonas.indice:null],
+  ];
+  document.getElementById('trendChart').innerHTML=lineChart(MODELO.anios, series, {xlabels:MODELO.anios});
+}
+function lineChart(xs, series, opt={}){
+  const W=1100,H=340,pad={l:48,r:20,t:20,b:38};
+  const iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  let max=130; series.forEach(s=>xs.forEach(x=>{const v=s[2](x); if(v!=null&&isFinite(v))max=Math.max(max,v);}));
+  max=Math.ceil(max/10)*10;
+  const X=i=>pad.l+ (xs.length>1? iw*i/(xs.length-1):iw/2);
+  const Y=v=>pad.t+ih-(v/max)*ih;
+  let g='';
+  // gridlines
+  for(let t=0;t<=max;t+=25){g+=`<line x1="${pad.l}" y1="${Y(t)}" x2="${W-pad.r}" y2="${Y(t)}" stroke="#243040" stroke-width="1"/><text x="${pad.l-8}" y="${Y(t)+4}" fill="#6b7d92" font-size="11" text-anchor="end" font-family="monospace">${t}%</text>`;}
+  // 100% ref
+  g+=`<line x1="${pad.l}" y1="${Y(100)}" x2="${W-pad.r}" y2="${Y(100)}" stroke="#ef4444" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>`;
+  // x labels
+  xs.forEach((x,i)=>{g+=`<text x="${X(i)}" y="${H-14}" fill="#9fb0c3" font-size="11" text-anchor="middle" font-family="monospace">${(opt.xlabels||xs)[i]}</text>`;});
+  // series
+  series.forEach(s=>{
+    let path='',pts='';
+    xs.forEach((x,i)=>{const v=s[2](x); if(v==null||!isFinite(v))return; const px=X(i),py=Y(v); path+=(path?'L':'M')+px+' '+py+' '; pts+=`<circle cx="${px}" cy="${py}" r="3.5" fill="${s[1]}"/>`;});
+    g+=`<path d="${path}" fill="none" stroke="${s[1]}" stroke-width="2.5"/>${pts}`;
+  });
+  const leg=series.map(s=>`<span><i style="background:${s[1]}"></i>${s[0]}</span>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="chart-legend">${leg}<span style="margin-left:auto;color:var(--sat)"><i style="background:#ef4444"></i>límite 100%</span></div>`;
+}
+
+/* ════════ CURVA ANUAL (12 meses) ════════ */
+function renderMonthChart(){
+  const r=S.resMap[S.trendId], a=r.anios[S.trendYear];
+  const el=document.getElementById('monthChart');
+  document.getElementById('trendCurveLbl').textContent=`${r.sucursal.nombre} · ${S.trendYear}`;
+  if(!a||!a.calculable){el.innerHTML='<div class="warn">NO CALCULABLE para este año.</div>';return;}
+  // mensualizar: promedio ponderado por demanda de sBranchObs, sBranchStruct, y por ambiente
+  const meses=Array.from({length:12},(_,i)=>i+1);
+  const mAgg=(key)=>meses.map(m=>{
+    const dd=a._branchDaily.filter(b=>+b.fecha.slice(5,7)===m);
+    let num=0,den=0; for(const b of dd){const v=b[key],w=b.D; if(isFinite(v)){num+=v*w;den+=w;}}
+    return den>0?num/den:null;
+  });
+  const mAmb=(amb)=>meses.map(m=>{
+    const dd=(a._diasAmb[amb]||[]).filter(x=>x.mes===m);
+    let num=0,den=0; for(const x of dd){if(isFinite(x.sPhysObs)){num+=x.sPhysObs*x.D;den+=x.D;}}
+    return den>0?num/den:null;
+  });
+  const mPeak=meses.map(m=>{const dd=a._branchDaily.filter(b=>+b.fecha.slice(5,7)===m);let mx=null;for(const b of dd)if(isFinite(b.sBranchObs))mx=mx==null?b.sBranchObs:Math.max(mx,b.sBranchObs);return mx;});
+  const struct=mAgg('sBranchStruct'), obs=mAgg('sBranchObs'), fre=mAmb('Fresco'), con=mAmb('Congelado');
+  const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const series=[
+    ['Estructural','#64748b',(i)=>struct[i-1]],
+    ['Observada','#38bdf8',(i)=>obs[i-1]],
+    ['Fresco','#22d3ee',(i)=>fre[i-1]],
+    ['Congelado','#a5b4fc',(i)=>con[i-1]],
+    ['Peak mensual','#ef4444',(i)=>mPeak[i-1]],
+  ];
+  el.innerHTML=lineChart(meses, series, {xlabels:MN});
+}
+
+/* ════════ HEATMAP ════════ */
+function renderHeatmap(){
+  const metric=document.getElementById('hmMetric').value;
+  const r=S.resMap[S.trendId], a=r.anios[S.trendYear];
+  const el=document.getElementById('heatmap');
+  document.getElementById('hmLbl').textContent=`${r.sucursal.nombre} · ${S.trendYear} · ${document.getElementById('hmMetric').selectedOptions[0].text}`;
+  if(!a||!a.calculable){el.innerHTML='<div class="warn">NO CALCULABLE.</div>';return;}
+  // agregamos ambos ambientes (fresco+congelado) por día calendario
+  const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const WD=[1,2,3,4,5,6]; // Lun..Sáb
+  // build matrix month x weekday
+  const cellVals={};
+  for(let m=1;m<=12;m++)for(const w of WD)cellVals[m+'-'+w]={num:0,den:0,max:0};
+  for(const amb of Object.keys(a._diasAmb)){
+    for(const x of (a._diasAmb[amb]||[])){
+      const k=x.mes+'-'+x.wd; if(!cellVals[k])continue;
+      let v=0;
+      if(metric==='sat')v=x.sPhysObs; else if(metric==='kg')v=x.D; else if(metric==='boxes')v=x.boxes; else v=x.nReq;
+      if(!isFinite(v))continue;
+      if(metric==='sat'){cellVals[k].num+=v*x.D;cellVals[k].den+=x.D;} // ponderado
+      else {cellVals[k].num+=v;cellVals[k].den+=0;} // suma
+      cellVals[k].max=Math.max(cellVals[k].max,v);
+    }
+  }
+  const val=(m,w)=>{const c=cellVals[m+'-'+w];if(!c)return null; return metric==='sat'?(c.den>0?c.num/c.den:null):c.num;};
+  let vmax=0,vmin=Infinity;
+  for(let m=1;m<=12;m++)for(const w of WD){const v=val(m,w);if(v!=null&&isFinite(v)){vmax=Math.max(vmax,v);vmin=Math.min(vmin,v);}}
+  const color=(v)=>{
+    if(v==null||!isFinite(v))return '#141c28';
+    if(metric==='sat')return satColor(v);
+    const t=(v-vmin)/((vmax-vmin)||1);
+    // teal→amber→red ramp
+    const r=Math.round(30+t*220),gg=Math.round(120+t*60-t*t*120),b=Math.round(160-t*120);
+    return `rgb(${r},${gg},${b})`;
+  };
+  let h=`<div class="hm-grid" style="grid-template-columns:44px repeat(12,1fr)">`;
+  h+=`<div class="hm-lbl"></div>`+MN.map(m=>`<div class="hm-lbl">${m}</div>`).join('');
+  for(const w of WD){
+    h+=`<div class="hm-lbl">${DIAS_SEMANA[w].slice(0,3)}</div>`;
+    for(let m=1;m<=12;m++){
+      const v=val(m,w);
+      const txt = v==null?'':(metric==='sat'?Math.round(v):(v>9999?Math.round(v/1000)+'k':Math.round(v)));
+      h+=`<div class="hm-cell" style="background:${color(v)}" title="${MN[m-1]} · ${DIAS_SEMANA[w]}: ${v==null?'N/C':fmt(v)}">${txt}</div>`;
+    }
+  }
+  h+=`</div>`;
+  el.innerHTML=h;
+}
+
+/* ════════ AUDITORÍA ════════ */
+function renderAuditoria(){
+  document.getElementById('audSelect').value=S.audId;
+  document.getElementById('audAmb').value=S.audAmb;
+  const r=S.resMap[S.audId], a=r.anios[S.audYear];
+  const cols=['Fecha','Día','Kg','Cajas','KPC','DOH','Inv.estruct','Push','On Hand','Cap.kg','Sat.física','HH req','HH disp','Pers.req','Pers.disp','Sat.op','Sat.pers'];
+  document.querySelector('#audTable thead').innerHTML='<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
+  const tb=document.querySelector('#audTable tbody'); tb.innerHTML='';
+  if(!a||!a.calculable){tb.innerHTML=`<tr><td colspan="17" style="text-align:left;color:var(--txt3)">NO CALCULABLE — ${r.faltantes.join(' · ')}</td></tr>`;return;}
+  let dias=a._diasAmb[S.audAmb]||[];
+  if(S.audMonth>0)dias=dias.filter(d=>d.mes===S.audMonth);
+  const g=S.data.sucursales.find(s=>s.Sucursal_ID===S.audId).ambientes[S.audAmb];
+  const frag=document.createDocumentFragment();
+  for(const d of dias){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="text-align:left" class="mono">${d.fecha}</td><td style="text-align:left">${d.wdNombre.slice(0,3)}</td>`+
+      `<td class="mono">${fmt0(d.D)}</td><td class="mono">${fmt0(d.boxes)}</td><td class="mono">${fmt(d.kpc,1)}</td>`+
+      `<td class="mono">${d.doh}</td><td class="mono">${fmt0(d.istruct)}</td><td class="mono">${d.push?fmt0(d.push):'0'}</td>`+
+      `<td class="mono">${d.onhand!=null?fmt0(d.onhand):'—'}</td><td class="mono">${fmt0(d.cap)}</td>`+
+      `<td>${satCell(d.sPhysObs)}</td><td class="mono">${fmt0(d.hhReq)}</td><td class="mono">${fmt0(d.hhAvail)}</td>`+
+      `<td class="mono">${fmt(d.nReq,1)}</td><td class="mono">${d.nDisp}</td><td>${satCell(d.sOp)}</td><td>${satCell(d.sPeopleSpace)}</td>`;
+    frag.appendChild(tr);
+  }
+  tb.appendChild(frag);
+}
+
+/* ════════ EXPORT ════════ */
+function renderExport(){
+  const out=S.resultados.map(r=>salidaJSON(r,S.expYear));
+  document.getElementById('jsonOut').textContent=JSON.stringify(out,null,2);
+}
+
+/* ════════ TESTS ════════ */
+function renderTests(){
+  const {pasaron,total,resultados}=correrTests();
+  let h=`<div style="margin-bottom:14px;font-family:var(--mono);font-size:14px"><span class="st ${pasaron===total?'pass':'fail'}">${pasaron}/${total} OK</span></div>`;
+  for(const t of resultados){
+    h+=`<div class="test-row"><span class="st ${t.pass?'pass':'fail'}">${t.pass?'PASS':'FAIL'}</span><div class="body"><div class="tn">${t.nombre}</div><div class="td">→ ${t.detalle}</div></div></div>`;
+  }
+  document.getElementById('testResults').innerHTML=h;
+}
+
+boot();
+</script>
+</body>
+</html>
