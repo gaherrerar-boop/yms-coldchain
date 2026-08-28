@@ -45,6 +45,15 @@ participación de demanda de cada día.
 | `run-tests.mjs` | Runner de auditoría en Node. |
 | `index.html` | Dashboard ejecutivo (vista nacional, sucursal, tendencia, heatmap, auditoría, JSON, tests, metodología). |
 
+### Vistas del dashboard
+
+`Vista Nacional` · `Vista Sucursal` · **`Calculadora`** (carga parámetros de 1–2
+ambientes y devuelve las 7 saturaciones + consolidación ponderada + explicación
+paso a paso, con ejemplos/pruebas cargables) · `Tendencia 2026–2032` ·
+`Auditoría diaria` · `Salida JSON` · **`Algoritmos`** (catálogo pedagógico de los
+17 algoritmos: propósito, notación, fórmula, reglas y ejemplo resuelto) ·
+`Tests de aceptación` · `¿Cómo funciona?`.
+
 ### Correr los tests (auditoría de la matemática)
 
 ```bash

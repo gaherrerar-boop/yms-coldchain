@@ -156,6 +156,64 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--azul);border:
 .envtag{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px}
 .env-f{background:rgba(31,179,227,.20);color:#0d5c78}
 .env-c{background:rgba(0,67,197,.16);color:#0043C5}
+
+/* ══ CALCULADORA ══ */
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.preset-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--txt2)}
+.preset{background:var(--panel2);color:var(--azul);border:1px solid var(--line-strong);border-radius:20px;padding:6px 13px;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer}
+.preset:hover{background:rgba(232,119,34,.12);border-color:var(--naranja);color:var(--naranja)}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.calc-grid{grid-template-columns:1fr}}
+.calc-col-head{font-weight:700;font-size:14px;color:var(--azul);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--naranja);display:flex;align-items:center;gap:8px}
+.calc-col-head .chk{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700}
+.calc-col-head input[type=checkbox]{width:15px;height:15px;accent-color:var(--naranja)}
+.field{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;margin-bottom:8px}
+.field label{font-size:12.5px;color:var(--txt2);font-weight:500}
+.field input{min-width:0;width:100%;font-family:var(--mono);font-weight:600;text-align:right}
+.grp-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);font-weight:700;margin:16px 0 9px}
+.calc-actions{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+#congFields.off{opacity:.35;pointer-events:none}
+.calc-verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.big-cell{border-radius:12px;padding:16px 18px;border:1px solid var(--line)}
+.big-cell .bl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:8px}
+.big-cell .bv{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1}
+.big-cell .bd{font-size:11.5px;color:var(--txt3);margin-top:7px}
+
+/* ══ FÓRMULAS / ALGORITMOS ══ */
+.notation{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
+.notation .nt{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--txt2)}
+.notation .nt b{font-family:var(--mono);color:var(--azul);font-weight:700;min-width:26px}
+.algo{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.algo-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--panel2);border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.algo-num{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--marfil);background:var(--azul);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.algo-title{font-weight:700;font-size:15px;color:var(--azul);flex:1}
+.algo-title small{display:block;font-weight:500;font-size:11.5px;color:var(--txt3);margin-top:2px;letter-spacing:.02em}
+.algo-toggle{font-family:var(--mono);color:var(--naranja);font-weight:700;font-size:15px;transition:transform .2s}
+.algo.open .algo-toggle{transform:rotate(45deg)}
+.algo-body{display:none;padding:18px}
+.algo.open .algo-body{display:block}
+.algo-body .lead{color:var(--txt);font-size:13.5px;margin-bottom:14px;max-width:70ch}
+.formula{background:var(--azul);color:var(--marfil);border-radius:10px;padding:16px 18px;font-family:var(--mono);font-size:14px;line-height:1.85;overflow-x:auto;letter-spacing:.01em}
+.formula .op{color:var(--naranja)}
+.formula .cm{color:rgba(255,246,230,.55);font-size:12px}
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 4px}
+.frac .num{border-bottom:1.5px solid rgba(255,246,230,.7);padding:0 8px 2px}
+.frac .den{padding:2px 8px 0}
+.algo-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:760px){.algo-cols{grid-template-columns:1fr}}
+.vars{font-size:12.5px}
+.vars .vh{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);font-weight:700;margin-bottom:8px}
+.vars .vr{display:grid;grid-template-columns:74px 1fr;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.vars .vr b{font-family:var(--mono);color:var(--azul);font-weight:700}
+.vars .vr span{color:var(--txt2)}
+.example{background:var(--panel2);border-left:3px solid var(--naranja);border-radius:0 10px 10px 0;padding:13px 16px;font-size:12.5px}
+.example .eh{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);font-weight:700;margin-bottom:8px}
+.example .er{font-family:var(--mono);color:var(--txt2);line-height:1.7}
+.example .er b{color:var(--azul)}
+.rulechips{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.rulechip{display:flex;gap:9px;font-size:12.5px;color:var(--txt2);line-height:1.5}
+.rulechip::before{content:"§";color:var(--naranja);font-weight:800;flex-shrink:0}
+.algo-expand-all{display:flex;gap:10px;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -173,9 +231,11 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--azul);border:
 <nav class="tabs" id="tabs">
   <button data-tab="nacional" class="active">Vista Nacional</button>
   <button data-tab="sucursal">Vista Sucursal</button>
+  <button data-tab="calculadora">Calculadora</button>
   <button data-tab="tendencia">Tendencia 2026–2032</button>
   <button data-tab="auditoria">Auditoría diaria</button>
   <button data-tab="export">Salida JSON</button>
+  <button data-tab="algoritmos">Algoritmos</button>
   <button data-tab="tests">Tests de aceptación</button>
   <button data-tab="metodo">¿Cómo funciona?</button>
 </nav>
@@ -231,6 +291,71 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--azul);border:
       </div>
     </div>
     <div id="sucContent"></div>
+  </section>
+
+  <!-- ════════ CALCULADORA ════════ -->
+  <section class="view" id="v-calculadora">
+    <div class="panel">
+      <h2>Calculadora de saturación <span class="tag">cargue parámetros → el modelo devuelve el diagnóstico</span></h2>
+      <p class="note" style="margin-bottom:14px">Ingrese los parámetros de una sucursal (uno o dos ambientes) para un <strong>día representativo</strong>. El motor aplica exactamente la misma matemática corporativa y entrega las siete dimensiones de saturación, la consolidación ponderada por capacidad y la explicación paso a paso con valores sustituidos. Con demanda diaria constante, el inventario del rolling-forward equivale a <span class="mono">demanda × DOH</span> (se indica en la traza).</p>
+      <div class="preset-row">
+        <span class="preset-lbl">Cargar ejemplo / prueba:</span>
+        <button class="preset" data-preset="norte">Sucursal equilibrada</button>
+        <button class="preset" data-preset="B">TEST B · consolidación 78%</button>
+        <button class="preset" data-preset="C">TEST C · push +25 pp</button>
+        <button class="preset" data-preset="D">TEST D · físico 75 / op 112</button>
+        <button class="preset" data-preset="critico">Congelado crítico</button>
+      </div>
+      <form id="calcForm" autocomplete="off">
+        <div class="calc-grid">
+          <div class="calc-col">
+            <div class="calc-col-head"><span class="envtag env-f">FRE</span> Ambiente Fresco</div>
+            <div class="field"><label>Demanda diaria (kg)</label><input type="number" step="any" name="f_dem" value="120000"></div>
+            <div class="field"><label>Kg por caja</label><input type="number" step="any" name="f_kpc" value="14"></div>
+            <div class="field"><label>DOH (días)</label><input type="number" step="any" name="f_doh" value="4"></div>
+            <div class="field"><label>Push extraordinario (kg)</label><input type="number" step="any" name="f_push" value="0"></div>
+            <div class="grp-lbl">Capacidad física (geometría)</div>
+            <div class="field"><label>M² de cámara</label><input type="number" step="any" name="f_m2" value="1000"></div>
+            <div class="field"><label>Altura útil (m)</label><input type="number" step="any" name="f_hu" value="5"></div>
+            <div class="field"><label>Factor de utilización (0–1)</label><input type="number" step="any" name="f_uf" value="0.40"></div>
+            <div class="field"><label>Densidad logística (kg/m³)</label><input type="number" step="any" name="f_dens" value="400"></div>
+            <div class="grp-lbl">Operación y personas</div>
+            <div class="field"><label>Productividad (cajas/HH)</label><input type="number" step="any" name="f_prod" value="22"></div>
+            <div class="field"><label>Horas productivas / persona</label><input type="number" step="any" name="f_h" value="7.5"></div>
+            <div class="field"><label>Dotación (personas)</label><input type="number" step="any" name="f_dot" value="40"></div>
+            <div class="field"><label>M² operables (personas)</label><input type="number" step="any" name="f_m2op" value="550"></div>
+            <div class="field"><label>M² por persona</label><input type="number" step="any" name="f_m2p" value="11"></div>
+          </div>
+          <div class="calc-col">
+            <div class="calc-col-head">
+              <label class="chk"><input type="checkbox" id="incCong" checked> <span class="envtag env-c">CON</span> Ambiente Congelado</label>
+            </div>
+            <div id="congFields">
+              <div class="field"><label>Demanda diaria (kg)</label><input type="number" step="any" name="c_dem" value="50000"></div>
+              <div class="field"><label>Kg por caja</label><input type="number" step="any" name="c_kpc" value="16"></div>
+              <div class="field"><label>DOH (días)</label><input type="number" step="any" name="c_doh" value="9"></div>
+              <div class="field"><label>Push extraordinario (kg)</label><input type="number" step="any" name="c_push" value="0"></div>
+              <div class="grp-lbl">Capacidad física (geometría)</div>
+              <div class="field"><label>M² de cámara</label><input type="number" step="any" name="c_m2" value="450"></div>
+              <div class="field"><label>Altura útil (m)</label><input type="number" step="any" name="c_hu" value="5"></div>
+              <div class="field"><label>Factor de utilización (0–1)</label><input type="number" step="any" name="c_uf" value="0.40"></div>
+              <div class="field"><label>Densidad logística (kg/m³)</label><input type="number" step="any" name="c_dens" value="220"></div>
+              <div class="grp-lbl">Operación y personas</div>
+              <div class="field"><label>Productividad (cajas/HH)</label><input type="number" step="any" name="c_prod" value="18"></div>
+              <div class="field"><label>Horas productivas / persona</label><input type="number" step="any" name="c_h" value="7.5"></div>
+              <div class="field"><label>Dotación (personas)</label><input type="number" step="any" name="c_dot" value="16"></div>
+              <div class="field"><label>M² operables (personas)</label><input type="number" step="any" name="c_m2op" value="250"></div>
+              <div class="field"><label>M² por persona</label><input type="number" step="any" name="c_m2p" value="11"></div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-actions">
+          <button type="submit" class="act">Calcular saturación</button>
+          <button type="button" class="ghost" id="calcReset">Limpiar a valores base</button>
+        </div>
+      </form>
+    </div>
+    <div id="calcResult"></div>
   </section>
 
   <!-- ════════ TENDENCIA ════════ -->
@@ -312,6 +437,16 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--azul);border:
     </div>
   </section>
 
+  <!-- ════════ ALGORITMOS ════════ -->
+  <section class="view" id="v-algoritmos">
+    <div class="panel">
+      <h2>Catálogo de algoritmos del modelo <span class="tag">ingeniería de cálculo · documentación auditable</span></h2>
+      <p class="note" style="margin-bottom:6px">Cada número del tablero se reconstruye desde: <strong>dato fuente → parámetro → fórmula → cálculo intermedio → resultado</strong>. Aquí está el detalle de cada algoritmo con su propósito, notación, fórmula, reglas invariables y un ejemplo resuelto.</p>
+      <div class="notation" id="notationBox"></div>
+    </div>
+    <div id="algoContent"></div>
+  </section>
+
   <!-- ════════ METODOLOGÍA ════════ -->
   <section class="view" id="v-metodo">
     <div class="panel">
@@ -356,6 +491,7 @@ import { construirDatosEjemplo } from './data.js';
 import {
   crearContexto, calcularSucursal, salidaJSON, MODELO,
   construirCalendario, DIAS_SEMANA, resolverKPC,
+  capacidadFisicaKg, pct,
 } from './engine.js';
 import { correrTests } from './tests.js';
 
@@ -453,6 +589,13 @@ function initControls(){
     navigator.clipboard?.writeText(document.getElementById('jsonOut').textContent);
     const b=document.getElementById('copyJson'); b.textContent='¡Copiado!'; setTimeout(()=>b.textContent='Copiar JSON',1200);
   };
+  // calculadora
+  document.getElementById('calcForm').onsubmit=(e)=>{e.preventDefault(); computeCalc();};
+  document.getElementById('calcReset').onclick=()=>{aplicarPreset('norte'); computeCalc();};
+  document.getElementById('incCong').onchange=(e)=>{
+    document.getElementById('congFields').classList.toggle('off',!e.target.checked); computeCalc();
+  };
+  document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{aplicarPreset(b.dataset.preset); computeCalc();});
 }
 function refreshAudAmb(){
   const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.audId);
@@ -470,6 +613,8 @@ function showTab(tab){
   if(tab==='tendencia'){renderTendencia();renderMonthChart();renderHeatmap();}
   if(tab==='auditoria'){refreshAudAmb();renderAuditoria();}
   if(tab==='export')renderExport();
+  if(tab==='calculadora')renderCalculadora();
+  if(tab==='algoritmos')renderAlgoritmos();
   if(tab==='tests')renderTests();
 }
 
@@ -861,6 +1006,284 @@ function renderTests(){
     h+=`<div class="test-row"><span class="st ${t.pass?'pass':'fail'}">${t.pass?'PASS':'FAIL'}</span><div class="body"><div class="tn">${t.nombre}</div><div class="td">→ ${t.detalle}</div></div></div>`;
   }
   document.getElementById('testResults').innerHTML=h;
+}
+
+/* ════════ CALCULADORA ════════ */
+const CALC_PRESETS = {
+  norte:{inc:true,
+    f:{dem:120000,kpc:14,doh:4,push:0,m2:1000,hu:5,uf:0.40,dens:400,prod:22,h:7.5,dot:40,m2op:550,m2p:11},
+    c:{dem:50000,kpc:16,doh:9,push:0,m2:450,hu:5,uf:0.40,dens:220,prod:18,h:7.5,dot:16,m2op:250,m2p:11}},
+  B:{inc:true, /* consolidación: Fresco 80% cap @60% + Congelado 20% cap @150% = 78% */
+    f:{dem:120000,kpc:14,doh:4,push:0,m2:1000,hu:5,uf:0.40,dens:400,prod:30,h:7.5,dot:40,m2op:600,m2p:11},
+    c:{dem:50000,kpc:16,doh:6,push:0,m2:500,hu:5,uf:0.40,dens:200,prod:22,h:7.5,dot:16,m2op:250,m2p:11}},
+  C:{inc:false, /* estructural 80% + push 25 pp = observado 105%, DOH intacto */
+    f:{dem:200000,kpc:15,doh:4,push:250000,m2:1000,hu:5,uf:0.50,dens:400,prod:28,h:7.5,dot:60,m2op:600,m2p:11}},
+  D:{inc:false, /* físico 75% ≠ operación 111% (no se promedian) */
+    f:{dem:150000,kpc:15,doh:5,push:0,m2:1000,hu:5,uf:0.40,dens:500,prod:20,h:7.5,dot:60,m2op:600,m2p:11}},
+  critico:{inc:true,
+    f:{dem:95000,kpc:14,doh:4,push:0,m2:1100,hu:6,uf:0.42,dens:210,prod:24,h:7.5,dot:32,m2op:600,m2p:11},
+    c:{dem:72000,kpc:15,doh:12,push:130000,m2:500,hu:6,uf:0.38,dens:250,prod:18,h:7.5,dot:18,m2op:250,m2p:11}},
+};
+function setF(name,val){const el=document.querySelector(`[name="${name}"]`); if(el)el.value=val;}
+function aplicarPreset(name){
+  const p=CALC_PRESETS[name]||CALC_PRESETS.norte;
+  document.getElementById('incCong').checked=p.inc;
+  document.getElementById('congFields').classList.toggle('off',!p.inc);
+  for(const k in p.f) setF('f_'+k,p.f[k]);
+  if(p.c) for(const k in p.c) setF('c_'+k,p.c[k]);
+}
+function leerAmbiente(px){
+  const g=n=>parseFloat((document.querySelector(`[name="${px}_${n}"]`)||{}).value);
+  return {dem:g('dem'),kpc:g('kpc'),doh:g('doh'),push:g('push')||0,
+    geo:{M2:g('m2'),Altura_Util:g('hu'),Factor_Utilizacion:g('uf'),Densidad_Kg_M3:g('dens')},
+    prod:g('prod'),h:g('h'),dot:g('dot'),m2op:g('m2op'),m2p:g('m2p')};
+}
+function calcAmbiente(inp){
+  const cap=capacidadFisicaKg(inp.geo);
+  const capKg=cap.ok?cap.CAP:NaN;
+  // Rolling-forward con demanda diaria constante ⇒ Istruct = demanda × DOH (exacto).
+  const istruct=inp.dem*inp.doh;
+  const iobs=istruct+(inp.push||0);
+  const boxes=inp.dem/inp.kpc;
+  const hhAvail=inp.dot*inp.h, capBoxes=hhAvail*inp.prod;
+  const nReq=boxes/(inp.prod*inp.h), nMax=inp.m2op/inp.m2p;
+  return {inp,cap,capKg,istruct,iobs,boxes,hhAvail,capBoxes,nReq,nMax,
+    sStruct:pct(istruct,capKg),sObs:pct(iobs,capKg),
+    sOp:pct(boxes,capBoxes),sStaff:pct(nReq,inp.dot),sSpace:pct(nReq,nMax)};
+}
+function renderCalculadora(){ computeCalc(); }
+function computeCalc(){
+  const incC=document.getElementById('incCong').checked;
+  const ambs=[['Fresco',calcAmbiente(leerAmbiente('f'))]];
+  if(incC) ambs.push(['Congelado',calcAmbiente(leerAmbiente('c'))]);
+  const el=document.getElementById('calcResult');
+
+  // validación de capacidad (NO CALCULABLE si falta / inválida) — §29
+  const faltan=ambs.filter(([n,a])=>!a.cap.ok).map(([n,a])=>`${n}: falta ${a.cap.falta}`);
+  if(faltan.length){
+    el.innerHTML=`<div class="panel"><div class="warn">NO CALCULABLE — ${faltan.join(' · ')} (§29). El motor no imputa valores faltantes.</div></div>`;
+    return;
+  }
+  // consolidación física ponderada por capacidad (§14)
+  const sumCap=ambs.reduce((s,[,a])=>s+a.capKg,0);
+  const sumStruct=ambs.reduce((s,[,a])=>s+a.istruct,0);
+  const sumObs=ambs.reduce((s,[,a])=>s+a.iobs,0);
+  const branchStruct=pct(sumStruct,sumCap), branchObs=pct(sumObs,sumCap);
+  const opMax=Math.max(...ambs.map(([,a])=>a.sOp));
+  const staffMax=Math.max(...ambs.map(([,a])=>a.sStaff));
+  const spaceMax=Math.max(...ambs.map(([,a])=>a.sSpace));
+  const deltaPush=branchObs-branchStruct;
+  const gapKg=sumCap-sumObs;
+  // restricción dominante del día
+  const dims={};
+  ambs.forEach(([n,a])=>{dims['Físico '+n]=a.sObs;});
+  dims['Operacional']=opMax; dims['Dotación']=staffMax; dims['Espacio-personas']=spaceMax;
+  let dom=null; for(const k in dims){if(isFinite(dims[k])&&(dom===null||dims[k]>dom.v))dom={k,v:dims[k]};}
+
+  const big=(lbl,v,unit,foot)=>`<div class="big-cell"><div class="bl">${lbl}</div><div class="bv" style="color:${satText(v)}">${fmt(v)}${unit||''}</div><div class="bd">${foot||''}</div></div>`;
+  let h=`<div class="panel"><h2>Diagnóstico de saturación <span class="tag">día representativo · misma matemática corporativa</span></h2>
+    <div class="calc-verdict">
+      ${big('Físico observado (sucursal)',branchObs,'%',`estructural ${fmt(branchStruct)}% · +${fmt(deltaPush)} pp push`)}
+      ${big('Operacional (máx. cámara)',opMax,'%','cajas vs capacidad de proceso')}
+      ${big('Dotación (máx.)',staffMax,'%','personas requeridas vs disponibles')}
+      ${big('Espacio-personas (máx.)',spaceMax,'%','requeridas vs máximo operable')}
+      ${big('Restricción dominante',dom?dom.v:NaN,'%',dom?dom.k:'—')}
+    </div>
+    <p class="note" style="margin-top:14px">Holgura/déficit físico: <b class="mono" style="color:${gapKg>=0?'#0d5c78':'#F04718'}">${gapKg>=0?'+':''}${fmt0(gapKg)} kg</b> (${fmt(pct(gapKg,sumCap))}%). Las dimensiones se muestran por separado — <strong>nunca se promedian</strong> (§19). El modelo sólo diagnostica; no recomienda acción (§43).</p>
+  </div>`;
+
+  // cámaras (físico observado)
+  h+=`<div class="panel"><h2>Cámaras — físico observado por ambiente <span class="tag">ponderación por capacidad (§14)</span></h2><div class="dims">`;
+  h+=dimBar('Físico sucursal (ponderado)',branchObs);
+  ambs.forEach(([n,a])=>{h+=dimBar(`${AMB_ICON(n)} ${n}`,a.sObs);});
+  h+=`</div></div>`;
+
+  // explicación paso a paso por ambiente (§30)
+  h+=`<div class="panel"><h2>Explicación detallada — trazabilidad total <span class="tag">(§30) fórmula con valores sustituidos</span></h2>`;
+  ambs.forEach(([n,a])=>{h+=calcExplain(n,a);});
+  if(ambs.length===2){
+    h+=`<div class="explain" style="margin-top:12px"><b>CONSOLIDACIÓN FÍSICA DE SUCURSAL (§14)</b>
+
+Σ inventario observado : <span class="hl">${fmt0(sumObs)} kg</span>  = ${ambs.map(([n,a])=>fmt0(a.iobs)).join(' + ')}
+Σ capacidad            : <span class="hl">${fmt0(sumCap)} kg</span>  = ${ambs.map(([n,a])=>fmt0(a.capKg)).join(' + ')}
+Saturación sucursal    = ${fmt0(sumObs)} / ${fmt0(sumCap)} × 100 = <b>${fmt(branchObs,2)}%</b>
+
+  <span class="cm">La cámara más crítica sigue visible por separado; el consolidado no la oculta.</span></div>`;
+  }
+  h+=`</div>`;
+  el.innerHTML=h;
+}
+function calcExplain(nombre,a){
+  const g=a.inp.geo, inp=a.inp;
+  return `<div class="explain" style="margin-bottom:12px"><b>SATURACIÓN ${nombre.toUpperCase()} — día representativo</b>
+
+Demanda del día        : <span class="hl">${fmt0(inp.dem)} kg</span>
+Kg por caja            : ${fmt(inp.kpc,2)} kg
+Cajas demandadas       : ${fmt0(a.boxes)}   <span class="cm">(= ${fmt0(inp.dem)} / ${fmt(inp.kpc,2)})</span>
+
+DOH                    : ${fmt(inp.doh,2)} días
+Inventario estructural : <span class="hl">${fmt0(a.istruct)} kg</span>  <span class="cm">(rolling-forward con demanda constante = demanda × DOH)</span>
+Push extraordinario    : ${fmt0(inp.push)} kg
+Inventario observado   : <span class="hl">${fmt0(a.iobs)} kg</span>
+
+CAPACIDAD FÍSICA (geometría §12)
+  CAPkg = ${fmt0(g.M2)} × ${fmt(g.Altura_Util,2)} × ${g.Factor_Utilizacion} × ${g.Densidad_Kg_M3}
+       = <span class="hl">${fmt0(a.capKg)} kg</span>
+
+SATURACIÓN FÍSICA
+  Estructural = ${fmt0(a.istruct)} / ${fmt0(a.capKg)} × 100 = <b>${fmt(a.sStruct,2)}%</b>
+  Observada   = ${fmt0(a.iobs)} / ${fmt0(a.capKg)} × 100 = <b>${fmt(a.sObs,2)}%</b>
+  Impacto push = ${fmt(a.sObs-a.sStruct,2)} pp
+
+OPERACIÓN (§16)
+  HH disponibles = ${fmt(inp.dot,0)} × ${fmt(inp.h,2)} = ${fmt0(a.hhAvail)} HH
+  Capacidad      = ${fmt0(a.hhAvail)} × ${fmt(inp.prod,1)} = ${fmt0(a.capBoxes)} cajas
+  Sat. operacional = ${fmt0(a.boxes)} / ${fmt0(a.capBoxes)} × 100 = <b>${fmt(a.sOp,2)}%</b>
+
+PERSONAS (§17–§18)
+  Requeridas   = ${fmt0(a.boxes)} / (${fmt(inp.prod,1)} × ${fmt(inp.h,2)}) = ${fmt(a.nReq,1)} pers
+  Sat. dotación = ${fmt(a.nReq,1)} / ${fmt(inp.dot,0)} × 100 = <b>${fmt(a.sStaff,2)}%</b>
+  Máx. espacio = ${fmt0(inp.m2op)} / ${fmt(inp.m2p,0)} = ${fmt(a.nMax,1)} pers
+  Sat. espacio-personas = ${fmt(a.nReq,1)} / ${fmt(a.nMax,1)} × 100 = <b>${fmt(a.sSpace,2)}%</b></div>`;
+}
+
+/* ════════ ALGORITMOS (documentación pedagógica) ════════ */
+const NOTACION=[['s','sucursal'],['a','ambiente {Fresco, Congelado}'],['y','año'],['m','mes'],['d','día'],['w','día de semana'],['n','⌊DOH⌋'],['r','DOH − n'],['T','umbral (%)'],['α','participación de demanda']];
+const FR=(n,d)=>`<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
+const ALGORITMOS=[
+  {n:'01',t:'Calendario operativo real',s:'§3 · base temporal del motor',
+    lead:'Construye los días reales de cada año 2026–2032 y marca cuáles son operativos. Toda la demanda se distribuye únicamente sobre días operativos.',
+    formula:`días(y,m) = fecha(y, m+1, 0)     <span class="cm">// maneja años bisiestos</span>\nw(d) = díaSemana(d)   <span class="op">∈</span> {0=Dom … 6=Sáb}\noperativo(d) = w(d) <span class="op">∈</span> {Lun … Sáb}`,
+    vars:[['días','n.º de días del mes'],['w(d)','día de semana de d'],['operativo','¿se despacha ese día?']],
+    reglas:['3 · Domingo sólo si la sucursal lo declara operativo.','3 · Se usa el calendario real del año (bisiestos incluidos).'],
+    ej:`feb 2028 → <b>29 días</b>; los 52 domingos del año quedan <b>no operativos</b>.`},
+  {n:'02',t:'Estacionalidad mensual normalizada',s:'§6 · distribuye la demanda anual entre meses',
+    lead:'Reparte la demanda anual entre los 12 meses según el perfil estacional de la sucursal. La estacionalidad DISTRIBUYE los kilos; nunca los crea ni los elimina.',
+    formula:`Ê(m) = ${FR('E(m)','Σₘ E(m)')}      Dₘₑₛ(m) = Dₐₙᵤₐₗ <span class="op">×</span> Ê(m)`,
+    vars:[['E(m)','factor estacional del mes (relativo)'],['Ê(m)','factor normalizado (Σ = 1)'],['Dₘₑₛ','kg del mes']],
+    reglas:['6 · Σ Ê(m) = 1 exacto tras normalizar.','6 · Σₘ Dₘₑₛ = Dₐₙᵤₐₗ (control obligatorio).'],
+    ej:`Dₐₙᵤₐₗ = 12.000.000 kg, verano al 1,4× ⇒ enero recibe más kilos, pero <b>Σ meses = 12.000.000</b>.`},
+  {n:'03',t:'Distribución Lunes–Sábado',s:'§7 · reparte el mes entre días operativos',
+    lead:'Los días de semana no pesan igual. Los pesos relativos se normalizan sobre los días operativos reales del mes (contando cuántos hay de cada uno).',
+    formula:`NW(d) = ${FR('W(w(d))','Σⱼ W(w(j))  (j ∈ días operativos del mes)')}\nD_día(d) = Dₘₑₛ <span class="op">×</span> NW(d)`,
+    vars:[['W(w)','peso relativo del día de semana'],['NW(d)','peso normalizado del día'],['D_día','kg del día']],
+    reglas:['7 · Los pesos no requieren sumar 100%.','7 · Σ días del mes = Dₘₑₛ y Σ del año = Dₐₙᵤₐₗ (obligatorio).'],
+    ej:`Subir el peso del jueves cambia el reparto diario, pero la <b>demanda anual permanece idéntica</b> (TEST F).`},
+  {n:'04',t:'Conversión a cajas',s:'§8 · kilos → cajas',
+    lead:'Las cajas manipuladas determinan la carga operativa. Los kg/caja pueden variar por sucursal, ambiente, mes, día y año; nunca alteran los kilos de demanda.',
+    formula:`Cajas(d) = ${FR('D_día(d)','KPC')}`,
+    vars:[['KPC','kg promedio por caja'],['Cajas','cajas demandadas del día']],
+    reglas:['8 · El KPC afecta cajas, HH, operación y personas — no la demanda en kg.'],
+    ej:`Al duplicar el KPC, los <b>kilos no cambian</b> pero las <b>cajas se reducen a la mitad</b> (TEST G).`},
+  {n:'05',t:'Inventario estructural — rolling forward',s:'§10 · inventario necesario para cubrir el DOH',
+    lead:'En vez de demanda × DOH, se acumula la demanda futura real de los próximos DOH días (respetando la estacionalidad y las diferencias entre días).',
+    formula:`n = ⌊DOH⌋ ,  r = DOH − n\nI_estruct(d) = Σ<sub>h=0</sub><sup>n−1</sup> D_día(d+h)  <span class="op">+</span>  r <span class="op">×</span> D_día(d+n)`,
+    vars:[['DOH','días de cobertura (Days On Hand)'],['n','parte entera del DOH'],['r','fracción del DOH'],['I_estruct','inventario estructural (kg)']],
+    reglas:['10 · El DOH_Base declara si son días calendario u operativos — nunca se asume.','10 · Con demanda constante, el rolling-forward = demanda × DOH (exacto).'],
+    ej:`DOH 4,5 con días 10·20·30·40·50 ⇒ (10+20+30+40) + 0,5×50 = <b>125</b>.`},
+  {n:'06',t:'Push / On Hand → inventario observado',s:'§11 · stock extraordinario, separado',
+    lead:'La mercadería extraordinaria (push) se suma aparte del inventario estructural. Si hay On Hand real confiable, se usa ese valor y el push queda como variable explicativa.',
+    formula:`I_obs(d) = I_estruct(d) <span class="op">+</span> Push(d)     <span class="cm">// o = On Hand real</span>`,
+    vars:[['Push','kg extraordinarios del día'],['I_obs','inventario observado (kg)']],
+    reglas:['11 · Nunca se modifica el DOH para absorber el push.','11 · Se reportan siempre dos escenarios: estructural y observado.'],
+    ej:`Estructural 80% + push equivalente a 25 pp ⇒ observado <b>105%</b>, con DOH intacto (TEST C).`},
+  {n:'07',t:'Capacidad física desde geometría',s:'§12 · capacidad real de la cámara',
+    lead:'La capacidad se origina en la geometría del recinto, no en las posiciones pallet instaladas (que reflejan el layout actual y pueden inducir falsa falta de capacidad).',
+    formula:`CAPkg = M² <span class="op">×</span> H_útil <span class="op">×</span> UF <span class="op">×</span> DENS`,
+    vars:[['M²','superficie de la cámara'],['H_útil','altura útil (m)'],['UF','factor de utilización volumétrica (0–1]'],['DENS','densidad logística (kg/m³)'],['CAPkg','capacidad física (kg)']],
+    reglas:['12 · No se usan posiciones pallet como capacidad principal.','40 · Control: M²>0, H>0, 0<UF≤1, DENS>0.'],
+    ej:`1.000 × 5 × 0,40 × 400 = <b>800.000 kg</b>.`},
+  {n:'08',t:'Saturación física por ambiente',s:'§13 · inventario vs capacidad',
+    lead:'Compara el inventario requerido con la capacidad física de la cámara, en dos escenarios.',
+    formula:`S_estruct = ${FR('I_estruct','CAPkg')} × 100      S_obs = ${FR('I_obs','CAPkg')} × 100`,
+    vars:[['S_estruct','saturación física estructural (%)'],['S_obs','saturación física observada (%)']],
+    reglas:['42 · S > 100% = sobre capacidad; umbrales menores son señales preventivas.'],
+    ej:`480.000 / 800.000 × 100 = <b>60%</b>.`},
+  {n:'09',t:'Consolidación física de sucursal',s:'§14 · ponderada por capacidad',
+    lead:'La saturación de la sucursal pondera cada ambiente por su capacidad; equivale a sumar inventarios y dividir por la suma de capacidades. No es el máximo ni el promedio simple.',
+    formula:`S_suc = ${FR('Σₐ Inventario(a)','Σₐ CAPkg(a)')} × 100 = Σₐ [ S(a) × ${FR('CAPkg(a)','Σ CAPkg')} ]`,
+    vars:[['S_suc','saturación física de la sucursal (%)'],['WeightCap(a)','peso = CAPkg(a) / Σ CAPkg']],
+    reglas:['14 · Se mantienen visibles el consolidado y cada cámara.','14 · Nunca se oculta una cámara crítica en el consolidado.'],
+    ej:`Congelado 150% (20% cap) + Fresco 60% (80% cap) ⇒ sucursal <b>78%</b>, no 150% (TEST B).`},
+  {n:'10',t:'Saturación operacional',s:'§16 · ¿puede procesarse la demanda?',
+    lead:'Mide si la operación puede procesar las cajas demandadas con las HH disponibles y la productividad.',
+    formula:`HH_disp = N <span class="op">×</span> H     CAP_cajas = HH_disp <span class="op">×</span> P\nS_op = ${FR('Cajas','CAP_cajas')} × 100`,
+    vars:[['N','personas disponibles (dotación)'],['H','horas productivas por persona'],['P','productividad (cajas/HH)'],['S_op','saturación operacional (%)']],
+    reglas:['16 · 100% = utilización total; >100% = la demanda supera la capacidad de proceso.'],
+    ej:`10.000 cajas / (40×7,5×22=6.600) ⇒ el ejemplo requiere dotación acorde al throughput.`},
+  {n:'11',t:'Saturación de dotación',s:'§17 · ¿tengo suficientes personas?',
+    lead:'Compara las personas requeridas por la demanda con las personas disponibles.',
+    formula:`N_req = ${FR('Cajas','P × H')}      S_dot = ${FR('N_req','N')} × 100`,
+    vars:[['N_req','personas requeridas'],['S_dot','saturación de dotación (%)']],
+    reglas:['17 · Distingue "no tengo personas" de "puedo contratar más".'],
+    ej:`Si N_req = 45 y N = 40 ⇒ S_dot = <b>112,5%</b>.`},
+  {n:'12',t:'Saturación espacio-personas',s:'§18 · ¿caben las personas necesarias?',
+    lead:'Segunda restricción de personas: aunque se requieran más, puede no haber espacio físico seguro para incorporarlas.',
+    formula:`N_max = ${FR('M²_operable','M²_persona')}      S_esp = ${FR('N_req','N_max')} × 100`,
+    vars:[['M²_operable','superficie operable para personas'],['M²_persona','m² por persona'],['N_max','máx. personas físicamente operables'],['S_esp','saturación espacio-personas (%)']],
+    reglas:['18 · Nunca se confunde con la saturación de dotación.'],
+    ej:`N_req = 64,8 y N_max = 50 ⇒ S_esp = <b>129,6%</b>.`},
+  {n:'13',t:'Índice anual ponderado',s:'§20 · resultado corporativo por dimensión',
+    lead:'Aunque el motor calcula a diario, el índice corporativo es anual: promedio de la saturación diaria ponderado por la participación de demanda de cada día. Cada dimensión se agrega por separado.',
+    formula:`α(d) = ${FR('D(d)','Σ D')}      S_anual = Σ<sub>d</sub> [ S(d) × α(d) ]`,
+    vars:[['α(d)','participación de demanda del día (Σ = 1)'],['S_anual','índice anual de la dimensión (%)']],
+    reglas:['19 · Prohibido promediar dimensiones distintas: (físico+op+personas)/3.','20 · Se calcula por separado para cada dimensión.'],
+    ej:`Un mes a 120% y once bajo 80% NO dan un año "siempre saturado": el índice pondera y el peak se reporta aparte (TEST E).`},
+  {n:'14',t:'Peak, P95 y exposición',s:'§21–§22 · el índice no puede ir solo',
+    lead:'Un promedio anual puede esconder tensión temporal. Por eso cada dimensión reporta también su máximo, su percentil 95 y su exposición sobre umbrales, en días y en volumen.',
+    formula:`S_peak = máx S(d)     P95 = percentil₉₅ S(d)\nExp_días(T) = ${FR('# días S(d) ≥ T','# días operativos')} × 100\nExp_kg(T) = ${FR('Σ demanda[S(d) ≥ T]','demanda anual')} × 100`,
+    vars:[['S_peak','saturación máxima del año'],['P95','percentil 95 (interpolado)'],['T','umbral configurable (85/95/100…)']],
+    reglas:['22 · Los umbrales se editan como parámetro, sin tocar la matemática.'],
+    ej:`Exp_días(100%) = 8,3% ⇒ un día de cada doce supera el 100%.`},
+  {n:'15',t:'Holgura / déficit',s:'§23 · capacidad libre o faltante',
+    lead:'Cuánta capacidad queda libre (o falta) frente al inventario. Se muestra; no se recomienda qué hacer.',
+    formula:`Gap_kg = CAPkg − Inventario      Gap% = ${FR('Gap_kg','CAPkg')} × 100`,
+    vars:[['Gap_kg','holgura (>0) o déficit (<0) en kg'],['Gap%','holgura/déficit relativo']],
+    reglas:['23 · Se muestra el resultado; nunca la acción a tomar.'],
+    ej:`CAP 1.000.000 − inventario 1.050.000 = <b>−50.000 kg</b> (déficit).`},
+  {n:'16',t:'Impacto del push',s:'§24 · estructural vs observado',
+    lead:'Separa la saturación estructural de la causada por inventario extraordinario, en kg y en puntos porcentuales.',
+    formula:`Push_kg = I_obs − I_estruct\nΔ_sat = S_obs − S_estruct   <span class="cm">(puntos porcentuales)</span>`,
+    vars:[['Push_kg','kg de push del período'],['Δ_sat','impacto del push (pp)']],
+    reglas:['24 · Permite distinguir tensión estructural de tensión por push.'],
+    ej:`Estructural 82% y observado 101% ⇒ impacto push = <b>+19 pp</b>.`},
+  {n:'17',t:'Restricción dominante',s:'§25 · qué dimensión tensiona más',
+    lead:'Para cada día identifica la dimensión más tensionada entre físico (por cámara), operacional, dotación y espacio-personas. Es un diagnóstico; no propone soluciones.',
+    formula:`Dominante(d) = argmáx { S_físico_fre, S_físico_con, S_op, S_dot, S_esp }`,
+    vars:[['Dominante','dimensión de mayor saturación del día']],
+    reglas:['25 · Sólo se muestra la restricción; no se recomienda cómo resolverla.'],
+    ej:`Restricción dominante: <b>Congelado físico 112%</b> — 15 ene 2028.`},
+];
+function renderAlgoritmos(){
+  const nb=document.getElementById('notationBox');
+  if(nb && !nb.dataset.done){
+    nb.innerHTML=NOTACION.map(([s,d])=>`<span class="nt"><b>${s}</b> ${d}</span>`).join('');
+    nb.dataset.done='1';
+  }
+  const el=document.getElementById('algoContent');
+  if(el.dataset.done) return;
+  let h=`<div class="algo-expand-all"><button class="ghost" id="algoOpen">Expandir todo</button><button class="ghost" id="algoClose">Contraer todo</button></div>`;
+  for(const A of ALGORITMOS){
+    h+=`<div class="algo">
+      <div class="algo-head"><span class="algo-num">${A.n}</span><div class="algo-title">${A.t}<small>${A.s}</small></div><span class="algo-toggle">+</span></div>
+      <div class="algo-body">
+        <p class="lead">${A.lead}</p>
+        <div class="formula">${A.formula}</div>
+        <div class="algo-cols">
+          <div class="vars"><div class="vh">Variables</div>${A.vars.map(([s,d])=>`<div class="vr"><b>${s}</b><span>${d}</span></div>`).join('')}</div>
+          <div><div class="example"><div class="eh">Ejemplo</div><div class="er">${A.ej}</div></div>
+            <div class="rulechips">${A.reglas.map(r=>`<div class="rulechip">${r}</div>`).join('')}</div>
+          </div>
+        </div>
+      </div></div>`;
+  }
+  el.innerHTML=h;
+  el.querySelectorAll('.algo-head').forEach(hd=>hd.onclick=()=>hd.parentElement.classList.toggle('open'));
+  document.getElementById('algoOpen').onclick=()=>el.querySelectorAll('.algo').forEach(a=>a.classList.add('open'));
+  document.getElementById('algoClose').onclick=()=>el.querySelectorAll('.algo').forEach(a=>a.classList.remove('open'));
+  // abrir el primero por defecto
+  el.querySelector('.algo')?.classList.add('open');
+  el.dataset.done='1';
 }
 
 boot();
