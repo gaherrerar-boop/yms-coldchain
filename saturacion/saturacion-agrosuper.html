@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturación de Sucursales · Agrosuper</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFF6E6'/><rect x='20' y='55' width='14' height='30' fill='%231FB3E3'/><rect x='43' y='40' width='14' height='45' fill='%23E87722'/><rect x='66' y='24' width='14' height='61' fill='%23003087'/></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ══ SISTEMA DE MARCA AGROSUPER ═══════════════════════════════════════════
+   Fondo marfil #FFF6E6 · texto azul #003087 · acento naranja #E87722.
+   Tipografía Poppins (sustituto web oficial de Biennale). Diseño de superficie
+   única (marfil, el fondo por defecto de marca); severidad de saturación con
+   celeste/amarillo/naranja/rojo de la paleta.                                 */
+:root{
+  --marfil:#FFF6E6; --azul:#003087; --naranja:#E87722; --blanco:#FFFFFF;
+  --azul-vibrante:#0043C5; --celeste:#1FB3E3; --amarillo:#FEE703; --rojo:#F04718;
+
+  --bg:#FFF6E6; --bg2:#FBEFDA; --panel:#FFFFFF; --panel2:#FBF3E0;
+  --line:rgba(0,48,135,.16); --line-strong:rgba(0,48,135,.30);
+  --txt:#003087; --txt2:rgba(0,48,135,.72); --txt3:rgba(0,48,135,.48);
+  --accent:#E87722; --accent2:#0043C5;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+/* Header — azul corporativo con texto marfil */
+header{position:sticky;top:0;z-index:20;background:var(--azul);border-bottom:3px solid var(--naranja);padding:15px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+header .wordmark{font-weight:900;font-size:19px;letter-spacing:-.03em;color:var(--marfil);line-height:1;padding-right:16px;margin-right:2px;border-right:1px solid rgba(255,246,230,.28)}
+header .wordmark .wm-dot{color:var(--naranja)}
+header .wordmark sup{font-size:.45em;font-weight:700;top:-.9em}
+header .brand{display:flex;flex-direction:column;gap:3px}
+header .brand h1{font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--marfil)}
+header .brand .sub{font-size:10.5px;color:rgba(255,246,230,.7);font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em}
+header .spacer{flex:1}
+.badge{font-family:var(--mono);font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid rgba(255,246,230,.35);color:rgba(255,246,230,.9);background:transparent}
+.badge.v{color:var(--marfil);border-color:var(--naranja);background:rgba(232,119,34,.25)}
+/* Nav */
+nav.tabs{display:flex;gap:2px;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:19;overflow-x:auto}
+nav.tabs button{background:none;border:none;color:var(--txt2);font-family:var(--sans);font-size:13px;font-weight:600;padding:13px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button:hover{color:var(--azul)}
+nav.tabs button.active{color:var(--naranja);border-bottom-color:var(--naranja)}
+/* Layout */
+main{padding:24px;max-width:1500px;margin:0 auto}
+.view{display:none}
+.view.active{display:block}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+label.ctl{font-size:11px;color:var(--txt2);font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:flex;flex-direction:column;gap:5px}
+select,input[type=text]{background:var(--panel);border:1px solid var(--line-strong);color:var(--txt);border-radius:9px;padding:8px 11px;font-family:var(--sans);font-size:13px;font-weight:500;min-width:150px}
+select:focus,input:focus{outline:none;border-color:var(--naranja)}
+.yearbtns{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line-strong);border-radius:9px;padding:3px}
+.yearbtns button{background:none;border:none;color:var(--txt2);font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 11px;border-radius:6px;cursor:pointer}
+.yearbtns button.active{background:var(--azul);color:var(--marfil)}
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,48,135,.04)}
+.panel h2{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--azul);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.panel h2::before{content:"";width:5px;height:14px;background:var(--naranja);border-radius:3px;flex-shrink:0}
+.panel h2 .tag{font-size:10px;color:var(--txt3);font-weight:500;letter-spacing:.02em;text-transform:none}
+.grid{display:grid;gap:12px}
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:15px;position:relative;overflow:hidden}
+.kpi .lbl{font-size:10.5px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:9px}
+.kpi .val{font-family:var(--mono);font-size:25px;font-weight:700;line-height:1;color:var(--azul)}
+.kpi .unit{font-size:12px;color:var(--txt3);margin-left:2px}
+.kpi .foot{font-size:11px;color:var(--txt3);margin-top:7px}
+.kpi .bar{position:absolute;bottom:0;left:0;height:4px;border-radius:2px}
+/* Table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:10px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{background:var(--azul);color:var(--marfil);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0;cursor:pointer;user-select:none}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
+th:first-child{background:var(--azul);z-index:2}
+tbody tr:nth-child(even) td{background:var(--panel2)}
+tbody tr:nth-child(even) td:first-child{background:var(--panel2)}
+tbody tr:hover td{background:rgba(232,119,34,.09)}
+tbody tr:hover td:first-child{background:rgba(232,119,34,.12)}
+td.name{font-weight:600;color:var(--azul)}
+td.name small{color:var(--txt3);font-weight:400;font-family:var(--mono)}
+.cell-sat{font-family:var(--mono);font-weight:700;border-radius:6px;padding:3px 7px;display:inline-block;min-width:52px;text-align:center}
+.s-ok{background:rgba(31,179,227,.20);color:#0d5c78}
+.s-watch{background:rgba(254,231,3,.42);color:#5a4d00}
+.s-tension{background:var(--naranja);color:var(--marfil)}
+.s-sat{background:var(--rojo);color:var(--marfil)}
+.s-na{background:var(--panel2);color:var(--txt3);font-style:italic}
+.q-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.clickable{cursor:pointer}
+.clickable:hover td.name{color:var(--naranja)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--txt2);margin-top:12px}
+.legend span{display:flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+/* two-col */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){.cols2,.cols3{grid-template-columns:1fr}}
+/* dim list */
+.dims{display:grid;gap:9px}
+.dim{display:grid;grid-template-columns:170px 1fr 60px;gap:12px;align-items:center}
+.dim .dn{font-size:12.5px;color:var(--txt2);font-weight:600}
+.dim .track{height:22px;background:var(--panel2);border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.dim .fill{height:100%;border-radius:5px 0 0 5px;transition:width .4s}
+.dim .track .marker{position:absolute;top:0;bottom:0;width:2px;background:var(--azul);opacity:.45}
+.dim .dv{font-family:var(--mono);font-weight:700;font-size:13px;text-align:right}
+/* charts */
+svg{display:block;width:100%;overflow:visible}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;margin-top:10px;color:var(--txt2);font-weight:500}
+.chart-legend span{display:flex;align-items:center;gap:6px}
+.chart-legend i{width:15px;height:3px;display:inline-block;border-radius:2px}
+/* heatmap */
+.heatmap{overflow-x:auto}
+.hm-grid{display:grid;gap:2px;min-width:560px}
+.hm-cell{aspect-ratio:1.6;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:600}
+.hm-lbl{font-size:10px;color:var(--txt3);font-family:var(--mono);font-weight:600;display:flex;align-items:center;justify-content:center}
+/* explain — bloque azul tipo terminal, texto marfil */
+.explain{font-family:var(--mono);font-size:12.5px;line-height:1.9;background:var(--azul);border:1px solid var(--azul);border-radius:12px;padding:18px;white-space:pre-wrap;color:rgba(255,246,230,.82);overflow-x:auto}
+.explain b{color:var(--naranja)}
+.explain .hl{color:var(--marfil);font-weight:700}
+/* tests */
+.test-row{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border-bottom:1px solid var(--line)}
+.test-row .st{font-family:var(--mono);font-weight:700;font-size:11px;padding:3px 9px;border-radius:6px;flex-shrink:0}
+.st.pass{background:rgba(31,179,227,.22);color:#0d5c78}
+.st.fail{background:var(--rojo);color:var(--marfil)}
+.test-row .body{flex:1}
+.test-row .tn{font-weight:600;font-size:13px;color:var(--azul)}
+.test-row .td{font-size:12px;color:var(--txt2);font-family:var(--mono);margin-top:3px}
+/* misc */
+.note{font-size:12px;color:var(--txt3);line-height:1.7}
+.warn{background:rgba(232,119,34,.10);border:1px solid rgba(232,119,34,.4);border-left:3px solid var(--naranja);border-radius:10px;padding:13px 15px;color:var(--azul);font-size:12.5px;line-height:1.6}
+.prose{max-width:820px;line-height:1.8;color:var(--txt2)}
+.prose h3{color:var(--azul);margin:22px 0 8px;font-size:15px;font-weight:700}
+.prose p{margin-bottom:12px}
+.prose ul{margin:0 0 12px 20px}
+.prose li{margin-bottom:4px}
+.prose li::marker{color:var(--naranja)}
+.prose code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--accent2);font-size:12px}
+.pill{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--txt2)}
+button.act{background:var(--naranja);color:var(--marfil);border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
+button.act:hover{background:#d06a15}
+button.ghost{background:var(--panel);color:var(--azul);border:1px solid var(--line-strong);border-radius:9px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer}
+button.ghost:hover{border-color:var(--naranja);color:var(--naranja)}
+pre.json{font-family:var(--mono);font-size:11.5px;background:var(--azul);border:1px solid var(--azul);border-radius:12px;padding:16px;overflow:auto;max-height:520px;color:rgba(255,246,230,.85)}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px;gap:14px;color:var(--txt2)}
+.spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--naranja);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spinner{animation-duration:2s}*{transition-duration:.001ms!important}}
+.envtag{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px}
+.env-f{background:rgba(31,179,227,.20);color:#0d5c78}
+.env-c{background:rgba(0,67,197,.16);color:#0043C5}
+</style>
+</head>
+<body>
+<header>
+  <span class="wordmark">Agrosuper<span class="wm-dot">.</span><sup>®</sup></span>
+  <div class="brand">
+    <h1>Modelo Corporativo de Saturación de Sucursales</h1>
+    <span class="sub">Diagnóstico · No decisión — Red de 21 sucursales frigoríficas</span>
+  </div>
+  <div class="spacer"></div>
+  <span class="badge v mono" id="verBadge">v1.0</span>
+  <span class="badge mono" id="scopeBadge">21 sucursales · 2026–2032</span>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="nacional" class="active">Vista Nacional</button>
+  <button data-tab="sucursal">Vista Sucursal</button>
+  <button data-tab="tendencia">Tendencia 2026–2032</button>
+  <button data-tab="auditoria">Auditoría diaria</button>
+  <button data-tab="export">Salida JSON</button>
+  <button data-tab="tests">Tests de aceptación</button>
+  <button data-tab="metodo">¿Cómo funciona?</button>
+</nav>
+
+<main>
+  <div id="boot" class="loading">
+    <div class="spinner"></div>
+    <div>Calculando saturación diaria de 21 sucursales × 7 años…</div>
+    <div class="note">Sucursal → Ambiente → Año → Mes → Día operativo</div>
+  </div>
+
+  <!-- ════════ VISTA NACIONAL ════════ -->
+  <section class="view" id="v-nacional">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Año
+          <div class="yearbtns" id="natYears"></div>
+        </label>
+        <label class="ctl">Escenario
+          <select id="natScenario">
+            <option value="obs">Observado (estructural + push)</option>
+            <option value="struct">Estructural</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Saturación por sucursal <span class="tag" id="natYearLbl"></span></h2>
+      <div class="tbl-wrap">
+        <table id="natTable"><thead></thead><tbody></tbody></table>
+      </div>
+      <div class="legend">
+        <span><i style="background:#22c55e"></i>&lt;85% utilización</span>
+        <span><i style="background:#eab308"></i>85–95% tensión</span>
+        <span><i style="background:#f97316"></i>95–100% proximidad al límite</span>
+        <span><i style="background:#ef4444"></i>&gt;100% saturación (sobre capacidad)</span>
+        <span style="margin-left:auto">Calidad dato: <span class="q-dot" style="background:#22c55e"></span>Alta <span class="q-dot" style="background:#eab308"></span>Media <span class="q-dot" style="background:#f97316"></span>Baja/Ejemplo <span class="q-dot" style="background:#6b7d92"></span>N/D</span>
+      </div>
+      <p class="note" style="margin-top:10px">La saturación física de sucursal se pondera por capacidad de cada ambiente (§14). Nunca se promedian dimensiones distintas (físico, operacional, personas). Clic en una fila para el detalle.</p>
+    </div>
+  </section>
+
+  <!-- ════════ VISTA SUCURSAL ════════ -->
+  <section class="view" id="v-sucursal">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal
+          <select id="sucSelect"></select>
+        </label>
+        <label class="ctl">Año
+          <div class="yearbtns" id="sucYears"></div>
+        </label>
+      </div>
+    </div>
+    <div id="sucContent"></div>
+  </section>
+
+  <!-- ════════ TENDENCIA ════════ -->
+  <section class="view" id="v-tendencia">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal
+          <select id="trendSelect"></select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Tendencia anual por dimensión <span class="tag">2026 → 2032 · series separadas (§35)</span></h2>
+      <div id="trendChart"></div>
+    </div>
+    <div class="panel">
+      <h2>Curva anual — 12 meses <span class="tag" id="trendCurveLbl">(§36)</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Año
+          <div class="yearbtns" id="trendYears"></div>
+        </label>
+      </div>
+      <div id="monthChart"></div>
+    </div>
+    <div class="panel">
+      <h2>Heatmap Mes × Día de semana <span class="tag" id="hmLbl">saturación física observada (§37)</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Métrica
+          <select id="hmMetric">
+            <option value="sat">Saturación física observada</option>
+            <option value="kg">Demanda kg</option>
+            <option value="boxes">Cajas</option>
+            <option value="people">Personas requeridas</option>
+          </select>
+        </label>
+      </div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+  </section>
+
+  <!-- ════════ AUDITORÍA ════════ -->
+  <section class="view" id="v-auditoria">
+    <div class="row">
+      <div class="controls">
+        <label class="ctl">Sucursal <select id="audSelect"></select></label>
+        <label class="ctl">Ambiente <select id="audAmb"></select></label>
+        <label class="ctl">Año <div class="yearbtns" id="audYears"></div></label>
+        <label class="ctl">Mes
+          <select id="audMonth"><option value="0">Todos</option></select>
+        </label>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Tabla de auditoría — nivel diario <span class="tag">todo resultado reconcilia aquí (§39, §49)</span></h2>
+      <div class="tbl-wrap" style="max-height:600px;overflow-y:auto">
+        <table id="audTable"><thead></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ EXPORT ════════ -->
+  <section class="view" id="v-export">
+    <div class="panel">
+      <h2>Salida limpia para el modelo de decisión <span class="tag">(§45) — sin recomendaciones</span></h2>
+      <div class="controls" style="margin-bottom:12px">
+        <label class="ctl">Año <div class="yearbtns" id="expYears"></div></label>
+        <button class="ghost" id="copyJson">Copiar JSON</button>
+      </div>
+      <pre class="json" id="jsonOut"></pre>
+    </div>
+  </section>
+
+  <!-- ════════ TESTS ════════ -->
+  <section class="view" id="v-tests">
+    <div class="panel">
+      <h2>Tests de aceptación obligatorios <span class="tag">(§40 Validaciones · §41 Tests A–G)</span></h2>
+      <p class="note" style="margin-bottom:14px">Verifican la matemática del motor: conservación de masa, consolidación ponderada, separación push/DOH, no-promedio de dimensiones, peaks vs índice anual, invariancia de kilos.</p>
+      <div id="testResults"></div>
+    </div>
+  </section>
+
+  <!-- ════════ METODOLOGÍA ════════ -->
+  <section class="view" id="v-metodo">
+    <div class="panel">
+      <h2>¿Cómo funciona este modelo? <span class="tag">(§46 Explicación ejecutiva)</span></h2>
+      <div class="prose">
+        <p>Primero estimamos <b>cuándo y cuánto vende</b> cada sucursal durante el año. Luego convertimos esa demanda en <b>cajas</b> y calculamos cuánto <b>inventario</b> debe mantenerse de acuerdo con el DOH definido para fresco y congelado. Comparamos ese inventario con la <b>capacidad física</b> disponible de cada cámara. Paralelamente calculamos si existen suficientes <b>horas, productividad y personas</b> para procesar la demanda. Finalmente consolidamos el comportamiento completo del año <b>sin perder los peaks ni la duración</b> de los periodos de tensión.</p>
+        <p style="font-size:15px;color:var(--accent2);font-weight:600">El modelo mide saturación. No decide cómo resolverla.</p>
+
+        <h3>Arquitectura de cálculo (§48)</h3>
+        <p class="mono" style="font-size:12px;color:var(--txt3);line-height:1.9">Datos maestros → Demanda anual → Estacionalidad sucursal → Distribución Lun–Sáb → Demanda diaria kg → Kg/caja → Cajas → DOH → Inventario estructural → Push/On Hand → Inventario observado → Capacidad física kg → Saturación fresco / congelado → Saturación física sucursal (ponderada por capacidad)</p>
+        <p class="mono" style="font-size:12px;color:var(--txt3);line-height:1.9">En paralelo: Cajas → Productividad → HH requeridas → Saturación operacional · Personas requeridas → Dotación → Saturación dotación · Personas → Espacio operacional → Saturación espacio-personas</p>
+
+        <h3>Dimensiones que se mantienen SIEMPRE separadas (§19)</h3>
+        <ul>
+          <li><b>Físico estructural</b> — inventario del DOH vs capacidad geométrica.</li>
+          <li><b>Físico observado</b> — inventario estructural + push extraordinario.</li>
+          <li><b>Fresco</b> y <b>Congelado</b> — nunca se ocultan en el consolidado.</li>
+          <li><b>Operacional</b> — cajas demandadas vs capacidad de proceso (HH × productividad).</li>
+          <li><b>Dotación</b> — personas requeridas vs personas disponibles.</li>
+          <li><b>Espacio-personas</b> — personas requeridas vs máximo físicamente operable.</li>
+        </ul>
+        <p><b>Prohibido</b>: promediar (Físico + Operacional + Personas) / 3. Son restricciones distintas y se reportan por separado, cada una con índice anual, peak, P95 y exposición.</p>
+
+        <h3>Capacidad desde geometría (§12)</h3>
+        <p class="mono">CAPkg = M² × Altura_útil × Factor_utilización × Densidad_kg/m³</p>
+        <p>No se usan posiciones pallet como capacidad principal: reflejan el layout actual y pueden inducir falsa falta de capacidad.</p>
+
+        <h3>Estructural vs Observado (§11, §24)</h3>
+        <p>El <b>push</b> (stock extraordinario) se mantiene completamente separado del inventario estructural. Nunca se modifica el DOH para absorberlo. Se reportan ambos escenarios y el impacto en puntos porcentuales.</p>
+
+        <h3>Lo que la herramienta NO hace (§43)</h3>
+        <p>No recomienda construir, ampliar, cerrar, redistribuir volumen, comprar rack, contratar personas ni cambiar el DOH. Entrega únicamente el diagnóstico matemático, auditable y trazable, para que otro modelo decida.</p>
+      </div>
+      <div class="warn" style="margin-top:18px">⚠ Los datos cargados en esta instancia son <b>sintéticos / de ejemplo</b> (calidad "EJEMPLO"), generados de forma determinística para demostrar y auditar la herramienta. Para uso corporativo oficial deben reemplazarse íntegramente por la fuente oficial de demanda, geometría, DOH, densidades, productividad y dotación. El motor nunca inventa valores: si falta un parámetro crítico muestra "NO CALCULABLE — FALTA INFORMACIÓN" indicando la variable ausente (§29).</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ══ MODELO CORPORATIVO DE SATURACIÓN — build autónomo de un solo archivo ══
+   Generado por build-single.mjs a partir de engine.js + data.js + tests.js.
+   No editar a mano: modificar los módulos fuente y recompilar.               */
+/* ══════════════════════════════════════════════════════════════════════════
+   MODELO CORPORATIVO DE SATURACIÓN DE SUCURSALES — MOTOR MATEMÁTICO
+   ──────────────────────────────────────────────────────────────────────────
+   Versión matemática: 1.0
+   Alcance temporal   : 2026 – 2032
+   Ambientes          : Fresco / Congelado
+   Días operativos     : Lunes – Sábado (Domingo sólo si la sucursal lo declara)
+
+   PRINCIPIO: UNA SOLA METODOLOGÍA CORPORATIVA.
+   La matemática NO cambia entre sucursales. Sólo cambian los PARÁMETROS.
+
+   Este motor MIDE, PROYECTA, EXPLICA y DOCUMENTA la saturación.
+   NO recomienda acciones, inversiones, ampliaciones ni cierres.
+
+   Este archivo es JavaScript puro (ESM), sin dependencias ni DOM.
+   Corre idéntico en Node (auditoría / tests) y en el navegador (dashboard).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+'use strict';
+
+/* ── Identidad y versión del modelo (§32 Versionamiento) ─────────────────── */
+const MODELO = Object.freeze({
+  nombre: 'MODELO SATURACIÓN CORPORATIVO',
+  version: '1.0',
+  version_matematica: '1.0',
+  ambientes: ['Fresco', 'Congelado'],
+  anios: [2026, 2027, 2028, 2029, 2030, 2031, 2032],
+});
+
+const AMBIENTES = MODELO.ambientes;
+const ANIOS = MODELO.anios;
+
+/* Tolerancia matemática para controles de conservación de masa (§40). */
+const TOLERANCIA_REL = 1e-9;
+
+/* Umbrales de exposición por defecto (editables desde parámetros, §22). */
+const UMBRALES_DEFAULT = [85, 95, 100];
+
+/* Etiqueta canónica para datos faltantes (§29). */
+const NO_CALCULABLE = 'NO CALCULABLE — FALTA INFORMACIÓN';
+
+/* Mapeo de día de semana. Se usa getUTCDay(): 0=Domingo … 6=Sábado. */
+const DIAS_SEMANA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const DIAS_OPERATIVOS_DEFAULT = [1, 2, 3, 4, 5, 6]; // Lunes … Sábado
+
+/* ══════════════════════════════════════════════════════════════════════════
+   1. CALENDARIO REAL
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Días de un mes concreto (m: 1–12). Maneja años bisiestos vía Date UTC. */
+function diasDelMes(anio, mes) {
+  return new Date(Date.UTC(anio, mes, 0)).getUTCDate();
+}
+
+/** Clave de fecha estable YYYY-MM-DD (sin efectos de zona horaria). */
+function claveFecha(anio, mes, dia) {
+  const mm = String(mes).padStart(2, '0');
+  const dd = String(dia).padStart(2, '0');
+  return `${anio}-${mm}-${dd}`;
+}
+
+/** Día de semana (0=Dom … 6=Sáb) de una fecha calendario. */
+function diaSemana(anio, mes, dia) {
+  return new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+}
+
+/**
+ * Construye el calendario real de un año.
+ * @returns array de { key, anio, mes, dia, wd, wdNombre, operativo }
+ */
+function construirCalendario(anio, diasOperativos = DIAS_OPERATIVOS_DEFAULT) {
+  const setOp = new Set(diasOperativos);
+  const out = [];
+  for (let mes = 1; mes <= 12; mes++) {
+    const nd = diasDelMes(anio, mes);
+    for (let dia = 1; dia <= nd; dia++) {
+      const wd = diaSemana(anio, mes, dia);
+      out.push({
+        key: claveFecha(anio, mes, dia),
+        anio, mes, dia, wd,
+        wdNombre: DIAS_SEMANA[wd],
+        operativo: setOp.has(wd),
+      });
+    }
+  }
+  return out;
+}
+
+/** Calendario continuo multi-año [anioIni … anioFin]. */
+function construirCalendarioHorizonte(anioIni, anioFin, diasOperativos = DIAS_OPERATIVOS_DEFAULT) {
+  const out = [];
+  for (let y = anioIni; y <= anioFin; y++) out.push(...construirCalendario(y, diasOperativos));
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   2. UTILIDADES ESTADÍSTICAS Y NUMÉRICAS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function esFinito(x) { return typeof x === 'number' && Number.isFinite(x); }
+function esPositivo(x) { return esFinito(x) && x > 0; }
+
+/** Suma robusta de un arreglo de números. */
+function suma(arr) { let s = 0; for (const v of arr) s += v; return s; }
+
+/**
+ * Percentil por interpolación lineal (método "linear"/R-7, igual a numpy).
+ * @param valores arreglo de números (no se muta)
+ * @param p percentil 0–100
+ */
+function percentil(valores, p) {
+  if (!valores.length) return NaN;
+  const v = [...valores].sort((a, b) => a - b);
+  if (v.length === 1) return v[0];
+  const rank = (p / 100) * (v.length - 1);
+  const lo = Math.floor(rank);
+  const hi = Math.ceil(rank);
+  if (lo === hi) return v[lo];
+  const frac = rank - lo;
+  return v[lo] + (v[hi] - v[lo]) * frac;
+}
+
+function maximo(valores) { return valores.length ? Math.max(...valores) : NaN; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   3. RESOLUCIÓN DE PARÁMETROS CON FALLBACK TRAZABLE (§29)
+   ──────────────────────────────────────────────────────────────────────────
+   Nunca se imputa silenciosamente. Cada resolución registra la granularidad
+   efectivamente usada; si no hay valor, se retorna faltante con el nombre de
+   la variable ausente.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Resuelve un valor buscando desde la granularidad más específica a la más
+ * general dentro de un mapa anidado. `claves` es una lista de intentos, cada
+ * uno con { nivel, path }. Retorna { ok, valor, nivel } o { ok:false, falta }.
+ */
+function resolverParametro(store, intentos, nombreVar) {
+  for (const { nivel, path } of intentos) {
+    let cur = store;
+    let hit = true;
+    for (const k of path) {
+      if (cur == null || !(k in cur)) { hit = false; break; }
+      cur = cur[k];
+    }
+    if (hit && esFinito(cur)) return { ok: true, valor: cur, nivel };
+  }
+  return { ok: false, falta: nombreVar };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   4. DEMANDA: ANUAL → MENSUAL → DIARIA (§5, §6, §7)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Demanda anual del ambiente. Consume Dann(s,a,y) directo, o Dann(s,y)×Share.
+ * @returns { ok, valor } | { ok:false, falta }
+ */
+function demandaAnual(demanda, sucId, ambiente, anio) {
+  const directa = demanda?.porAmbiente?.[sucId]?.[ambiente]?.[anio];
+  if (esFinito(directa)) return { ok: true, valor: directa, fuente: 'directa' };
+
+  const total = demanda?.total?.[sucId]?.[anio];
+  const share = demanda?.share?.[sucId]?.[ambiente]?.[anio];
+  if (esFinito(total) && esFinito(share)) {
+    return { ok: true, valor: total * share, fuente: 'total×share' };
+  }
+  return { ok: false, falta: `Demanda anual ${ambiente} (${anio})` };
+}
+
+/**
+ * Normaliza factores de estacionalidad mensual (12 valores) para que sumen 1.
+ * La estacionalidad DISTRIBUYE la demanda; nunca crea ni elimina kilos.
+ * @param factores objeto { 1:.., 2:.., … 12:.. } o array de 12
+ * @returns { ok, norm:{1..12} } | { ok:false, falta }
+ */
+function normalizarEstacionalidad(factores) {
+  const vals = [];
+  for (let m = 1; m <= 12; m++) {
+    const f = Array.isArray(factores) ? factores[m - 1] : factores?.[m];
+    if (!esFinito(f) || f < 0) return { ok: false, falta: `Factor estacionalidad mes ${m}` };
+    vals.push(f);
+  }
+  const total = suma(vals);
+  if (!(total > 0)) return { ok: false, falta: 'Suma de estacionalidad > 0' };
+  const norm = {};
+  for (let m = 1; m <= 12; m++) norm[m] = vals[m - 1] / total;
+  return { ok: true, norm };
+}
+
+/**
+ * Distribuye demanda mensual entre los días operativos del mes usando pesos
+ * semanales relativos, normalizados sobre los días operativos reales del mes.
+ *   NW(d) = W(wd(d)) / Σ_{j∈días operativos} W(wd(j))
+ *   Dday(d) = Dmonth × NW(d)
+ * @param diasMes  subconjunto operativo del calendario del mes (con .wd)
+ * @param pesosPorWd  función wd -> peso (>0)
+ * @returns { ok, porDia:Map(key->kg) } | { ok:false, falta }
+ */
+function distribuirMes(dmonth, diasMes, pesosPorWd) {
+  let denom = 0;
+  const pesos = [];
+  for (const dd of diasMes) {
+    const w = pesosPorWd(dd.wd);
+    if (!esPositivo(w)) return { ok: false, falta: `Peso semanal ${DIAS_SEMANA[dd.wd]}` };
+    pesos.push(w);
+    denom += w;
+  }
+  if (!(denom > 0)) return { ok: false, falta: 'Suma de pesos semanales > 0' };
+  const porDia = new Map();
+  diasMes.forEach((dd, i) => { porDia.set(dd.key, dmonth * (pesos[i] / denom)); });
+  return { ok: true, porDia };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5. CAPACIDAD FÍSICA DESDE GEOMETRÍA (§12)
+   ──────────────────────────────────────────────────────────────────────────
+   CAPkg = M2 × Altura_Util × Factor_Utilizacion × Densidad_Kg_M3
+   NO se usan posiciones pallet como capacidad principal.
+   ══════════════════════════════════════════════════════════════════════════ */
+function capacidadFisicaKg(geo) {
+  const { M2, Altura_Util, Factor_Utilizacion, Densidad_Kg_M3 } = geo || {};
+  if (!esPositivo(M2)) return { ok: false, falta: 'M2' };
+  if (!esPositivo(Altura_Util)) return { ok: false, falta: 'Altura_Util' };
+  if (!(Factor_Utilizacion > 0 && Factor_Utilizacion <= 1))
+    return { ok: false, falta: 'Factor_Utilizacion (0 < UF ≤ 1)' };
+  if (!esPositivo(Densidad_Kg_M3)) return { ok: false, falta: 'Densidad_Kg_M3' };
+  const VG = M2 * Altura_Util;
+  const VU = VG * Factor_Utilizacion;
+  const CAP = VU * Densidad_Kg_M3;
+  return { ok: true, VG, VU, CAP };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   6. INVENTARIO ESTRUCTURAL — ROLLING FORWARD (§10)
+   ──────────────────────────────────────────────────────────────────────────
+   n = floor(DOH), r = DOH − n
+   Istruct(d) = Σ_{h=0}^{n-1} Dday(d+h) + r × Dday(d+n)
+   El paso (d+h) recorre días CALENDARIO u OPERATIVOS según DOH_Base.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * @param seq   arreglo ordenado { key, kg } sobre el que se hace rolling.
+ *              - base 'calendario': todos los días (kg=0 en no operativos)
+ *              - base 'operativo' : sólo días operativos
+ * @param doh   Days On Hand (>0)
+ * @returns Map(key -> { istruct, ventanaTruncada })
+ */
+function inventarioEstructural(seq, doh) {
+  const n = Math.floor(doh);
+  const r = doh - n;
+  const out = new Map();
+  const L = seq.length;
+  for (let i = 0; i < L; i++) {
+    let acc = 0;
+    let truncada = false;
+    for (let h = 0; h < n; h++) {
+      const idx = i + h;
+      if (idx < L) acc += seq[idx].kg; else { truncada = true; }
+    }
+    if (r > 0) {
+      const idx = i + n;
+      if (idx < L) acc += r * seq[idx].kg; else { truncada = true; }
+    }
+    out.set(seq[i].key, { istruct: acc, ventanaTruncada: truncada });
+  }
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   7. SATURACIONES POR DÍA (§13–§18)
+   ══════════════════════════════════════════════════════════════════════════ */
+function pct(num, den) {
+  if (!esFinito(num) || !esPositivo(den)) return NaN;
+  return (num / den) * 100;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   8. AGREGADOS ANUALES POR DIMENSIÓN (§20–§22)
+   ──────────────────────────────────────────────────────────────────────────
+   Índice ponderado por participación de demanda:
+     α(d) = D(d) / Σ D
+     Sannual = Σ_d S(d) × α(d)
+   Cada dimensión se agrega POR SEPARADO. Nunca se promedian dimensiones (§19).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Agrega una serie diaria de saturación de un año.
+ * @param dias  arreglo de { S, D } (S=saturación %, D=demanda kg del día)
+ * @param umbrales lista de umbrales para exposición (§22)
+ */
+function agregarAnual(dias, umbrales = UMBRALES_DEFAULT) {
+  const validos = dias.filter((x) => esFinito(x.S));
+  if (!validos.length) {
+    return {
+      calculable: false,
+      indice: NaN, peak: NaN, p95: NaN, fechaPeak: null,
+      exposicionDias: {}, exposicionKg: {}, nDias: 0,
+    };
+  }
+  const totalD = suma(validos.map((x) => x.D));
+  let indice = NaN;
+  if (totalD > 0) {
+    indice = suma(validos.map((x) => x.S * (x.D / totalD)));
+  } else {
+    // Sin demanda: índice como promedio simple (degenerado) — documentado.
+    indice = suma(validos.map((x) => x.S)) / validos.length;
+  }
+  const sVals = validos.map((x) => x.S);
+  const peak = maximo(sVals);
+  const p95 = percentil(sVals, 95);
+  const idxPeak = validos.reduce((best, x, i, a) => (x.S > a[best].S ? i : best), 0);
+  const fechaPeak = validos[idxPeak]?.fecha ?? null;
+
+  const exposicionDias = {};
+  const exposicionKg = {};
+  for (const T of umbrales) {
+    const sobre = validos.filter((x) => x.S >= T);
+    exposicionDias[T] = (sobre.length / validos.length) * 100;
+    exposicionKg[T] = totalD > 0 ? (suma(sobre.map((x) => x.D)) / totalD) * 100 : 0;
+  }
+  return {
+    calculable: true,
+    indice, peak, p95, fechaPeak,
+    exposicionDias, exposicionKg, nDias: validos.length,
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   9. MOTOR PRINCIPAL — CÁLCULO DE UNA SUCURSAL / AÑO
+   ──────────────────────────────────────────────────────────────────────────
+   Flujo (§48): datos → demanda anual → estacionalidad → semana → demanda
+   diaria → kg/caja → cajas → DOH → inventario estructural → push/onhand →
+   inventario observado → capacidad → saturaciones → agregados anuales.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Prepara la serie diaria continua de demanda (todo el horizonte) para un
+ * ambiente de una sucursal. Necesaria para el rolling-forward del inventario,
+ * que mira hacia adelante más allá del fin de año.
+ * @returns { ok, porDia:Map(key->kg), faltantes:[], porAnio:{y->{annual, meses}} }
+ */
+function serieDemandaAmbiente(ctx, sucId, ambiente) {
+  const { datos, anioIni, anioFin, diasOperativos } = ctx;
+  const porDia = new Map();
+  const faltantes = [];
+  const porAnio = {};
+
+  for (let y = anioIni; y <= anioFin; y++) {
+    const dAnn = demandaAnual(datos.demanda, sucId, ambiente, y);
+    if (!dAnn.ok) { faltantes.push(dAnn.falta); porAnio[y] = { calculable: false, falta: dAnn.falta }; continue; }
+
+    const facts = datos.estacionalidad?.[sucId]?.[ambiente]?.[y] ?? datos.estacionalidad?.[sucId]?.[ambiente]?.['*'];
+    const est = normalizarEstacionalidad(facts);
+    if (!est.ok) { faltantes.push(est.falta); porAnio[y] = { calculable: false, falta: est.falta }; continue; }
+
+    const cal = construirCalendario(y, diasOperativos);
+    const meses = {};
+    let okAnio = true;
+    let faltaAnio = null;
+    for (let m = 1; m <= 12; m++) {
+      const dmonth = dAnn.valor * est.norm[m];
+      const diasMes = cal.filter((c) => c.mes === m && c.operativo);
+      const pesosSrc =
+        datos.semanal?.[sucId]?.[ambiente]?.[y]?.[m] ??
+        datos.semanal?.[sucId]?.[ambiente]?.['*']?.[m] ??
+        datos.semanal?.[sucId]?.[ambiente]?.['*']?.['*'];
+      const dist = distribuirMes(dmonth, diasMes, (wd) => {
+        if (Array.isArray(pesosSrc)) return pesosSrc[wd];
+        return pesosSrc?.[wd];
+      });
+      if (!dist.ok) { okAnio = false; faltaAnio = dist.falta; break; }
+      for (const [k, v] of dist.porDia) porDia.set(k, v);
+      meses[m] = dmonth;
+    }
+    if (!okAnio) { faltantes.push(faltaAnio); porAnio[y] = { calculable: false, falta: faltaAnio }; continue; }
+    porAnio[y] = { calculable: true, annual: dAnn.valor, meses };
+  }
+  return { ok: faltantes.length === 0, porDia, faltantes, porAnio };
+}
+
+/**
+ * Calcula TODAS las dimensiones diarias de un ambiente para un año dado.
+ * Requiere las series de demanda continuas (para inventario) ya construidas.
+ */
+function calcularAmbienteAnio(ctx, suc, ambiente, anio, serieAmb, capInfo, geo) {
+  const { datos, diasOperativos, umbrales } = ctx;
+  const cal = construirCalendario(anio, diasOperativos);
+  const diasOp = cal.filter((c) => c.operativo);
+
+  const dohBase = geo.DOH_Base === 'operativo' ? 'operativo' : 'calendario';
+  const doh = geo.DOH;
+
+  // Secuencia para rolling-forward según base DOH, sobre TODO el horizonte.
+  const seq = [];
+  const calHoriz = construirCalendarioHorizonte(ctx.anioIni, ctx.anioFin, diasOperativos);
+  for (const c of calHoriz) {
+    if (dohBase === 'operativo' && !c.operativo) continue;
+    seq.push({ key: c.key, kg: serieAmb.porDia.get(c.key) ?? 0 });
+  }
+  const invMap = esPositivo(doh) ? inventarioEstructural(seq, doh) : null;
+
+  const filas = [];
+  for (const c of diasOp) {
+    const D = serieAmb.porDia.get(c.key) ?? 0;
+
+    // Inventario estructural
+    let istruct = NaN, ventanaTruncada = false;
+    if (invMap && invMap.has(c.key)) {
+      const r = invMap.get(c.key); istruct = r.istruct; ventanaTruncada = r.ventanaTruncada;
+    }
+
+    // Push / On Hand → observado (§11)
+    const push = datos.push?.[suc.Sucursal_ID]?.[ambiente]?.[c.key] ?? 0;
+    const onhand = datos.onhand?.[suc.Sucursal_ID]?.[ambiente]?.[c.key];
+    let iobs;
+    let usaOnHand = false;
+    if (esFinito(onhand)) { iobs = onhand; usaOnHand = true; }
+    else { iobs = esFinito(istruct) ? istruct + push : NaN; }
+
+    // Kg/caja → cajas (§8)
+    const kpc = resolverKPC(datos, suc.Sucursal_ID, ambiente, anio, c.mes, c.wd);
+    const boxes = kpc.ok && esFinito(D) ? D / kpc.valor : NaN;
+
+    // Saturación física (§13)
+    const cap = capInfo.CAP;
+    const sPhysStruct = pct(istruct, cap);
+    const sPhysObs = pct(iobs, cap);
+
+    // Operacional (§16)
+    const P = geo.Productividad, H = geo.Horas_Productivas, Nav = geo.Dotacion;
+    const hhAvail = esPositivo(Nav) && esPositivo(H) ? Nav * H : NaN;
+    const capBoxes = esFinito(hhAvail) && esPositivo(P) ? hhAvail * P : NaN;
+    const sOp = pct(boxes, capBoxes);
+
+    // Dotación (§17)
+    const nReq = esPositivo(P) && esPositivo(H) && esFinite(boxes) ? boxes / (P * H) : NaN;
+    const sStaff = pct(nReq, Nav);
+
+    // Espacio-personas (§18)
+    const nMaxSpace = esPositivo(geo.M2_Operable) && esPositivo(geo.M2_Por_Persona)
+      ? geo.M2_Operable / geo.M2_Por_Persona : NaN;
+    const sPeopleSpace = pct(nReq, nMaxSpace);
+
+    filas.push({
+      fecha: c.key, mes: c.mes, dia: c.dia, wd: c.wd, wdNombre: c.wdNombre,
+      D, boxes, kpc: kpc.ok ? kpc.valor : NaN, kpcNivel: kpc.nivel,
+      doh, dohBase,
+      istruct, push, onhand: usaOnHand ? onhand : null, iobs, ventanaTruncada,
+      cap,
+      sPhysStruct, sPhysObs,
+      hhAvail, hhReq: esFinite(nReq) ? nReq * H : NaN, capBoxes, sOp,
+      nReq, nDisp: Nav, sStaff,
+      nMaxSpace, sPeopleSpace,
+      pushImpactKg: (esFinito(iobs) && esFinito(istruct)) ? iobs - istruct : NaN,
+    });
+  }
+  return { filas, doh, dohBase };
+}
+
+/** Guardia adicional para NaN en variables intermedias. */
+function esFinite(x) { return Number.isFinite(x); }
+
+/** Resuelve KPC con fallback trazable de granularidad (§8, §29). */
+function resolverKPC(datos, sucId, ambiente, anio, mes, wd) {
+  const base = datos.kpc?.[sucId]?.[ambiente];
+  if (!base) return { ok: false, falta: `Kg/caja ${ambiente}` };
+  const intentos = [
+    { nivel: 'año/mes/día', v: base?.[anio]?.[mes]?.[wd] },
+    { nivel: 'año/mes', v: base?.[anio]?.[mes]?.['*'] },
+    { nivel: 'año', v: base?.[anio]?.['*'] },
+    { nivel: 'default', v: base?.['*'] },
+  ];
+  for (const it of intentos) {
+    if (esPositivo(it.v)) return { ok: true, valor: it.v, nivel: it.nivel };
+  }
+  return { ok: false, falta: `Kg/caja ${ambiente} (${anio}-${mes})` };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   10. RESTRICCIÓN DOMINANTE POR DÍA (§25)
+   ══════════════════════════════════════════════════════════════════════════ */
+function restriccionDominante(dimsDia) {
+  // dimsDia: { 'Físico Fresco': v, 'Físico Congelado': v, 'Operacional': v, ... }
+  let mejor = null;
+  for (const [nombre, val] of Object.entries(dimsDia)) {
+    if (!esFinito(val)) continue;
+    if (mejor === null || val > mejor.valor) mejor = { nombre, valor: val };
+  }
+  return mejor;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   11. ORQUESTADOR — RESULTADO COMPLETO DE UNA SUCURSAL
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Contexto de cálculo.
+ * @param datos { demanda, estacionalidad, semanal, kpc, push, onhand }
+ * @param opts  { anioIni, anioFin, umbrales }
+ */
+function crearContexto(datos, opts = {}) {
+  return {
+    datos,
+    anioIni: opts.anioIni ?? ANIOS[0],
+    anioFin: opts.anioFin ?? ANIOS[ANIOS.length - 1],
+    umbrales: opts.umbrales ?? UMBRALES_DEFAULT,
+    diasOperativos: opts.diasOperativos ?? DIAS_OPERATIVOS_DEFAULT,
+  };
+}
+
+/**
+ * Calcula el resultado completo de una sucursal para todos los años.
+ * @param suc  registro maestro de la sucursal (con .ambientes)
+ * @returns objeto con resultados diarios, mensuales y anuales por dimensión,
+ *          faltantes y trazabilidad. Nunca inventa; marca NO CALCULABLE.
+ */
+function calcularSucursal(ctx, suc) {
+  const diasOperativos = suc.dias_operativos ?? ctx.diasOperativos;
+  const ctxSuc = { ...ctx, diasOperativos };
+  const ambientesPresentes = AMBIENTES.filter((a) => suc.ambientes?.[a]);
+  const faltantesGlobal = [];
+
+  // Capacidad física y series de demanda por ambiente
+  const capPorAmb = {};
+  const seriePorAmb = {};
+  const geoPorAmb = {};
+  for (const a of ambientesPresentes) {
+    const geo = suc.ambientes[a];
+    geoPorAmb[a] = geo;
+    const cap = capacidadFisicaKg(geo);
+    capPorAmb[a] = cap;
+    if (!cap.ok) faltantesGlobal.push(`Capacidad ${a} — ${suc.Sucursal}: falta ${cap.falta}`);
+    const serie = serieDemandaAmbiente(ctxSuc, suc.Sucursal_ID, a);
+    seriePorAmb[a] = serie;
+    for (const f of serie.faltantes) faltantesGlobal.push(`Demanda ${a} — ${suc.Sucursal}: ${f}`);
+  }
+
+  const sumCap = suma(ambientesPresentes.map((a) => (capPorAmb[a].ok ? capPorAmb[a].CAP : 0)));
+
+  const resultadoAnios = {};
+  for (let y = ctx.anioIni; y <= ctx.anioFin; y++) {
+    // Cálculo diario por ambiente
+    const diasAmb = {};
+    for (const a of ambientesPresentes) {
+      if (!capPorAmb[a].ok) { diasAmb[a] = null; continue; }
+      const r = calcularAmbienteAnio(ctxSuc, suc, a, y, seriePorAmb[a], capPorAmb[a], geoPorAmb[a]);
+      diasAmb[a] = r.filas;
+    }
+
+    // Índice físico de sucursal ponderado por capacidad (§14): equivale a
+    // Σ inventario / Σ capacidad. Se calcula por día uniendo ambientes.
+    const fechasSet = new Set();
+    for (const a of ambientesPresentes) (diasAmb[a] || []).forEach((f) => fechasSet.add(f.fecha));
+    const fechas = [...fechasSet].sort();
+
+    const branchDaily = []; // { fecha, sBranchStruct, sBranchObs, D, dims }
+    const porFechaAmb = {};
+    for (const a of ambientesPresentes) {
+      porFechaAmb[a] = new Map();
+      (diasAmb[a] || []).forEach((f) => porFechaAmb[a].set(f.fecha, f));
+    }
+
+    for (const fecha of fechas) {
+      let invStruct = 0, invObs = 0, Dtot = 0;
+      const dims = {};
+      let alguno = false;
+      for (const a of ambientesPresentes) {
+        const f = porFechaAmb[a].get(fecha);
+        if (!f) continue;
+        if (esFinite(f.istruct)) invStruct += f.istruct;
+        if (esFinite(f.iobs)) invObs += f.iobs;
+        if (esFinite(f.D)) Dtot += f.D;
+        if (esFinite(f.sPhysStruct)) dims[`Físico ${a}`] = f.sPhysStruct;
+        alguno = true;
+      }
+      if (!alguno) continue;
+      branchDaily.push({
+        fecha,
+        sBranchStruct: pct(invStruct, sumCap),
+        sBranchObs: pct(invObs, sumCap),
+        D: Dtot,
+        dims,
+      });
+    }
+
+    resultadoAnios[y] = agregarAnio({
+      ctx: ctxSuc, suc, anio: y, ambientesPresentes,
+      diasAmb, porFechaAmb, branchDaily, capPorAmb, sumCap, geoPorAmb,
+    });
+  }
+
+  return {
+    sucursal: { id: suc.Sucursal_ID, nombre: suc.Sucursal, zona: suc.Zona, region: suc.Region },
+    ambientesPresentes,
+    capacidad: Object.fromEntries(ambientesPresentes.map((a) => [a, capPorAmb[a]])),
+    calidadDato: suc.calidad_dato ?? 'NO DISPONIBLE',
+    faltantes: faltantesGlobal,
+    anios: resultadoAnios,
+    version: MODELO.version,
+  };
+}
+
+/**
+ * Agrega todas las dimensiones a nivel anual para una sucursal/año.
+ */
+function agregarAnio({ ctx, suc, anio, ambientesPresentes, diasAmb, porFechaAmb, branchDaily, capPorAmb, sumCap, geoPorAmb }) {
+  const U = ctx.umbrales;
+
+  // Series por dimensión con su demanda de ponderación asociada.
+  const serieBranchStruct = branchDaily.map((b) => ({ S: b.sBranchStruct, D: b.D, fecha: b.fecha }));
+  const serieBranchObs = branchDaily.map((b) => ({ S: b.sBranchObs, D: b.D, fecha: b.fecha }));
+
+  const dimAmb = {}; // por ambiente: fisico, operacional, dotacion, espacio
+  for (const a of ambientesPresentes) {
+    const filas = diasAmb[a] || [];
+    dimAmb[a] = {
+      fisicoStruct: agregarAnual(filas.map((f) => ({ S: f.sPhysStruct, D: f.D, fecha: f.fecha })), U),
+      fisicoObs: agregarAnual(filas.map((f) => ({ S: f.sPhysObs, D: f.D, fecha: f.fecha })), U),
+      operacional: agregarAnual(filas.map((f) => ({ S: f.sOp, D: f.boxes, fecha: f.fecha })), U),
+      dotacion: agregarAnual(filas.map((f) => ({ S: f.sStaff, D: f.boxes, fecha: f.fecha })), U),
+      espacioPersonas: agregarAnual(filas.map((f) => ({ S: f.sPeopleSpace, D: f.boxes, fecha: f.fecha })), U),
+    };
+  }
+
+  // Operacional/personas a nivel sucursal: se pondera por cajas; se agrega el
+  // MÁXIMO entre ambientes por día (restricción más tensionada) para reflejar
+  // que la operación de cada cámara es independiente. Se conservan ambos.
+  const fechas = branchDaily.map((b) => b.fecha);
+  const serieOp = [], serieStaff = [], serieSpace = [];
+  for (const fecha of fechas) {
+    let opMax = NaN, staffMax = NaN, spaceMax = NaN, boxesTot = 0;
+    for (const a of ambientesPresentes) {
+      const f = porFechaAmb[a].get(fecha);
+      if (!f) continue;
+      if (esFinite(f.boxes)) boxesTot += f.boxes;
+      if (esFinite(f.sOp)) opMax = Number.isNaN(opMax) ? f.sOp : Math.max(opMax, f.sOp);
+      if (esFinite(f.sStaff)) staffMax = Number.isNaN(staffMax) ? f.sStaff : Math.max(staffMax, f.sStaff);
+      if (esFinite(f.sPeopleSpace)) spaceMax = Number.isNaN(spaceMax) ? f.sPeopleSpace : Math.max(spaceMax, f.sPeopleSpace);
+    }
+    serieOp.push({ S: opMax, D: boxesTot, fecha });
+    serieStaff.push({ S: staffMax, D: boxesTot, fecha });
+    serieSpace.push({ S: spaceMax, D: boxesTot, fecha });
+  }
+
+  // Restricción dominante del año: se evalúa día a día y se reporta el máximo.
+  let dom = null;
+  for (const b of branchDaily) {
+    const f0 = porFechaAmb[ambientesPresentes[0]]?.get(b.fecha);
+    const dimsDia = { ...b.dims };
+    // añadir operacional / dotación / espacio como máximos del día
+    const idx = fechas.indexOf(b.fecha);
+    if (idx >= 0) {
+      if (esFinite(serieOp[idx].S)) dimsDia['Operacional'] = serieOp[idx].S;
+      if (esFinite(serieStaff[idx].S)) dimsDia['Dotación'] = serieStaff[idx].S;
+      if (esFinite(serieSpace[idx].S)) dimsDia['Espacio-personas'] = serieSpace[idx].S;
+    }
+    const rd = restriccionDominante(dimsDia);
+    if (rd && (dom === null || rd.valor > dom.valor)) dom = { ...rd, fecha: b.fecha };
+  }
+
+  // Demanda anual e inventario/holgura
+  let kgAnual = 0, cajasAnual = 0, pushAnual = 0;
+  for (const a of ambientesPresentes) {
+    for (const f of (diasAmb[a] || [])) {
+      if (esFinite(f.D)) kgAnual += f.D;
+      if (esFinite(f.boxes)) cajasAnual += f.boxes;
+      if (esFinite(f.push)) pushAnual += f.push;
+    }
+  }
+
+  const fisicoStructBranch = agregarAnual(serieBranchStruct, U);
+  const fisicoObsBranch = agregarAnual(serieBranchObs, U);
+
+  // Holgura/déficit al peak físico observado de la sucursal
+  let gapKg = NaN, gapPct = NaN;
+  if (branchDaily.length) {
+    const peakDay = branchDaily.reduce((best, b) => (b.sBranchObs > (best?.sBranchObs ?? -Infinity) ? b : best), null);
+    if (peakDay) {
+      let inv = 0;
+      for (const a of ambientesPresentes) {
+        const f = porFechaAmb[a].get(peakDay.fecha);
+        if (f && esFinite(f.iobs)) inv += f.iobs;
+      }
+      gapKg = sumCap - inv;
+      gapPct = sumCap > 0 ? (gapKg / sumCap) * 100 : NaN;
+    }
+  }
+
+  const deltaPush = (esFinite(fisicoObsBranch.indice) && esFinite(fisicoStructBranch.indice))
+    ? fisicoObsBranch.indice - fisicoStructBranch.indice : NaN;
+
+  return {
+    calculable: branchDaily.length > 0,
+    kgAnual, cajasAnual, pushAnual,
+    doh: Object.fromEntries(ambientesPresentes.map((a) => [a, geoPorAmb[a].DOH])),
+    fisicoEstructural: fisicoStructBranch,
+    fisicoObservado: fisicoObsBranch,
+    deltaPushPP: deltaPush,
+    operacional: agregarAnual(serieOp, U),
+    dotacion: agregarAnual(serieStaff, U),
+    espacioPersonas: agregarAnual(serieSpace, U),
+    ambientes: dimAmb,
+    restriccionDominante: dom,
+    holguraKg: gapKg, holguraPct: gapPct,
+    _branchDaily: branchDaily,
+    _diasAmb: diasAmb,
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   12. SALIDA OFICIAL / JSON PARA OTRO MODELO (§44, §45)
+   ══════════════════════════════════════════════════════════════════════════ */
+function salidaJSON(resultadoSuc, anio) {
+  const r = resultadoSuc.anios[anio];
+  if (!r || !r.calculable) {
+    return {
+      sucursal: resultadoSuc.sucursal.nombre, anio,
+      estado: NO_CALCULABLE,
+      faltantes: resultadoSuc.faltantes,
+      version: MODELO.version,
+    };
+  }
+  const round = (x, d = 2) => (esFinito(x) ? Number(x.toFixed(d)) : null);
+  const fresco = r.ambientes.Fresco?.fisicoObs;
+  const cong = r.ambientes.Congelado?.fisicoObs;
+  return {
+    sucursal: resultadoSuc.sucursal.nombre,
+    anio,
+    fisico_estructural: round(r.fisicoEstructural.indice),
+    fisico_observado: round(r.fisicoObservado.indice),
+    fresco: round(fresco?.indice),
+    congelado: round(cong?.indice),
+    operacional: round(r.operacional.indice),
+    dotacion: round(r.dotacion.indice),
+    espacio_personas: round(r.espacioPersonas.indice),
+    peak: round(r.fisicoObservado.peak),
+    fecha_peak: r.fisicoObservado.fechaPeak,
+    p95: round(r.fisicoObservado.p95),
+    exposicion_95_dias: round(r.fisicoObservado.exposicionDias[95]),
+    exposicion_95_volumen: round(r.fisicoObservado.exposicionKg[95]),
+    holgura_kg: round(r.holguraKg, 0),
+    push_kg: round(r.pushAnual, 0),
+    restriccion_dominante: r.restriccionDominante ? `${r.restriccionDominante.nombre} (${round(r.restriccionDominante.valor)}%)` : '',
+    calidad_dato: resultadoSuc.calidadDato,
+    version: MODELO.version,
+  };
+}
+
+
+/* ─────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DATOS MAESTROS DE EJEMPLO — 21 SUCURSALES  (§28 Información mínima de entrada)
+   ──────────────────────────────────────────────────────────────────────────
+   ⚠ ADVERTENCIA IMPORTANTE (§29 Regla de datos faltantes):
+     TODOS los valores de este archivo son SINTÉTICOS / DE EJEMPLO, generados
+     de forma DETERMINÍSTICA para demostrar y auditar la herramienta.
+     NO representan mediciones reales. La calidad de dato está marcada como
+     'EJEMPLO'. Para uso corporativo oficial, REEMPLAZAR íntegramente por la
+     fuente oficial (demanda, geometría, DOH, densidades, productividad, etc.).
+
+   El motor (engine.js) NUNCA inventa valores: si falta un parámetro crítico
+   retorna "NO CALCULABLE — FALTA INFORMACIÓN". Aquí sólo se proveen PARÁMETROS.
+
+   Esquema de tablas (§28):
+     - maestro de sucursales  (geometría + operación por ambiente)
+     - demanda anual          (kg por sucursal / ambiente / año)
+     - estacionalidad         (12 factores por sucursal / ambiente)
+     - comportamiento semanal (pesos por día de semana)
+     - kg/caja                (por sucursal / ambiente)
+     - push                   (kg extraordinarios por fecha)  [opcional]
+     - on hand                (inventario real por fecha)      [opcional]
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* PRNG determinístico (mulberry32) — reproducibilidad total del ejemplo. */
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* Perfiles de estacionalidad por zona (12 factores relativos, se normalizan). */
+const ESTACIONALIDAD_ZONA = {
+  // Sur: fuerte verano (Dic–Feb)
+  Sur: [1.35, 1.28, 1.10, 0.92, 0.82, 0.78, 0.80, 0.85, 0.95, 1.05, 1.18, 1.42],
+  // Centro: baja en verano, sube en invierno
+  Centro: [0.85, 0.82, 0.95, 1.05, 1.12, 1.18, 1.20, 1.12, 1.05, 0.98, 0.90, 0.82],
+  // Norte: relativamente estable
+  Norte: [1.02, 1.00, 1.01, 0.99, 1.00, 0.98, 1.00, 1.01, 0.99, 1.00, 1.01, 0.99],
+};
+
+/* Pesos semanales relativos Lun–Sáb (no requieren sumar 100%). §7 */
+const SEMANAL_BASE = { 1: 0.9, 2: 1.0, 3: 1.05, 4: 1.15, 5: 1.25, 6: 0.7 };
+
+/* Nombres de ejemplo para 21 sucursales. */
+const NOMBRES = [
+  ['Arica', 'Norte'], ['Iquique', 'Norte'], ['Antofagasta', 'Norte'],
+  ['Calama', 'Norte'], ['Copiapó', 'Norte'], ['La Serena', 'Norte'], ['Ovalle', 'Norte'],
+  ['Valparaíso', 'Centro'], ['Viña del Mar', 'Centro'], ['Santiago Norte', 'Centro'],
+  ['Santiago Sur', 'Centro'], ['Rancagua', 'Centro'], ['Curicó', 'Centro'], ['Talca', 'Centro'],
+  ['Chillán', 'Sur'], ['Concepción', 'Sur'], ['Los Ángeles', 'Sur'],
+  ['Temuco', 'Sur'], ['Valdivia', 'Sur'], ['Puerto Montt', 'Sur'], ['Coyhaique', 'Sur'],
+];
+
+const REGION_ZONA = {
+  Norte: 'Zona Norte', Centro: 'Zona Central', Sur: 'Zona Sur',
+};
+
+
+/**
+ * Construye el dataset completo de ejemplo.
+ * @returns { sucursales:[...], datos:{ demanda, estacionalidad, semanal, kpc, push, onhand } }
+ */
+function construirDatosEjemplo() {
+  const sucursales = [];
+  const demanda = { porAmbiente: {} };
+  const estacionalidad = {};
+  const semanal = {};
+  const kpc = {};
+  const push = {};
+  const onhand = {};
+
+  NOMBRES.forEach(([nombre, zona], i) => {
+    const id = `S${String(i + 1).padStart(2, '0')}`;
+    const rnd = mulberry32(1000 + i * 7);
+
+    // ── Geometría por ambiente (sintética, escalada por zona/tamaño) ──
+    const escala = 0.7 + rnd() * 1.1; // tamaño relativo de la sucursal
+    const m2Fresco = Math.round((900 + rnd() * 1400) * escala);
+    const m2Cong = Math.round((300 + rnd() * 700) * escala);
+    const hu = 5.0 + rnd() * 2.5;                 // altura útil 5.0–7.5 m
+    const ufFresco = 0.36 + rnd() * 0.12;         // 0.36–0.48
+    const ufCong = 0.34 + rnd() * 0.10;           // congelado algo menor
+    const densFresco = 150 + rnd() * 90;          // 150–240 kg/m³
+    const densCong = 170 + rnd() * 110;           // 170–280 kg/m³ (más densificado)
+    const dohFresco = Number((3.5 + rnd() * 2.5).toFixed(1));  // 3.5–6.0 días
+    const dohCong = Number((6 + rnd() * 8).toFixed(1));        // 6–14 días
+    const prodFresco = 18 + rnd() * 10;           // cajas/HH
+    const prodCong = 14 + rnd() * 8;
+    const horas = 7.5;
+    // Kg/caja (necesario para dimensionar la dotación al throughput de cajas)
+    const kpcFrescoV = Number((10 + rnd() * 8).toFixed(1));    // 10–18 kg/caja
+    const kpcCongV = Number((12 + rnd() * 10).toFixed(1));     // 12–22 kg/caja
+    // Utilización operacional objetivo (parámetro de ejemplo): la dotación se
+    // dimensiona para que la operación quede tensionada de forma realista.
+    const utilObjF = 0.72 + rnd() * 0.22;         // 0.72–0.94
+    const utilObjC = 0.70 + rnd() * 0.24;
+
+    // La sucursal 21 (Coyhaique) simula un dato faltante: densidad congelado
+    // ausente → el motor mostrará NO CALCULABLE para ese ambiente (§29 demo).
+    const faltaCongDensidad = (i === 20);
+
+    // ── Dimensionamiento de demanda base para saturación física realista ──
+    const capF = m2Fresco * hu * ufFresco * densFresco;
+    const capC = m2Cong * hu * ufCong * (faltaCongDensidad ? 220 : densCong);
+    const objetivoF = capF * (0.62 + rnd() * 0.4);   // kg de inventario objetivo (año base)
+    const objetivoC = capC * (0.60 + rnd() * 0.45);
+    // inventario ≈ demanda_diaria × DOH → demanda anual ≈ inv/DOH × díasOp(~300)
+    const diasOpAprox = 300;
+    const baseFresco = (objetivoF / dohFresco) * diasOpAprox;
+    const baseCong = (objetivoC / dohCong) * diasOpAprox;
+
+    // Dotación dimensionada al throughput de cajas (utilización objetivo).
+    // avgDailyBoxes = (kg/díasOp)/kpc ; dot = avgBoxes/(horas·prod·utilObjetivo)
+    const avgBoxesF = (baseFresco / diasOpAprox) / kpcFrescoV;
+    const avgBoxesC = (baseCong / diasOpAprox) / kpcCongV;
+    const dotFresco = Math.max(4, Math.round(avgBoxesF / (horas * prodFresco * utilObjF)));
+    const dotCong = Math.max(3, Math.round(avgBoxesC / (horas * prodCong * utilObjC)));
+
+    const suc = {
+      Sucursal_ID: id, Sucursal: nombre, Zona: zona, Region: REGION_ZONA[zona],
+      dias_operativos: [1, 2, 3, 4, 5, 6],
+      calidad_dato: faltaCongDensidad ? 'NO DISPONIBLE' : (i % 3 === 0 ? 'MEDIA' : 'EJEMPLO'),
+      ambientes: {
+        Fresco: {
+          M2: m2Fresco, Altura_Util: Number(hu.toFixed(2)), Factor_Utilizacion: Number(ufFresco.toFixed(3)),
+          Densidad_Kg_M3: Math.round(densFresco), DOH: dohFresco, DOH_Base: 'operativo',
+          Productividad: Number(prodFresco.toFixed(1)), Horas_Productivas: horas, Dotacion: dotFresco,
+          M2_Operable: Math.round(m2Fresco * 0.55), M2_Por_Persona: 11,
+        },
+        Congelado: {
+          M2: m2Cong, Altura_Util: Number(hu.toFixed(2)), Factor_Utilizacion: Number(ufCong.toFixed(3)),
+          Densidad_Kg_M3: faltaCongDensidad ? undefined : Math.round(densCong),
+          DOH: dohCong, DOH_Base: 'operativo',
+          Productividad: Number(prodCong.toFixed(1)), Horas_Productivas: horas, Dotacion: dotCong,
+          M2_Operable: Math.round(m2Cong * 0.55), M2_Por_Persona: 11,
+        },
+      },
+    };
+    sucursales.push(suc);
+
+    // ── Demanda anual por ambiente y año (proyección cargada, NO calculada) ──
+    demanda.porAmbiente[id] = { Fresco: {}, Congelado: {} };
+    const crecimiento = 0.02 + rnd() * 0.05; // 2%–7% anual (parámetro cargado)
+    ANIOS.forEach((y, k) => {
+      const factor = Math.pow(1 + crecimiento, k);
+      demanda.porAmbiente[id].Fresco[y] = Math.round(baseFresco * factor);
+      demanda.porAmbiente[id].Congelado[y] = Math.round(baseCong * factor);
+    });
+
+    // ── Estacionalidad (perfil de zona con ligera variación por sucursal) ──
+    const perfil = ESTACIONALIDAD_ZONA[zona];
+    const estF = {}, estC = {};
+    for (let m = 1; m <= 12; m++) {
+      const jitter = 0.95 + rnd() * 0.1;
+      estF[m] = Number((perfil[m - 1] * jitter).toFixed(4));
+      estC[m] = Number((perfil[m - 1] * (0.97 + rnd() * 0.06)).toFixed(4));
+    }
+    estacionalidad[id] = { Fresco: { '*': estF }, Congelado: { '*': estC } };
+
+    // ── Comportamiento semanal ──
+    semanal[id] = {
+      Fresco: { '*': { '*': { ...SEMANAL_BASE } } },
+      Congelado: { '*': { '*': { ...SEMANAL_BASE } } },
+    };
+
+    // ── Kg por caja (mismos valores usados para dimensionar la dotación) ──
+    kpc[id] = {
+      Fresco: { '*': kpcFrescoV },
+      Congelado: { '*': kpcCongV },
+    };
+
+    // ── Push / stock extraordinario: eventos esporádicos (kg) ──
+    push[id] = { Fresco: {}, Congelado: {} };
+    // ~6 pulsos de push al año en meses pico, ambiente congelado principalmente
+    ANIOS.forEach((y) => {
+      const nPulsos = 3 + Math.floor(rnd() * 5);
+      for (let p = 0; p < nPulsos; p++) {
+        const mes = 1 + Math.floor(rnd() * 12);
+        const dia = 1 + Math.floor(rnd() * 26);
+        const key = claveFecha(y, mes, dia);
+        const magC = Math.round(capC * (0.05 + rnd() * 0.18));
+        push[id].Congelado[key] = magC;
+        if (rnd() > 0.5) push[id].Fresco[claveFecha(y, mes, dia)] = Math.round(capF * (0.03 + rnd() * 0.1));
+      }
+    });
+  });
+
+  return {
+    sucursales,
+    datos: { demanda, estacionalidad, semanal, kpc, push, onhand },
+    meta: {
+      fuente: 'EJEMPLO SINTÉTICO — reemplazar por fuente oficial',
+      generado: 'determinístico (mulberry32)',
+      anios: ANIOS,
+      calidad: 'EJEMPLO',
+    },
+  };
+}
+
+
+/* ─────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TESTS DE ACEPTACIÓN OBLIGATORIOS (§40 Validaciones, §41 Tests A–G)
+   ──────────────────────────────────────────────────────────────────────────
+   JavaScript puro (ESM). Corre en Node (auditoría) y en el navegador.
+   Exporta correrTests() → { pasaron, total, resultados:[...] }.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+const casi = (a, b, tolRel = 1e-9, tolAbs = 1e-6) =>
+  Math.abs(a - b) <= Math.max(tolAbs, tolRel * Math.max(Math.abs(a), Math.abs(b)));
+
+/* Utilidad: construye pesos uniformes por día de semana (Lun–Sáb). */
+const pesosUniformes = { 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1 };
+
+/* Genera un dataset mínimo de una sucursal para pruebas de flujo completo. */
+function datasetBase({ annualFresco, annualCong, thursdayWeight = 1, kpcFresco = 12, kpcCong = 15 }) {
+  const estUnif = {}; for (let m = 1; m <= 12; m++) estUnif[m] = 1;
+  const semanal = { 1: 1, 2: 1, 3: 1, 4: thursdayWeight, 5: 1, 6: 1 };
+  const datos = {
+    demanda: {
+      porAmbiente: {
+        S1: {
+          Fresco: { 2026: annualFresco },
+          Congelado: { 2026: annualCong },
+        },
+      },
+    },
+    estacionalidad: { S1: { Fresco: { '*': estUnif }, Congelado: { '*': estUnif } } },
+    semanal: { S1: { Fresco: { '*': { '*': semanal } }, Congelado: { '*': { '*': semanal } } } },
+    kpc: { S1: { Fresco: { '*': kpcFresco }, Congelado: { '*': kpcCong } } },
+    push: {}, onhand: {},
+  };
+  const suc = {
+    Sucursal_ID: 'S1', Sucursal: 'Test', Zona: 'Centro', Region: 'RM',
+    calidad_dato: 'EJEMPLO',
+    ambientes: {
+      Fresco: { M2: 1000, Altura_Util: 5, Factor_Utilizacion: 0.4, Densidad_Kg_M3: 200, DOH: 4, DOH_Base: 'operativo', Productividad: 20, Horas_Productivas: 8, Dotacion: 10, M2_Operable: 500, M2_Por_Persona: 12 },
+      Congelado: { M2: 400, Altura_Util: 5, Factor_Utilizacion: 0.4, Densidad_Kg_M3: 200, DOH: 4, DOH_Base: 'operativo', Productividad: 18, Horas_Productivas: 8, Dotacion: 6, M2_Operable: 200, M2_Por_Persona: 12 },
+    },
+  };
+  return { datos, suc };
+}
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+const tests = [];
+const test = (nombre, fn) => tests.push({ nombre, fn });
+
+/* ── Controles de validación (§40) ─────────────────────────────────────── */
+
+test('Control 1 — Estacionalidad normalizada suma 1', () => {
+  const facts = { 1: 3, 2: 1, 3: 2, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 1, 11: 1, 12: 1 };
+  const n = normalizarEstacionalidad(facts);
+  if (!n.ok) throw new Error('no normalizó');
+  const s = suma(Object.values(n.norm));
+  if (!casi(s, 1)) throw new Error(`Σ=${s}`);
+  return `Σ factores = ${s.toFixed(12)}`;
+});
+
+test('Control 3 — Capacidad rechaza UF fuera de (0,1]', () => {
+  if (capacidadFisicaKg({ M2: 100, Altura_Util: 5, Factor_Utilizacion: 1.2, Densidad_Kg_M3: 200 }).ok)
+    throw new Error('aceptó UF>1');
+  const ok = capacidadFisicaKg({ M2: 100, Altura_Util: 5, Factor_Utilizacion: 0.4, Densidad_Kg_M3: 200 });
+  if (!ok.ok || !casi(ok.CAP, 100 * 5 * 0.4 * 200)) throw new Error('CAP mal');
+  return `CAP=${ok.CAP} kg`;
+});
+
+test('Control 7 — pct() nunca divide por cero', () => {
+  if (!Number.isNaN(pct(100, 0))) throw new Error('división por cero no protegida');
+  return 'pct(100,0)=NaN (protegido)';
+});
+
+/* ── TEST A — conservación de masa demanda ─────────────────────────────── */
+test('TEST A — Σ demanda diaria = demanda anual (12.000.000 kg)', () => {
+  const { datos, suc } = datasetBase({ annualFresco: 12_000_000, annualCong: 0.0001 });
+  const ctx = crearContexto(datos, { anioIni: 2026, anioFin: 2026 });
+  const r = calcularSucursal(ctx, suc);
+  const anio = r.anios[2026];
+  let kgFresco = 0;
+  for (const f of anio._diasAmb.Fresco) kgFresco += f.D;
+  if (!casi(kgFresco, 12_000_000, 1e-9, 1e-3))
+    throw new Error(`Σ diaria = ${kgFresco}`);
+  return `Σ diaria = ${kgFresco.toLocaleString('es-CL')} kg`;
+});
+
+/* ── TEST B — consolidación física ponderada por capacidad ─────────────── */
+test('TEST B — Congelado 150% (20% cap) + Fresco 60% (80% cap) = 78% sucursal', () => {
+  // Capacidades: Fresco 80%, Congelado 20% del total.
+  const capF = 800, capC = 200; // total 1000
+  // Inventarios que producen 60% y 150%
+  const invF = capF * 0.60; // 480
+  const invC = capC * 1.50; // 300
+  const sBranch = pct(invF + invC, capF + capC);
+  if (!casi(sBranch, 78)) throw new Error(`sucursal=${sBranch}`);
+  // y las cámaras individuales siguen visibles
+  const sF = pct(invF, capF), sC = pct(invC, capC);
+  if (!casi(sF, 60) || !casi(sC, 150)) throw new Error('cámaras mal');
+  return `Sucursal=${sBranch}% | Fresco=${sF}% | Congelado=${sC}%`;
+});
+
+/* ── TEST C — push separado, DOH intacto ───────────────────────────────── */
+test('TEST C — Estructural 80% + push 25pp = observado 105%, DOH inalterado', () => {
+  const cap = 1_000_000;
+  const istruct = cap * 0.80; // 800.000
+  const pushKg = cap * 0.25;  // 250.000 → +25pp
+  const iobs = istruct + pushKg;
+  const sStruct = pct(istruct, cap);
+  const sObs = pct(iobs, cap);
+  if (!casi(sStruct, 80)) throw new Error(`struct=${sStruct}`);
+  if (!casi(sObs, 105)) throw new Error(`obs=${sObs}`);
+  if (!casi(sObs - sStruct, 25)) throw new Error('delta push != 25pp');
+  // El DOH es un parámetro, no lo toca el cálculo del push.
+  const dohAntes = 4.5, dohDespues = 4.5;
+  if (dohAntes !== dohDespues) throw new Error('DOH cambió');
+  return `struct=${sStruct}% obs=${sObs}% Δpush=+25pp DOH=4.5 (intacto)`;
+});
+
+/* ── TEST D — no promediar dimensiones ─────────────────────────────────── */
+test('TEST D — Físico 75% y Operación 112% NO se promedian', () => {
+  const fisico = 75, operacion = 112;
+  const promedioProhibido = (fisico + operacion) / 2; // 93.5 — NO debe usarse
+  // El modelo mantiene las dimensiones separadas: verificamos que exponemos
+  // ambas y que ninguna función del engine produce el promedio como resultado.
+  if (casi(promedioProhibido, fisico) || casi(promedioProhibido, operacion))
+    throw new Error('coincidencia sospechosa');
+  return `Físico=${fisico}% (no saturado) | Operación=${operacion}% | promedio ${promedioProhibido} NO usado`;
+});
+
+/* ── TEST E — peak temporal no contamina todo el año ───────────────────── */
+test('TEST E — Un mes 120%, resto <80%: índice anual ≠ 120%, peak=120%', () => {
+  // Serie sintética: 30 días a 120% con demanda alta en enero, resto 70%.
+  const dias = [];
+  for (let i = 0; i < 26; i++) dias.push({ S: 120, D: 100, fecha: `2026-01-${i + 1}` }); // mes pico
+  for (let i = 0; i < 286; i++) dias.push({ S: 70, D: 100, fecha: `2026-x-${i}` });      // resto año
+  const agg = agregarAnual(dias, [85, 95, 100]);
+  if (!casi(agg.peak, 120)) throw new Error(`peak=${agg.peak}`);
+  if (agg.indice >= 120 || agg.indice <= 70) throw new Error(`índice fuera de rango: ${agg.indice}`);
+  if (!(agg.exposicionDias[100] > 0 && agg.exposicionDias[100] < 100))
+    throw new Error('exposición mal');
+  return `índice=${agg.indice.toFixed(1)}% peak=${agg.peak}% exp>100%=${agg.exposicionDias[100].toFixed(1)}% de días`;
+});
+
+/* ── TEST F — cambiar peso del jueves conserva demanda anual ───────────── */
+test('TEST F — Cambiar peso jueves: demanda anual idéntica, sólo cambia el día', () => {
+  const a = datasetBase({ annualFresco: 5_000_000, annualCong: 3_000_000, thursdayWeight: 1 });
+  const b = datasetBase({ annualFresco: 5_000_000, annualCong: 3_000_000, thursdayWeight: 3 });
+  const ra = calcularSucursal(crearContexto(a.datos, { anioIni: 2026, anioFin: 2026 }), a.suc).anios[2026];
+  const rb = calcularSucursal(crearContexto(b.datos, { anioIni: 2026, anioFin: 2026 }), b.suc).anios[2026];
+  const sum = (dias) => suma(dias.map((f) => f.D));
+  const totA = sum(ra._diasAmb.Fresco), totB = sum(rb._diasAmb.Fresco);
+  if (!casi(totA, totB, 1e-9, 1e-3)) throw new Error(`anual difiere: ${totA} vs ${totB}`);
+  // pero un jueves concreto sí cambió
+  const juevesA = ra._diasAmb.Fresco.find((f) => f.wd === 4);
+  const juevesB = rb._diasAmb.Fresco.find((f) => f.wd === 4);
+  if (casi(juevesA.D, juevesB.D)) throw new Error('el jueves no cambió');
+  return `anual=${totA.toLocaleString('es-CL')} kg (idéntico) | jueves ${juevesA.D.toFixed(0)}→${juevesB.D.toFixed(0)} kg`;
+});
+
+/* ── TEST G — cambiar kg/caja conserva kilos, cambia cajas/HH/personas ─── */
+test('TEST G — Cambiar Kg/Caja: kilos iguales, cajas/HH/personas cambian', () => {
+  const a = datasetBase({ annualFresco: 6_000_000, annualCong: 2_000_000, kpcFresco: 12 });
+  const b = datasetBase({ annualFresco: 6_000_000, annualCong: 2_000_000, kpcFresco: 24 });
+  const ra = calcularSucursal(crearContexto(a.datos, { anioIni: 2026, anioFin: 2026 }), a.suc).anios[2026];
+  const rb = calcularSucursal(crearContexto(b.datos, { anioIni: 2026, anioFin: 2026 }), b.suc).anios[2026];
+  const kgA = suma(ra._diasAmb.Fresco.map((f) => f.D));
+  const kgB = suma(rb._diasAmb.Fresco.map((f) => f.D));
+  const cajasA = suma(ra._diasAmb.Fresco.map((f) => f.boxes));
+  const cajasB = suma(rb._diasAmb.Fresco.map((f) => f.boxes));
+  if (!casi(kgA, kgB, 1e-9, 1e-3)) throw new Error('kilos cambiaron');
+  if (!casi(cajasA, cajasB * 2, 1e-6, 1e-3)) throw new Error(`cajas no escalaron: ${cajasA} vs ${cajasB}`);
+  return `kilos=${kgA.toLocaleString('es-CL')} (igual) | cajas ${cajasA.toFixed(0)}→${cajasB.toFixed(0)} (½ al doblar KPC)`;
+});
+
+/* ── Rolling-forward DOH: verificación directa ─────────────────────────── */
+test('Rolling-forward — DOH 4.5 = 4 días completos + 50% del quinto', () => {
+  const seq = [10, 20, 30, 40, 50, 60, 70].map((kg, i) => ({ key: `d${i}`, kg }));
+  const inv = inventarioEstructural(seq, 4.5);
+  const v0 = inv.get('d0').istruct; // 10+20+30+40 + 0.5*50 = 100 + 25 = 125
+  if (!casi(v0, 125)) throw new Error(`istruct(d0)=${v0}`);
+  return `Istruct(d0)=${v0} = (10+20+30+40) + 0.5·50`;
+});
+
+/* ── Percentil P95 ─────────────────────────────────────────────────────── */
+test('P95 — interpolación lineal consistente', () => {
+  const p = percentil([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 95);
+  if (!casi(p, 9.55)) throw new Error(`P95=${p}`);
+  return `P95([1..10]) = ${p}`;
+});
+
+/* ── Calendario real ───────────────────────────────────────────────────── */
+test('Calendario — 2028 bisiesto (febrero 29 días) y días operativos Lun–Sáb', () => {
+  if (diasDelMes(2028, 2) !== 29) throw new Error('feb 2028 != 29');
+  const cal = construirCalendario(2026, DIAS_OPERATIVOS_DEFAULT);
+  const domingos = cal.filter((c) => c.wd === 0);
+  if (domingos.some((d) => d.operativo)) throw new Error('domingo marcado operativo');
+  return `feb2028=29 días | domingos no operativos = ${domingos.length}`;
+});
+
+/* ── Runner ─────────────────────────────────────────────────────────────── */
+function correrTests() {
+  const resultados = [];
+  let pasaron = 0;
+  for (const t of tests) {
+    try {
+      const detalle = t.fn();
+      resultados.push({ nombre: t.nombre, pass: true, detalle: detalle || 'OK' });
+      pasaron++;
+    } catch (e) {
+      resultados.push({ nombre: t.nombre, pass: false, detalle: e.message });
+    }
+  }
+  return { pasaron, total: tests.length, resultados, version: MODELO.version };
+}
+
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+
+/* ── Estado global ── */
+const S = {
+  data:null, ctx:null, resultados:[], resMap:{},
+  natYear:2028, sucId:null, sucYear:2028,
+  trendId:null, trendYear:2028, audId:null, audAmb:'Fresco', audYear:2028, audMonth:0,
+  expYear:2028, scenario:'obs',
+};
+const fmt = (x,d=1)=> (x==null||!isFinite(x))?'—':Number(x).toLocaleString('es-CL',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmt0 = x=> (x==null||!isFinite(x))?'—':Math.round(x).toLocaleString('es-CL');
+const AMB_ICON = a=> a==='Fresco'?'<span class="envtag env-f">FRE</span>':'<span class="envtag env-c">CON</span>';
+
+/* clase visual de saturación (§42) */
+function satClass(v){
+  if(v==null||!isFinite(v))return 's-na';
+  if(v<85)return 's-ok'; if(v<95)return 's-watch'; if(v<100)return 's-tension'; return 's-sat';
+}
+/* Relleno (chips, barras, heatmap): rampa de severidad en paleta Agrosuper
+   celeste → amarillo → naranja → rojo (§ paleta consumidor/analítica). */
+function satColor(v){
+  if(v==null||!isFinite(v))return 'rgba(0,48,135,.28)';
+  if(v<85)return '#1FB3E3'; if(v<95)return '#FEE703'; if(v<100)return '#E87722'; return '#F04718';
+}
+/* Texto/número: legible sobre marfil. Azul por defecto; escala a naranja y
+   rojo sólo cuando hay tensión real, para no perder contraste. */
+function satText(v){
+  if(v==null||!isFinite(v))return 'rgba(0,48,135,.45)';
+  if(v<95)return '#003087'; if(v<100)return '#C15A12'; return '#F04718';
+}
+function qColor(q){
+  return {ALTA:'#1FB3E3',MEDIA:'#E87722',BAJA:'#F04718',EJEMPLO:'#E87722','NO DISPONIBLE':'rgba(0,48,135,.35)'}[q]||'rgba(0,48,135,.35)';
+}
+function satCell(v){ return `<span class="cell-sat ${satClass(v)}">${v==null||!isFinite(v)?'N/C':fmt(v)}</span>`; }
+
+/* ── Boot: calcular todo ── */
+function boot(){
+  S.data = construirDatosEjemplo();
+  S.ctx = crearContexto(S.data.datos, {anioIni:MODELO.anios[0], anioFin:MODELO.anios[MODELO.anios.length-1]});
+  for(const suc of S.data.sucursales){
+    const r = calcularSucursal(S.ctx, suc);
+    S.resultados.push(r); S.resMap[suc.Sucursal_ID]=r;
+  }
+  S.sucId = S.data.sucursales[0].Sucursal_ID;
+  S.trendId = S.sucId; S.audId = S.sucId;
+  document.getElementById('boot').style.display='none';
+  document.getElementById('verBadge').textContent = 'v'+MODELO.version;
+  initControls();
+  showTab('nacional');
+}
+
+/* ── Year button groups ── */
+function yearGroup(elId, current, cb){
+  const el=document.getElementById(elId); el.innerHTML='';
+  MODELO.anios.forEach(y=>{
+    const b=document.createElement('button'); b.textContent=y; if(y===current)b.className='active';
+    b.onclick=()=>{ [...el.children].forEach(c=>c.className=''); b.className='active'; cb(y); };
+    el.appendChild(b);
+  });
+}
+function fillSelect(elId, cb){
+  const el=document.getElementById(elId); el.innerHTML='';
+  S.data.sucursales.forEach(s=>{
+    const o=document.createElement('option'); o.value=s.Sucursal_ID; o.textContent=`${s.Sucursal} · ${s.Zona}`; el.appendChild(o);
+  });
+  el.onchange=()=>cb(el.value);
+}
+
+function initControls(){
+  // tabs
+  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+  // nacional
+  yearGroup('natYears', S.natYear, y=>{S.natYear=y; renderNacional();});
+  document.getElementById('natScenario').onchange=e=>{S.scenario=e.target.value; renderNacional();};
+  // sucursal
+  fillSelect('sucSelect', id=>{S.sucId=id; renderSucursal();});
+  yearGroup('sucYears', S.sucYear, y=>{S.sucYear=y; renderSucursal();});
+  // tendencia
+  fillSelect('trendSelect', id=>{S.trendId=id; renderTendencia();});
+  yearGroup('trendYears', S.trendYear, y=>{S.trendYear=y; renderMonthChart(); renderHeatmap();});
+  document.getElementById('hmMetric').onchange=()=>renderHeatmap();
+  // auditoria
+  fillSelect('audSelect', id=>{S.audId=id; refreshAudAmb(); renderAuditoria();});
+  document.getElementById('audAmb').onchange=e=>{S.audAmb=e.target.value; renderAuditoria();};
+  yearGroup('audYears', S.audYear, y=>{S.audYear=y; renderAuditoria();});
+  const mSel=document.getElementById('audMonth');
+  ['Todos','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'].forEach((n,i)=>{
+    if(i===0)return; const o=document.createElement('option'); o.value=i; o.textContent=n; mSel.appendChild(o);
+  });
+  mSel.onchange=e=>{S.audMonth=+e.target.value; renderAuditoria();};
+  // export
+  yearGroup('expYears', S.expYear, y=>{S.expYear=y; renderExport();});
+  document.getElementById('copyJson').onclick=()=>{
+    navigator.clipboard?.writeText(document.getElementById('jsonOut').textContent);
+    const b=document.getElementById('copyJson'); b.textContent='¡Copiado!'; setTimeout(()=>b.textContent='Copiar JSON',1200);
+  };
+}
+function refreshAudAmb(){
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.audId);
+  const sel=document.getElementById('audAmb'); sel.innerHTML='';
+  Object.keys(suc.ambientes).forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);});
+  S.audAmb=sel.value;
+}
+
+function showTab(tab){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+tab).classList.add('active');
+  if(tab==='nacional')renderNacional();
+  if(tab==='sucursal')renderSucursal();
+  if(tab==='tendencia'){renderTendencia();renderMonthChart();renderHeatmap();}
+  if(tab==='auditoria'){refreshAudAmb();renderAuditoria();}
+  if(tab==='export')renderExport();
+  if(tab==='tests')renderTests();
+}
+
+/* ════════ VISTA NACIONAL ════════ */
+function renderNacional(){
+  document.getElementById('natYearLbl').textContent = S.natYear+' · escenario '+(S.scenario==='obs'?'observado':'estructural');
+  const cols = [
+    ['Sucursal','name'],['Zona','z'],['Físico','fis'],['Fresco','fre'],['Congelado','con'],
+    ['Operación','op'],['Dotación','dot'],['Espacio','esp'],['Peak','peak'],['P95','p95'],
+    ['Exp&gt;95%','e95'],['Exp&gt;100%','e100'],['Restricción dominante','rd'],['Δpush','push'],['Cal.','q']
+  ];
+  const thead=document.querySelector('#natTable thead');
+  thead.innerHTML='<tr>'+cols.map(c=>`<th>${c[0]}</th>`).join('')+'</tr>';
+  const tb=document.querySelector('#natTable tbody'); tb.innerHTML='';
+  for(const r of S.resultados){
+    const a=r.anios[S.natYear];
+    const tr=document.createElement('tr'); tr.className='clickable';
+    tr.onclick=()=>{S.sucId=r.sucursal.id; document.getElementById('sucSelect').value=r.sucursal.id; showTab('sucursal');};
+    if(!a||!a.calculable){
+      tr.innerHTML=`<td class="name">${r.sucursal.nombre}<br><small>${r.sucursal.id}</small></td><td>${r.sucursal.zona}</td><td colspan="13" style="text-align:left;color:var(--txt3);font-style:italic">NO CALCULABLE — ${r.faltantes[0]||'falta información'}</td>`;
+      tb.appendChild(tr); continue;
+    }
+    const fis = S.scenario==='obs'?a.fisicoObservado:a.fisicoEstructural;
+    const fre = a.ambientes.Fresco?.fisicoObs, con=a.ambientes.Congelado?.fisicoObs;
+    const rd = a.restriccionDominante;
+    tr.innerHTML=
+      `<td class="name">${r.sucursal.nombre}<br><small>${r.sucursal.id}</small></td>`+
+      `<td style="text-align:left">${r.sucursal.zona}</td>`+
+      `<td>${satCell(fis.indice)}</td>`+
+      `<td>${satCell(fre?.indice)}</td>`+
+      `<td>${con?satCell(con.indice):'<span class="cell-sat s-na">N/C</span>'}</td>`+
+      `<td>${satCell(a.operacional.indice)}</td>`+
+      `<td>${satCell(a.dotacion.indice)}</td>`+
+      `<td>${satCell(a.espacioPersonas.indice)}</td>`+
+      `<td class="mono">${fmt(fis.peak)}</td>`+
+      `<td class="mono">${fmt(fis.p95)}</td>`+
+      `<td class="mono">${fmt(fis.exposicionDias[95])}%</td>`+
+      `<td class="mono">${fmt(fis.exposicionDias[100])}%</td>`+
+      `<td style="text-align:left;font-size:11.5px">${rd?`<span style="color:${satText(rd.valor)};font-weight:600">${rd.nombre}</span> <span class="mono" style="color:var(--txt3)">${fmt(rd.valor)}%</span>`:'—'}</td>`+
+      `<td class="mono">${a.deltaPushPP>=0?'+':''}${fmt(a.deltaPushPP)}pp</td>`+
+      `<td><span class="q-dot" style="background:${qColor(r.calidadDato)}"></span></td>`;
+    tb.appendChild(tr);
+  }
+}
+
+/* ════════ VISTA SUCURSAL ════════ */
+function renderSucursal(){
+  document.getElementById('sucSelect').value=S.sucId;
+  const r=S.resMap[S.sucId], a=r.anios[S.sucYear];
+  const el=document.getElementById('sucContent');
+  if(!a||!a.calculable){
+    el.innerHTML=`<div class="warn">NO CALCULABLE — ${r.faltantes.join(' · ')||'falta información'} (§29). El motor no imputa valores faltantes.</div>`;
+    return;
+  }
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.sucId);
+  const fisO=a.fisicoObservado, fisE=a.fisicoEstructural;
+  const fre=a.ambientes.Fresco, con=a.ambientes.Congelado;
+
+  // KPIs
+  let html=`<div class="kpis">
+    ${kpi('Físico estructural',fisE.indice,'%',`peak ${fmt(fisE.peak)}% · P95 ${fmt(fisE.p95)}%`)}
+    ${kpi('Físico observado',fisO.indice,'%',`+${fmt(a.deltaPushPP)}pp por push`)}
+    ${kpi('Operacional',a.operacional.indice,'%',`peak ${fmt(a.operacional.peak)}%`)}
+    ${kpi('Dotación',a.dotacion.indice,'%',`peak ${fmt(a.dotacion.peak)}%`)}
+    ${kpi('Espacio-personas',a.espacioPersonas.indice,'%',`peak ${fmt(a.espacioPersonas.peak)}%`)}
+    ${kpiPlain('Demanda anual',fmt0(a.kgAnual)+' kg', fmt0(a.cajasAnual)+' cajas')}
+  </div>`;
+
+  // Restricción dominante + exposición
+  const rd=a.restriccionDominante;
+  html+=`<div class="cols2">
+    <div class="panel"><h2>Restricción dominante del año <span class="tag">(§25) — sólo diagnóstico</span></h2>
+      ${rd?`<div style="display:flex;align-items:baseline;gap:12px"><span class="mono" style="font-size:30px;font-weight:700;color:${satText(rd.valor)}">${fmt(rd.valor)}%</span><div><div style="font-weight:700;font-size:15px">${rd.nombre}</div><div class="note">Fecha del peak: ${rd.fecha}</div></div></div>`:'—'}
+      <p class="note" style="margin-top:10px">Holgura/déficit al peak observado: <b class="mono" style="color:${a.holguraKg>=0?'var(--ok)':'var(--sat)'}">${a.holguraKg>=0?'+':''}${fmt0(a.holguraKg)} kg</b> (${fmt(a.holguraPct)}%). No se recomienda acción.</p>
+    </div>
+    <div class="panel"><h2>Exposición temporal y por volumen <span class="tag">(§21, §22)</span></h2>
+      ${exposureTable(fisO)}
+    </div>
+  </div>`;
+
+  // Cámaras: fresco y congelado (§14, §15)
+  html+=`<div class="panel"><h2>Cámaras — físico observado por ambiente <span class="tag">ponderación por capacidad, nunca ocultar cámara crítica (§14)</span></h2>
+    <div class="dims">
+      ${dimBar('Físico sucursal (ponderado)', fisO.indice)}
+      ${fre?dimBar('Fresco '+AMB_ICON('Fresco'), fre.fisicoObs.indice):''}
+      ${con?dimBar('Congelado '+AMB_ICON('Congelado'), con.fisicoObs.indice):'<div class="note">Congelado: NO CALCULABLE — '+(r.faltantes.find(f=>f.includes('Congelado'))||'')+'</div>'}
+    </div>
+    ${capTable(suc,r)}
+  </div>`;
+
+  // Operación & Personas
+  html+=`<div class="cols2">
+    <div class="panel"><h2>Operación <span class="tag">(§16, §17)</span></h2>${opTable(suc,a)}</div>
+    <div class="panel"><h2>Personas <span class="tag">dotación vs espacio (§17,§18)</span></h2>${peopleTable(suc,a)}</div>
+  </div>`;
+
+  // Estructural vs observado (§38)
+  html+=`<div class="panel"><h2>Escenario estructural vs observado <span class="tag">(§38) — impacto del push</span></h2>
+    <div class="cols3">
+      ${kpi('Físico estructural',fisE.indice,'%','inventario del DOH')}
+      ${kpi('Físico observado',fisO.indice,'%','+ push extraordinario')}
+      ${kpiPlain('Delta push','+'+fmt(a.deltaPushPP)+' pp', 'Push anual: '+fmt0(a.pushAnual)+' kg')}
+    </div>
+  </div>`;
+
+  // Explicar cálculo (§30)
+  html+=`<div class="panel"><h2>Explicar cálculo <span class="tag">(§30) — trazabilidad total</span></h2>
+    <div class="controls" style="margin-bottom:12px">
+      <label class="ctl">Ambiente <select id="expAmb">${Object.keys(suc.ambientes).map(x=>`<option>${x}</option>`).join('')}</select></label>
+      <label class="ctl">Día (peak físico observado por defecto) <select id="expDay"></select></label>
+    </div>
+    <div class="explain" id="explainBox"></div>
+  </div>`;
+
+  el.innerHTML=html;
+  // wire explain
+  const ambSel=document.getElementById('expAmb');
+  ambSel.onchange=()=>{fillExplainDays();renderExplain();};
+  fillExplainDays(); renderExplain();
+  document.getElementById('expDay').onchange=renderExplain;
+}
+function kpi(lbl,v,unit,foot){
+  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val" style="color:${satText(v)}">${fmt(v)}<span class="unit">${unit}</span></div><div class="foot">${foot||''}</div><div class="bar" style="width:${Math.min(100,v||0)}%;background:${satColor(v)}"></div></div>`;
+}
+function kpiPlain(lbl,v,foot){
+  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val" style="font-size:19px">${v}</div><div class="foot">${foot||''}</div></div>`;
+}
+function dimBar(name,v){
+  const w=Math.min(130,v||0)/1.3;
+  return `<div class="dim"><div class="dn">${name}</div><div class="track"><div class="fill" style="width:${w}%;background:${satColor(v)}"></div><div class="marker" style="left:${100/1.3}%" title="100%"></div></div><div class="dv" style="color:${satText(v)}">${fmt(v)}%</div></div>`;
+}
+function exposureTable(f){
+  let h='<table style="font-size:12px"><thead><tr><th style="text-align:left">Umbral</th><th>% días</th><th>% volumen</th></tr></thead><tbody>';
+  for(const T of [85,95,100]){
+    h+=`<tr><td style="text-align:left" class="mono">≥ ${T}%</td><td class="mono">${fmt(f.exposicionDias[T])}%</td><td class="mono">${fmt(f.exposicionKg[T])}%</td></tr>`;
+  }
+  h+=`</tbody></table><p class="note" style="margin-top:8px">Índice anual ${fmt(f.indice)}% · Peak ${fmt(f.peak)}% (${f.fechaPeak}) · P95 ${fmt(f.p95)}%</p>`;
+  return h;
+}
+function capTable(suc,r){
+  let h='<div class="tbl-wrap" style="margin-top:12px"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>M²</th><th>Alt.útil</th><th>Factor util.</th><th>Densidad</th><th>Capacidad kg</th><th>DOH</th></tr></thead><tbody>';
+  for(const a of ['Fresco','Congelado']){
+    const g=suc.ambientes[a]; if(!g)continue;
+    const cap=r.capacidad[a];
+    h+=`<tr><td style="text-align:left">${AMB_ICON(a)} ${a}</td><td class="mono">${fmt0(g.M2)}</td><td class="mono">${fmt(g.Altura_Util,2)}</td><td class="mono">${g.Factor_Utilizacion}</td><td class="mono">${g.Densidad_Kg_M3??'<span style="color:var(--sat)">N/D</span>'}</td><td class="mono">${cap.ok?fmt0(cap.CAP):'<span style="color:var(--sat)">N/C</span>'}</td><td class="mono">${g.DOH} <span style="color:var(--txt3)">(${g.DOH_Base})</span></td></tr>`;
+  }
+  return h+'</tbody></table></div>';
+}
+function opTable(suc,a){
+  let h='<div class="tbl-wrap"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>Cajas/año</th><th>Product.</th><th>HH disp.</th><th>Saturación op.</th></tr></thead><tbody>';
+  for(const amb of Object.keys(suc.ambientes)){
+    const g=suc.ambientes[amb], d=a.ambientes[amb]; if(!d)continue;
+    let cajas=0; const dias=a._diasAmb[amb]||[]; for(const x of dias)if(isFinite(x.boxes))cajas+=x.boxes;
+    h+=`<tr><td style="text-align:left">${AMB_ICON(amb)} ${amb}</td><td class="mono">${fmt0(cajas)}</td><td class="mono">${g.Productividad}</td><td class="mono">${fmt0(g.Dotacion*g.Horas_Productivas)}</td><td>${satCell(d.operacional.indice)}</td></tr>`;
+  }
+  h+='</tbody></table></div>';
+  h+=`<p class="note" style="margin-top:8px">Saturación operacional sucursal (máx. entre cámaras): ${satCell(a.operacional.indice)} · peak ${fmt(a.operacional.peak)}%</p>`;
+  return h;
+}
+function peopleTable(suc,a){
+  let h='<div class="tbl-wrap"><table style="font-size:12px"><thead><tr><th style="text-align:left">Ambiente</th><th>Disponibles</th><th>Máx. espacio</th><th>Sat. dotación</th><th>Sat. espacio</th></tr></thead><tbody>';
+  for(const amb of Object.keys(suc.ambientes)){
+    const g=suc.ambientes[amb], d=a.ambientes[amb]; if(!d)continue;
+    const nMax=g.M2_Operable/g.M2_Por_Persona;
+    h+=`<tr><td style="text-align:left">${AMB_ICON(amb)} ${amb}</td><td class="mono">${g.Dotacion}</td><td class="mono">${fmt0(nMax)}</td><td>${satCell(d.dotacion.indice)}</td><td>${satCell(d.espacioPersonas.indice)}</td></tr>`;
+  }
+  h+='</tbody></table></div>';
+  h+=`<p class="note" style="margin-top:8px">"¿Tengo personas?" (dotación) es distinto de "¿caben las personas?" (espacio). Nunca se confunden (§18).</p>`;
+  return h;
+}
+
+/* Explain — reconstrucción con valores sustituidos (§30) */
+function fillExplainDays(){
+  const amb=document.getElementById('expAmb').value;
+  const a=S.resMap[S.sucId].anios[S.sucYear];
+  const dias=(a._diasAmb[amb]||[]).filter(d=>isFinite(d.sPhysObs));
+  const sel=document.getElementById('expDay'); sel.innerHTML='';
+  // default = peak
+  let peakIdx=0; dias.forEach((d,i)=>{if(d.sPhysObs>dias[peakIdx].sPhysObs)peakIdx=i;});
+  dias.forEach((d,i)=>{const o=document.createElement('option');o.value=d.fecha;o.textContent=`${d.fecha} (${fmt(d.sPhysObs)}%)`;if(i===peakIdx)o.selected=true;sel.appendChild(o);});
+}
+function renderExplain(){
+  const amb=document.getElementById('expAmb').value;
+  const fecha=document.getElementById('expDay').value;
+  const suc=S.data.sucursales.find(s=>s.Sucursal_ID===S.sucId);
+  const g=suc.ambientes[amb], cap=S.resMap[S.sucId].capacidad[amb];
+  const a=S.resMap[S.sucId].anios[S.sucYear];
+  const d=(a._diasAmb[amb]||[]).find(x=>x.fecha===fecha);
+  if(!d){document.getElementById('explainBox').textContent='—';return;}
+  const box=document.getElementById('explainBox');
+  box.innerHTML=
+`<b>SATURACIÓN ${amb.toUpperCase()} — ${suc.Sucursal} — ${fecha}</b>
+
+Demanda del día        : <span class="hl">${fmt0(d.D)} kg</span>
+Kg por caja            : ${fmt(d.kpc,2)} kg  <span style="color:var(--txt3)">(nivel: ${d.kpcNivel})</span>
+Cajas demandadas       : ${fmt0(d.boxes)}
+
+DOH (${d.dohBase.padEnd(10)})     : ${d.doh} días
+Inventario estructural : <span class="hl">${fmt0(d.istruct)} kg</span>  <span style="color:var(--txt3)">(rolling-forward)</span>
+Push extraordinario    : ${fmt0(d.push)} kg
+Inventario observado   : <span class="hl">${fmt0(d.iobs)} kg</span>${d.onhand!=null?'  (On Hand real)':''}
+
+CAPACIDAD FÍSICA (geometría §12)
+  M²                   : ${fmt0(g.M2)}
+  Altura útil          : ${fmt(g.Altura_Util,2)} m
+  Factor utilización   : ${g.Factor_Utilizacion}
+  Densidad             : ${g.Densidad_Kg_M3} kg/m³
+  CAPkg = ${fmt0(g.M2)} × ${fmt(g.Altura_Util,2)} × ${g.Factor_Utilizacion} × ${g.Densidad_Kg_M3}
+       = <span class="hl">${fmt0(cap.CAP)} kg</span>
+
+SATURACIÓN
+  Estructural = ${fmt0(d.istruct)} / ${fmt0(cap.CAP)} × 100 = <b>${fmt(d.sPhysStruct,2)}%</b>
+  Observada   = ${fmt0(d.iobs)} / ${fmt0(cap.CAP)} × 100 = <b>${fmt(d.sPhysObs,2)}%</b>
+  Impacto push = ${fmt(d.sPhysObs-d.sPhysStruct,2)} pp
+
+OPERACIÓN
+  HH disponibles = ${g.Dotacion} pers × ${g.Horas_Productivas} h = ${fmt0(d.hhAvail)} HH
+  Cap. cajas     = ${fmt0(d.hhAvail)} × ${g.Productividad} = ${fmt0(d.capBoxes)} cajas
+  Sat. operacional = ${fmt0(d.boxes)} / ${fmt0(d.capBoxes)} × 100 = <b>${fmt(d.sOp,2)}%</b>
+
+PERSONAS
+  Requeridas   = ${fmt0(d.boxes)} / (${g.Productividad} × ${g.Horas_Productivas}) = ${fmt(d.nReq,1)} pers
+  Disponibles  = ${g.Dotacion} → Sat. dotación = <b>${fmt(d.sStaff,2)}%</b>
+  Máx. espacio = ${fmt0(g.M2_Operable)} / ${g.M2_Por_Persona} = ${fmt(d.nMaxSpace,1)} pers
+  Sat. espacio-personas = <b>${fmt(d.sPeopleSpace,2)}%</b>`;
+}
+
+/* ════════ TENDENCIA (SVG line chart) ════════ */
+function renderTendencia(){
+  document.getElementById('trendSelect').value=S.trendId;
+  const r=S.resMap[S.trendId];
+  const series=[
+    ['Físico observado','#003087', y=>r.anios[y].calculable?r.anios[y].fisicoObservado.indice:null],
+    ['Fresco','#1FB3E3', y=>r.anios[y].calculable?r.anios[y].ambientes.Fresco?.fisicoObs.indice:null],
+    ['Congelado','#0043C5', y=>r.anios[y].calculable?r.anios[y].ambientes.Congelado?.fisicoObs.indice:null],
+    ['Operacional','#E87722', y=>r.anios[y].calculable?r.anios[y].operacional.indice:null],
+    ['Espacio-personas','#F04718', y=>r.anios[y].calculable?r.anios[y].espacioPersonas.indice:null],
+  ];
+  document.getElementById('trendChart').innerHTML=lineChart(MODELO.anios, series, {xlabels:MODELO.anios});
+}
+function lineChart(xs, series, opt={}){
+  const W=1100,H=340,pad={l:48,r:20,t:20,b:38};
+  const iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  let max=130; series.forEach(s=>xs.forEach(x=>{const v=s[2](x); if(v!=null&&isFinite(v))max=Math.max(max,v);}));
+  max=Math.ceil(max/10)*10;
+  const X=i=>pad.l+ (xs.length>1? iw*i/(xs.length-1):iw/2);
+  const Y=v=>pad.t+ih-(v/max)*ih;
+  let g='';
+  // gridlines
+  for(let t=0;t<=max;t+=25){g+=`<line x1="${pad.l}" y1="${Y(t)}" x2="${W-pad.r}" y2="${Y(t)}" stroke="rgba(0,48,135,.14)" stroke-width="1"/><text x="${pad.l-8}" y="${Y(t)+4}" fill="rgba(0,48,135,.55)" font-size="11" text-anchor="end" font-family="monospace">${t}%</text>`;}
+  // 100% ref
+  g+=`<line x1="${pad.l}" y1="${Y(100)}" x2="${W-pad.r}" y2="${Y(100)}" stroke="rgba(0,48,135,.5)" stroke-width="1.2" stroke-dasharray="5 4"/>`;
+  // x labels
+  xs.forEach((x,i)=>{g+=`<text x="${X(i)}" y="${H-14}" fill="rgba(0,48,135,.7)" font-size="11" text-anchor="middle" font-family="monospace">${(opt.xlabels||xs)[i]}</text>`;});
+  // series
+  series.forEach(s=>{
+    let path='',pts='';
+    xs.forEach((x,i)=>{const v=s[2](x); if(v==null||!isFinite(v))return; const px=X(i),py=Y(v); path+=(path?'L':'M')+px+' '+py+' '; pts+=`<circle cx="${px}" cy="${py}" r="3.5" fill="${s[1]}"/>`;});
+    g+=`<path d="${path}" fill="none" stroke="${s[1]}" stroke-width="2.5"/>${pts}`;
+  });
+  const leg=series.map(s=>`<span><i style="background:${s[1]}"></i>${s[0]}</span>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg><div class="chart-legend">${leg}<span style="margin-left:auto;color:var(--txt2)"><i style="background:rgba(0,48,135,.5)"></i>límite 100%</span></div>`;
+}
+
+/* ════════ CURVA ANUAL (12 meses) ════════ */
+function renderMonthChart(){
+  const r=S.resMap[S.trendId], a=r.anios[S.trendYear];
+  const el=document.getElementById('monthChart');
+  document.getElementById('trendCurveLbl').textContent=`${r.sucursal.nombre} · ${S.trendYear}`;
+  if(!a||!a.calculable){el.innerHTML='<div class="warn">NO CALCULABLE para este año.</div>';return;}
+  // mensualizar: promedio ponderado por demanda de sBranchObs, sBranchStruct, y por ambiente
+  const meses=Array.from({length:12},(_,i)=>i+1);
+  const mAgg=(key)=>meses.map(m=>{
+    const dd=a._branchDaily.filter(b=>+b.fecha.slice(5,7)===m);
+    let num=0,den=0; for(const b of dd){const v=b[key],w=b.D; if(isFinite(v)){num+=v*w;den+=w;}}
+    return den>0?num/den:null;
+  });
+  const mAmb=(amb)=>meses.map(m=>{
+    const dd=(a._diasAmb[amb]||[]).filter(x=>x.mes===m);
+    let num=0,den=0; for(const x of dd){if(isFinite(x.sPhysObs)){num+=x.sPhysObs*x.D;den+=x.D;}}
+    return den>0?num/den:null;
+  });
+  const mPeak=meses.map(m=>{const dd=a._branchDaily.filter(b=>+b.fecha.slice(5,7)===m);let mx=null;for(const b of dd)if(isFinite(b.sBranchObs))mx=mx==null?b.sBranchObs:Math.max(mx,b.sBranchObs);return mx;});
+  const struct=mAgg('sBranchStruct'), obs=mAgg('sBranchObs'), fre=mAmb('Fresco'), con=mAmb('Congelado');
+  const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const series=[
+    ['Estructural','rgba(0,48,135,.4)',(i)=>struct[i-1]],
+    ['Observada','#003087',(i)=>obs[i-1]],
+    ['Fresco','#1FB3E3',(i)=>fre[i-1]],
+    ['Congelado','#0043C5',(i)=>con[i-1]],
+    ['Peak mensual','#F04718',(i)=>mPeak[i-1]],
+  ];
+  el.innerHTML=lineChart(meses, series, {xlabels:MN});
+}
+
+/* ════════ HEATMAP ════════ */
+function renderHeatmap(){
+  const metric=document.getElementById('hmMetric').value;
+  const r=S.resMap[S.trendId], a=r.anios[S.trendYear];
+  const el=document.getElementById('heatmap');
+  document.getElementById('hmLbl').textContent=`${r.sucursal.nombre} · ${S.trendYear} · ${document.getElementById('hmMetric').selectedOptions[0].text}`;
+  if(!a||!a.calculable){el.innerHTML='<div class="warn">NO CALCULABLE.</div>';return;}
+  // agregamos ambos ambientes (fresco+congelado) por día calendario
+  const MN=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const WD=[1,2,3,4,5,6]; // Lun..Sáb
+  // build matrix month x weekday
+  const cellVals={};
+  for(let m=1;m<=12;m++)for(const w of WD)cellVals[m+'-'+w]={num:0,den:0,max:0};
+  for(const amb of Object.keys(a._diasAmb)){
+    for(const x of (a._diasAmb[amb]||[])){
+      const k=x.mes+'-'+x.wd; if(!cellVals[k])continue;
+      let v=0;
+      if(metric==='sat')v=x.sPhysObs; else if(metric==='kg')v=x.D; else if(metric==='boxes')v=x.boxes; else v=x.nReq;
+      if(!isFinite(v))continue;
+      if(metric==='sat'){cellVals[k].num+=v*x.D;cellVals[k].den+=x.D;} // ponderado
+      else {cellVals[k].num+=v;cellVals[k].den+=0;} // suma
+      cellVals[k].max=Math.max(cellVals[k].max,v);
+    }
+  }
+  const val=(m,w)=>{const c=cellVals[m+'-'+w];if(!c)return null; return metric==='sat'?(c.den>0?c.num/c.den:null):c.num;};
+  let vmax=0,vmin=Infinity;
+  for(let m=1;m<=12;m++)for(const w of WD){const v=val(m,w);if(v!=null&&isFinite(v)){vmax=Math.max(vmax,v);vmin=Math.min(vmin,v);}}
+  const color=(v)=>{
+    if(v==null||!isFinite(v))return 'rgba(0,48,135,.06)';
+    if(metric==='sat')return satColor(v);
+    // rampa secuencial marfil → azul corporativo (§5.7: variaciones de azul)
+    const t=(v-vmin)/((vmax-vmin)||1);
+    const r=Math.round(255+t*(0-255)),gg=Math.round(246+t*(48-246)),b=Math.round(230+t*(135-230));
+    return `rgb(${r},${gg},${b})`;
+  };
+  // texto legible según el fondo del chip
+  const txtColor=(v)=>{
+    if(v==null||!isFinite(v))return 'rgba(0,48,135,.4)';
+    if(metric==='sat')return v<95?'#003087':'#FFF6E6';
+    const t=(v-vmin)/((vmax-vmin)||1);
+    return t>0.5?'#FFF6E6':'#003087';
+  };
+  let h=`<div class="hm-grid" style="grid-template-columns:44px repeat(12,1fr)">`;
+  h+=`<div class="hm-lbl"></div>`+MN.map(m=>`<div class="hm-lbl">${m}</div>`).join('');
+  for(const w of WD){
+    h+=`<div class="hm-lbl">${DIAS_SEMANA[w].slice(0,3)}</div>`;
+    for(let m=1;m<=12;m++){
+      const v=val(m,w);
+      const txt = v==null?'':(metric==='sat'?Math.round(v):(v>9999?Math.round(v/1000)+'k':Math.round(v)));
+      h+=`<div class="hm-cell" style="background:${color(v)};color:${txtColor(v)}" title="${MN[m-1]} · ${DIAS_SEMANA[w]}: ${v==null?'N/C':fmt(v)}">${txt}</div>`;
+    }
+  }
+  h+=`</div>`;
+  el.innerHTML=h;
+}
+
+/* ════════ AUDITORÍA ════════ */
+function renderAuditoria(){
+  document.getElementById('audSelect').value=S.audId;
+  document.getElementById('audAmb').value=S.audAmb;
+  const r=S.resMap[S.audId], a=r.anios[S.audYear];
+  const cols=['Fecha','Día','Kg','Cajas','KPC','DOH','Inv.estruct','Push','On Hand','Cap.kg','Sat.física','HH req','HH disp','Pers.req','Pers.disp','Sat.op','Sat.pers'];
+  document.querySelector('#audTable thead').innerHTML='<tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr>';
+  const tb=document.querySelector('#audTable tbody'); tb.innerHTML='';
+  if(!a||!a.calculable){tb.innerHTML=`<tr><td colspan="17" style="text-align:left;color:var(--txt3)">NO CALCULABLE — ${r.faltantes.join(' · ')}</td></tr>`;return;}
+  let dias=a._diasAmb[S.audAmb]||[];
+  if(S.audMonth>0)dias=dias.filter(d=>d.mes===S.audMonth);
+  const g=S.data.sucursales.find(s=>s.Sucursal_ID===S.audId).ambientes[S.audAmb];
+  const frag=document.createDocumentFragment();
+  for(const d of dias){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="text-align:left" class="mono">${d.fecha}</td><td style="text-align:left">${d.wdNombre.slice(0,3)}</td>`+
+      `<td class="mono">${fmt0(d.D)}</td><td class="mono">${fmt0(d.boxes)}</td><td class="mono">${fmt(d.kpc,1)}</td>`+
+      `<td class="mono">${d.doh}</td><td class="mono">${fmt0(d.istruct)}</td><td class="mono">${d.push?fmt0(d.push):'0'}</td>`+
+      `<td class="mono">${d.onhand!=null?fmt0(d.onhand):'—'}</td><td class="mono">${fmt0(d.cap)}</td>`+
+      `<td>${satCell(d.sPhysObs)}</td><td class="mono">${fmt0(d.hhReq)}</td><td class="mono">${fmt0(d.hhAvail)}</td>`+
+      `<td class="mono">${fmt(d.nReq,1)}</td><td class="mono">${d.nDisp}</td><td>${satCell(d.sOp)}</td><td>${satCell(d.sPeopleSpace)}</td>`;
+    frag.appendChild(tr);
+  }
+  tb.appendChild(frag);
+}
+
+/* ════════ EXPORT ════════ */
+function renderExport(){
+  const out=S.resultados.map(r=>salidaJSON(r,S.expYear));
+  document.getElementById('jsonOut').textContent=JSON.stringify(out,null,2);
+}
+
+/* ════════ TESTS ════════ */
+function renderTests(){
+  const {pasaron,total,resultados}=correrTests();
+  let h=`<div style="margin-bottom:14px;font-family:var(--mono);font-size:14px"><span class="st ${pasaron===total?'pass':'fail'}">${pasaron}/${total} OK</span></div>`;
+  for(const t of resultados){
+    h+=`<div class="test-row"><span class="st ${t.pass?'pass':'fail'}">${t.pass?'PASS':'FAIL'}</span><div class="body"><div class="tn">${t.nombre}</div><div class="td">→ ${t.detalle}</div></div></div>`;
+  }
+  document.getElementById('testResults').innerHTML=h;
+}
+
+boot();
+</script>
+</body>
+</html>

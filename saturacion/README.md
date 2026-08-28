@@ -55,12 +55,18 @@ Debe reportar `13/13 tests OK`, incluidos los siete tests obligatorios A–G.
 
 ### Abrir el dashboard
 
-El dashboard usa módulos ES; requiere servirse por HTTP (no `file://`):
+Dos formas, misma herramienta con la **paleta de marca Agrosuper** (marfil ·
+azul #003087 · naranja #E87722, tipografía Poppins):
+
+- **`saturacion-agrosuper.html`** — build autónomo de **un solo archivo**. Se
+  abre con doble clic (`file://`), sin servidor. Es la versión para compartir.
+- **`index.html`** — versión modular (usa módulos ES); requiere servirse por
+  HTTP: `npx serve saturacion` y abrir el índice.
+
+Regenerar el archivo único tras editar los módulos:
 
 ```bash
-# opción simple
-npx serve saturacion        # o cualquier servidor estático
-# luego abrir http://localhost:3000/
+node saturacion/build-single.mjs   # → saturacion/saturacion-agrosuper.html
 ```
 
 Todo el cálculo ocurre en el navegador; no hay backend ni dependencias externas
