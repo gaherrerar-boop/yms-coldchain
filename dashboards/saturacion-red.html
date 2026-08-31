@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturación de Red — Bodegas de Frío</title>
+<style>
+
+:root{
+  --azul:#003087;
+  --azul-vivo:#0043C5;
+  --naranja:#E87722;
+  --marfil:#FFF6E6;
+  --blanco:#FFFFFF;
+  --azul-10:rgba(0,48,135,.08);
+  --azul-15:rgba(0,48,135,.15);
+  --azul-30:rgba(0,48,135,.3);
+  --azul-55:rgba(0,48,135,.55);
+  --verde:#1f7a3f;
+  --verde-bg:#e6f3ea;
+  --ambar:#b26a00;
+  --ambar-bg:#fbeedd;
+  --rojo:#c1272d;
+  --rojo-bg:#fbe6e6;
+  --gris:#6b6f76;
+  --gris-bg:#eceae3;
+  --radius:10px;
+  --shadow:0 1px 3px rgba(0,48,135,.08), 0 1px 2px rgba(0,48,135,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--marfil);
+  color:var(--azul);
+  font-family:'Poppins','Montserrat',-apple-system,'Segoe UI',Arial,sans-serif;
+  font-size:14px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--naranja);}
+.wrap{max-width:1520px;margin:0 auto;padding:0 28px 60px;}
+
+/* ---------- header ---------- */
+header.top{
+  background:var(--azul);
+  color:var(--marfil);
+  padding:22px 28px;
+  border-bottom:4px solid var(--naranja);
+}
+header.top .inner{max-width:1520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.brandmark{display:flex;align-items:center;gap:12px;}
+.brandmark .dot{width:14px;height:14px;border-radius:3px;background:var(--naranja);transform:rotate(45deg);flex:none;}
+.brandmark .txt div:first-child{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;}
+.brandmark .txt div:last-child{font-weight:900;font-size:26px;letter-spacing:.01em;}
+header.top .meta{text-align:right;font-size:12px;opacity:.9;}
+header.top .meta b{display:block;font-size:13px;opacity:1;font-weight:700;}
+
+nav.tabs{
+  background:var(--azul);
+  padding:0 28px;
+  display:flex;
+  gap:4px;
+  border-bottom:1px solid rgba(255,246,230,.18);
+  overflow-x:auto;
+}
+nav.tabs .inner{max-width:1520px;margin:0 auto;display:flex;gap:4px;}
+nav.tabs button{
+  background:none;border:none;color:rgba(255,246,230,.7);
+  padding:12px 18px;font-family:inherit;font-weight:700;font-size:13px;
+  cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;
+  letter-spacing:.02em;
+}
+nav.tabs button:hover{color:var(--marfil);}
+nav.tabs button.active{color:var(--marfil);border-bottom-color:var(--naranja);}
+
+section.view{display:none;padding-top:26px;}
+section.view.active{display:block;}
+
+h1.page-title{font-size:22px;font-weight:900;margin:0 0 4px;color:var(--azul);}
+p.page-sub{margin:0 0 22px;color:var(--azul);opacity:.72;font-size:13px;max-width:900px;}
+
+/* ---------- cards / kpis ---------- */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px;}
+.kpi{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:var(--radius);
+  padding:16px 18px;box-shadow:var(--shadow);
+}
+.kpi .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;opacity:.6;margin-bottom:6px;}
+.kpi .val{font-size:26px;font-weight:900;line-height:1;}
+.kpi .sub{margin-top:6px;font-size:12px;opacity:.65;}
+.kpi.accent{border-color:var(--naranja);}
+.kpi.accent .val{color:var(--naranja);}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:var(--radius);
+  padding:18px 20px;margin-bottom:22px;box-shadow:var(--shadow);
+}
+.panel h2{margin:0 0 4px;font-size:16px;font-weight:900;color:var(--azul);}
+.panel p.hint{margin:0 0 14px;font-size:12px;color:var(--azul);opacity:.65;max-width:820px;}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+/* ---------- controls ---------- */
+.pillbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;}
+.pill{
+  border:1px solid var(--azul-30);background:var(--blanco);color:var(--azul);
+  border-radius:999px;padding:7px 15px;font-size:12.5px;font-weight:700;cursor:pointer;
+  font-family:inherit;
+}
+.pill.active{background:var(--azul);color:var(--marfil);border-color:var(--azul);}
+.pill.accent.active{background:var(--naranja);border-color:var(--naranja);color:var(--marfil);}
+
+.controls-row{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;margin-bottom:16px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.65;}
+.field input[type=number],.field input[type=text],.field select{
+  border:1px solid var(--azul-30);border-radius:6px;padding:7px 9px;font-family:inherit;
+  font-size:13px;color:var(--azul);background:var(--marfil);min-width:100px;
+}
+.field input:focus,.field select:focus{outline:2px solid var(--naranja);outline-offset:1px;}
+.switch-field{display:flex;align-items:center;gap:8px;}
+.switch{position:relative;width:42px;height:23px;flex:none;}
+.switch input{opacity:0;width:0;height:0;}
+.slider-tog{position:absolute;inset:0;background:var(--azul-30);border-radius:999px;cursor:pointer;transition:.15s;}
+.slider-tog:before{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;background:var(--blanco);border-radius:50%;transition:.15s;}
+input:checked + .slider-tog{background:var(--naranja);}
+input:checked + .slider-tog:before{transform:translateX(19px);}
+button.btn{
+  background:var(--azul);color:var(--marfil);border:none;border-radius:7px;
+  padding:9px 16px;font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;
+}
+button.btn:hover{background:var(--azul-vivo);}
+button.btn.ghost{background:transparent;color:var(--azul);border:1px solid var(--azul-30);}
+button.btn.ghost:hover{background:var(--azul-10);}
+button.btn.small{padding:5px 10px;font-size:11px;border-radius:6px;}
+
+/* ---------- table ---------- */
+.tbl-scroll{overflow-x:auto;border:1px solid var(--azul-15);border-radius:var(--radius);}
+table.data{border-collapse:collapse;width:100%;min-width:1240px;font-size:12.5px;}
+table.data thead th{
+  background:var(--azul);color:var(--marfil);font-weight:700;text-align:left;
+  padding:9px 10px;white-space:nowrap;position:sticky;top:0;z-index:2;
+}
+table.data thead tr.grp th{background:#00224f;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:center;}
+table.data tbody td{padding:7px 10px;border-bottom:1px solid var(--azul-10);white-space:nowrap;}
+table.data tbody tr:nth-child(even){background:rgba(0,48,135,.03);}
+table.data tbody tr:hover{background:var(--azul-10);}
+table.data td.num{text-align:right;font-variant-numeric:tabular-nums;}
+table.data td.divider{border-left:2px solid var(--azul-15);}
+table.data tfoot td{
+  padding:9px 10px;font-weight:800;background:var(--naranja);color:var(--marfil);
+  border-top:2px solid var(--azul);white-space:nowrap;
+}
+table.data tfoot td.num{text-align:right;}
+.branch-cell{font-weight:700;}
+.zone-tag{
+  display:inline-block;font-size:9.5px;font-weight:700;text-transform:uppercase;
+  padding:1px 6px;border-radius:4px;background:var(--azul-10);color:var(--azul);margin-left:6px;letter-spacing:.03em;
+}
+.abast-tag{font-size:10.5px;opacity:.65;}
+.editcell input{
+  width:74px;border:1px solid var(--azul-30);border-radius:5px;padding:4px 6px;
+  font-family:inherit;font-size:12px;color:var(--azul);background:var(--marfil);text-align:right;
+}
+.editcell input.changed{border-color:var(--naranja);background:#fff2e4;}
+.na{opacity:.45;font-style:italic;}
+
+/* semaphore badge */
+.badge{
+  display:inline-flex;align-items:center;gap:5px;font-weight:800;padding:3px 9px;border-radius:999px;font-size:12px;
+}
+.badge.verde{background:var(--verde-bg);color:var(--verde);}
+.badge.ambar{background:var(--ambar-bg);color:var(--ambar);}
+.badge.rojo{background:var(--rojo-bg);color:var(--rojo);}
+.badge.gris{background:var(--gris-bg);color:var(--gris);}
+.badge .dotb{width:7px;height:7px;border-radius:50%;background:currentColor;}
+.row-flag{font-size:10px;color:var(--rojo);font-weight:700;}
+
+/* legend */
+.legend-row{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;margin-top:10px;color:var(--azul);opacity:.8;}
+.legend-row .it{display:flex;align-items:center;gap:6px;}
+.legend-row .sw{width:11px;height:11px;border-radius:3px;}
+
+/* charts */
+.chart-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;}
+@media(max-width:980px){.chart-grid{grid-template-columns:1fr;}}
+svg.chart{width:100%;height:auto;font-family:inherit;}
+.axis-line{stroke:var(--azul-15);stroke-width:1;}
+.grid-line{stroke:var(--azul-10);stroke-width:1;stroke-dasharray:3 3;}
+.ref-line{stroke:var(--gris);stroke-width:1;stroke-dasharray:4 3;opacity:.6;}
+.axis-text{fill:var(--azul);opacity:.6;font-size:10.5px;}
+.pt-label{fill:var(--azul);font-size:10px;font-weight:700;}
+
+/* methodology */
+.method ul{margin:6px 0 14px;padding-left:20px;}
+.method li{margin-bottom:6px;}
+.fix-box{
+  border-left:4px solid var(--naranja);background:var(--marfil);padding:12px 16px;border-radius:0 8px 8px 0;
+  margin-bottom:14px;border-top:1px solid var(--azul-10);border-bottom:1px solid var(--azul-10);border-right:1px solid var(--azul-10);
+}
+.fix-box h3{margin:0 0 6px;font-size:13.5px;color:var(--naranja);}
+.fix-box p{margin:0 0 6px;font-size:12.5px;}
+code.f{background:var(--azul-10);padding:1px 6px;border-radius:4px;font-family:'SFMono-Regular',Consolas,monospace;font-size:11.5px;}
+
+footer.bottom{
+  background:var(--azul);color:var(--marfil);text-align:center;padding:16px;font-size:11px;
+  border-top:4px solid var(--naranja);opacity:.9;
+}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+.chip-list{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{border:1px solid var(--azul-15);border-radius:8px;padding:8px 12px;font-size:12px;background:var(--marfil);}
+.chip b{display:block;font-size:14px;}
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <div class="brandmark">
+      <span class="dot"></span>
+      <div class="txt">
+        <div>Agrosuper &middot; Cadena de Frío</div>
+        <div>Saturación de Red</div>
+      </div>
+    </div>
+    <div class="meta">
+      <b>Bodegas Congelado &amp; Refrigerado</b>
+      Modelo de saturación operativa y estructural &middot; proyección 2026&ndash;2032
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="inner">
+    <button class="tab-btn active" data-view="resumen">Resumen Red</button>
+    <button class="tab-btn" data-view="detalle">Detalle por Sucursal</button>
+    <button class="tab-btn" data-view="simulador">Simulador &amp; Política</button>
+    <button class="tab-btn" data-view="metodologia">Metodología &amp; Ajustes</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ===================== RESUMEN ===================== -->
+<section class="view active" id="view-resumen">
+  <h1 class="page-title">Resumen de Saturación &mdash; Red Nacional</h1>
+  <p class="page-sub">Volumen de mes peak por período, capacidad operativa (a productividad peak) y capacidad estructural (posiciones de pallet) por cámara. El semáforo marca &le;80% verde, 80&ndash;100% ámbar y &gt;100% rojo.</p>
+
+  <div class="pillbar" id="period-pills-resumen"></div>
+
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="chart-grid">
+    <div class="panel">
+      <h2>Evolución Saturación Red Nacional</h2>
+      <p class="hint">Máximo entre saturación operativa y estructural, por período, para el total de la red.</p>
+      <div id="trend-chart"></div>
+      <div class="legend-row">
+        <span class="it"><span class="sw" style="background:var(--azul)"></span>Total (máx.)</span>
+        <span class="it"><span class="sw" style="background:var(--naranja)"></span>Sat. Operativa</span>
+        <span class="it"><span class="sw" style="background:var(--azul-55)"></span>Sat. Estructural</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Sucursales por Estado de Saturación</h2>
+      <p class="hint">Período seleccionado &middot; TOTAL por sucursal (ambas cámaras).</p>
+      <div id="rank-chart"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Distribución del semáforo por año</h2>
+    <p class="hint">N&uacute;mero de combinaciones sucursal&times;cámara en cada estado, por período.</p>
+    <div id="stack-chart"></div>
+  </div>
+</section>
+
+<!-- ===================== DETALLE ===================== -->
+<section class="view" id="view-detalle">
+  <h1 class="page-title">Detalle de Saturación por Sucursal y Cámara</h1>
+  <p class="page-sub">Congelado y Refrigerado se muestran en columnas separadas. Activa el modo edición para simular cambios de política, productividad peak o volumen directamente sobre la tabla.</p>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="pillbar" id="period-pills-detalle"></div>
+      <div class="controls-row" style="margin-bottom:0">
+        <div class="field switch-field">
+          <label class="switch"><input type="checkbox" id="edit-toggle"><span class="slider-tog"></span></label>
+          <label style="text-transform:none;font-size:12px;opacity:1;font-weight:600">Modo edición (política / prod. peak / volumen)</label>
+        </div>
+        <button class="btn ghost" id="reset-overrides">Restablecer valores originales</button>
+      </div>
+    </div>
+    <div class="pillbar" id="zone-pills"></div>
+    <div class="tbl-scroll">
+      <table class="data" id="detail-table">
+        <thead>
+          <tr class="grp">
+            <th colspan="3"></th>
+            <th colspan="6">CONGELADO</th>
+            <th colspan="6">REFRIGERADO</th>
+            <th colspan="2">TOTAL SUCURSAL</th>
+          </tr>
+          <tr>
+            <th>Sucursal</th><th>Zona</th><th>Abast.</th>
+            <th>Vol. (kg)</th><th>Posic.</th><th>Política (d)</th><th>Prod Peak (caj/h)</th><th>Sat. Oper.</th><th>Sat. Estr.</th>
+            <th class="divider">Vol. (kg)</th><th>Posic.</th><th>Política (d)</th><th>Prod Peak (caj/h)</th><th>Sat. Oper.</th><th>Sat. Estr.</th>
+            <th class="divider">Vol. Total (kg)</th><th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody id="detail-tbody"></tbody>
+        <tfoot id="detail-tfoot"></tfoot>
+      </table>
+    </div>
+    <div class="legend-row">
+      <span class="it"><span class="sw" style="background:var(--verde-bg);border:1px solid var(--verde)"></span>&le; 80%</span>
+      <span class="it"><span class="sw" style="background:var(--ambar-bg);border:1px solid var(--ambar)"></span>80% &ndash; 100%</span>
+      <span class="it"><span class="sw" style="background:var(--rojo-bg);border:1px solid var(--rojo)"></span>&gt; 100%</span>
+      <span class="it"><span class="sw" style="background:var(--gris-bg);border:1px solid var(--gris)"></span>Sin dato de política (PM)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SIMULADOR ===================== -->
+<section class="view" id="view-simulador">
+  <h1 class="page-title">Simulador de Política, Productividad y Peso de Pallet</h1>
+  <p class="page-sub">Ajusta los parámetros globales del modelo. Estos cambios recalculan posiciones, capacidad operativa y capacidad estructural para <b>todas</b> las sucursales, cámaras y períodos en toda la aplicación.</p>
+
+  <div class="two-col">
+    <div class="panel">
+      <h2>Parámetros de Pallet (impactan Posiciones)</h2>
+      <p class="hint">La cantidad de posiciones de pallet disponibles se deriva de la capacidad estructural (kg) dividida por el peso promedio del pallet (peso de caja &times; cajas por pallet), igual que en el archivo Excel original.</p>
+      <div class="controls-row">
+        <div class="field"><label>Peso caja Congelado (kg)</label><input type="number" id="g-pesoCongelado" step="0.1"></div>
+        <div class="field"><label>Cajas por pallet Congelado</label><input type="number" id="g-cajasCongelado" step="1"></div>
+        <div class="field"><label>Peso caja Refrigerado (kg)</label><input type="number" id="g-pesoRefrigerado" step="0.1"></div>
+        <div class="field"><label>Cajas por pallet Refrigerado</label><input type="number" id="g-cajasRefrigerado" step="1"></div>
+      </div>
+      <div class="chip-list" id="pallet-preview"></div>
+    </div>
+    <div class="panel">
+      <h2>Parámetros Operativos</h2>
+      <p class="hint">Jornada, días laborales y saturación de diseño se aplican a toda la red al calcular capacidad operativa y estructural.</p>
+      <div class="controls-row">
+        <div class="field"><label>Jornada operativa (h/día)</label><input type="number" id="g-jornada" step="0.1"></div>
+        <div class="field"><label>Días laborales / mes</label><input type="number" id="g-dias" step="1"></div>
+        <div class="field"><label>Saturación de diseño (%)</label><input type="number" id="g-satdiseno" step="1"></div>
+      </div>
+      <button class="btn" id="restore-globals">Restablecer parámetros originales</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Ajuste rápido de escenario</h2>
+    <p class="hint">Aplica un delta porcentual sobre volumen o productividad peak de <b>todas</b> las sucursales del período activo, para pruebas de sensibilidad rápidas.</p>
+    <div class="controls-row">
+      <div class="field"><label>&Delta;% Volumen (todas las sucursales)</label><input type="number" id="scn-vol" step="1" value="0"></div>
+      <div class="field"><label>&Delta;% Productividad Peak (todas)</label><input type="number" id="scn-prod" step="1" value="0"></div>
+      <button class="btn" id="apply-scenario">Aplicar escenario</button>
+      <button class="btn ghost" id="clear-scenario">Quitar escenario</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Tabla de referencia &mdash; Abastecimiento (insumo original del Excel)</h2>
+    <p class="hint">Parámetros de abastecimiento por tipo de reposición (STOCK / MIXTO / CALZADO), tal como estaban definidos en el bloque de INPUT del archivo original. Se muestran como referencia; no se usaban en ninguna fórmula del modelo de saturación original y no alteran los cálculos de esta aplicación.</p>
+    <table class="data" style="min-width:0;width:auto">
+      <thead><tr><th>Abastecimiento</th><th>Parámetro Refrigerado</th><th>Parámetro Congelado</th></tr></thead>
+      <tbody id="abast-ref-tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== METODOLOGIA ===================== -->
+<section class="view" id="view-metodologia">
+  <h1 class="page-title">Metodología y Ajustes Aplicados al Modelo</h1>
+
+  <div class="panel method">
+    <h2>Origen de los datos</h2>
+    <ul>
+      <li><b>Volumen mes peak:</b> hoja <code class="f">Vol Agregado</code> del archivo original &mdash; se toma el máximo mensual de cada año (2026&ndash;2032) por sucursal y estado (Congelado/Refrigerado). El bloque &laquo;Actual&raquo; corresponde al mes peak vigente del archivo (hoja <code class="f">Saturacion</code>, filas 15&ndash;98, con enlace externo <code class="f">[1]Mes peak</code>).</li>
+      <li><b>Política de inventario (días):</b> hoja <code class="f">PM</code> &mdash; días de cobertura (DOH) por sucursal y cámara.</li>
+      <li><b>Capacidad estructural (kg):</b> capacidad consultada por sucursal/cámara (enlace externo <code class="f">[1]Capacidades JO-JF</code> en el bloque Actual); se mantiene constante en los períodos proyectados, igual que en el archivo original.</li>
+      <li><b>Productividad:</b> el archivo trae dos valores &mdash; <i>Productividad</i> (regular) y <i>Prod Peak</i>. Por instrucción del usuario, el modelo de saturación operativa usa <b>únicamente Prod Peak</b>.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Fórmulas del modelo (ya corregido)</h2>
+    <ul>
+      <li>Posiciones = Capacidad Estructural (kg) &divide; (Peso caja &times; Cajas por pallet) &mdash; parámetros propios de cada cámara.</li>
+      <li>Capacidad Estructural (kg) = Capacidad Estructural &times; Saturación de diseño.</li>
+      <li>Inventario promedio (kg) = (Volumen mes peak &divide; Días laborales) &times; Política (días).</li>
+      <li><b>Sat. Estructural</b> = Inventario promedio &divide; Capacidad Estructural (kg).</li>
+      <li>Capacidad Operativa (kg/mes) = Prod Peak (cajas/h) &times; Jornada (h/día) &times; Días laborales/mes &times; Peso caja (kg).</li>
+      <li><b>Sat. Operativa</b> = Volumen mes peak &divide; Capacidad Operativa (kg/mes).</li>
+      <li><b>TOTAL</b> = m&aacute;ximo(Sat. Operativa, Sat. Estructural).</li>
+    </ul>
+  </div>
+
+  <div class="fix-box">
+    <h3>Corrección 1 &mdash; Saturación Operativa calculada solo con Productividad Peak</h3>
+    <p>En el Excel original, la fórmula de <code class="f">CAP OPERATIVA</code> (columna K) ten&iacute;a la forma <code class="f">=D/(D/(C/(I*C5*C6)))*(J*C6*C5)</code>. Algebraicamente el término <code class="f">D/(D/X)</code> se simplifica siempre a <code class="f">X</code>, por lo que la fórmula colapsaba a <code class="f">C15*J/I</code>, y la saturación resultante (<code class="f">L=C/K</code>) quedaba en <code class="f">Productividad regular &divide; Prod Peak</code> &mdash; un indicador de brecha de productividad, no una medida real de saturación: no depend&iacute;a del volumen ni de la capacidad instalada.</p>
+    <p>Se reemplazó por una capacidad operativa real en kilos por mes, usando <b>solo Prod Peak</b>: <code class="f">Prod Peak &times; Jornada &times; Días laborales &times; Peso de caja</code>, comparada contra el volumen del mes peak. Esto expone cuellos de botella reales de throughput que la fórmula original ocultaba.</p>
+  </div>
+
+  <div class="fix-box">
+    <h3>Corrección 2 &mdash; Posiciones de Refrigerado usaban el peso de pallet de Congelado</h3>
+    <p>La columna <code class="f">POSICIONES</code> (E) se calculaba en el Excel como <code class="f">=F/($D$4*$D$3)</code> para <b>todas</b> las filas, incluidas las de Refrigerado. Sin embargo, la fórmula de <code class="f">Capacidad Estructural</code> (M) para las filas de Refrigerado usaba <code class="f">$C$4*$C$3</code> (peso y cajas por pallet de Refrigerado), no <code class="f">$D$4*$D$3</code>. Esta inconsistencia inflaba artificialmente las posiciones reportadas para Refrigerado y distorsionaba la saturación estructural (~34% de subestimación en los casos revisados).</p>
+    <p>Se corrigió para que Refrigerado use sus propios parámetros de pallet (peso de caja y cajas/pallet de Refrigerado) tanto para <b>Posiciones</b> como para <b>Capacidad Estructural</b>, de forma consistente. Esto es exactamente lo que impacta el panel de <i>Simulador</i>: al ajustar el peso promedio de pallet por cámara, las posiciones se recalculan usando el par de parámetros correcto para cada cámara.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Notas y datos faltantes</h2>
+    <ul>
+      <li><b>San Bernardo</b> no tiene registro de política de inventario en la hoja <code class="f">PM</code> del archivo original (quedaba en 0, lo que hac&iacute;a ver una saturación estructural de 0% &mdash; enga&ntilde;oso). En esta aplicación se marca como <span class="badge gris"><span class="dotb"></span>sin dato</span> y queda editable en el Simulador / modo edición para que se ingrese un valor real de política.</li>
+      <li>Las sucursales <b>Castro, Coyhaique, Curicó, San Felipe y Talca</b> aparecen en el volumen proyectado (hoja <code class="f">Vol Agregado</code>) pero no ten&iacute;an capacidad estructural definida en el modelo de saturación original, por lo que no se incluyen en este tablero.</li>
+      <li>Capacidad estructural (m&sup2; y kg) y productividad (regular y peak) se mantienen constantes entre el período Actual y 2026&ndash;2032, igual que en el archivo fuente &mdash; solo el volumen var&iacute;a por a&ntilde;o.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<footer class="bottom">Agrosuper &middot; Cadena de Frío &mdash; Tablero generado a partir de Saturación_red.xlsm &middot; uso interno</footer>
+
+<script>
+const DATA = {"globals": {"pesoCajaCongelado": 5.4, "pesoCajaRefrigerado": 11.8, "cajasPalletCongelado": 85, "cajasPalletRefrigerado": 59, "jornadaHoras": 6.6, "diasLaborales": 26, "saturacionDiseno": 1.0}, "abastecimientoRef": {"STOCK": {"refrigerado": 5, "congelado": 1.2}, "MIXTO": {"refrigerado": 2.5, "congelado": 0.6}, "CLZDO": {"refrigerado": 0.1, "congelado": 0.1}}, "periods": ["baseline", "2026", "2027", "2028", "2029", "2030", "2031", "2032"], "periodLabels": {"baseline": "Actual (Mes Peak)", "2026": "2026", "2027": "2027", "2028": "2028", "2029": "2029", "2030": "2030", "2031": "2031", "2032": "2032"}, "branches": [{"name": "Miraflores", "zone": "RM", "abastecimiento": "STOCK", "m2_congelado": 756, "m2_refrigerado": 1084, "m2_anden": 853, "f_congelado": 226644, "f_refrigerado": 628767, "politica_congelado": 3.0887475701994496, "politica_refrigerado": 2.2980752712096217, "missing_policy": false, "productividad_regular": 474, "prod_peak": 601}, {"name": "Antofagasta", "zone": "Norte", "abastecimiento": "STOCK", "m2_congelado": 322, "m2_refrigerado": 320, "m2_anden": 466, "f_congelado": 128000, "f_refrigerado": 197000, "politica_congelado": 5.648945859330309, "politica_refrigerado": 2.411822300969038, "missing_policy": false, "productividad_regular": 569, "prod_peak": 635}, {"name": "Arica", "zone": "Norte", "abastecimiento": "MIXTO", "m2_congelado": 108, "m2_refrigerado": 126, "m2_anden": 118, "f_congelado": 12000, "f_refrigerado": 31000, "politica_congelado": 5.215003816896563, "politica_refrigerado": 1.9497198317167044, "missing_policy": false, "productividad_regular": 487, "prod_peak": 494}, {"name": "Calama", "zone": "Norte", "abastecimiento": "CLZDO", "m2_congelado": 30, "m2_refrigerado": 180, "m2_anden": 77, "f_congelado": 7009.122985316189, "f_refrigerado": 19859.432361975723, "politica_congelado": 5.5286329872129185, "politica_refrigerado": 1.7403855339961425, "missing_policy": false, "productividad_regular": 511, "prod_peak": 542}, {"name": "Chillan", "zone": "Sur", "abastecimiento": "CLZDO", "m2_congelado": 120, "m2_refrigerado": 180, "m2_anden": 420, "f_congelado": 21824.953834299064, "f_refrigerado": 77462.11941811175, "politica_congelado": 3.41350443118266, "politica_refrigerado": 2.116756294590039, "missing_policy": false, "productividad_regular": 557, "prod_peak": 662}, {"name": "Concepción", "zone": "Sur", "abastecimiento": "MIXTO", "m2_congelado": 199, "m2_refrigerado": 180, "m2_anden": 290, "f_congelado": 70000, "f_refrigerado": 190000, "politica_congelado": 3.0609520127996284, "politica_refrigerado": 2.2057271907303564, "missing_policy": false, "productividad_regular": 588, "prod_peak": 742}, {"name": "Copiapó", "zone": "Norte", "abastecimiento": "CLZDO", "m2_congelado": 300, "m2_refrigerado": 600, "m2_anden": 198, "f_congelado": 71222.31661160356, "f_refrigerado": 88561.74806652662, "politica_congelado": 3.6881791390065857, "politica_refrigerado": 2.4847820745443556, "missing_policy": false, "productividad_regular": 474, "prod_peak": 492}, {"name": "Coquimbo", "zone": "Norte", "abastecimiento": "MIXTO", "m2_congelado": 176, "m2_refrigerado": 484, "m2_anden": 375, "f_congelado": 68755.41884920512, "f_refrigerado": 216012.53675452198, "politica_congelado": 3.326055931526626, "politica_refrigerado": 2.3218605356117443, "missing_policy": false, "productividad_regular": 451, "prod_peak": 522}, {"name": "Hijuelas", "zone": "Centro", "abastecimiento": "MIXTO", "m2_congelado": 66, "m2_refrigerado": 319.59999999999997, "m2_anden": 198, "f_congelado": 23000, "f_refrigerado": 70000, "politica_congelado": 3.547149261838425, "politica_refrigerado": 2.2911874132267256, "missing_policy": false, "productividad_regular": 487, "prod_peak": 605}, {"name": "Huechuraba", "zone": "RM", "abastecimiento": "MIXTO", "m2_congelado": 161.028, "m2_refrigerado": 319.59999999999997, "m2_anden": 576.169, "f_congelado": 70200, "f_refrigerado": 187600, "politica_congelado": 2.8019271943560904, "politica_refrigerado": 2.289667540927903, "missing_policy": false, "productividad_regular": 420, "prod_peak": 576}, {"name": "Iquique", "zone": "Norte", "abastecimiento": "MIXTO", "m2_congelado": 46.230000000000004, "m2_refrigerado": 319.59999999999997, "m2_anden": 120, "f_congelado": 20000, "f_refrigerado": 46000, "politica_congelado": 5.49130238281382, "politica_refrigerado": 1.858162727849742, "missing_policy": false, "productividad_regular": 493, "prod_peak": 629}, {"name": "Los Angeles", "zone": "Sur", "abastecimiento": "MIXTO", "m2_congelado": 101, "m2_refrigerado": 319.59999999999997, "m2_anden": 301.95, "f_congelado": 26775.1855247433, "f_refrigerado": 149668.0472431578, "politica_congelado": 3.5162250412173615, "politica_refrigerado": 2.276467749892043, "missing_policy": false, "productividad_regular": 471, "prod_peak": 638}, {"name": "Osorno", "zone": "Sur", "abastecimiento": "CLZDO", "m2_congelado": 35, "m2_refrigerado": 319.59999999999997, "m2_anden": 72, "f_congelado": 10000, "f_refrigerado": 77000, "politica_congelado": 3.455553373991302, "politica_refrigerado": 2.3886425646603406, "missing_policy": false, "productividad_regular": 425, "prod_peak": 472}, {"name": "Puerto Montt", "zone": "Sur", "abastecimiento": "STOCK", "m2_congelado": 135, "m2_refrigerado": 319.59999999999997, "m2_anden": 280, "f_congelado": 37820.715534167655, "f_refrigerado": 81470.29466358345, "politica_congelado": 3.5112581550748483, "politica_refrigerado": 2.528931715102929, "missing_policy": false, "productividad_regular": 548, "prod_peak": 667}, {"name": "Punta Arenas", "zone": "Sur", "abastecimiento": "STOCK", "m2_congelado": 240, "m2_refrigerado": 319.59999999999997, "m2_anden": 0, "f_congelado": 70000, "f_refrigerado": 60000, "politica_congelado": 9.713041205946958, "politica_refrigerado": 3.573662459268064, "missing_policy": false, "productividad_regular": 379, "prod_peak": 496}, {"name": "Rancagua", "zone": "Centro", "abastecimiento": "MIXTO", "m2_congelado": 219.96, "m2_refrigerado": 319.59999999999997, "m2_anden": 300, "f_congelado": 75925.242575367, "f_refrigerado": 199655.1771686506, "politica_congelado": 3.113827772084543, "politica_refrigerado": 2.326023657171945, "missing_policy": false, "productividad_regular": 466, "prod_peak": 637}, {"name": "San Antonio", "zone": "Centro", "abastecimiento": "CLZDO", "m2_congelado": 56.699999999999996, "m2_refrigerado": 319.59999999999997, "m2_anden": 173.65, "f_congelado": 16000, "f_refrigerado": 63863.022441123234, "politica_congelado": 3.469757558734177, "politica_refrigerado": 2.5130685963592434, "missing_policy": false, "productividad_regular": 379, "prod_peak": 439}, {"name": "Temuco", "zone": "Sur", "abastecimiento": "MIXTO", "m2_congelado": 120.35000000000001, "m2_refrigerado": 308.42, "m2_anden": 227.5, "f_congelado": 51367.23412410223, "f_refrigerado": 142285.64203072753, "politica_congelado": 3.762267375535856, "politica_refrigerado": 2.2093822868519357, "missing_policy": false, "productividad_regular": 517, "prod_peak": 699}, {"name": "Valdivia", "zone": "Sur", "abastecimiento": "CLZDO", "m2_congelado": 36, "m2_refrigerado": 192, "m2_anden": 108, "f_congelado": 5000, "f_refrigerado": 85000, "politica_congelado": 3.635103921319831, "politica_refrigerado": 1.8289386991035026, "missing_policy": false, "productividad_regular": 476, "prod_peak": 586}, {"name": "Viña del Mar", "zone": "Centro", "abastecimiento": "MIXTO", "m2_congelado": 90, "m2_refrigerado": 380, "m2_anden": 210, "f_congelado": 56000, "f_refrigerado": 195000, "politica_congelado": 3.074174382075525, "politica_refrigerado": 2.225285087030298, "missing_policy": false, "productividad_regular": 450, "prod_peak": 606}, {"name": "San Bernardo", "zone": "RM", "abastecimiento": "STOCK", "m2_congelado": 939, "m2_refrigerado": 946, "m2_anden": 1367, "f_congelado": 700434.0, "f_refrigerado": 928730.8, "politica_congelado": 0, "politica_refrigerado": 0, "missing_policy": true, "productividad_regular": 443, "prod_peak": 772}], "volumes": {"Miraflores": {"baseline": {"congelado": 1067225.7935495283, "refrigerado": 4339445.5884946305}, "2026": {"congelado": 844719.4626489554, "refrigerado": 3618136.008024905}, "2027": {"congelado": 930170.1840622404, "refrigerado": 3754019.1988175754}, "2028": {"congelado": 958348.9462875181, "refrigerado": 3882472.9730317555}, "2029": {"congelado": 989862.1918171224, "refrigerado": 4079834.158433155}, "2030": {"congelado": 1019857.4246231117, "refrigerado": 4281107.38214791}, "2031": {"congelado": 1049232.2062206417, "refrigerado": 4418976.736584997}, "2032": {"congelado": 1075691.1379393665, "refrigerado": 4521313.286698595}}, "Antofagasta": {"baseline": {"congelado": 745237.1964043245, "refrigerado": 3076399.956250162}, "2026": {"congelado": 277250.6069583942, "refrigerado": 1071409.3767527542}, "2027": {"congelado": 303428.2380091689, "refrigerado": 1111016.7511043353}, "2028": {"congelado": 312573.9813631502, "refrigerado": 1148143.8543041092}, "2029": {"congelado": 323707.82386631524, "refrigerado": 1205725.552581877}, "2030": {"congelado": 334182.22836155037, "refrigerado": 1263925.9839624814}, "2031": {"congelado": 344254.0012595948, "refrigerado": 1305125.0085285269}, "2032": {"congelado": 352828.23631558986, "refrigerado": 1335499.7924028267}}, "Arica": {"baseline": {"congelado": 111185.14643097778, "refrigerado": 598250.3090466851}, "2026": {"congelado": 114519.15686117085, "refrigerado": 640283.0571693052}, "2027": {"congelado": 124415.58500519404, "refrigerado": 663604.1271285611}, "2028": {"congelado": 128037.93598290754, "refrigerado": 684865.9087377028}, "2029": {"congelado": 132057.50049727916, "refrigerado": 716660.1948991691}, "2030": {"congelado": 136059.28261282947, "refrigerado": 749231.8937941456}, "2031": {"congelado": 140025.5609412752, "refrigerado": 773405.6637329415}, "2032": {"congelado": 143731.113388317, "refrigerado": 792263.7412972865}}, "Calama": {"baseline": {"congelado": 171761.7809407551, "refrigerado": 554677.6772843063}, "2026": {"congelado": 140454.35719146417, "refrigerado": 645905.5218911322}, "2027": {"congelado": 154488.95391686, "refrigerado": 669702.1260476694}, "2028": {"congelado": 159164.95677290877, "refrigerado": 692182.2362376633}, "2029": {"congelado": 164641.63344410976, "refrigerado": 727906.0429651445}, "2030": {"congelado": 169797.4424349898, "refrigerado": 763541.1787543211}, "2031": {"congelado": 174817.1092691155, "refrigerado": 788767.1903022092}, "2032": {"congelado": 179178.77452881448, "refrigerado": 806726.9153589619}}, "Chillan": {"baseline": {"congelado": 286089.41440893116, "refrigerado": 2128619.13239389}, "2026": {"congelado": 409544.37708481407, "refrigerado": 2206180.2740628603}, "2027": {"congelado": 434340.5660920548, "refrigerado": 2262900.1083045304}, "2028": {"congelado": 444752.9548124279, "refrigerado": 2318770.03996911}, "2029": {"congelado": 467975.69820184115, "refrigerado": 2474143.2949386113}, "2030": {"congelado": 484951.7193309668, "refrigerado": 2591099.7814627034}, "2031": {"congelado": 505346.2402756611, "refrigerado": 2712403.416980221}, "2032": {"congelado": 515292.7626114594, "refrigerado": 2758254.7965776706}}, "Concepción": {"baseline": {"congelado": 502900.0120683247, "refrigerado": 2409132.467409193}, "2026": {"congelado": 571603.3873115929, "refrigerado": 2665835.9632620653}, "2027": {"congelado": 617723.246379586, "refrigerado": 2757247.922802449}, "2028": {"congelado": 636000.8941153387, "refrigerado": 2841311.973842536}, "2029": {"congelado": 658325.3334023668, "refrigerado": 2984148.32469535}, "2030": {"congelado": 680143.6380604137, "refrigerado": 3119921.8084664135}, "2031": {"congelado": 700718.6732256163, "refrigerado": 3229517.138220216}, "2032": {"congelado": 718827.669602887, "refrigerado": 3303295.0502812862}}, "Copiapó": {"baseline": {"congelado": 232665.28064390522, "refrigerado": 703854.372323473}, "2026": {"congelado": 244808.3125515311, "refrigerado": 716953.675546005}, "2027": {"congelado": 262623.7257081026, "refrigerado": 742510.0317433896}, "2028": {"congelado": 270039.9134564629, "refrigerado": 766605.4832873977}, "2029": {"congelado": 280104.48345244286, "refrigerado": 806682.6438045576}, "2030": {"congelado": 289523.2319716635, "refrigerado": 845643.9933650133}, "2031": {"congelado": 298886.07881202357, "refrigerado": 874648.8780180886}, "2032": {"congelado": 306444.4393013761, "refrigerado": 894310.0271809546}}, "Coquimbo": {"baseline": {"congelado": 399269.7194862074, "refrigerado": 1707114.8318962506}, "2026": {"congelado": 396364.6242964674, "refrigerado": 1745496.9651916844}, "2027": {"congelado": 434578.9560467034, "refrigerado": 1807538.8640846973}, "2028": {"congelado": 447580.6708460074, "refrigerado": 1865546.355825034}, "2029": {"congelado": 464294.205492527, "refrigerado": 1961105.5786104258}, "2030": {"congelado": 479444.5637677751, "refrigerado": 2054199.85349777}, "2031": {"congelado": 494357.2831519479, "refrigerado": 2124372.719112921}, "2032": {"congelado": 506291.4689101685, "refrigerado": 2172717.125742543}}, "Hijuelas": {"baseline": {"congelado": 305585.5300153629, "refrigerado": 1343066.684788198}, "2026": {"congelado": 339456.25225323887, "refrigerado": 1397283.8801152145}, "2027": {"congelado": 371433.7436573845, "refrigerado": 1447948.2645477839}, "2028": {"congelado": 382555.29510304227, "refrigerado": 1498436.3969347368}, "2029": {"congelado": 396949.27008761367, "refrigerado": 1588584.6739166419}, "2030": {"congelado": 410124.6559442278, "refrigerado": 1674238.0881265602}, "2031": {"congelado": 422935.5120972451, "refrigerado": 1733598.2624823167}, "2032": {"congelado": 433217.3231053258, "refrigerado": 1768711.3587404834}}, "Huechuraba": {"baseline": {"congelado": 810825.624406129, "refrigerado": 2870468.3911748524}, "2026": {"congelado": 605819.3178908525, "refrigerado": 2500309.923071874}, "2027": {"congelado": 672155.8757267436, "refrigerado": 2594677.82931669}, "2028": {"congelado": 693121.9043779266, "refrigerado": 2684700.7421090016}, "2029": {"congelado": 717310.2769837271, "refrigerado": 2824509.036820743}, "2030": {"congelado": 739930.7036546168, "refrigerado": 2966619.5584812188}, "2031": {"congelado": 761445.1953266393, "refrigerado": 3062473.4408428874}, "2032": {"congelado": 780114.0991080215, "refrigerado": 3132335.086011864}}, "Iquique": {"baseline": {"congelado": 245294.6000592879, "refrigerado": 937141.1136816734}, "2026": {"congelado": 291494.14464343013, "refrigerado": 1007537.8859815557}, "2027": {"congelado": 313028.58199722855, "refrigerado": 1046426.140656843}, "2028": {"congelado": 321867.3772530576, "refrigerado": 1083265.7641537562}, "2029": {"congelado": 332619.9492599147, "refrigerado": 1137933.4827627137}, "2030": {"congelado": 343158.0417003212, "refrigerado": 1194772.7347799088}, "2031": {"congelado": 353677.50628496835, "refrigerado": 1232002.859416788}, "2032": {"congelado": 363004.74799012684, "refrigerado": 1260719.4541677698}}, "Los Angeles": {"baseline": {"congelado": 323449.43823136727, "refrigerado": 1484189.593700803}, "2026": {"congelado": 332564.0823051919, "refrigerado": 1585455.1351822068}, "2027": {"congelado": 358679.4660206273, "refrigerado": 1637812.6227139346}, "2028": {"congelado": 369158.6277064127, "refrigerado": 1688562.5570544745}, "2029": {"congelado": 382492.1280834181, "refrigerado": 1787411.2690933985}, "2030": {"congelado": 395211.68167374557, "refrigerado": 1876205.6063891286}, "2031": {"congelado": 407435.74814984907, "refrigerado": 1947706.5636744355}, "2032": {"congelado": 417795.0194746584, "refrigerado": 1987331.756653754}}, "Osorno": {"baseline": {"congelado": 205364.62774880975, "refrigerado": 961469.2204471456}, "2026": {"congelado": 216752.61418030463, "refrigerado": 937138.7879606592}, "2027": {"congelado": 238266.06972469803, "refrigerado": 965705.2976258749}, "2028": {"congelado": 245542.21891201928, "refrigerado": 994611.6187499906}, "2029": {"congelado": 254526.94236151368, "refrigerado": 1060777.0468941508}, "2030": {"congelado": 262870.0424625467, "refrigerado": 1115994.4512821587}, "2031": {"congelado": 270835.08069397515, "refrigerado": 1163046.0309946495}, "2032": {"congelado": 277464.98950761673, "refrigerado": 1183654.6120437458}}, "Puerto Montt": {"baseline": {"congelado": 374283.88435816224, "refrigerado": 1468644.8020744203}, "2026": {"congelado": 380172.30245061737, "refrigerado": 1511503.8599245795}, "2027": {"congelado": 411407.5071586837, "refrigerado": 1557851.8220228069}, "2028": {"congelado": 423297.3581989859, "refrigerado": 1602888.5000780036}, "2029": {"congelado": 439066.86185624334, "refrigerado": 1700673.73748684}, "2030": {"congelado": 453569.9178428632, "refrigerado": 1783574.9712567572}, "2031": {"congelado": 467981.52861640893, "refrigerado": 1856441.2313837279}, "2032": {"congelado": 479557.08703657694, "refrigerado": 1892272.661460912}}, "Punta Arenas": {"baseline": {"congelado": 368056.4085694557, "refrigerado": 402012.02740436664}, "2026": {"congelado": 465190.09584818257, "refrigerado": 374553.8716422688}, "2027": {"congelado": 489894.1657015765, "refrigerado": 388955.1778785919}, "2028": {"congelado": 502973.62929055403, "refrigerado": 403466.5885981226}, "2029": {"congelado": 521029.0808440551, "refrigerado": 427701.2878459741}, "2030": {"congelado": 537662.7825502956, "refrigerado": 451779.4563095976}, "2031": {"congelado": 554972.6378847108, "refrigerado": 466885.83091142366}, "2032": {"congelado": 569102.7001600931, "refrigerado": 476533.3871715287}}, "Rancagua": {"baseline": {"congelado": 497103.53573853103, "refrigerado": 2281645.2660391866}, "2026": {"congelado": 662112.452803462, "refrigerado": 2463818.8562061996}, "2027": {"congelado": 716442.9121526435, "refrigerado": 2545873.7671775613}, "2028": {"congelado": 736447.9039850277, "refrigerado": 2626780.546274598}, "2029": {"congelado": 766485.9135233245, "refrigerado": 2786636.4808835946}, "2030": {"congelado": 792127.2108176497, "refrigerado": 2929703.606834745}, "2031": {"congelado": 819173.5543543901, "refrigerado": 3042025.6962354826}, "2032": {"congelado": 838219.9809626766, "refrigerado": 3101871.7406057473}}, "San Antonio": {"baseline": {"congelado": 180195.1572378232, "refrigerado": 811006.2579474489}, "2026": {"congelado": 160779.71958492164, "refrigerado": 847161.4289555014}, "2027": {"congelado": 177990.865596332, "refrigerado": 876017.3100270459}, "2028": {"congelado": 183519.02201268906, "refrigerado": 904499.9360765193}, "2029": {"congelado": 190092.11691609267, "refrigerado": 959065.7570450618}, "2030": {"congelado": 196217.13793899995, "refrigerado": 1008784.9748611981}, "2031": {"congelado": 202030.16513713915, "refrigerado": 1046635.0452891253}, "2032": {"congelado": 206968.04555700807, "refrigerado": 1067514.9540844061}}, "Temuco": {"baseline": {"congelado": 604377.9550114798, "refrigerado": 2339128.894117584}, "2026": {"congelado": 698596.973186726, "refrigerado": 2525141.94060002}, "2027": {"congelado": 755633.1157693609, "refrigerado": 2610359.7319640154}, "2028": {"congelado": 777357.798414324, "refrigerado": 2694566.826379653}, "2029": {"congelado": 807239.3517199892, "refrigerado": 2858070.449181134}, "2030": {"congelado": 833731.0300867262, "refrigerado": 3009552.03036533}, "2031": {"congelado": 860549.0467827244, "refrigerado": 3123355.5946446336}, "2032": {"congelado": 881151.9518268462, "refrigerado": 3183273.7006134083}}, "Valdivia": {"baseline": {"congelado": 196799.12229794174, "refrigerado": 721682.2433249392}, "2026": {"congelado": 181894.3427981859, "refrigerado": 812795.6921479204}, "2027": {"congelado": 198990.8258574702, "refrigerado": 838646.6572635438}, "2028": {"congelado": 205080.34108740598, "refrigerado": 864140.9128493464}, "2029": {"congelado": 212440.60688558163, "refrigerado": 917709.2058875524}, "2030": {"congelado": 219423.90454730057, "refrigerado": 964130.6126615864}, "2031": {"congelado": 225955.69131804636, "refrigerado": 1002677.8044416416}, "2032": {"congelado": 231584.0942498728, "refrigerado": 1021913.8401292523}}, "Viña del Mar": {"baseline": {"congelado": 493860.9553190236, "refrigerado": 1812212.7325209759}, "2026": {"congelado": 454768.0182753623, "refrigerado": 1896969.3513653935}, "2027": {"congelado": 510018.5996611442, "refrigerado": 1970902.840156843}, "2028": {"congelado": 526467.6765735773, "refrigerado": 2044360.6540308227}, "2029": {"congelado": 543099.9226954663, "refrigerado": 2162036.702447251}, "2030": {"congelado": 559131.7015925662, "refrigerado": 2281132.6488477844}, "2031": {"congelado": 574038.371759543, "refrigerado": 2355059.759642143}, "2032": {"congelado": 588333.0824048496, "refrigerado": 2405414.4608092755}}, "San Bernardo": {"baseline": {"congelado": 1214619.0039264343, "refrigerado": 4855663.587177827}, "2026": {"congelado": 1211638.635781705, "refrigerado": 4914371.621582892}, "2027": {"congelado": 1344311.7514534872, "refrigerado": 5101944.100411075}, "2028": {"congelado": 1386243.8087558532, "refrigerado": 5285201.646623125}, "2029": {"congelado": 1434620.5539674542, "refrigerado": 5578095.146567195}, "2030": {"congelado": 1479861.4073092337, "refrigerado": 5873327.942287713}, "2031": {"congelado": 1522890.3906532787, "refrigerado": 6065186.651008969}, "2032": {"congelado": 1560228.198216043, "refrigerado": 6198065.960252667}}}};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  period: DATA.periods[0],
+  zone: 'Todas',
+  editMode: false,
+  globals: { ...DATA.globals },
+  overrides: {},     // key `${branch}|${campo}` -> {politica, prodPeak, volumen}
+  scenario: { vol:0, prod:0 }
+};
+const ORIGINAL_GLOBALS = { ...DATA.globals };
+const CAMPOS = ['congelado','refrigerado'];
+const branchMap = {};
+DATA.branches.forEach(b=>branchMap[b.name]=b);
+
+function ovKey(branch,campo){ return branch+'|'+campo; }
+function getOverride(branch,campo){
+  return state.overrides[ovKey(branch,campo)] || {};
+}
+function setOverride(branch,campo,field,value){
+  const k = ovKey(branch,campo);
+  if(!state.overrides[k]) state.overrides[k] = {};
+  if(value===null || value===''){ delete state.overrides[k][field]; }
+  else state.overrides[k][field] = value;
+  if(Object.keys(state.overrides[k]).length===0) delete state.overrides[k];
+}
+
+/* ============================================================
+   CALC ENGINE
+   ============================================================ */
+function pesoFor(campo){ return campo==='congelado' ? state.globals.pesoCajaCongelado : state.globals.pesoCajaRefrigerado; }
+function cajasFor(campo){ return campo==='congelado' ? state.globals.cajasPalletCongelado : state.globals.cajasPalletRefrigerado; }
+
+function computeCell(branchName, campo, period){
+  const cap = branchMap[branchName];
+  const ov = getOverride(branchName, campo);
+  const peso = pesoFor(campo);
+  const cajas = cajasFor(campo);
+  const pesoPallet = peso*cajas;
+
+  const f = cap['f_'+campo];
+  const m2 = cap['m2_'+campo];
+  const positions = pesoPallet>0 ? f/pesoPallet : 0;
+  const capEstructuralKg = f * (state.globals.saturacionDiseno);
+
+  let politica = ov.politica!==undefined ? ov.politica : cap['politica_'+campo];
+  const missingPolicy = cap.missing_policy && ov.politica===undefined;
+
+  let prodPeak = ov.prodPeak!==undefined ? ov.prodPeak : cap.prod_peak;
+  if(state.scenario.prod){ prodPeak = prodPeak * (1+state.scenario.prod/100); }
+
+  let volumen = ov.volumen!==undefined ? ov.volumen : (DATA.volumes[branchName][period][campo] || 0);
+  if(state.scenario.vol){ volumen = volumen * (1+state.scenario.vol/100); }
+
+  const avgInventoryKg = (volumen/state.globals.diasLaborales) * politica;
+  const satEstructural = missingPolicy ? null : (capEstructuralKg>0 ? avgInventoryKg/capEstructuralKg : null);
+
+  const capOperativaKg = prodPeak * state.globals.jornadaHoras * state.globals.diasLaborales * peso;
+  const satOperativa = capOperativaKg>0 ? volumen/capOperativaKg : null;
+
+  let total = null;
+  if(satOperativa!==null && satEstructural!==null) total = Math.max(satOperativa,satEstructural);
+  else if(satOperativa!==null) total = satOperativa;
+  else if(satEstructural!==null) total = satEstructural;
+
+  return { branch:branchName, campo, m2, positions, f, capEstructuralKg, politica, missingPolicy,
+           prodPeak, volumen, avgInventoryKg, satEstructural, capOperativaKg, satOperativa, total,
+           abastecimiento: cap.abastecimiento, zone: cap.zone };
+}
+
+function computeBranchTotal(branchName, period){
+  const c = computeCell(branchName,'congelado',period);
+  const r = computeCell(branchName,'refrigerado',period);
+  const volumenTotal = c.volumen + r.volumen;
+  const capOpTotal = c.capOperativaKg + r.capOperativaKg;
+  const satOperativaTotal = capOpTotal>0 ? volumenTotal/capOpTotal : null;
+  const invTotal = (c.satEstructural===null?0:c.avgInventoryKg) + (r.satEstructural===null?0:r.avgInventoryKg);
+  const capEstrTotal = (c.satEstructural===null?0:c.capEstructuralKg) + (r.satEstructural===null?0:r.capEstructuralKg);
+  const satEstructuralTotal = (c.satEstructural===null && r.satEstructural===null) ? null : (capEstrTotal>0 ? invTotal/capEstrTotal : null);
+  let total = null;
+  if(satOperativaTotal!==null && satEstructuralTotal!==null) total = Math.max(satOperativaTotal,satEstructuralTotal);
+  else if(satOperativaTotal!==null) total = satOperativaTotal;
+  else if(satEstructuralTotal!==null) total = satEstructuralTotal;
+  return { congelado:c, refrigerado:r, volumenTotal, satOperativaTotal, satEstructuralTotal, total };
+}
+
+function filteredBranches(){
+  return DATA.branches.filter(b => state.zone==='Todas' || b.zone===state.zone).map(b=>b.name);
+}
+
+function aggregateNacional(period, branches){
+  let volTot=0, capOpTot=0, invTot=0, capEstrTot=0;
+  branches.forEach(name=>{
+    CAMPOS.forEach(campo=>{
+      const c = computeCell(name,campo,period);
+      volTot += c.volumen;
+      capOpTot += c.capOperativaKg;
+      if(c.satEstructural!==null){ invTot += c.avgInventoryKg; capEstrTot += c.capEstructuralKg; }
+    });
+  });
+  const satOp = capOpTot>0 ? volTot/capOpTot : null;
+  const satEstr = capEstrTot>0 ? invTot/capEstrTot : null;
+  const total = (satOp!==null && satEstr!==null) ? Math.max(satOp,satEstr) : (satOp??satEstr);
+  return { volTot, satOp, satEstr, total };
+}
+
+/* ============================================================
+   FORMAT HELPERS
+   ============================================================ */
+const fmtInt = n => n===null||n===undefined||isNaN(n) ? '—' : Math.round(n).toLocaleString('es-CL');
+const fmtKg = n => n===null||n===undefined||isNaN(n) ? '—' : Math.round(n).toLocaleString('es-CL')+' kg';
+const fmtPct = n => n===null||n===undefined||isNaN(n) ? '—' : (n*100).toLocaleString('es-CL',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+const fmtDays = n => n===null||n===undefined||isNaN(n) ? '—' : n.toLocaleString('es-CL',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+function semColor(v){
+  if(v===null||v===undefined||isNaN(v)) return 'gris';
+  if(v<=0.8) return 'verde';
+  if(v<=1.0) return 'ambar';
+  return 'rojo';
+}
+function badge(v){
+  if(v===null||v===undefined||isNaN(v)) return '<span class="badge gris"><span class="dotb"></span>s/d</span>';
+  const c = semColor(v);
+  return `<span class="badge ${c}"><span class="dotb"></span>${fmtPct(v)}</span>`;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+/* ============================================================
+   PERIOD PILLS (two mirrored bars)
+   ============================================================ */
+function buildPeriodPills(container){
+  container.innerHTML = '';
+  DATA.periods.forEach(p=>{
+    const b = document.createElement('button');
+    b.className = 'pill' + (p===state.period?' active accent':'');
+    b.textContent = DATA.periodLabels[p];
+    b.addEventListener('click', ()=>{ state.period=p; refreshPeriodPills(); renderAll(); });
+    container.appendChild(b);
+  });
+}
+function refreshPeriodPills(){
+  buildPeriodPills(document.getElementById('period-pills-resumen'));
+  buildPeriodPills(document.getElementById('period-pills-detalle'));
+}
+
+/* ============================================================
+   ZONE PILLS
+   ============================================================ */
+function buildZonePills(){
+  const container = document.getElementById('zone-pills');
+  const zones = ['Todas', ...new Set(DATA.branches.map(b=>b.zone))];
+  container.innerHTML = '';
+  zones.forEach(z=>{
+    const b = document.createElement('button');
+    b.className = 'pill' + (z===state.zone?' active':'');
+    b.textContent = z;
+    b.addEventListener('click', ()=>{ state.zone=z; renderDetalle(); });
+    container.appendChild(b);
+  });
+}
+
+/* ============================================================
+   RESUMEN VIEW
+   ============================================================ */
+function renderResumen(){
+  const branches = filteredBranches();
+  const nac = aggregateNacional(state.period, DATA.branches.map(b=>b.name));
+
+  const kpiRow = document.getElementById('kpi-row');
+  const nRed = DATA.branches.reduce((acc,b)=>{
+    CAMPOS.forEach(c=>{ const cell=computeCell(b.name,c,state.period); if(cell.total!==null && cell.total>1) acc++; });
+    return acc;
+  },0);
+  kpiRow.innerHTML = `
+    <div class="kpi"><div class="lbl">Volumen mes peak &mdash; Red</div><div class="val">${fmtInt(nac.volTot)}</div><div class="sub">kg &middot; ${DATA.periodLabels[state.period]}</div></div>
+    <div class="kpi accent"><div class="lbl">Sat. Operativa Red</div><div class="val">${fmtPct(nac.satOp)}</div><div class="sub">Volumen / Capacidad a Prod Peak</div></div>
+    <div class="kpi"><div class="lbl">Sat. Estructural Red</div><div class="val">${fmtPct(nac.satEstr)}</div><div class="sub">Inventario prom. / posiciones</div></div>
+    <div class="kpi"><div class="lbl">TOTAL Red (máx.)</div><div class="val">${fmtPct(nac.total)}</div><div class="sub">${badge(nac.total)}</div></div>
+    <div class="kpi"><div class="lbl">Combinaciones en rojo</div><div class="val">${nRed}</div><div class="sub">de ${DATA.branches.length*2} sucursal&times;cámara</div></div>
+  `;
+
+  renderTrendChart();
+  renderRankChart();
+  renderStackChart();
+}
+
+/* ---- Trend chart (line, over periods) ---- */
+function renderTrendChart(){
+  const W=560,H=260,PAD={l:40,r:16,t:16,b:28};
+  const series = DATA.periods.map(p=>aggregateNacional(p, DATA.branches.map(b=>b.name)));
+  const maxV = Math.max(1.2, ...series.map(s=>s.total||0), ...series.map(s=>s.satOp||0), ...series.map(s=>s.satEstr||0)) * 1.08;
+  const x = i => PAD.l + (i/(DATA.periods.length-1)) * (W-PAD.l-PAD.r);
+  const y = v => H-PAD.b - (v/maxV) * (H-PAD.t-PAD.b);
+
+  function pathFor(key){
+    return series.map((s,i)=> (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(s[key]||0).toFixed(1)).join(' ');
+  }
+  let gridLines = '';
+  [0,0.2,0.4,0.6,0.8,1.0,1.2].filter(v=>v<=maxV).forEach(v=>{
+    gridLines += `<line class="grid-line" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(v)}" y2="${y(v)}"/>`;
+    gridLines += `<text class="axis-text" x="${PAD.l-6}" y="${y(v)+3}" text-anchor="end">${Math.round(v*100)}%</text>`;
+  });
+  const refLine80 = `<line class="ref-line" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(0.8)}" y2="${y(0.8)}"/>`;
+  const refLine100 = `<line class="ref-line" x1="${PAD.l}" x2="${W-PAD.r}" y1="${y(1.0)}" y2="${y(1.0)}"/>`;
+
+  let xLabels = '';
+  DATA.periods.forEach((p,i)=>{
+    xLabels += `<text class="axis-text" x="${x(i)}" y="${H-8}" text-anchor="middle">${DATA.periodLabels[p].replace('Actual (Mes Peak)','Actual')}</text>`;
+  });
+
+  let dots = '';
+  series.forEach((s,i)=>{
+    dots += `<circle cx="${x(i)}" cy="${y(s.total||0)}" r="3.2" fill="var(--azul)"/>`;
+    dots += `<circle cx="${x(i)}" cy="${y(s.satOp||0)}" r="2.6" fill="var(--naranja)"/>`;
+    dots += `<circle cx="${x(i)}" cy="${y(s.satEstr||0)}" r="2.6" fill="var(--azul-55)"/>`;
+  });
+
+  document.getElementById('trend-chart').innerHTML = `
+  <svg class="chart" viewBox="0 0 ${W} ${H}">
+    ${gridLines}${refLine80}${refLine100}
+    <line class="axis-line" x1="${PAD.l}" x2="${W-PAD.r}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>
+    <path d="${pathFor('satEstr')}" fill="none" stroke="var(--azul-55)" stroke-width="2" stroke-dasharray="5 3"/>
+    <path d="${pathFor('satOp')}" fill="none" stroke="var(--naranja)" stroke-width="2"/>
+    <path d="${pathFor('total')}" fill="none" stroke="var(--azul)" stroke-width="2.6"/>
+    ${dots}
+    ${xLabels}
+  </svg>`;
+}
+
+/* ---- Rank chart (horizontal bars, current period) ---- */
+function renderRankChart(){
+  const rows = DATA.branches.map(b=>{
+    const t = computeBranchTotal(b.name, state.period);
+    return { name:b.name, total:t.total||0 };
+  }).sort((a,b)=>b.total-a.total).slice(0,12);
+
+  const W=520, rowH=22, PAD={l:118,r:46,t:6,b:6};
+  const H = rows.length*rowH + PAD.t+PAD.b;
+  const maxV = Math.max(1.1, ...rows.map(r=>r.total)) * 1.05;
+  const barW = v => (v/maxV) * (W-PAD.l-PAD.r);
+
+  let bars = '';
+  rows.forEach((r,i)=>{
+    const yc = PAD.t + i*rowH;
+    const c = semColor(r.total);
+    const fill = c==='verde' ? 'var(--verde)' : c==='ambar' ? 'var(--ambar)' : c==='rojo' ? 'var(--rojo)' : 'var(--gris)';
+    bars += `<text class="axis-text" x="${PAD.l-8}" y="${yc+rowH*0.68}" text-anchor="end">${r.name}</text>`;
+    bars += `<rect x="${PAD.l}" y="${yc+3}" width="${Math.max(2,barW(r.total))}" height="${rowH-8}" rx="3" fill="${fill}" opacity="0.85"/>`;
+    bars += `<text class="pt-label" x="${PAD.l+barW(r.total)+6}" y="${yc+rowH*0.68}">${fmtPct(r.total)}</text>`;
+  });
+  const refX = PAD.l + barW(1.0);
+  bars += `<line class="ref-line" x1="${refX}" x2="${refX}" y1="${PAD.t}" y2="${H-PAD.b}"/>`;
+
+  document.getElementById('rank-chart').innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${H}">${bars}</svg>`;
+}
+
+/* ---- Stacked semaphore chart over periods ---- */
+function renderStackChart(){
+  const W=1040,H=210,PAD={l:40,r:16,t:14,b:26};
+  const barGap=14;
+  const n = DATA.periods.length;
+  const barW = (W-PAD.l-PAD.r-barGap*(n-1))/n;
+  const counts = DATA.periods.map(p=>{
+    let g=0,a=0,r=0;
+    DATA.branches.forEach(b=>{
+      CAMPOS.forEach(campo=>{
+        const cell = computeCell(b.name,campo,p);
+        const c = semColor(cell.total);
+        if(c==='verde') g++; else if(c==='ambar') a++; else if(c==='rojo') r++;
+      });
+    });
+    return {g,a,r,tot:g+a+r};
+  });
+  const maxTot = Math.max(...counts.map(c=>c.tot));
+  const yScale = v => (v/maxTot) * (H-PAD.t-PAD.b);
+
+  let bars='';
+  counts.forEach((c,i)=>{
+    const x0 = PAD.l + i*(barW+barGap);
+    let yCursor = H-PAD.b;
+    [['r',c.r,'var(--rojo)'],['a',c.a,'var(--ambar)'],['g',c.g,'var(--verde)']].forEach(([k,val,color])=>{
+      const h = yScale(val);
+      yCursor -= h;
+      bars += `<rect x="${x0}" y="${yCursor}" width="${barW}" height="${h}" fill="${color}" opacity="0.88"/>`;
+    });
+    bars += `<text class="axis-text" x="${x0+barW/2}" y="${H-8}" text-anchor="middle">${DATA.periodLabels[DATA.periods[i]].replace('Actual (Mes Peak)','Actual')}</text>`;
+  });
+
+  document.getElementById('stack-chart').innerHTML = `
+    <svg class="chart" viewBox="0 0 ${W} ${H}">
+      <line class="axis-line" x1="${PAD.l}" x2="${W-PAD.r}" y1="${H-PAD.b}" y2="${H-PAD.b}"/>
+      ${bars}
+    </svg>
+    <div class="legend-row">
+      <span class="it"><span class="sw" style="background:var(--verde)"></span>&le;80%</span>
+      <span class="it"><span class="sw" style="background:var(--ambar)"></span>80&ndash;100%</span>
+      <span class="it"><span class="sw" style="background:var(--rojo)"></span>&gt;100%</span>
+    </div>`;
+}
+
+/* ============================================================
+   DETALLE VIEW
+   ============================================================ */
+function editableTd(branch, campo, field, value, fmt){
+  if(!state.editMode) return `<td class="num">${fmt(value)}</td>`;
+  const changed = getOverride(branch,campo)[field]!==undefined;
+  const decimals = field==='politica' ? 2 : 0;
+  const displayVal = value===null ? '' : Number(value.toFixed(decimals));
+  return `<td class="num editcell"><input type="number" step="any" class="${changed?'changed':''}"
+            data-branch="${branch}" data-campo="${campo}" data-field="${field}" value="${displayVal}"></td>`;
+}
+
+function renderDetalleRow(branch){
+  const c = computeCell(branch.name,'congelado',state.period);
+  const r = computeCell(branch.name,'refrigerado',state.period);
+  const volTotal = c.volumen + r.volumen;
+  const bt = computeBranchTotal(branch.name, state.period);
+
+  const polC = c.missingPolicy ? `<span class="na">s/d</span>` : (state.editMode? '' : fmtDays(c.politica));
+  const polR = r.missingPolicy ? `<span class="na">s/d</span>` : (state.editMode? '' : fmtDays(r.politica));
+
+  return `<tr>
+    <td class="branch-cell">${branch.name}</td>
+    <td><span class="zone-tag">${branch.zone}</span></td>
+    <td class="abast-tag">${branch.abastecimiento||'—'}</td>
+
+    ${state.editMode ? editableTd(branch.name,'congelado','volumen',c.volumen,fmtInt) : `<td class="num">${fmtInt(c.volumen)}</td>`}
+    <td class="num">${fmtInt(c.positions)}</td>
+    ${state.editMode ? editableTd(branch.name,'congelado','politica',c.politica,fmtDays) : `<td class="num">${polC}</td>`}
+    ${state.editMode ? editableTd(branch.name,'congelado','prodPeak',c.prodPeak,fmtInt) : `<td class="num">${fmtInt(c.prodPeak)}</td>`}
+    <td class="num">${badge(c.satOperativa)}</td>
+    <td class="num">${c.missingPolicy?'<span class="na">s/d</span>':badge(c.satEstructural)}</td>
+
+    ${state.editMode ? editableTd(branch.name,'refrigerado','volumen',r.volumen,fmtInt).replace('editcell','editcell divider') : `<td class="num divider">${fmtInt(r.volumen)}</td>`}
+    <td class="num">${fmtInt(r.positions)}</td>
+    ${state.editMode ? editableTd(branch.name,'refrigerado','politica',r.politica,fmtDays) : `<td class="num">${polR}</td>`}
+    ${state.editMode ? editableTd(branch.name,'refrigerado','prodPeak',r.prodPeak,fmtInt) : `<td class="num">${fmtInt(r.prodPeak)}</td>`}
+    <td class="num">${badge(r.satOperativa)}</td>
+    <td class="num">${r.missingPolicy?'<span class="na">s/d</span>':badge(r.satEstructural)}</td>
+
+    <td class="num divider">${fmtInt(volTotal)}</td>
+    <td class="num">${badge(bt.total)}</td>
+  </tr>`;
+}
+
+function renderDetalle(){
+  const branches = DATA.branches.filter(b=>state.zone==='Todas'||b.zone===state.zone);
+  document.getElementById('detail-tbody').innerHTML = branches.map(renderDetalleRow).join('');
+
+  // wire edit inputs
+  if(state.editMode){
+    document.querySelectorAll('#detail-tbody input[type=number]').forEach(inp=>{
+      inp.addEventListener('change', e=>{
+        const {branch,campo,field} = e.target.dataset;
+        const val = e.target.value==='' ? null : parseFloat(e.target.value);
+        setOverride(branch,campo,field,val);
+        renderDetalle();
+        renderResumen();
+      });
+    });
+  }
+
+  // footer = filtered aggregate
+  const nac = aggregateNacional(state.period, branches.map(b=>b.name));
+  let volC=0, volR=0;
+  branches.forEach(b=>{
+    volC += computeCell(b.name,'congelado',state.period).volumen;
+    volR += computeCell(b.name,'refrigerado',state.period).volumen;
+  });
+  document.getElementById('detail-tfoot').innerHTML = `
+    <tr>
+      <td colspan="3">RED (${state.zone})</td>
+      <td class="num">${fmtInt(volC)}</td><td colspan="5"></td>
+      <td class="num divider">${fmtInt(volR)}</td><td colspan="5"></td>
+      <td class="num divider">${fmtInt(nac.volTot)}</td>
+      <td class="num">${badge(nac.total)}</td>
+    </tr>`;
+}
+
+/* ============================================================
+   SIMULADOR VIEW
+   ============================================================ */
+function syncGlobalInputs(){
+  document.getElementById('g-pesoCongelado').value = state.globals.pesoCajaCongelado;
+  document.getElementById('g-cajasCongelado').value = state.globals.cajasPalletCongelado;
+  document.getElementById('g-pesoRefrigerado').value = state.globals.pesoCajaRefrigerado;
+  document.getElementById('g-cajasRefrigerado').value = state.globals.cajasPalletRefrigerado;
+  document.getElementById('g-jornada').value = state.globals.jornadaHoras;
+  document.getElementById('g-dias').value = state.globals.diasLaborales;
+  document.getElementById('g-satdiseno').value = Math.round(state.globals.saturacionDiseno*100);
+  renderPalletPreview();
+}
+function renderPalletPreview(){
+  const pc = state.globals.pesoCajaCongelado*state.globals.cajasPalletCongelado;
+  const pr = state.globals.pesoCajaRefrigerado*state.globals.cajasPalletRefrigerado;
+  document.getElementById('pallet-preview').innerHTML = `
+    <div class="chip">Peso promedio pallet Congelado<b>${pc.toLocaleString('es-CL',{maximumFractionDigits:1})} kg/pallet</b></div>
+    <div class="chip">Peso promedio pallet Refrigerado<b>${pr.toLocaleString('es-CL',{maximumFractionDigits:1})} kg/pallet</b></div>`;
+}
+['g-pesoCongelado','g-cajasCongelado','g-pesoRefrigerado','g-cajasRefrigerado','g-jornada','g-dias','g-satdiseno'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const v = parseFloat(e.target.value);
+    if(isNaN(v)) return;
+    switch(id){
+      case 'g-pesoCongelado': state.globals.pesoCajaCongelado=v; break;
+      case 'g-cajasCongelado': state.globals.cajasPalletCongelado=v; break;
+      case 'g-pesoRefrigerado': state.globals.pesoCajaRefrigerado=v; break;
+      case 'g-cajasRefrigerado': state.globals.cajasPalletRefrigerado=v; break;
+      case 'g-jornada': state.globals.jornadaHoras=v; break;
+      case 'g-dias': state.globals.diasLaborales=v; break;
+      case 'g-satdiseno': state.globals.saturacionDiseno=v/100; break;
+    }
+    renderPalletPreview();
+    renderAll();
+  });
+});
+document.getElementById('restore-globals').addEventListener('click', ()=>{
+  state.globals = { ...ORIGINAL_GLOBALS };
+  syncGlobalInputs();
+  renderAll();
+});
+
+document.getElementById('apply-scenario').addEventListener('click', ()=>{
+  state.scenario.vol = parseFloat(document.getElementById('scn-vol').value)||0;
+  state.scenario.prod = parseFloat(document.getElementById('scn-prod').value)||0;
+  renderAll();
+});
+document.getElementById('clear-scenario').addEventListener('click', ()=>{
+  state.scenario = {vol:0,prod:0};
+  document.getElementById('scn-vol').value = 0;
+  document.getElementById('scn-prod').value = 0;
+  renderAll();
+});
+
+function renderAbastRef(){
+  const rows = Object.entries(DATA.abastecimientoRef).map(([k,v])=>`
+    <tr><td>${k}</td><td class="num">${v.refrigerado}</td><td class="num">${v.congelado}</td></tr>`).join('');
+  document.getElementById('abast-ref-tbody').innerHTML = rows;
+}
+
+/* ============================================================
+   EDIT MODE / RESET
+   ============================================================ */
+document.getElementById('edit-toggle').addEventListener('change', e=>{
+  state.editMode = e.target.checked;
+  renderDetalle();
+});
+document.getElementById('reset-overrides').addEventListener('click', ()=>{
+  state.overrides = {};
+  renderAll();
+});
+
+/* ============================================================
+   MASTER RENDER
+   ============================================================ */
+function renderAll(){
+  renderResumen();
+  renderDetalle();
+}
+
+refreshPeriodPills();
+buildZonePills();
+renderAbastRef();
+syncGlobalInputs();
+renderAll();
+
+</script>
+</body>
+</html>
