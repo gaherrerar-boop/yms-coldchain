@@ -10,18 +10,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ══ SISTEMA DE MARCA AGROSUPER ═══════════════════════════════════════════
-   Fondo marfil #FFF6E6 · texto azul #003087 · acento naranja #E87722.
-   Tipografía Poppins (sustituto web oficial de Biennale). Diseño de superficie
-   única (marfil, el fondo por defecto de marca); severidad de saturación con
-   celeste/amarillo/naranja/rojo de la paleta.                                 */
+/* ══ SISTEMA VISUAL — NEUTRO PROFESIONAL (base Agrosuper) ══════════════════
+   Fondo blanco · grises neutros · azul corporativo #003087 para datos y
+   títulos. El naranja #E87722 se reserva a la acción principal y a los estados
+   de atención (≥95% naranja, ≥100% rojo). Tipografía Poppins.                 */
 :root{
   --marfil:#FFF6E6; --azul:#003087; --naranja:#E87722; --blanco:#FFFFFF;
   --azul-vibrante:#0043C5; --celeste:#1FB3E3; --amarillo:#FEE703; --rojo:#F04718;
 
-  --bg:#FFF6E6; --bg2:#FBEFDA; --panel:#FFFFFF; --panel2:#FBF3E0;
-  --line:rgba(0,48,135,.16); --line-strong:rgba(0,48,135,.30);
-  --txt:#003087; --txt2:rgba(0,48,135,.72); --txt3:rgba(0,48,135,.48);
+  --bg:#FFFFFF; --bg2:#F4F6F9; --panel:#FFFFFF; --panel2:#F6F8FA; --surface-2:#F1F4F7;
+  --line:rgba(26,42,74,.13); --line-strong:rgba(26,42,74,.24);
+  --txt:#003087; --txt2:#586374; --txt3:#8b94a3;
   --accent:#E87722; --accent2:#0043C5;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -33,21 +32,21 @@ a{color:var(--accent)}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 :focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
 /* Header — azul corporativo con texto marfil */
-header{position:sticky;top:0;z-index:20;background:var(--azul);border-bottom:2px solid var(--naranja);padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-header .wordmark{font-weight:900;font-size:19px;letter-spacing:-.03em;color:var(--marfil);line-height:1;padding-right:16px;margin-right:2px;border-right:1px solid rgba(255,246,230,.28)}
+header{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line-strong);padding:13px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+header .wordmark{font-weight:900;font-size:18px;letter-spacing:-.03em;color:var(--azul);line-height:1;padding-right:16px;margin-right:2px;border-right:1px solid var(--line)}
 header .wordmark .wm-dot{color:var(--naranja)}
-header .wordmark sup{font-size:.45em;font-weight:700;top:-.9em}
+header .wordmark sup{font-size:.45em;font-weight:700;top:-.9em;color:var(--txt3)}
 header .brand{display:flex;flex-direction:column;gap:3px}
-header .brand h1{font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--marfil)}
-header .brand .sub{font-size:10.5px;color:rgba(255,246,230,.7);font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em}
+header .brand h1{font-size:16px;font-weight:700;letter-spacing:-.02em;color:var(--azul)}
+header .brand .sub{font-size:10.5px;color:var(--txt3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em}
 header .spacer{flex:1}
-.badge{font-family:var(--mono);font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid rgba(255,246,230,.35);color:rgba(255,246,230,.9);background:transparent}
-.badge.v{color:var(--marfil);border-color:var(--naranja);background:rgba(232,119,34,.25)}
+.badge{font-family:var(--mono);font-size:11px;padding:4px 11px;border-radius:6px;border:1px solid var(--line-strong);color:var(--txt2);background:var(--panel)}
+.badge.v{color:var(--azul);border-color:var(--line-strong);background:var(--panel2);font-weight:700}
 /* Nav */
-nav.tabs{display:flex;gap:2px;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:19;overflow-x:auto}
-nav.tabs button{background:none;border:none;color:var(--txt2);font-family:var(--sans);font-size:13px;font-weight:600;padding:13px 16px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs{display:flex;gap:2px;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:19;overflow-x:auto}
+nav.tabs button{background:none;border:none;color:var(--txt2);font-family:var(--sans);font-size:13px;font-weight:600;padding:13px 15px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
 nav.tabs button:hover{color:var(--azul)}
-nav.tabs button.active{color:var(--naranja);border-bottom-color:var(--naranja)}
+nav.tabs button.active{color:var(--azul);border-bottom-color:var(--azul)}
 /* Layout */
 main{padding:24px;max-width:1500px;margin:0 auto}
 .view{display:none}
@@ -59,7 +58,7 @@ select,input[type=text]{background:var(--panel);border:1px solid var(--line-stro
 select:focus,input:focus{outline:none;border-color:var(--naranja)}
 .yearbtns{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line-strong);border-radius:9px;padding:3px}
 .yearbtns button{background:none;border:none;color:var(--txt2);font-family:var(--mono);font-size:12px;font-weight:700;padding:6px 11px;border-radius:6px;cursor:pointer}
-.yearbtns button.active{background:var(--azul);color:var(--marfil)}
+.yearbtns button.active{background:var(--azul);color:#fff}
 /* Panels */
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:16px}
 .panel h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--azul);margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px}
@@ -77,9 +76,9 @@ select:focus,input:focus{outline:none;border-color:var(--naranja)}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
 th,td{padding:10px 11px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-th{background:var(--azul);color:var(--marfil);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0;cursor:pointer;user-select:none}
+th{background:var(--panel2);color:var(--txt2);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;cursor:pointer;user-select:none;border-bottom:2px solid var(--line-strong)}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel)}
-th:first-child{background:var(--azul);z-index:2}
+th:first-child{background:var(--panel2);z-index:2}
 tbody tr:nth-child(even) td{background:var(--panel2)}
 tbody tr:nth-child(even) td:first-child{background:var(--panel2)}
 tbody tr:hover td{background:rgba(0,48,135,.06)}
@@ -129,7 +128,7 @@ svg{display:block;width:100%;overflow:visible}
 .test-row{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border-bottom:1px solid var(--line)}
 .test-row .st{font-family:var(--mono);font-weight:700;font-size:11px;padding:3px 9px;border-radius:6px;flex-shrink:0}
 .st.pass{background:rgba(31,179,227,.22);color:#0d5c78}
-.st.fail{background:var(--rojo);color:var(--marfil)}
+.st.fail{background:var(--rojo);color:#fff}
 .test-row .body{flex:1}
 .test-row .tn{font-weight:600;font-size:13px;color:var(--azul)}
 .test-row .td{font-size:12px;color:var(--txt2);font-family:var(--mono);margin-top:3px}
@@ -144,7 +143,7 @@ svg{display:block;width:100%;overflow:visible}
 .prose li::marker{color:var(--naranja)}
 .prose code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--accent2);font-size:12px}
 .pill{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--txt2)}
-button.act{background:var(--naranja);color:var(--marfil);border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
+button.act{background:var(--naranja);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans)}
 button.act:hover{background:#d06a15}
 button.ghost{background:var(--panel);color:var(--azul);border:1px solid var(--line-strong);border-radius:9px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer}
 button.ghost:hover{border-color:var(--naranja);color:var(--naranja)}
@@ -186,7 +185,7 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);bo
 .algo{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:12px;overflow:hidden}
 .algo-head{display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--panel);cursor:pointer;user-select:none}
 .algo.open .algo-head{background:var(--panel2);border-bottom:1px solid var(--line)}
-.algo-num{font-family:var(--mono);font-weight:700;font-size:12px;color:var(--marfil);background:var(--azul);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.algo-num{font-family:var(--mono);font-weight:700;font-size:12px;color:#fff;background:var(--azul);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .algo-title{font-weight:700;font-size:15px;color:var(--azul);flex:1}
 .algo-title small{display:block;font-weight:400;font-size:11.5px;color:var(--txt3);margin-top:2px;letter-spacing:.02em}
 .algo-toggle{font-family:var(--mono);color:var(--txt3);font-weight:700;font-size:16px;transition:transform .2s}
@@ -215,6 +214,20 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);bo
 .rulechip{display:flex;gap:9px;font-size:12.5px;color:var(--txt2);line-height:1.5}
 .rulechip::before{content:"§";color:var(--naranja);font-weight:800;flex-shrink:0}
 .algo-expand-all{display:flex;gap:10px;margin-bottom:14px}
+.umbral-grp{display:flex;gap:5px}
+.umbral-grp input{width:56px;min-width:0;text-align:center;font-family:var(--mono);font-weight:600;padding:8px 6px}
+/* Salida oficial */
+.export-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.export-actions .ei{font-size:12px;color:var(--txt3);margin-left:auto}
+.valblock{display:grid;gap:10px}
+.valrow{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;padding:11px 14px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.valrow .vi{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff}
+.valrow .vok{background:#2f7d3a}.valrow .vwarn{background:var(--rojo)}
+.valrow .vt{font-weight:600;font-size:13px;color:var(--azul)}
+.valrow .vt small{display:block;font-weight:400;color:var(--txt2);font-size:11.5px;margin-top:2px}
+.valrow .vc{font-family:var(--mono);font-size:12px;color:var(--txt2);font-weight:700}
+.cond-pill{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:3px 9px;border-radius:20px;border:1px solid var(--line-strong);color:var(--txt2);background:var(--panel2)}
+.cond-base{color:var(--azul);border-color:var(--azul-vibrante)}
 </style>
 </head>
 <body>
@@ -260,6 +273,13 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);bo
             <option value="obs">Observado (estructural + push)</option>
             <option value="struct">Estructural</option>
           </select>
+        </label>
+        <label class="ctl">Umbrales de exposición (%)
+          <span class="umbral-grp">
+            <input type="number" id="umb0" value="85" min="1" max="200" step="1">
+            <input type="number" id="umb1" value="95" min="1" max="200" step="1">
+            <input type="number" id="umb2" value="100" min="1" max="200" step="1">
+          </span>
         </label>
       </div>
     </div>
@@ -419,12 +439,24 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);bo
 
   <!-- ════════ EXPORT ════════ -->
   <section class="view" id="v-export">
-    <div class="panel">
-      <h2>Salida limpia para el modelo de decisión <span class="tag">(§45) — sin recomendaciones</span></h2>
-      <div class="controls" style="margin-bottom:12px">
+    <div class="row">
+      <div class="controls">
         <label class="ctl">Año <div class="yearbtns" id="expYears"></div></label>
-        <button class="ghost" id="copyJson">Copiar JSON</button>
       </div>
+    </div>
+    <div class="panel">
+      <h2>Salida oficial por sucursal / año <span class="tag" id="expLbl">(§44) — conjunto completo, sin recomendaciones</span></h2>
+      <div class="export-actions">
+        <button class="ghost" id="copyCsv">Copiar CSV</button>
+        <button class="ghost" id="copyJson">Copiar JSON</button>
+        <span class="ei">21 sucursales · reconcilia con la tabla de auditoría (§49)</span>
+      </div>
+      <div class="tbl-wrap" style="max-height:520px;overflow-y:auto">
+        <table id="oficialTable"><thead></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Feed JSON para el modelo de decisión <span class="tag">(§45) — consumo por otro motor</span></h2>
       <pre class="json" id="jsonOut"></pre>
     </div>
   </section>
@@ -432,7 +464,12 @@ pre.json{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);bo
   <!-- ════════ TESTS ════════ -->
   <section class="view" id="v-tests">
     <div class="panel">
-      <h2>Tests de aceptación obligatorios <span class="tag">(§40 Validaciones · §41 Tests A–G)</span></h2>
+      <h2>Controles de validación sobre los datos cargados <span class="tag">(§40) — pre-cálculo, 21 sucursales</span></h2>
+      <p class="note" style="margin-bottom:14px">El motor ejecuta estos controles sobre los datos reales antes de calcular. Un control en rojo indica series con datos inválidos o faltantes que se marcan como NO CALCULABLE (§29), nunca imputadas.</p>
+      <div id="valResults" class="valblock"></div>
+    </div>
+    <div class="panel">
+      <h2>Tests de aceptación obligatorios <span class="tag">(§41 Tests A–G) — matemática del motor</span></h2>
       <p class="note" style="margin-bottom:14px">Verifican la matemática del motor: conservación de masa, consolidación ponderada, separación push/DOH, no-promedio de dimensiones, peaks vs índice anual, invariancia de kilos.</p>
       <div id="testResults"></div>
     </div>
@@ -1668,7 +1705,7 @@ const S = {
   data:null, ctx:null, resultados:[], resMap:{},
   natYear:2028, sucId:null, sucYear:2028,
   trendId:null, trendYear:2028, audId:null, audAmb:'Fresco', audYear:2028, audMonth:0,
-  expYear:2028, scenario:'obs',
+  expYear:2028, scenario:'obs', umbrales:[85,95,100], activeTab:'nacional',
 };
 const fmt = (x,d=1)=> (x==null||!isFinite(x))?'—':Number(x).toLocaleString('es-CL',{minimumFractionDigits:d,maximumFractionDigits:d});
 const fmt0 = x=> (x==null||!isFinite(x))?'—':Math.round(x).toLocaleString('es-CL');
@@ -1695,6 +1732,42 @@ function qColor(q){
   return {ALTA:'#003087',MEDIA:'#7f93b3',BAJA:'#E87722',EJEMPLO:'#E87722','NO DISPONIBLE':'#c9cfdb'}[q]||'#c9cfdb';
 }
 function satCell(v){ return `<span class="cell-sat ${satClass(v)}">${v==null||!isFinite(v)?'N/C':fmt(v)}</span>`; }
+const round2=(x,d=2)=>(x==null||!isFinite(x))?null:Number(x.toFixed(d));
+/* Exposición para un umbral T, calculada desde la serie diaria retenida.
+   Desacopla la salida oficial de los umbrales configurables de la UI (§22/§44). */
+function expoSerie(daily,key,T){
+  const v=daily.filter(x=>isFinite(x[key]));
+  if(!v.length)return {dias:NaN,vol:NaN};
+  const tot=v.reduce((s,x)=>s+(x.D||0),0);
+  const over=v.filter(x=>x[key]>=T);
+  const od=over.reduce((s,x)=>s+(x.D||0),0);
+  return {dias:over.length/v.length*100, vol:tot>0?od/tot*100:0};
+}
+const anioBase=()=>MODELO.anios[0];
+/* Fila de SALIDA OFICIAL por sucursal/año — conjunto completo §44 (sin recomendaciones). */
+function filaOficial(res,anio){
+  const r=res.anios[anio];
+  if(!r||!r.calculable) return {sucursal:res.sucursal.nombre, zona:res.sucursal.zona, anio, estado:'NO CALCULABLE', detalle:res.faltantes[0]||'falta información'};
+  const bd=r._branchDaily||[];
+  const e85=expoSerie(bd,'sBranchObs',85), e95=expoSerie(bd,'sBranchObs',95), e100=expoSerie(bd,'sBranchObs',100);
+  const fO=r.fisicoObservado, fE=r.fisicoEstructural, fre=r.ambientes.Fresco, con=r.ambientes.Congelado, rd=r.restriccionDominante;
+  return {
+    sucursal:res.sucursal.nombre, zona:res.sucursal.zona, anio,
+    condicion: anio===anioBase()?'Año base':'Proyectado',
+    kg_anual:Math.round(r.kgAnual), cajas_anual:Math.round(r.cajasAnual),
+    doh_fresco:r.doh.Fresco??null, doh_congelado:r.doh.Congelado??null,
+    fisico_estructural:round2(fE.indice), fisico_observado:round2(fO.indice),
+    fresco:round2(fre?.fisicoObs.indice), congelado:con?round2(con.fisicoObs.indice):null,
+    operacional:round2(r.operacional.indice), dotacion:round2(r.dotacion.indice), espacio_personas:round2(r.espacioPersonas.indice),
+    peak:round2(fO.peak), fecha_peak:fO.fechaPeak, p95:round2(fO.p95),
+    dias_85:round2(e85.dias), dias_95:round2(e95.dias), dias_100:round2(e100.dias),
+    vol_95:round2(e95.vol), vol_100:round2(e100.vol),
+    push_kg:Math.round(r.pushAnual), impacto_push_pp:round2(r.deltaPushPP),
+    holgura_kg:Math.round(r.holguraKg),
+    restriccion_dominante: rd?`${rd.nombre} (${round2(rd.valor)}%)`:'',
+    calidad_dato:res.calidadDato, version:MODELO.version,
+  };
+}
 
 /* ── Boot: calcular todo ── */
 function boot(){
@@ -1753,10 +1826,23 @@ function initControls(){
   mSel.onchange=e=>{S.audMonth=+e.target.value; renderAuditoria();};
   // export
   yearGroup('expYears', S.expYear, y=>{S.expYear=y; renderExport();});
-  document.getElementById('copyJson').onclick=()=>{
-    navigator.clipboard?.writeText(document.getElementById('jsonOut').textContent);
-    const b=document.getElementById('copyJson'); b.textContent='¡Copiado!'; setTimeout(()=>b.textContent='Copiar JSON',1200);
+  const copyBtn=(id,getText,label)=>{
+    document.getElementById(id).onclick=()=>{
+      const t=getText(); navigator.clipboard?.writeText(t);
+      const b=document.getElementById(id); b.textContent='¡Copiado!'; setTimeout(()=>b.textContent=label,1200);
+    };
   };
+  copyBtn('copyJson',()=>document.getElementById('jsonOut').textContent,'Copiar JSON');
+  copyBtn('copyCsv',()=>S._csv||'','Copiar CSV');
+  // umbrales de exposición (§22 — editables sin tocar la matemática)
+  const uInputs=['umb0','umb1','umb2'].map(id=>document.getElementById(id));
+  const applyUmb=()=>{
+    let v=uInputs.map(i=>parseFloat(i.value)).filter(x=>isFinite(x)&&x>0);
+    if(v.length!==3)return; v=v.sort((a,b)=>a-b); S.umbrales=v;
+    uInputs.forEach((i,k)=>i.value=v[k]);
+    showTab(S.activeTab);
+  };
+  uInputs.forEach(i=>i.onchange=applyUmb);
   // calculadora
   document.getElementById('calcForm').onsubmit=(e)=>{e.preventDefault(); computeCalc();};
   document.getElementById('calcReset').onclick=()=>{aplicarPreset('norte'); computeCalc();};
@@ -1773,6 +1859,7 @@ function refreshAudAmb(){
 }
 
 function showTab(tab){
+  S.activeTab=tab;
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('v-'+tab).classList.add('active');
@@ -1792,7 +1879,7 @@ function renderNacional(){
   const cols = [
     ['Sucursal','name'],['Zona','z'],['Físico','fis'],['Fresco','fre'],['Congelado','con'],
     ['Operación','op'],['Dotación','dot'],['Espacio','esp'],['Peak','peak'],['P95','p95'],
-    ['Exp&gt;95%','e95'],['Exp&gt;100%','e100'],['Restricción dominante','rd'],['Δpush','push'],['Cal.','q']
+    [`Exp≥${S.umbrales[1]}%`,'e95'],[`Exp≥${S.umbrales[2]}%`,'e100'],['Restricción dominante','rd'],['Δpush','push'],['Cal.','q']
   ];
   const thead=document.querySelector('#natTable thead');
   thead.innerHTML='<tr>'+cols.map(c=>`<th>${c[0]}</th>`).join('')+'</tr>';
@@ -1808,6 +1895,9 @@ function renderNacional(){
     const fis = S.scenario==='obs'?a.fisicoObservado:a.fisicoEstructural;
     const fre = a.ambientes.Fresco?.fisicoObs, con=a.ambientes.Congelado?.fisicoObs;
     const rd = a.restriccionDominante;
+    const key = S.scenario==='obs'?'sBranchObs':'sBranchStruct';
+    const u1=S.umbrales[1], u2=S.umbrales[2];
+    const ex1=expoSerie(a._branchDaily||[],key,u1).dias, ex2=expoSerie(a._branchDaily||[],key,u2).dias;
     tr.innerHTML=
       `<td class="name">${r.sucursal.nombre}<br><small>${r.sucursal.id}</small></td>`+
       `<td style="text-align:left">${r.sucursal.zona}</td>`+
@@ -1819,8 +1909,8 @@ function renderNacional(){
       `<td>${satCell(a.espacioPersonas.indice)}</td>`+
       `<td class="mono">${fmt(fis.peak)}</td>`+
       `<td class="mono">${fmt(fis.p95)}</td>`+
-      `<td class="mono">${fmt(fis.exposicionDias[95])}%</td>`+
-      `<td class="mono">${fmt(fis.exposicionDias[100])}%</td>`+
+      `<td class="mono">${fmt(ex1)}%</td>`+
+      `<td class="mono">${fmt(ex2)}%</td>`+
       `<td style="text-align:left;font-size:11.5px">${rd?`<span style="color:${satText(rd.valor)};font-weight:600">${rd.nombre}</span> <span class="mono" style="color:var(--txt3)">${fmt(rd.valor)}%</span>`:'—'}</td>`+
       `<td class="mono">${a.deltaPushPP>=0?'+':''}${fmt(a.deltaPushPP)}pp</td>`+
       `<td><span class="q-dot" style="background:${qColor(r.calidadDato)}"></span></td>`;
@@ -1841,8 +1931,15 @@ function renderSucursal(){
   const fisO=a.fisicoObservado, fisE=a.fisicoEstructural;
   const fre=a.ambientes.Fresco, con=a.ambientes.Congelado;
 
+  // Condición del año (§31) y calidad del dato
+  const esBase=S.sucYear===MODELO.anios[0];
+  let html=`<div class="row" style="margin-top:-4px;margin-bottom:14px;gap:8px">
+    <span class="cond-pill ${esBase?'cond-base':''}">${esBase?'Año base':'Proyectado'} · ${S.sucYear}</span>
+    <span class="cond-pill">Calidad dato: ${r.calidadDato}</span>
+    <span class="cond-pill">Modelo v${MODELO.version}</span>
+  </div>`;
   // KPIs
-  let html=`<div class="kpis">
+  html+=`<div class="kpis">
     ${kpi('Físico estructural',fisE.indice,'%',`peak ${fmt(fisE.peak)}% · P95 ${fmt(fisE.p95)}%`)}
     ${kpi('Físico observado',fisO.indice,'%',`+${fmt(a.deltaPushPP)}pp por push`)}
     ${kpi('Operacional',a.operacional.indice,'%',`peak ${fmt(a.operacional.peak)}%`)}
@@ -1859,7 +1956,7 @@ function renderSucursal(){
       <p class="note" style="margin-top:10px">Holgura/déficit al peak observado: <b class="mono" style="color:${a.holguraKg>=0?'var(--ok)':'var(--sat)'}">${a.holguraKg>=0?'+':''}${fmt0(a.holguraKg)} kg</b> (${fmt(a.holguraPct)}%). No se recomienda acción.</p>
     </div>
     <div class="panel"><h2>Exposición temporal y por volumen <span class="tag">(§21, §22)</span></h2>
-      ${exposureTable(fisO)}
+      ${exposureTable(a)}
     </div>
   </div>`;
 
@@ -1914,10 +2011,12 @@ function dimBar(name,v){
   const w=Math.min(130,v||0)/1.3;
   return `<div class="dim"><div class="dn">${name}</div><div class="track"><div class="fill" style="width:${w}%;background:${satColor(v)}"></div><div class="marker" style="left:${100/1.3}%" title="100%"></div></div><div class="dv" style="color:${satText(v)}">${fmt(v)}%</div></div>`;
 }
-function exposureTable(f){
+function exposureTable(a){
+  const f=a.fisicoObservado, bd=a._branchDaily||[];
   let h='<table style="font-size:12px"><thead><tr><th style="text-align:left">Umbral</th><th>% días</th><th>% volumen</th></tr></thead><tbody>';
-  for(const T of [85,95,100]){
-    h+=`<tr><td style="text-align:left" class="mono">≥ ${T}%</td><td class="mono">${fmt(f.exposicionDias[T])}%</td><td class="mono">${fmt(f.exposicionKg[T])}%</td></tr>`;
+  for(const T of S.umbrales){
+    const e=expoSerie(bd,'sBranchObs',T);
+    h+=`<tr><td style="text-align:left" class="mono">≥ ${T}%</td><td class="mono">${fmt(e.dias)}%</td><td class="mono">${fmt(e.vol)}%</td></tr>`;
   }
   h+=`</tbody></table><p class="note" style="margin-top:8px">Índice anual ${fmt(f.indice)}% · Peak ${fmt(f.peak)}% (${f.fechaPeak}) · P95 ${fmt(f.p95)}%</p>`;
   return h;
@@ -2116,9 +2215,9 @@ function renderHeatmap(){
   // texto legible según el fondo del chip
   const txtColor=(v)=>{
     if(v==null||!isFinite(v))return 'rgba(0,48,135,.4)';
-    if(metric==='sat')return v<85?'#003087':'#FFF6E6';
+    if(metric==='sat')return v<85?'#003087':'#ffffff';
     const t=(v-vmin)/((vmax-vmin)||1);
-    return t>0.45?'#FFF6E6':'#003087';
+    return t>0.45?'#ffffff':'#003087';
   };
   let h=`<div class="hm-grid" style="grid-template-columns:44px repeat(12,1fr)">`;
   h+=`<div class="hm-lbl"></div>`+MN.map(m=>`<div class="hm-lbl">${m}</div>`).join('');
@@ -2161,13 +2260,109 @@ function renderAuditoria(){
 }
 
 /* ════════ EXPORT ════════ */
+const OFICIAL_COLS=[
+  ['sucursal','Sucursal'],['zona','Zona'],['condicion','Condición'],
+  ['kg_anual','Kg anual'],['cajas_anual','Cajas'],['doh_fresco','DOH fre'],['doh_congelado','DOH con'],
+  ['fisico_estructural','Fís. estr.'],['fisico_observado','Fís. obs.'],['fresco','Fresco'],['congelado','Congelado'],
+  ['operacional','Operac.'],['dotacion','Dotación'],['espacio_personas','Espacio'],
+  ['peak','Peak'],['fecha_peak','Fecha peak'],['p95','P95'],
+  ['dias_85','%d≥85'],['dias_95','%d≥95'],['dias_100','%d≥100'],['vol_95','%v≥95'],['vol_100','%v≥100'],
+  ['push_kg','Push kg'],['impacto_push_pp','Push pp'],['holgura_kg','Holgura kg'],
+  ['restriccion_dominante','Restricción dominante'],['calidad_dato','Calidad'],['version','Ver.'],
+];
 function renderExport(){
-  const out=S.resultados.map(r=>salidaJSON(r,S.expYear));
-  document.getElementById('jsonOut').textContent=JSON.stringify(out,null,2);
+  document.getElementById('expLbl').textContent=`${S.expYear} · (§44) conjunto completo, sin recomendaciones`;
+  const filas=S.resultados.map(r=>filaOficial(r,S.expYear));
+  // tabla oficial
+  const numCols=new Set(['kg_anual','cajas_anual','doh_fresco','doh_congelado','fisico_estructural','fisico_observado','fresco','congelado','operacional','dotacion','espacio_personas','peak','p95','dias_85','dias_95','dias_100','vol_95','vol_100','push_kg','impacto_push_pp','holgura_kg']);
+  const satCols=new Set(['fisico_observado','fresco','congelado','operacional','dotacion','espacio_personas']);
+  document.querySelector('#oficialTable thead').innerHTML='<tr>'+OFICIAL_COLS.map(c=>`<th>${c[1]}</th>`).join('')+'</tr>';
+  const tb=document.querySelector('#oficialTable tbody'); tb.innerHTML='';
+  for(const f of filas){
+    const tr=document.createElement('tr');
+    if(f.estado){
+      tr.innerHTML=`<td class="name">${f.sucursal}</td><td>${f.zona}</td><td colspan="${OFICIAL_COLS.length-2}" style="text-align:left;color:var(--txt3);font-style:italic">NO CALCULABLE — ${f.detalle}</td>`;
+      tb.appendChild(tr); continue;
+    }
+    tr.innerHTML=OFICIAL_COLS.map(([k])=>{
+      let v=f[k];
+      if(k==='sucursal')return `<td class="name">${v}</td>`;
+      if(k==='condicion')return `<td style="text-align:left"><span class="cond-pill ${v==='Año base'?'cond-base':''}">${v}</span></td>`;
+      if(satCols.has(k))return `<td>${satCell(v)}</td>`;
+      if(k==='restriccion_dominante')return `<td style="text-align:left;font-size:11.5px">${v||'—'}</td>`;
+      if(v==null)return '<td class="mono" style="color:var(--txt3)">—</td>';
+      if(numCols.has(k))return `<td class="mono">${typeof v==='number'?v.toLocaleString('es-CL'):v}</td>`;
+      return `<td style="text-align:left">${v}</td>`;
+    }).join('');
+    tb.appendChild(tr);
+  }
+  // JSON feed (§45): mismo conjunto oficial, limpio
+  document.getElementById('jsonOut').textContent=JSON.stringify(filas,null,2);
+  // guardamos CSV para copiar
+  S._csv=toCSV(filas);
+}
+function toCSV(filas){
+  const cols=OFICIAL_COLS.map(c=>c[0]);
+  const esc=(v)=>{ if(v==null)return ''; const s=String(v); return /[",;\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const head=cols.join(';');
+  const rows=filas.map(f=>cols.map(c=>esc(f[c]!==undefined?f[c]:(f.estado&&c!=='sucursal'&&c!=='zona'&&c!=='anio'?'NO CALCULABLE':''))).join(';'));
+  return [head,...rows].join('\n');
+}
+
+/* ════════ VALIDACIONES SOBRE DATOS REALES (§40) ════════ */
+function renderValidaciones(){
+  const suc=S.data.sucursales, dat=S.data.datos;
+  const controles=[];
+  const push=(nombre,detalle,ok,total)=>controles.push({nombre,detalle,ok,total});
+  // C1 estacionalidad normalizable (Σ factores > 0 y 12 valores)
+  let ok=0,tot=0;
+  for(const s of suc)for(const a of s.ambientes?Object.keys(s.ambientes):[]){
+    const f=dat.estacionalidad?.[s.Sucursal_ID]?.[a]?.['*']; tot++;
+    if(f){let sum=0,good=true;for(let m=1;m<=12;m++){const v=f[m];if(!(isFinite(v)&&v>=0)){good=false;break;}sum+=v;}if(good&&sum>0)ok++;}
+  }
+  push('Estacionalidad normalizable','Σ factores mensuales > 0 y 12 valores válidos → Σ Ê = 1',ok,tot);
+  // C2 conservación de masa: Σ demanda diaria ≈ demanda anual
+  ok=0;tot=0;
+  for(const r of S.resultados){const res=S.resMap[r.sucursal.id];
+    for(const y of MODELO.anios){const yr=res.anios[y]; if(!yr||!yr.calculable)continue;
+      for(const a of r.ambientesPresentes){const dias=yr._diasAmb?.[a]; if(!dias)continue;
+        const sum=dias.reduce((s,x)=>s+(isFinite(x.D)?x.D:0),0);
+        const ann=dat.demanda?.porAmbiente?.[r.sucursal.id]?.[a]?.[y];
+        if(isFinite(ann)&&ann>0){tot++; if(Math.abs(sum-ann)<=Math.max(1,ann*1e-6))ok++;}
+      }}}
+  push('Conservación de masa (demanda)','Σ demanda diaria = demanda anual, por sucursal/ambiente/año',ok,tot);
+  // C3 capacidad válida
+  ok=0;tot=0;
+  for(const s of suc)for(const a of Object.keys(s.ambientes)){const g=s.ambientes[a];tot++;
+    if(g.M2>0&&g.Altura_Util>0&&g.Factor_Utilizacion>0&&g.Factor_Utilizacion<=1&&g.Densidad_Kg_M3>0)ok++;}
+  push('Capacidad física válida','M²>0 · altura>0 · UF∈(0,1] · densidad>0',ok,tot);
+  // C4/C5/C6 DOH, KPC, productividad > 0
+  ok=0;tot=0;
+  for(const s of suc)for(const a of Object.keys(s.ambientes)){const g=s.ambientes[a];tot++; if(g.DOH>0)ok++;}
+  push('DOH válido','DOH > 0 por sucursal/ambiente',ok,tot);
+  ok=0;tot=0;
+  for(const s of suc)for(const a of Object.keys(s.ambientes)){const k=dat.kpc?.[s.Sucursal_ID]?.[a]?.['*'];tot++; if(k>0)ok++;}
+  push('Kg/caja válido','KPC > 0 por sucursal/ambiente',ok,tot);
+  ok=0;tot=0;
+  for(const s of suc)for(const a of Object.keys(s.ambientes)){const g=s.ambientes[a];tot++; if(g.Productividad>0&&g.Horas_Productivas>0&&g.Dotacion>0)ok++;}
+  push('Productividad y dotación','productividad>0 · horas>0 · dotación>0',ok,tot);
+  // C8 ambientes presentes (no exige inexistente)
+  ok=0;tot=suc.length;
+  for(const s of suc){if(s.ambientes&&Object.keys(s.ambientes).length>=1)ok++;}
+  push('Ambientes declarados','cada sucursal tiene fresco/congelado según corresponda',ok,tot);
+
+  const el=document.getElementById('valResults');
+  el.innerHTML=controles.map(c=>{
+    const good=c.ok===c.total;
+    return `<div class="valrow"><span class="vi ${good?'vok':'vwarn'}">${good?'✓':'!'}</span>`+
+      `<span class="vt">${c.nombre}<small>${c.detalle}</small></span>`+
+      `<span class="vc" style="color:${good?'#2f7d3a':'var(--rojo)'}">${c.ok}/${c.total} OK</span></div>`;
+  }).join('');
 }
 
 /* ════════ TESTS ════════ */
 function renderTests(){
+  renderValidaciones();
   const {pasaron,total,resultados}=correrTests();
   let h=`<div style="margin-bottom:14px;font-family:var(--mono);font-size:14px"><span class="st ${pasaron===total?'pass':'fail'}">${pasaron}/${total} OK</span></div>`;
   for(const t of resultados){

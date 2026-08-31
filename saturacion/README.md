@@ -47,12 +47,19 @@ participación de demanda de cada día.
 
 ### Vistas del dashboard
 
-`Vista Nacional` · `Vista Sucursal` · **`Calculadora`** (carga parámetros de 1–2
-ambientes y devuelve las 7 saturaciones + consolidación ponderada + explicación
-paso a paso, con ejemplos/pruebas cargables) · `Tendencia 2026–2032` ·
-`Auditoría diaria` · `Salida JSON` · **`Algoritmos`** (catálogo pedagógico de los
-17 algoritmos: propósito, notación, fórmula, reglas y ejemplo resuelto) ·
-`Tests de aceptación` · `¿Cómo funciona?`.
+`Vista Nacional` (con **umbrales de exposición editables**, §22) · `Vista Sucursal`
+(con condición **Año base / Proyectado**, §31) · **`Calculadora`** (carga
+parámetros de 1–2 ambientes y devuelve las 7 saturaciones + consolidación
+ponderada + explicación paso a paso, con ejemplos/pruebas cargables) ·
+`Tendencia 2026–2032` · `Auditoría diaria` · **`Salida JSON`** (salida oficial
+completa §44 por sucursal/año, con copia **CSV** y **JSON** limpio §45) ·
+**`Algoritmos`** (catálogo pedagógico de los 17 algoritmos: propósito, notación,
+fórmula, reglas y ejemplo resuelto) · `Tests de aceptación` (**controles de
+validación §40 sobre los datos reales** + tests A–G §41) · `¿Cómo funciona?`.
+
+Diseño **neutro profesional**: fondo blanco, grises neutros, azul corporativo
+para datos y títulos; el color de severidad (naranja ≥95%, rojo ≥100%) se reserva
+a lo que requiere atención.
 
 ### Correr los tests (auditoría de la matemática)
 
