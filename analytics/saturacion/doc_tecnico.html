@@ -1,0 +1,745 @@
+<title>Especificación del Modelo de Saturación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/*__ESTILO__*/
+</style>
+
+<header class="cab">
+  <div class="inner">
+    <div>
+      <span class="kicker">Operaciones Nacionales · Red de frío · Documento técnico</span>
+      <h1>Especificación del Modelo de Saturación</h1>
+      <p>Definición formal completa: dominios, supuestos, derivaciones, invariantes con demostración, algoritmo y puntos de extensión. Escrita para que un modelo mayor pueda construirse encima sin reinterpretar nada.</p>
+    </div>
+    <!--__LOGO__-->
+  </div>
+</header>
+
+<div class="marco">
+  <nav id="rail" aria-label="Secciones">
+    <span class="grupo">Fundamentos</span>
+    <button data-p="alcance" aria-current="page">Alcance y supuestos</button>
+    <button data-p="notacion">Notación y dominios</button>
+    <span class="grupo">Derivación</span>
+    <button data-p="mix">Deducción del mix φ</button>
+    <button data-p="red">Operador de red</button>
+    <button data-p="etapa1">Etapa 1 · estructural</button>
+    <button data-p="etapa2">Etapa 2 · operacional</button>
+    <span class="grupo">Formalización</span>
+    <button data-p="invariantes">Invariantes y pruebas</button>
+    <button data-p="algoritmo">Algoritmo</button>
+    <button data-p="bordes">Casos borde</button>
+    <button data-p="numerica">Precisión numérica</button>
+    <span class="grupo">Extensión</span>
+    <button data-p="extension">Puntos de extensión</button>
+    <button data-p="instancia">Instancia resuelta</button>
+  </nav>
+
+  <div class="panel">
+
+    <!-- ============ ALCANCE ============ -->
+    <section id="alcance" class="pagina on">
+      <div class="phead">
+        <span class="setiq">Fundamentos · 1</span>
+        <h2>Alcance y supuestos</h2>
+        <p class="prosa">Qué afirma el modelo, qué no afirma, y bajo qué condiciones sus conclusiones son válidas.</p>
+      </div>
+
+      <h3>Objeto del modelo</h3>
+      <p class="prosa lt">Dada una sucursal con capacidad instalada, dotación y una política de abastecimiento expresada en días de cobertura, el modelo determina dos predicados independientes:</p>
+      <div class="eq"><b>S₁</b> ≡ [ ρ* &gt; 1 ]     <span class="cmt">el inventario de política no cabe en las cámaras</span>
+<b>S₂</b> ≡ [ ρ_op &gt; 1 ]    <span class="cmt">la operación del turno peak no cabe en la superficie libre</span>
+
+<span class="cmt">S₂ es parcial: indefinido cuando A_libre ≤ 0.</span></div>
+      <p class="prosa lt">El modelo es <b>determinista y de forma cerrada</b>. No hay optimización, búsqueda numérica ni simulación estocástica, de modo que no existe convergencia que pueda fallar ni semilla que altere el resultado.</p>
+
+      <h3>Supuestos, con su justificación</h3>
+      <div class="tw"><table>
+        <thead><tr><th>#</th><th>Supuesto</th><th>Justificación</th><th>Si se rompe</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="n">A1</td>
+            <td>La capacidad en kg es una columna derivada de las posiciones, no una medición independiente.</td>
+            <td>En las 20 sucursales se cumple <span class="m">K = P × 458,9</span> con dispersión de 0,93 %.</td>
+            <td>Tratar kg y posiciones como restricciones separadas sería doble contabilidad.</td>
+          </tr>
+          <tr>
+            <td class="n">A2</td>
+            <td>Las cámaras son compartimentos rígidos: congelado y refrigerado no se prestan posiciones.</td>
+            <td>Restricción física del equipamiento de frío.</td>
+            <td>Con cámaras flexibles, la saturación sería ρ_flex y no el máximo.</td>
+          </tr>
+          <tr>
+            <td class="n">A3</td>
+            <td>El mix de demanda φ es común a toda la red.</td>
+            <td>No hay mix por sucursal en la planilla; se deduce del dimensionamiento agregado.</td>
+            <td>Un φ por sucursal desplazaría ρ_C y ρ_R en direcciones opuestas.</td>
+          </tr>
+          <tr>
+            <td class="n">A4</td>
+            <td>La demanda es uniforme dentro del mes: <span class="m">d = D_ef / 30,44</span>.</td>
+            <td>El modelo mide la política, no la variabilidad.</td>
+            <td>Es el gancho principal para el modelo mayor. Ver <i>Puntos de extensión</i>.</td>
+          </tr>
+          <tr>
+            <td class="n">A5</td>
+            <td>Lo que restringe la operación es la <b>concurrencia</b>, no el volumen procesado.</td>
+            <td>a₀ = 36 m² por persona es una norma de ocupación simultánea en cámara.</td>
+            <td>Si el cuello fuese throughput, la etapa 2 sería un modelo de colas.</td>
+          </tr>
+          <tr>
+            <td class="n">A6</td>
+            <td>El inventario ocupa superficie a la densidad instalada de la propia sucursal, <span class="m">δ = P/A</span>.</td>
+            <td>Traduce posiciones a m² sin suponer un layout ajeno.</td>
+            <td>Un layout heterogéneo requeriría δ por zona.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <h3>Lo que el modelo deliberadamente no hace</h3>
+      <ul class="vin">
+        <li><b>No agrega entre sucursales.</b> Solo ρ es comparable, por ser adimensional y medido contra capacidad propia. Se reportan conteos, nunca sumas de kg, m², posiciones o dotación.</li>
+        <li><b>No fusiona las dos etapas.</b> Ningún promedio, índice compuesto ni sustitución. Fundirlas ocultaría una cámara desbordada tras un diagnóstico operacional cómodo.</li>
+        <li><b>No optimiza.</b> Entrega ρ y las políticas de quiebre en forma cerrada; la decisión queda fuera del modelo.</li>
+        <li><b>No modela nivel de servicio ni stock de seguridad.</b> La política DOH entregada se toma como dada.</li>
+      </ul>
+    </section>
+
+    <!-- ============ NOTACIÓN ============ -->
+    <section id="notacion" class="pagina">
+      <div class="phead">
+        <span class="setiq">Fundamentos · 2</span>
+        <h2>Notación y dominios</h2>
+        <p class="prosa">Toda variable con unidad y dominio explícito. El subíndice <span class="m">r ∈ {C, R}</span> distingue congelado de refrigerado.</p>
+      </div>
+
+      <h3>Entradas por sucursal</h3>
+      <div class="tw"><table class="simb">
+        <thead><tr><th>Símbolo</th><th>Dominio</th><th>Unidad</th><th>Significado</th></tr></thead>
+        <tbody>
+          <tr><td>D</td><td>ℝ₊ , D &gt; 0</td><td>kg/mes</td><td>Demanda propia</td></tr>
+          <tr><td>P</td><td>ℕ₊</td><td>posiciones</td><td>Posiciones de pallet instaladas</td></tr>
+          <tr><td>K_C, K_R</td><td>ℝ₊</td><td>kg</td><td>Capacidad por cámara; K = K_C + K_R</td></tr>
+          <tr><td>A</td><td>ℝ₊</td><td>m²</td><td>Superficie de cámara</td></tr>
+          <tr><td>N</td><td>ℕ₊</td><td>personas</td><td>Dotación total</td></tr>
+          <tr><td>DOH_C, DOH_R</td><td>ℝ₊</td><td>días</td><td>Política de cobertura por régimen</td></tr>
+        </tbody>
+      </table></div>
+      <p class="nota">Una sucursal es <b>evaluable</b> si y solo si las ocho entradas son numéricas y estrictamente positivas. La evaluabilidad se comprueba antes de todo cálculo; una sucursal no evaluable se reporta como tal y jamás con ρ = 0.</p>
+
+      <h3>Parámetros del modelo</h3>
+      <div class="tw"><table class="simb">
+        <thead><tr><th>Símbolo</th><th>Dominio</th><th>Valor</th><th>Significado</th></tr></thead>
+        <tbody>
+          <tr><td>γ</td><td>ℝ₊</td><td>459</td><td>kg por posición de pallet</td></tr>
+          <tr><td>u</td><td>(0, 1]</td><td>1,00</td><td>Aprovechamiento de posiciones</td></tr>
+          <tr><td>a₀</td><td>ℝ₊</td><td>36</td><td>m² por persona en cámara</td></tr>
+          <tr><td>σ_t</td><td>Δ² , Σσ_t = 1</td><td>0,20 / 0,40 / 0,40</td><td>Participación por turno</td></tr>
+          <tr><td>θ</td><td>[0, 1]</td><td>1,00</td><td>Fracción del volumen abastecido que cruza el hub</td></tr>
+          <tr><td>Δ_mes</td><td>ℝ₊</td><td>30,44</td><td>Días por mes</td></tr>
+          <tr><td>φ</td><td>(0, 1)</td><td>deducido</td><td>Fracción congelada de la demanda</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Magnitudes derivadas</h3>
+      <div class="tw"><table class="simb">
+        <thead><tr><th>Símbolo</th><th>Unidad</th><th>Definición</th></tr></thead>
+        <tbody>
+          <tr><td>D_ef</td><td>kg/mes</td><td>Demanda efectiva tras el operador de red</td></tr>
+          <tr><td>d, d_C, d_R</td><td>kg/día</td><td>d = D_ef/Δ_mes ; d_C = φd ; d_R = (1−φ)d</td></tr>
+          <tr><td>β</td><td>—</td><td>K_C / K , reparto instalado de capacidad</td></tr>
+          <tr><td>P_C, P_R</td><td>posiciones</td><td>Pu·β y Pu·(1−β)</td></tr>
+          <tr><td>n_C, n_R, n</td><td>posiciones</td><td>Requerimiento de la política</td></tr>
+          <tr><td>DOH_fís_r</td><td>días</td><td>P_r·γ / d_r , cobertura que la cámara sostiene</td></tr>
+          <tr><td>ρ_C, ρ_R, ρ*</td><td>—</td><td>Saturación por cámara y su máximo</td></tr>
+          <tr><td>ρ_flex</td><td>—</td><td>n / Pu , ocupación de la capacidad total</td></tr>
+          <tr><td>δ</td><td>pos/m²</td><td>P / A</td></tr>
+          <tr><td>A_uso, A_libre</td><td>m²</td><td>n/δ y A − A_uso</td></tr>
+          <tr><td>A_op</td><td>m²</td><td>N · máx(σ_t) · a₀</td></tr>
+          <tr><td>ρ_op</td><td>—</td><td>A_op / A_libre , parcial</td></tr>
+          <tr><td>κ*</td><td>—</td><td>1 / ρ* , factor de escalado admisible de la política</td></tr>
+          <tr><td>E_C, E_R</td><td>—</td><td>Elasticidad de ρ respecto de cada DOH</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ MIX ============ -->
+    <section id="mix" class="pagina">
+      <div class="phead">
+        <span class="setiq">Derivación · 3</span>
+        <h2>Deducción del mix φ</h2>
+        <p class="prosa">φ es el único input que no está en la planilla. Deducirlo mal desplaza todo el modelo, así que la derivación va completa.</p>
+      </div>
+
+      <h3>El proxy evidente está sesgado</h3>
+      <p class="prosa lt">Estimar φ como la fracción de capacidad congelada, <span class="m">K_C/K</span>, es incorrecto. El espacio que ocupa un régimen no es su volumen, sino su volumen <b>multiplicado por los días que permanece almacenado</b>.</p>
+
+      <div class="teorema">
+        <span class="et">Derivación</span>
+        <h4>Identidad de dimensionamiento</h4>
+        <p class="lt" style="font-size:.87rem">Si la red se dimensionó para sostener su política, la capacidad de cada cámara guarda la misma proporción que el espacio-tiempo que cada régimen demanda:</p>
+        <div class="eq">K_C / K_R  =  (φ · DOH_C) / ((1 − φ) · DOH_R)
+
+<span class="cmt">multiplicando en cruz:</span>
+K_C · (1 − φ) · DOH_R  =  K_R · φ · DOH_C
+
+<span class="cmt">agrupando en φ:</span>
+K_C · DOH_R  =  φ · ( K_R · DOH_C  +  K_C · DOH_R )
+
+<b>φ  =  [ 1 + (K_R/K_C) · (DOH_C/DOH_R) ]⁻¹</b></div>
+        <div class="prueba">
+          <b>Dominio.</b> Con K_C, K_R, DOH_C, DOH_R &gt; 0, el término <span class="m">(K_R/K_C)·(DOH_C/DOH_R)</span> es estrictamente positivo, luego φ ∈ (0, 1) de forma estricta. El modelo nunca produce un mix degenerado.
+        </div>
+      </div>
+
+      <h3>Ponderación y magnitud del sesgo</h3>
+      <p class="prosa lt">Los DOH que entran a la fórmula son promedios de red ponderados por la demanda <b>propia</b> de cada sucursal, no por la efectiva: el mix es una propiedad del producto que se vende, y el volumen que cruza un hub no debe contarse dos veces al estimarlo.</p>
+      <div class="eq">K_C = Σ_i K_C(i)          K_R = Σ_i K_R(i)          W = Σ_i D(i)
+
+DOH_C = ( Σ_i DOH_C(i) · D(i) ) / W          DOH_R = ( Σ_i DOH_R(i) · D(i) ) / W</div>
+
+      <div class="teorema">
+        <span class="et">Proposición</span>
+        <h4>El sesgo del proxy es exactamente DOH_C/DOH_R</h4>
+        <div class="eq">(K_C/K) / φ  =  (K_C/K) · [ 1 + (K_R/K_C)·(DOH_C/DOH_R) ]
+             =  K_C/K  +  (K_R/K)·(DOH_C/DOH_R)</div>
+        <div class="prueba">
+          Cuando <span class="m">DOH_C = DOH_R</span> la expresión colapsa a <span class="m">K_C/K + K_R/K = 1</span> y el proxy es exacto. El sesgo aparece únicamente por la asimetría de las políticas entre regímenes. Con los datos de la red: φ = <b class="m" id="mPhi"></b>, sesgo = <b class="m" id="mSesgo"></b>. Usar el proxy haría aparecer déficit de congelado en las 20 sucursales: un artefacto del estimador, no un hallazgo.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RED ============ -->
+    <section id="red" class="pagina">
+      <div class="phead">
+        <span class="setiq">Derivación · 4</span>
+        <h2>Operador de red</h2>
+        <p class="prosa">Una sucursal que abastece a otras mueve físicamente ese volumen por sus propias cámaras. Ese flujo entra a su cálculo.</p>
+      </div>
+
+      <div class="eq"><b>D_ef(i)  =  D(i)  +  Σ_{j ∈ abastece(i)}  θ · D(j)</b>
+
+<span class="cmt">La topología abastece(·) es un dato de red, no una inferencia:</span>
+abastece(Antofagasta) = { Arica, Iquique, Calama }
+abastece(i) = ∅  para toda otra sucursal
+
+<span class="cmt">El tipo se deriva de la topología, no de una etiqueta manual:</span>
+tipo(i) = hub   si |abastece(i)| &gt; 0
+tipo(i) = normal en otro caso</div>
+
+      <div class="teorema">
+        <span class="et">Aclaración</span>
+        <h4>Las abastecidas conservan su volumen: no es doble contabilidad</h4>
+        <div class="prueba">
+          <p class="lt" style="font-size:.87rem">Un kilo despachado desde Antofagasta a Arica ocupa cámara <b>dos veces, en dos momentos y dos lugares distintos</b>: primero en Antofagasta mientras espera despacho, después en Arica mientras espera venta. Son dos ocupaciones físicas reales. Descontarlo del destino subestimaría la saturación de Arica; omitirlo en el origen subestimaría la de Antofagasta.</p>
+          <p class="lt" style="font-size:.87rem;margin-top:8px">El parámetro θ gradúa qué fracción del volumen de la abastecida efectivamente cruza el hub. Con θ = 1 se asume que todo pasa por Antofagasta. Un despacho directo desde planta a Arica correspondería a θ &lt; 1.</p>
+        </div>
+      </div>
+
+      <h3>Efecto medido</h3>
+      <div id="tablaRed"></div>
+      <p class="nota">El efecto es material y cambia el diagnóstico, no solo su magnitud: sin el operador de red, Antofagasta aparecía con holgura y cámara crítica en congelado. Con él, satura y su cámara crítica pasa a refrigerado.</p>
+    </section>
+
+    <!-- ============ ETAPA 1 ============ -->
+    <section id="etapa1" class="pagina">
+      <div class="phead">
+        <span class="setiq">Derivación · 5</span>
+        <h2>Etapa 1 · Saturación estructural</h2>
+        <p class="prosa">Siete pasos, todos en forma cerrada. Cada uno declara su unidad.</p>
+      </div>
+
+      <div class="eq"><span class="cmt">(1) Flujo diario y su reparto por régimen —— kg/día</span>
+d = D_ef / Δ_mes        d_C = φ · d        d_R = (1 − φ) · d
+
+<span class="cmt">(2) Política ponderada: la variable de control —— días</span>
+DOH_pol = φ · DOH_C + (1 − φ) · DOH_R
+
+<span class="cmt">(3) Capacidad efectiva en posiciones —— posiciones</span>
+β = K_C / K        P_C = P·u·β        P_R = P·u·(1 − β)
+
+<span class="cmt">(4) Requerimiento que impone la política —— posiciones</span>
+n_C = d_C · DOH_C / γ        n_R = d_R · DOH_R / γ        n = n_C + n_R
+
+<span class="cmt">(5) DOH físico: cobertura que la cámara sostiene —— días</span>
+DOH_fís_C = P_C·γ / d_C      DOH_fís_R = P_R·γ / d_R      DOH_fís = P·u·γ / d
+
+<span class="cmt">(6) Saturación por cámara —— adimensional</span>
+<b>ρ_C = n_C / P_C = DOH_C / DOH_fís_C</b>
+<b>ρ_R = n_R / P_R = DOH_R / DOH_fís_R</b>
+
+<span class="cmt">(7) Saturación estructural y ocupación total —— adimensional</span>
+<b>ρ* = máx( ρ_C , ρ_R )</b>        ρ_flex = n / (P·u)</div>
+
+      <div class="teorema">
+        <span class="et">Invariante · V1</span>
+        <h4>Las dos rutas de cálculo son algebraicamente idénticas</h4>
+        <div class="eq">n_C / P_C  =  (d_C · DOH_C / γ) / P_C
+           =  DOH_C / ( P_C · γ / d_C )
+           =  DOH_C / DOH_fís_C   ∎</div>
+        <div class="prueba">
+          Posiciones sobre posiciones, o días sobre días: el mismo racional exacto. Que ambas coincidan en aritmética racional, con residuo 0, es la verificación V1 de la suite.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">Justificación de diseño</span>
+        <h4>Por qué el máximo y no la media</h4>
+        <div class="prueba">
+          <p class="lt" style="font-size:.87rem">Por el supuesto A2 las cámaras son compartimentos rígidos. Una cámara de congelado desbordada no se alivia porque sobre espacio refrigerado. La sucursal está tan saturada como su cámara más apretada, de modo que el agregado correcto es el máximo. <span class="m">ρ_flex</span> se calcula en paralelo pero <b>no</b> es la saturación: es la ocupación de la superficie total, y su único rol es abrir o cerrar la etapa 2.</p>
+        </div>
+      </div>
+
+      <h3>Linealidad y sus consecuencias</h3>
+      <p class="prosa lt">ρ es lineal en el par (DOH_C, DOH_R), lo que da forma cerrada a toda la sensibilidad:</p>
+      <div class="eq">ρ_flex(DOH_C, DOH_R)  =  [ φ·DOH_C + (1−φ)·DOH_R ] / DOH_fís
+
+∂ρ/∂DOH_C = φ / DOH_fís            ∂ρ/∂DOH_R = (1−φ) / DOH_fís
+
+<span class="cmt">Elasticidades — participación de cada régimen, suman 1 sin residuo:</span>
+<b>E_C = φ·DOH_C / DOH_pol</b>        <b>E_R = (1−φ)·DOH_R / DOH_pol</b></div>
+      <p class="nota">Si E_C = 0,28, bajar la política de congelado un 10 % baja la saturación un 2,8 %. Se lee sin recalcular nada.</p>
+
+      <h3>Políticas de quiebre en forma cerrada</h3>
+      <div class="eq"><span class="cmt">Escalado común de ambos DOH:</span>
+<b>κ* = 1 / ρ*</b>     <span class="cmt">κ* &gt; 1 admite subir la política · κ* &lt; 1 obliga a bajarla</span>
+
+<span class="cmt">Quiebre por cámara — coincide con el DOH físico de esa cámara:</span>
+ρ_C = 1  ⟺  DOH_C* = DOH_fís_C          ρ_R = 1  ⟺  DOH_R* = DOH_fís_R
+
+<span class="cmt">Quiebre solo en congelado, dejando DOH_R fijo:</span>
+DOH_C^flex = ( DOH_fís − (1−φ)·DOH_R ) / φ
+<span class="cmt">factible si y solo si el numerador es ≥ 0</span></div>
+    </section>
+
+    <!-- ============ ETAPA 2 ============ -->
+    <section id="etapa2" class="pagina">
+      <div class="phead">
+        <span class="setiq">Derivación · 6</span>
+        <h2>Etapa 2 · Saturación operacional</h2>
+        <p class="prosa">Condicional por construcción. Se evalúa solo cuando la etapa 1 deja superficie libre.</p>
+      </div>
+
+      <div class="eq"><span class="cmt">(8) Superficie ocupada y libre —— m²</span>
+δ = P / A        A_uso = n / δ = n·A/P        A_libre = A − A_uso
+
+<span class="cmt">(9) Superficie que exige la operación —— m²</span>
+N_peak = N · máx_t(σ_t)        <b>A_op = N_peak · a₀</b>
+
+<span class="cmt">(10) La compuerta —— adimensional</span>
+<b>ρ_op = A_op / A_libre</b>     <span class="cmt">definido si y solo si A_libre &gt; 0</span></div>
+
+      <div class="teorema">
+        <span class="et">Invariante · V3 · identidad de acoplamiento</span>
+        <h4>El único canal entre las dos etapas</h4>
+        <div class="eq">A_libre = A − n/δ = A − n·A/P = A·(1 − n/P)
+
+<b>A_libre = A · ( 1 − ρ_flex )</b>   <span class="cmt">con u = 1</span>
+
+<span class="cmt">de donde, sustituyendo en (10):</span>
+ρ_op = ( N · σ_peak · a₀ ) / ( A · (1 − ρ_flex) )</div>
+        <div class="prueba">
+          <b>Consecuencia.</b> La política alcanza a la etapa operacional por <b>una sola vía</b>: comprimiendo A_libre. Toda la dependencia entre etapas está contenida en este término y es explícita. Como <span class="m">ρ_flex → 1⁻</span> implica <span class="m">A_libre → 0⁺</span>, ρ_op crece sin cota.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">Justificación de diseño</span>
+        <h4>Por qué la compuerta y no un valor de reemplazo</h4>
+        <div class="prueba">
+          <p class="lt" style="font-size:.87rem">Con <span class="m">A_libre ≤ 0</span> no existe el objeto sobre el cual preguntar por la operación. Sustituir por 0 declararía la operación holgada; sustituir por ∞ la declararía saturada. Ambas son afirmaciones que el dato no sostiene. El modelo deja S₂ <b>indefinido</b> y lo propaga como tal hasta el reporte.</p>
+        </div>
+      </div>
+
+      <h3>Sensibilidad y política de quiebre operacional</h3>
+      <div class="eq">∂ρ_op/∂DOH_C  =  ρ_op · ( ∂ρ_flex/∂DOH_C ) / ( 1 − ρ_flex )
+
+<span class="cmt">Política que satura la operación, despejada:</span>
+ρ_op = 1  ⟺  ρ_flex = 1 − A_op/A
+<b>DOH_pol* = DOH_fís · ( 1 − A_op/A )</b></div>
+
+      <h3>Función de veredicto</h3>
+      <p class="prosa lt">La etiqueta es una función exacta del par (S₁, S₂), nunca un promedio ni una sustitución:</p>
+      <div class="eq">(V, V)              →  <b>estructural y operacional</b>
+(V, F) o (V, n/d)   →  <b>saturación estructural</b>
+(F, V)              →  <b>saturación operacional</b>
+(F, F) o (F, n/d)   →  <b>sin saturación</b></div>
+      <p class="nota">La verificación V18 comprueba, sucursal por sucursal, que la etiqueta sea función exacta del par y que alterar la dotación mueva ρ_op sin alterar ρ*. Esa independencia es una propiedad demostrada, no una convención de reporte.</p>
+    </section>
+
+    <!-- ============ INVARIANTES ============ -->
+    <section id="invariantes" class="pagina">
+      <div class="phead">
+        <span class="setiq">Formalización · 7</span>
+        <h2>Invariantes y pruebas</h2>
+        <p class="prosa">Propiedades que el modelo debe satisfacer para toda entrada válida. Cada una es una comprobación ejecutable de la suite.</p>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V5 · desigualdad del mediante</span>
+        <h4>ρ_flex queda siempre entre las dos saturaciones de cámara</h4>
+        <div class="eq">mín(ρ_C, ρ_R)  ≤  ρ_flex  ≤  máx(ρ_C, ρ_R) = ρ*</div>
+        <div class="prueba">
+          <b>Prueba.</b> <span class="m">ρ_flex = n/(Pu) = (n_C + n_R)/(P_C + P_R)</span> es una mediante de las fracciones <span class="m">n_C/P_C</span> y <span class="m">n_R/P_R</span>. Toda mediante de dos fracciones de denominador positivo queda entre ambas. <b>Corolario:</b> usar ρ_flex como saturación subestimaría sistemáticamente el riesgo, ya que nunca excede ρ*.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V8 · conservación del reparto</span>
+        <h4>El desbalance de cámara es la diferencia entre lo pedido y lo instalado</h4>
+        <div class="eq">n_C/n  −  β        <span class="cmt">&gt; 0: falta congelado · &lt; 0: sobra congelado</span>
+
+<span class="cmt">y se cumple, por construcción:</span>
+(n_C/n) + (n_R/n) = 1          β + (1 − β) = 1</div>
+        <div class="prueba">
+          <b>Interpretación.</b> Un desbalance grande satura una cámara mientras la otra queda ociosa. Es la señal de que el problema no es de capacidad total sino de <b>reparto</b>, y la palanca correcta es reconvertir cámara, no ampliarla.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V12 · monotonía estricta</span>
+        <h4>ρ es estrictamente creciente en cada DOH</h4>
+        <div class="eq">∂ρ/∂DOH_C = φ / DOH_fís &gt; 0        ∂ρ/∂DOH_R = (1−φ) / DOH_fís &gt; 0</div>
+        <div class="prueba">
+          <b>Consecuencia.</b> Como φ ∈ (0,1) estricto y DOH_fís &gt; 0, ambas derivadas son estrictamente positivas. Por lo tanto la política de quiebre es <b>única</b>: no hay múltiples soluciones ni mesetas, y despejarla en forma cerrada es legítimo.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V15 · normalización de elasticidades</span>
+        <h4>Las participaciones suman exactamente 1</h4>
+        <div class="eq">E_C + E_R = [ φ·DOH_C + (1−φ)·DOH_R ] / DOH_pol = DOH_pol / DOH_pol = 1  ∎</div>
+        <div class="prueba">
+          Sin residuo, por definición de DOH_pol. En aritmética racional la comprobación da 0 exacto; en float64 el error observado es del orden de 10⁻¹⁶.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V18 · independencia de etapas</span>
+        <h4>La dotación mueve ρ_op sin tocar ρ*</h4>
+        <div class="eq">∂ρ*/∂N  =  0            ∂ρ_op/∂N  =  a₀·σ_peak / A_libre  &gt;  0</div>
+        <div class="prueba">
+          <b>Prueba.</b> N no aparece en ninguna expresión de la etapa 1: ρ* depende solo de (D_ef, φ, DOH, P, β, γ, u). Perturbar N deja ρ* literalmente invariante. La recíproca no se cumple: la política sí mueve ρ_op, por la identidad de acoplamiento V3. La independencia es <b>unidireccional</b>, y esa asimetría es exactamente por qué la etapa 2 es condicional a la etapa 1 y no al revés.
+        </div>
+      </div>
+
+      <div class="teorema">
+        <span class="et">V20 · fidelidad numérica</span>
+        <h4>El float64 reproduce el racional exacto</h4>
+        <div class="prueba">
+          Cada magnitud se calcula en paralelo con <span class="m">Fraction</span> (precisión infinita) y con float64, y se compara el error relativo. Peor caso observado en la red: <b class="m">1,077 × 10⁻¹⁶</b> en Chillán / A_libre — el orden del épsilon de máquina, no un defecto del modelo.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ALGORITMO ============ -->
+    <section id="algoritmo" class="pagina">
+      <div class="phead">
+        <span class="setiq">Formalización · 8</span>
+        <h2>Algoritmo</h2>
+        <p class="prosa">Especificación ejecutable. Dos pasadas sobre el conjunto de sucursales: una para deducir φ, otra para evaluar.</p>
+      </div>
+
+      <h3>Procedimiento principal</h3>
+      <div class="pseudo">
+<span class="l"><span class="kw">función</span> evaluarRed(sucursales, parámetros):</span>
+<span class="l">  par ← PARÁMETROS_BASE ⊕ parámetros        <span class="cm">// mezcla, el usuario gana</span></span>
+<span class="l">  validarParámetros(par)                     <span class="cm">// falla temprano, nunca silencioso</span></span>
+<span class="l">  índice ← { normalizar(s.nombre) → s : s ∈ sucursales }</span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// PASADA 1 — el mix es una propiedad de la red, no de una sucursal</span></span>
+<span class="l">  ded ← deducirMix(sucursales)</span>
+<span class="l">  φ   ← <span class="kw">si</span> par.mixCongelado = nulo <span class="kw">entonces</span> ded.φ <span class="kw">si_no</span> par.mixCongelado</span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// PASADA 2 — cada sucursal contra su propia capacidad</span></span>
+<span class="l">  filas ← [ evaluarSucursal(s, par, φ, índice) : s ∈ sucursales ]</span>
+<span class="l">  ev    ← ordenar( filtrar(filas, evaluable), por ρ* descendente )</span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// Conteos de sucursales, jamás sumas de magnitudes</span></span>
+<span class="l">  <span class="kw">devolver</span> { par, φ, ded, ev, noEvaluables, conteo(ev) }</span>
+      </div>
+
+      <h3>Deducción del mix</h3>
+      <div class="pseudo">
+<span class="l"><span class="kw">función</span> deducirMix(sucursales):</span>
+<span class="l">  v ← filtrar(sucursales, evaluable)         <span class="cm">// solo las que tienen datos</span></span>
+<span class="l">  K_C ← Σ_{s∈v} s.capCongKg</span>
+<span class="l">  K_R ← Σ_{s∈v} s.capRefrKg</span>
+<span class="l">  W   ← Σ_{s∈v} s.demandaMes                 <span class="cm">// demanda PROPIA, no efectiva</span></span>
+<span class="l">  DOH_C ← ( Σ_{s∈v} s.dohCongelado · s.demandaMes ) / W</span>
+<span class="l">  DOH_R ← ( Σ_{s∈v} s.dohRefrigerado · s.demandaMes ) / W</span>
+<span class="l">  φ ← 1 / ( 1 + (K_R/K_C) · (DOH_C/DOH_R) )</span>
+<span class="l">  <span class="kw">devolver</span> { φ, sesgoProxy: (K_C/(K_C+K_R)) / φ, ... }</span>
+      </div>
+
+      <h3>Evaluación de una sucursal</h3>
+      <div class="pseudo">
+<span class="l"><span class="kw">función</span> evaluarSucursal(s, par, φ, índice):</span>
+<span class="l">  <span class="kw">si</span> ¬evaluable(s): <span class="kw">devolver</span> { evaluable: falso }   <span class="cm">// nunca ρ = 0</span></span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// (0) operador de red</span></span>
+<span class="l">  abastece ← RED[s.nombre] ∨ ∅</span>
+<span class="l">  aporte   ← Σ_{j∈abastece} par.θ · índice[j].demandaMes</span>
+<span class="l">  D_ef     ← s.demandaMes + aporte</span>
+<span class="l">  tipo     ← <span class="kw">si</span> |abastece| &gt; 0 <span class="kw">entonces</span> hub <span class="kw">si_no</span> normal</span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// ETAPA 1 — estructural, siempre se calcula</span></span>
+<span class="l">  d ← D_ef / par.Δ_mes ; d_C ← φ·d ; d_R ← (1−φ)·d</span>
+<span class="l">  β ← s.capCongKg / s.capTotalKg</span>
+<span class="l">  P_C ← s.posiciones·par.u·β ; P_R ← s.posiciones·par.u·(1−β)</span>
+<span class="l">  n_C ← d_C·DOH_C/par.γ ; n_R ← d_R·DOH_R/par.γ ; n ← n_C + n_R</span>
+<span class="l">  ρ_C ← n_C/P_C ; ρ_R ← n_R/P_R</span>
+<span class="l">  <span class="kw">ρ* ← máx(ρ_C, ρ_R)</span> ; ρ_flex ← n/(s.posiciones·par.u)</span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// ETAPA 2 — operacional, CONDICIONAL</span></span>
+<span class="l">  δ ← s.posiciones/s.m2 ; A_libre ← s.m2 − n/δ</span>
+<span class="l">  A_op ← s.personas · máx_t(σ_t) · par.a₀</span>
+<span class="l">  hayEspacio ← A_libre &gt; 0</span>
+<span class="l">  <span class="kw">ρ_op ← si</span> hayEspacio <span class="kw">entonces</span> A_op/A_libre <span class="kw">si_no</span> <span class="kw">nulo</span></span>
+<span class="l"></span>
+<span class="l">  <span class="cm">// veredictos independientes; nulo se propaga, no se sustituye</span></span>
+<span class="l">  S₁ ← ρ* &gt; 1</span>
+<span class="l">  S₂ ← <span class="kw">si</span> hayEspacio <span class="kw">entonces</span> ρ_op &gt; 1 <span class="kw">si_no</span> <span class="kw">nulo</span></span>
+<span class="l">  <span class="kw">devolver</span> { ρ*, ρ_op, S₁, S₂, etiqueta(S₁,S₂), κ*, E_C, E_R, ... }</span>
+      </div>
+
+      <h3>Complejidad y determinismo</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Propiedad</th><th>Valor</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr><td>Tiempo</td><td class="m">Θ(m + Σ|abastece(i)|)</td><td>m sucursales; dos pasadas lineales más el recorrido de aristas de la red</td></tr>
+          <tr><td>Espacio</td><td class="m">Θ(m)</td><td>El índice por nombre normalizado domina</td></tr>
+          <tr><td>Determinismo</td><td>Total</td><td>Sin aleatoriedad, sin iteración, sin orden dependiente de hash en el resultado</td></tr>
+          <tr><td>Idempotencia</td><td>Sí</td><td>Misma entrada ⇒ misma salida bit a bit</td></tr>
+          <tr><td>Aritmética</td><td class="m">ℚ exacta / float64</td><td>Referencia en Python con Fraction; ejecución en JavaScript</td></tr>
+        </tbody>
+      </table></div>
+      <p class="nota">La normalización de nombres aplica NFKD, elimina diacríticos y pasa a minúsculas. Es necesaria porque la topología de red se escribe con tildes y la planilla no siempre coincide en su codificación.</p>
+    </section>
+
+    <!-- ============ BORDES ============ -->
+    <section id="bordes" class="pagina">
+      <div class="phead">
+        <span class="setiq">Formalización · 9</span>
+        <h2>Casos borde</h2>
+        <p class="prosa">Cada caso que el álgebra expone, con su tratamiento explícito. Ninguno se resuelve en silencio.</p>
+      </div>
+
+      <div class="tw"><table>
+        <thead><tr><th>Condición</th><th>Tratamiento</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="m">A_libre ≤ 0</td>
+            <td>ρ_op indefinido; S₂ = n/d; se reporta como «sin etapa 2»</td>
+            <td>No existe superficie sobre la cual preguntar. 0 o ∞ serían afirmaciones sin respaldo.</td>
+          </tr>
+          <tr>
+            <td class="m">N·σ_peak·a₀ ≥ A</td>
+            <td>Se marca <b>inalcanzable</b> en vez de devolver DOH negativo</td>
+            <td>Ni con inventario cero cabe el turno peak: ninguna política logra ρ_op = 1.</td>
+          </tr>
+          <tr>
+            <td class="m">DOH_fís − (1−φ)·DOH_R &lt; 0</td>
+            <td>DOH_C^flex se marca no factible</td>
+            <td>El refrigerado por sí solo ya excede la capacidad; no hay DOH_C ≥ 0 que salve el quiebre.</td>
+          </tr>
+          <tr>
+            <td class="m">Alguna entrada ≤ 0 o ausente</td>
+            <td>Sucursal no evaluable; se excluye de conteos y del cálculo de φ</td>
+            <td>Un cero en posiciones o demanda produciría división por cero o un ρ sin significado.</td>
+          </tr>
+          <tr>
+            <td class="m">β ∈ {0, 1}</td>
+            <td>P_C o P_R se anula ⇒ ρ de esa cámara diverge</td>
+            <td>Una sucursal sin cámara de un régimen no puede cubrir demanda de ese régimen. Correcto que diverja.</td>
+          </tr>
+          <tr>
+            <td class="m">abastece(i) apunta a sucursal ausente</td>
+            <td>El término se omite; no se interrumpe la evaluación</td>
+            <td>La topología puede nombrar una sucursal sin datos; su aporte es desconocido, no cero por decreto.</td>
+          </tr>
+          <tr>
+            <td class="m">Σσ_t ≠ 1</td>
+            <td>Error de validación, con la suma observada en el mensaje</td>
+            <td>Un reparto de turnos que no suma 1 invalida N_peak. Falla temprano.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <h3>Estado real de la red</h3>
+      <div class="cifras" id="cifrasBordes"></div>
+      <div class="tw" id="tablaBordes"></div>
+    </section>
+
+    <!-- ============ NUMÉRICA ============ -->
+    <section id="numerica" class="pagina">
+      <div class="phead">
+        <span class="setiq">Formalización · 10</span>
+        <h2>Precisión numérica</h2>
+        <p class="prosa">El modelo se implementa dos veces, en dos aritméticas distintas, y se comparan entre sí.</p>
+      </div>
+
+      <div class="contraste">
+        <div>
+          <h4>Python · referencia</h4>
+          <p class="lt">Opera sobre <span class="m">fractions.Fraction</span>: numerador y denominador enteros de precisión arbitraria. Toda identidad se comprueba con <b>residuo exactamente 0</b>, no con tolerancia. Es la definición ejecutable del modelo.</p>
+        </div>
+        <div>
+          <h4>JavaScript · ejecución</h4>
+          <p class="lt">Espejo literal del anterior en float64 IEEE 754. Es lo que corre en esta página y en el informe, de modo que lo publicado calcula con el mismo código que se verificó.</p>
+        </div>
+      </div>
+
+      <h3>Suite de verificación</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Comprobación</th><th class="n">Casos</th><th>Criterio</th></tr></thead>
+        <tbody>
+          <tr><td>Identidades algebraicas en ℚ (V1–V19)</td><td class="n">1.247</td><td>Residuo exactamente 0</td></tr>
+          <tr><td>Paridad JavaScript ↔ Python</td><td class="n">1.069</td><td>Error relativo &lt; 10⁻¹²</td></tr>
+          <tr><td>Fidelidad float64 vs racional (V20)</td><td class="n">todas</td><td>Peor caso 1,077 × 10⁻¹⁶</td></tr>
+          <tr><td>Sintaxis del JavaScript publicado</td><td class="n">cada build</td><td><span class="m">node --check</span> antes de escribir</td></tr>
+        </tbody>
+      </table></div>
+      <p class="nota">El núcleo que corre en esta página se extrae de <span class="m">saturacion.core.js</span> entre marcadores, en tiempo de construcción. No es una transcripción del archivo verificado: es el archivo verificado.</p>
+
+      <h3>Orden de operaciones</h3>
+      <p class="prosa lt">Donde el orden importa para la estabilidad en punto flotante, se fija explícitamente:</p>
+      <ul class="vin">
+        <li><b>β se calcula como cociente</b> <span class="m">K_C/K</span>, no como <span class="m">K_C/(K_C+K_R)</span> reconstruido, para heredar la cancelación del redondeo de γ.</li>
+        <li><b>ρ se obtiene por la ruta de posiciones</b> <span class="m">n_r/P_r</span>; la ruta por días es la comprobación, no la fuente.</li>
+        <li><b>A_libre se calcula por resta</b> <span class="m">A − n/δ</span> y se contrasta con <span class="m">A·(1−ρ_flex)</span>; ambas rutas deben coincidir dentro del épsilon.</li>
+      </ul>
+    </section>
+
+    <!-- ============ EXTENSIÓN ============ -->
+    <section id="extension" class="pagina">
+      <div class="phead">
+        <span class="setiq">Extensión · 11</span>
+        <h2>Puntos de extensión</h2>
+        <p class="prosa">Dónde engancha un modelo mayor. Cada gancho indica qué supuesto relaja, qué firma cambia y qué invariantes deben re-demostrarse.</p>
+      </div>
+
+      <div class="extension">
+        <h4>Estacionalidad — relaja A4</h4>
+        <p class="lt">Hoy <span class="m">d = D_ef/Δ_mes</span> es uniforme. Un modelo estacional sustituye el escalar por un perfil mensual y pondera por demanda:</p>
+        <div class="eq" style="margin-top:9px">D̄_ef = ( Σ_{m=1..12} D_ef(m) · w(m) ) / Σ w(m)      <span class="cmt">w(m) = demanda del mes m</span></div>
+        <p class="lt"><span class="gancho">Gancho:</span> <span class="m">d</span> en el paso (1). Todo lo posterior es lineal en d, de modo que ρ escala proporcionalmente y las elasticidades <b>no cambian</b>.</p>
+        <p class="lt"><span class="gancho">A re-demostrar:</span> ninguno de V1, V5, V12, V15, V18 depende de cómo se obtuvo d. Siguen válidos sin cambio.</p>
+      </div>
+
+      <div class="extension">
+        <h4>Factor de empuje por sobrestocks</h4>
+        <p class="lt">Kilos no demandados que llegan igual desde planta. Se modela como una amplificación de la demanda antes de la etapa 1:</p>
+        <div class="eq" style="margin-top:9px">f_empuje = 1 + α · s_exceso        D_ef' = D_ef · f_empuje
+
+<span class="cmt">α ∈ [0,1] fracción que efectivamente llega · s_exceso = sobrestocks/demanda base</span></div>
+        <p class="lt"><span class="gancho">Gancho:</span> ya implementado en el núcleo como <span class="m">factorEmpujeAlpha</span> y <span class="m">sobrestocksRatio</span>, con valor por omisión 0 para preservar retrocompatibilidad exacta.</p>
+        <p class="lt"><span class="gancho">A re-demostrar:</span> nada. Es un escalar sobre D_ef, previo a toda la derivación.</p>
+      </div>
+
+      <div class="extension">
+        <h4>Mix por sucursal — relaja A3</h4>
+        <p class="lt">Sustituir el escalar φ por un vector <span class="m">φ(i)</span>. Requiere un dato que hoy no existe: composición de demanda por sucursal.</p>
+        <p class="lt"><span class="gancho">Gancho:</span> el parámetro <span class="m">mixCongelado</span> ya permite forzar φ; extenderlo a un mapa por sucursal es un cambio de firma en <span class="m">evaluarSucursal</span>.</p>
+        <p class="lt"><span class="gancho">A re-demostrar:</span> la deducción agregada de φ pierde sentido y debe reemplazarse. V5, V12 y V18 se mantienen porque son locales a la sucursal.</p>
+      </div>
+
+      <div class="extension">
+        <h4>Topología de red multinivel</h4>
+        <p class="lt">Hoy <span class="m">abastece(·)</span> es un grafo de profundidad 1. Un hub que abastece a otro hub requiere resolver el flujo por orden topológico.</p>
+        <p class="lt"><span class="gancho">Gancho:</span> el operador de red en el paso (0). Debe convertirse en un recorrido en orden topológico inverso, con detección de ciclos.</p>
+        <p class="lt"><span class="gancho">A re-demostrar:</span> la ausencia de doble contabilidad ya no es evidente y necesita prueba explícita para caminos de longitud &gt; 1.</p>
+      </div>
+
+      <div class="extension">
+        <h4>Etapa 2 como modelo de throughput — relaja A5</h4>
+        <p class="lt">Si el cuello operacional resultara ser volumen procesado y no concurrencia, la etapa 2 dejaría de ser geométrica y pasaría a ser un modelo de colas con tasa de servicio.</p>
+        <p class="lt"><span class="gancho">Gancho:</span> pasos (9) y (10) completos. La compuerta (A_libre &gt; 0) y la identidad de acoplamiento V3 se conservan.</p>
+        <p class="lt"><span class="gancho">A re-demostrar:</span> V18 deja de valer tal cual — la dotación pasaría a interactuar con el flujo, y con ello con la etapa 1.</p>
+      </div>
+
+      <div class="teorema">
+        <span class="et">Invariante que toda extensión debe preservar</span>
+        <h4>La separación de etapas</h4>
+        <div class="prueba">
+          Cualquier extensión debe mantener que <b>ρ* y ρ_op nunca se combinan en un mismo número</b>, y que la única dependencia entre ellas sea la identidad de acoplamiento <span class="m">A_libre = A·(1−ρ_flex)</span>. Un modelo que introduzca un segundo canal de acoplamiento debe declararlo explícitamente y re-demostrar V18, porque la interpretación operacional del diagnóstico depende por completo de esa separación.
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INSTANCIA ============ -->
+    <section id="instancia" class="pagina">
+      <div class="phead">
+        <span class="setiq">Extensión · 12</span>
+        <h2>Instancia resuelta</h2>
+        <p class="prosa">La especificación aplicada, con la aritmética completa de cualquiera de las 20 sucursales evaluables.</p>
+      </div>
+      <div class="barra">
+        <label class="sel" for="selDeriv">Instancia</label>
+        <select id="selDeriv"></select>
+      </div>
+      <div id="derivacion"></div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  Documento técnico · Modelo de saturación de la red de frío · núcleo verificado contra el modelo de referencia en Python · Operaciones Nacionales.
+</footer>
+
+<script>
+/*__CORE__*/
+
+const DATOS = /*__DATOS__*/;
+
+/*__COMUN__*/
+
+/* ---------- fundamentos ---------- */
+document.getElementById('mPhi').textContent = nf(RED.phi, 6);
+document.getElementById('mSesgo').textContent = nf(RED.deduccion.sesgoProxyCapacidad, 4) + '×';
+
+/* ---------- operador de red ---------- */
+const hubs = RES.filter((r) => r.tipo === 'hub');
+document.getElementById('tablaRed').innerHTML = `<div class="tw"><table>
+  <thead><tr><th>Hub</th><th>Abastece</th><th class="n">D propia</th><th class="n">Aporte</th><th class="n">D_ef</th><th class="n">Factor</th><th class="n">ρ*</th><th>Cámara crítica</th></tr></thead>
+  <tbody>${hubs.map((h) => `<tr>
+    <td><b>${h.sucursal}</b></td>
+    <td class="lt">${h.abastece.join(', ')}</td>
+    <td class="n">${ent(h.demandaPropia)}</td>
+    <td class="n">${ent(h.demandaAportada)}</td>
+    <td class="n"><b>${ent(h.demandaEfectiva)}</b></td>
+    <td class="n">×${nf(h.factorHub, 2)}</td>
+    <td class="n"><b>${nf(h.rhoEstructural, 3)}</b></td>
+    <td>${h.camaraCritica}</td></tr>`).join('')}</tbody>
+</table></div>`;
+
+/* ---------- casos borde observados ---------- */
+const sinEtapa2 = RES.filter((r) => !r.hayEspacioM2);
+const inalcanzable = RES.filter((r) => !r.operacionAlcanzable);
+const noFactible = RES.filter((r) => !r.dohCQuiebreFlexibleFactible);
+const noEval = RED.noEvaluables;
+
+document.getElementById('cifrasBordes').innerHTML = [
+  ['A_libre ≤ 0', sinEtapa2.length, 'sin etapa 2'],
+  ['ρ_op inalcanzable', inalcanzable.length, 'ninguna política sirve'],
+  ['DOH_C flex no factible', noFactible.length, 'el refrigerado ya excede'],
+  ['No evaluables', noEval.length, 'datos incompletos']
+].map(([et, v, su]) => `<div class="cifra"><span class="et">${et}</span><span class="v">${v}</span><span class="su">${su}</span></div>`).join('');
+
+const filaBorde = (titulo, lista, campo) => lista.length
+  ? `<tr><td><b>${titulo}</b></td><td class="n">${lista.length}</td><td class="lt">${lista.map(campo).join(', ')}</td></tr>` : '';
+document.getElementById('tablaBordes').innerHTML = `<table>
+  <thead><tr><th>Caso</th><th class="n">Sucursales</th><th>Cuáles</th></tr></thead>
+  <tbody>
+    ${filaBorde('A_libre ≤ 0', sinEtapa2, (r) => `${r.sucursal} (${nf(r.m2Libre, 0)} m²)`)}
+    ${filaBorde('ρ_op inalcanzable', inalcanzable, (r) => r.sucursal)}
+    ${filaBorde('DOH_C flex no factible', noFactible, (r) => r.sucursal)}
+    ${filaBorde('No evaluables', noEval, (r) => r.sucursal)}
+  </tbody></table>`;
+
+/* ---------- instancia resuelta ---------- */
+montarSelectorDerivacion('selDeriv', 'derivacion');
+</script>

@@ -1,0 +1,320 @@
+/* ------------------------------------------------------------------ *
+ * Identidad Agrosuper — ámbito CORPORATIVO. Mismo sistema que
+ * informe_saturacion.html: paleta restringida a azul, naranja, marfil y
+ * blanco; Biennale sustituida por Poppins.
+ * Tema único deliberado: el brandbook fija fondo marfil y texto azul, de
+ * modo que no se ofrece variante oscura. Todo color va declarado, para que
+ * la página no herede el fondo del anfitrión.
+ * ------------------------------------------------------------------ */
+:root{
+  color-scheme: light;
+  --azul:#003087;
+  --naranja:#E87722;
+  --marfil:#FFF6E6;
+  --blanco:#FFFFFF;
+  --azul-06:rgba(0,48,135,.06);
+  --azul-10:rgba(0,48,135,.10);
+  --azul-15:rgba(0,48,135,.15);
+  --azul-25:rgba(0,48,135,.25);
+  --azul-55:rgba(0,48,135,.55);
+  --azul-75:rgba(0,48,135,.75);
+  --naranja-12:rgba(232,119,34,.12);
+  --naranja-30:rgba(232,119,34,.30);
+  --naranja-oscuro:#8a4200;
+
+  --f:'Poppins','Century Gothic',system-ui,-apple-system,sans-serif;
+  --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,'DejaVu Sans Mono',monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--marfil);color:var(--azul);
+  font-family:var(--f);font-weight:400;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:800;letter-spacing:-.02em;line-height:1.14}
+h1{font-size:1.9rem;line-height:1.06}
+h2{font-size:1.6rem}
+h3{font-size:1.08rem;font-weight:600;letter-spacing:-.01em}
+h4{font-size:.9rem;font-weight:600;letter-spacing:0}
+p{margin:0}
+.m{font-family:var(--fm);font-variant-numeric:tabular-nums}
+.num{font-family:var(--fm);font-variant-numeric:tabular-nums;font-weight:600}
+.lt{font-weight:300}
+.prosa{max-width:66ch}
+
+:where(button,select,a,input):focus-visible{
+  outline:2px solid var(--naranja);outline-offset:2px;
+}
+
+/* -------- encabezado -------- */
+.cab{
+  border-bottom:1px solid var(--naranja);background:var(--marfil);
+}
+.cab .inner{
+  max-width:1340px;margin:0 auto;padding:24px 34px 16px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.cab .kicker{
+  font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--naranja);display:block;margin-bottom:7px;
+}
+.cab p{font-size:.86rem;font-weight:300;color:var(--azul-75);margin-top:7px;max-width:60ch}
+.logo{height:52px;width:auto;display:block;flex:none}
+.logoslot{
+  min-width:150px;height:52px;flex:none;
+  border:1px dashed var(--azul-25);border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:3px;padding:4px 12px;
+}
+.logoslot b{
+  font-size:.56rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--azul-75);line-height:1.1;
+}
+.logoslot span{font-size:.5rem;font-weight:300;color:var(--azul-55);line-height:1.1}
+
+/* -------- estructura -------- */
+.marco{
+  max-width:1340px;margin:0 auto;padding:26px 34px 70px;
+  display:grid;grid-template-columns:236px minmax(0,1fr);gap:30px;align-items:start;
+}
+
+/* -------- rail de navegación -------- */
+nav{position:sticky;top:20px;display:flex;flex-direction:column;gap:3px}
+nav .grupo{
+  font-size:.62rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--azul-55);margin:18px 0 7px 13px;
+}
+nav .grupo:first-child{margin-top:0}
+nav button{
+  display:block;width:100%;text-align:left;
+  padding:9px 13px;border:1px solid transparent;border-radius:2px;
+  background:transparent;color:var(--azul);cursor:pointer;
+  font-family:var(--f);font-size:.86rem;font-weight:400;line-height:1.3;
+  transition:background .15s,color .15s;
+}
+nav button:hover{background:var(--azul-06)}
+nav button[aria-current="page"]{
+  background:var(--azul);color:var(--marfil);font-weight:600;
+}
+
+/* -------- panel -------- */
+.panel{min-width:0}
+.pagina{display:none}
+.pagina.on{display:block;animation:entra .22s ease-out}
+@keyframes entra{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.phead{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--azul-15)}
+.phead .setiq{
+  font-size:.66rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--naranja);display:block;margin-bottom:8px;
+}
+.phead p{margin-top:11px;font-weight:300;color:var(--azul-75);font-size:.95rem}
+
+.pagina h3{margin-top:28px;margin-bottom:9px}
+.pagina h4{margin-top:19px;margin-bottom:6px}
+.pagina > p, .pagina .card > p{font-weight:300;font-size:.94rem}
+.pagina p + p{margin-top:9px}
+
+.card{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;
+  padding:20px 23px;margin-top:16px;
+}
+.card > h3:first-child, .card > h4:first-child{margin-top:0}
+.card.marfil{background:var(--marfil);border-color:var(--azul-25)}
+
+.grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));margin-top:16px}
+.grid2 .card{margin-top:0}
+
+ul.vin{list-style:none;margin:11px 0 0;padding:0}
+ul.vin li{position:relative;padding:5px 0 5px 19px;font-size:.9rem;font-weight:300}
+ul.vin li::before{
+  content:'';position:absolute;left:0;top:13px;
+  width:6px;height:6px;background:var(--naranja);border-radius:1px;
+}
+ul.vin li b{font-weight:600}
+ol.pasos{margin:11px 0 0;padding-left:20px}
+ol.pasos li{font-size:.9rem;font-weight:300;padding:3px 0}
+ol.pasos li b{font-weight:600}
+
+.nota{
+  border-left:3px solid var(--naranja);padding:4px 0 4px 17px;
+  font-size:.87rem;font-weight:300;margin-top:15px;
+}
+
+/* -------- fórmulas -------- */
+.eq{
+  font-family:var(--fm);font-size:.8rem;line-height:1.85;
+  background:var(--marfil);border:1px solid var(--azul-15);border-radius:2px;
+  padding:15px 18px;margin:13px 0;
+  white-space:pre;overflow-x:auto;
+}
+.card .eq{background:var(--marfil)}
+.eq b{font-weight:600}
+.eq .cmt{color:var(--azul-55);font-weight:400}
+.eq .res{color:var(--naranja-oscuro);font-weight:600}
+
+/* -------- tablas -------- */
+.tw{overflow-x:auto;margin-top:15px}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{text-align:left;padding:8px 13px;border-bottom:1px solid var(--azul-10);vertical-align:top}
+thead th{
+  font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--azul-75);border-bottom:1px solid var(--azul-25);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums}
+table b{font-weight:600}
+.simb td:first-child{font-family:var(--fm);font-weight:600;white-space:nowrap}
+
+/* -------- estados: sin colores fuera de la paleta -------- */
+.pill{
+  display:inline-block;padding:2px 9px;border-radius:2px;
+  font-family:var(--fm);font-size:.66rem;font-weight:600;white-space:nowrap;
+}
+.e-amb{background:var(--azul);color:var(--marfil)}
+.e-est{background:var(--naranja);color:var(--marfil)}
+.e-ope{background:var(--naranja-30);color:var(--naranja-oscuro)}
+.e-sin{background:var(--azul-10);color:var(--azul)}
+.hubtag{
+  font-family:var(--fm);font-size:.6rem;font-weight:600;color:var(--naranja);
+  background:var(--naranja-12);padding:1px 6px;border-radius:2px;
+}
+
+/* -------- fichas de sucursal -------- */
+.fichas{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));margin-top:16px}
+.ficha{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;
+  padding:15px 17px;border-left-width:3px;border-left-style:solid;text-align:left;
+  font-family:var(--f);color:var(--azul);width:100%;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+}
+.ficha:hover{box-shadow:0 2px 10px var(--azul-10)}
+.ficha.est{border-left-color:var(--naranja)}
+.ficha.amb{border-left-color:var(--naranja)}
+.ficha.ope{border-left-color:var(--naranja-30)}
+.ficha.sin{border-left-color:var(--azul-25)}
+.ficha .top{display:flex;justify-content:space-between;align-items:baseline;gap:9px;margin-bottom:4px}
+.ficha .nom{font-size:.98rem;font-weight:600;letter-spacing:-.01em}
+.ficha .rho{font-family:var(--fm);font-weight:600;font-size:1.18rem}
+.ficha dl{display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin:11px 0 0;font-size:.73rem}
+.ficha dt{color:var(--azul-75);font-weight:300}
+.ficha dd{margin:0;font-family:var(--fm);font-variant-numeric:tabular-nums;text-align:right}
+
+/* -------- controles -------- */
+.barra{display:flex;flex-wrap:wrap;gap:13px;align-items:center;margin-top:16px}
+.segmento{display:inline-flex;border:1px solid var(--azul-25);border-radius:2px;overflow:hidden;background:var(--blanco)}
+.segmento button{
+  border:none;background:var(--blanco);color:var(--azul);cursor:pointer;
+  padding:8px 17px;font-family:var(--f);font-size:.79rem;font-weight:600;
+}
+.segmento button[aria-pressed="true"]{background:var(--azul);color:var(--marfil)}
+.segmento button:not([aria-pressed="true"]):hover{background:var(--marfil)}
+.conteo{font-size:.78rem;font-weight:300;color:var(--azul-75)}
+label.sel{display:inline-flex;align-items:center;gap:9px;font-size:.82rem;font-weight:300}
+select{
+  font-family:var(--f);font-size:.84rem;font-weight:600;color:var(--azul);
+  background:var(--blanco);border:1px solid var(--azul-25);border-radius:2px;
+  padding:7px 11px;cursor:pointer;
+}
+
+/* -------- métricas -------- */
+.cifras{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));margin-top:16px}
+.cifra{background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;padding:14px 16px}
+.cifra .et{
+  font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--azul-75);display:block;margin-bottom:5px;
+}
+.cifra .v{font-family:var(--fm);font-size:1.5rem;font-weight:600;line-height:1.1}
+.cifra .su{font-size:.72rem;font-weight:300;color:var(--azul-75);display:block;margin-top:4px}
+
+/* -------- detalle -------- */
+.detalle{margin-top:18px}
+.detalle .cerrar{
+  float:right;background:none;border:1px solid var(--azul-25);border-radius:2px;
+  color:var(--azul);cursor:pointer;font-family:var(--f);font-size:.74rem;font-weight:600;
+  padding:4px 11px;
+}
+.detalle .cerrar:hover{background:var(--marfil)}
+
+footer{
+  max-width:1340px;margin:0 auto;padding:20px 34px 40px;
+  border-top:1px solid var(--naranja);font-size:.73rem;font-weight:300;color:var(--azul-75);
+}
+
+@media(max-width:900px){
+  .marco{grid-template-columns:1fr;gap:20px;padding:20px 20px 60px}
+  nav{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:5px}
+  nav .grupo{grid-column:1/-1;margin:10px 0 2px}
+  nav button{border:1px solid var(--azul-15)}
+  .cab .inner{padding:20px 20px 14px}
+  h1{font-size:1.6rem}h2{font-size:1.35rem}
+}
+
+/* ------------------------------------------------------------------ *
+ * Añadidos para los dos documentos derivados: especificación técnica y
+ * guía operativa. Mismos tokens; ninguna paleta nueva.
+ * ------------------------------------------------------------------ */
+
+/* Bloque de pseudocódigo — se distingue de .eq por la numeración de línea */
+.pseudo{
+  font-family:var(--fm);font-size:.78rem;line-height:1.9;
+  background:var(--blanco);border:1px solid var(--azul-25);border-radius:2px;
+  padding:15px 0;margin:13px 0;overflow-x:auto;counter-reset:ln;
+}
+.pseudo .l{display:block;white-space:pre;padding:0 18px 0 52px;position:relative}
+.pseudo .l::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:38px;text-align:right;
+  color:var(--azul-25);font-size:.68rem;
+}
+.pseudo .l:hover{background:var(--azul-06)}
+.pseudo .kw{color:var(--naranja-oscuro);font-weight:600}
+.pseudo .cm{color:var(--azul-55)}
+
+/* Invariante con su demostración */
+.teorema{
+  background:var(--blanco);border:1px solid var(--azul-15);
+  border-left:3px solid var(--azul);border-radius:2px;
+  padding:16px 19px;margin-top:14px;
+}
+.teorema .et{
+  font-family:var(--fm);font-size:.64rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--azul-55);display:block;margin-bottom:7px;
+}
+.teorema h4{margin:0 0 7px}
+.teorema .eq{margin:10px 0 0}
+.prueba{
+  margin-top:11px;padding-top:11px;border-top:1px solid var(--azul-10);
+  font-size:.85rem;font-weight:300;
+}
+.prueba b{font-weight:600}
+
+/* Analogía en lenguaje llano — solo en la guía */
+.analogia{
+  background:var(--naranja-12);border-left:3px solid var(--naranja);
+  border-radius:2px;padding:15px 19px;margin-top:14px;
+}
+.analogia h4{margin:0 0 7px;color:var(--naranja-oscuro)}
+.analogia p{font-size:.9rem;font-weight:300}
+
+/* Punto de extensión — lo que el modelo mayor va a enganchar aquí */
+.extension{
+  background:var(--marfil);border:1px dashed var(--azul-25);border-radius:2px;
+  padding:15px 19px;margin-top:13px;
+}
+.extension h4{margin:0 0 6px;font-size:.86rem}
+.extension p{font-size:.85rem;font-weight:300;margin-top:5px}
+.extension .gancho{
+  font-family:var(--fm);font-size:.72rem;color:var(--naranja-oscuro);font-weight:600;
+}
+
+/* Comparación lado a lado */
+.contraste{display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  border:1px solid var(--azul-15);border-radius:2px;overflow:hidden;margin-top:14px}
+.contraste > div{padding:16px 19px;background:var(--blanco)}
+.contraste > div + div{border-left:1px solid var(--azul-15)}
+.contraste h4{margin:0 0 8px}
+.contraste p{font-size:.87rem;font-weight:300}
+@media(max-width:560px){.contraste > div + div{border-left:none;border-top:1px solid var(--azul-15)}}

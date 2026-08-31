@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Guía de Saturación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* ------------------------------------------------------------------ *
+ * Identidad Agrosuper — ámbito CORPORATIVO. Mismo sistema que
+ * informe_saturacion.html: paleta restringida a azul, naranja, marfil y
+ * blanco; Biennale sustituida por Poppins.
+ * Tema único deliberado: el brandbook fija fondo marfil y texto azul, de
+ * modo que no se ofrece variante oscura. Todo color va declarado, para que
+ * la página no herede el fondo del anfitrión.
+ * ------------------------------------------------------------------ */
+:root{
+  color-scheme: light;
+  --azul:#003087;
+  --naranja:#E87722;
+  --marfil:#FFF6E6;
+  --blanco:#FFFFFF;
+  --azul-06:rgba(0,48,135,.06);
+  --azul-10:rgba(0,48,135,.10);
+  --azul-15:rgba(0,48,135,.15);
+  --azul-25:rgba(0,48,135,.25);
+  --azul-55:rgba(0,48,135,.55);
+  --azul-75:rgba(0,48,135,.75);
+  --naranja-12:rgba(232,119,34,.12);
+  --naranja-30:rgba(232,119,34,.30);
+  --naranja-oscuro:#8a4200;
+
+  --f:'Poppins','Century Gothic',system-ui,-apple-system,sans-serif;
+  --fm:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,'DejaVu Sans Mono',monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--marfil);color:var(--azul);
+  font-family:var(--f);font-weight:400;font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:800;letter-spacing:-.02em;line-height:1.14}
+h1{font-size:1.9rem;line-height:1.06}
+h2{font-size:1.6rem}
+h3{font-size:1.08rem;font-weight:600;letter-spacing:-.01em}
+h4{font-size:.9rem;font-weight:600;letter-spacing:0}
+p{margin:0}
+.m{font-family:var(--fm);font-variant-numeric:tabular-nums}
+.num{font-family:var(--fm);font-variant-numeric:tabular-nums;font-weight:600}
+.lt{font-weight:300}
+.prosa{max-width:66ch}
+
+:where(button,select,a,input):focus-visible{
+  outline:2px solid var(--naranja);outline-offset:2px;
+}
+
+/* -------- encabezado -------- */
+.cab{
+  border-bottom:1px solid var(--naranja);background:var(--marfil);
+}
+.cab .inner{
+  max-width:1340px;margin:0 auto;padding:24px 34px 16px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.cab .kicker{
+  font-size:.66rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--naranja);display:block;margin-bottom:7px;
+}
+.cab p{font-size:.86rem;font-weight:300;color:var(--azul-75);margin-top:7px;max-width:60ch}
+.logo{height:52px;width:auto;display:block;flex:none}
+.logoslot{
+  min-width:150px;height:52px;flex:none;
+  border:1px dashed var(--azul-25);border-radius:2px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:3px;padding:4px 12px;
+}
+.logoslot b{
+  font-size:.56rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--azul-75);line-height:1.1;
+}
+.logoslot span{font-size:.5rem;font-weight:300;color:var(--azul-55);line-height:1.1}
+
+/* -------- estructura -------- */
+.marco{
+  max-width:1340px;margin:0 auto;padding:26px 34px 70px;
+  display:grid;grid-template-columns:236px minmax(0,1fr);gap:30px;align-items:start;
+}
+
+/* -------- rail de navegación -------- */
+nav{position:sticky;top:20px;display:flex;flex-direction:column;gap:3px}
+nav .grupo{
+  font-size:.62rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--azul-55);margin:18px 0 7px 13px;
+}
+nav .grupo:first-child{margin-top:0}
+nav button{
+  display:block;width:100%;text-align:left;
+  padding:9px 13px;border:1px solid transparent;border-radius:2px;
+  background:transparent;color:var(--azul);cursor:pointer;
+  font-family:var(--f);font-size:.86rem;font-weight:400;line-height:1.3;
+  transition:background .15s,color .15s;
+}
+nav button:hover{background:var(--azul-06)}
+nav button[aria-current="page"]{
+  background:var(--azul);color:var(--marfil);font-weight:600;
+}
+
+/* -------- panel -------- */
+.panel{min-width:0}
+.pagina{display:none}
+.pagina.on{display:block;animation:entra .22s ease-out}
+@keyframes entra{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.phead{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--azul-15)}
+.phead .setiq{
+  font-size:.66rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--naranja);display:block;margin-bottom:8px;
+}
+.phead p{margin-top:11px;font-weight:300;color:var(--azul-75);font-size:.95rem}
+
+.pagina h3{margin-top:28px;margin-bottom:9px}
+.pagina h4{margin-top:19px;margin-bottom:6px}
+.pagina > p, .pagina .card > p{font-weight:300;font-size:.94rem}
+.pagina p + p{margin-top:9px}
+
+.card{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;
+  padding:20px 23px;margin-top:16px;
+}
+.card > h3:first-child, .card > h4:first-child{margin-top:0}
+.card.marfil{background:var(--marfil);border-color:var(--azul-25)}
+
+.grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));margin-top:16px}
+.grid2 .card{margin-top:0}
+
+ul.vin{list-style:none;margin:11px 0 0;padding:0}
+ul.vin li{position:relative;padding:5px 0 5px 19px;font-size:.9rem;font-weight:300}
+ul.vin li::before{
+  content:'';position:absolute;left:0;top:13px;
+  width:6px;height:6px;background:var(--naranja);border-radius:1px;
+}
+ul.vin li b{font-weight:600}
+ol.pasos{margin:11px 0 0;padding-left:20px}
+ol.pasos li{font-size:.9rem;font-weight:300;padding:3px 0}
+ol.pasos li b{font-weight:600}
+
+.nota{
+  border-left:3px solid var(--naranja);padding:4px 0 4px 17px;
+  font-size:.87rem;font-weight:300;margin-top:15px;
+}
+
+/* -------- fórmulas -------- */
+.eq{
+  font-family:var(--fm);font-size:.8rem;line-height:1.85;
+  background:var(--marfil);border:1px solid var(--azul-15);border-radius:2px;
+  padding:15px 18px;margin:13px 0;
+  white-space:pre;overflow-x:auto;
+}
+.card .eq{background:var(--marfil)}
+.eq b{font-weight:600}
+.eq .cmt{color:var(--azul-55);font-weight:400}
+.eq .res{color:var(--naranja-oscuro);font-weight:600}
+
+/* -------- tablas -------- */
+.tw{overflow-x:auto;margin-top:15px}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{text-align:left;padding:8px 13px;border-bottom:1px solid var(--azul-10);vertical-align:top}
+thead th{
+  font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--azul-75);border-bottom:1px solid var(--azul-25);white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums}
+table b{font-weight:600}
+.simb td:first-child{font-family:var(--fm);font-weight:600;white-space:nowrap}
+
+/* -------- estados: sin colores fuera de la paleta -------- */
+.pill{
+  display:inline-block;padding:2px 9px;border-radius:2px;
+  font-family:var(--fm);font-size:.66rem;font-weight:600;white-space:nowrap;
+}
+.e-amb{background:var(--azul);color:var(--marfil)}
+.e-est{background:var(--naranja);color:var(--marfil)}
+.e-ope{background:var(--naranja-30);color:var(--naranja-oscuro)}
+.e-sin{background:var(--azul-10);color:var(--azul)}
+.hubtag{
+  font-family:var(--fm);font-size:.6rem;font-weight:600;color:var(--naranja);
+  background:var(--naranja-12);padding:1px 6px;border-radius:2px;
+}
+
+/* -------- fichas de sucursal -------- */
+.fichas{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));margin-top:16px}
+.ficha{
+  background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;
+  padding:15px 17px;border-left-width:3px;border-left-style:solid;text-align:left;
+  font-family:var(--f);color:var(--azul);width:100%;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s;
+}
+.ficha:hover{box-shadow:0 2px 10px var(--azul-10)}
+.ficha.est{border-left-color:var(--naranja)}
+.ficha.amb{border-left-color:var(--naranja)}
+.ficha.ope{border-left-color:var(--naranja-30)}
+.ficha.sin{border-left-color:var(--azul-25)}
+.ficha .top{display:flex;justify-content:space-between;align-items:baseline;gap:9px;margin-bottom:4px}
+.ficha .nom{font-size:.98rem;font-weight:600;letter-spacing:-.01em}
+.ficha .rho{font-family:var(--fm);font-weight:600;font-size:1.18rem}
+.ficha dl{display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin:11px 0 0;font-size:.73rem}
+.ficha dt{color:var(--azul-75);font-weight:300}
+.ficha dd{margin:0;font-family:var(--fm);font-variant-numeric:tabular-nums;text-align:right}
+
+/* -------- controles -------- */
+.barra{display:flex;flex-wrap:wrap;gap:13px;align-items:center;margin-top:16px}
+.segmento{display:inline-flex;border:1px solid var(--azul-25);border-radius:2px;overflow:hidden;background:var(--blanco)}
+.segmento button{
+  border:none;background:var(--blanco);color:var(--azul);cursor:pointer;
+  padding:8px 17px;font-family:var(--f);font-size:.79rem;font-weight:600;
+}
+.segmento button[aria-pressed="true"]{background:var(--azul);color:var(--marfil)}
+.segmento button:not([aria-pressed="true"]):hover{background:var(--marfil)}
+.conteo{font-size:.78rem;font-weight:300;color:var(--azul-75)}
+label.sel{display:inline-flex;align-items:center;gap:9px;font-size:.82rem;font-weight:300}
+select{
+  font-family:var(--f);font-size:.84rem;font-weight:600;color:var(--azul);
+  background:var(--blanco);border:1px solid var(--azul-25);border-radius:2px;
+  padding:7px 11px;cursor:pointer;
+}
+
+/* -------- métricas -------- */
+.cifras{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));margin-top:16px}
+.cifra{background:var(--blanco);border:1px solid var(--azul-15);border-radius:3px;padding:14px 16px}
+.cifra .et{
+  font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--azul-75);display:block;margin-bottom:5px;
+}
+.cifra .v{font-family:var(--fm);font-size:1.5rem;font-weight:600;line-height:1.1}
+.cifra .su{font-size:.72rem;font-weight:300;color:var(--azul-75);display:block;margin-top:4px}
+
+/* -------- detalle -------- */
+.detalle{margin-top:18px}
+.detalle .cerrar{
+  float:right;background:none;border:1px solid var(--azul-25);border-radius:2px;
+  color:var(--azul);cursor:pointer;font-family:var(--f);font-size:.74rem;font-weight:600;
+  padding:4px 11px;
+}
+.detalle .cerrar:hover{background:var(--marfil)}
+
+footer{
+  max-width:1340px;margin:0 auto;padding:20px 34px 40px;
+  border-top:1px solid var(--naranja);font-size:.73rem;font-weight:300;color:var(--azul-75);
+}
+
+@media(max-width:900px){
+  .marco{grid-template-columns:1fr;gap:20px;padding:20px 20px 60px}
+  nav{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:5px}
+  nav .grupo{grid-column:1/-1;margin:10px 0 2px}
+  nav button{border:1px solid var(--azul-15)}
+  .cab .inner{padding:20px 20px 14px}
+  h1{font-size:1.6rem}h2{font-size:1.35rem}
+}
+
+/* ------------------------------------------------------------------ *
+ * Añadidos para los dos documentos derivados: especificación técnica y
+ * guía operativa. Mismos tokens; ninguna paleta nueva.
+ * ------------------------------------------------------------------ */
+
+/* Bloque de pseudocódigo — se distingue de .eq por la numeración de línea */
+.pseudo{
+  font-family:var(--fm);font-size:.78rem;line-height:1.9;
+  background:var(--blanco);border:1px solid var(--azul-25);border-radius:2px;
+  padding:15px 0;margin:13px 0;overflow-x:auto;counter-reset:ln;
+}
+.pseudo .l{display:block;white-space:pre;padding:0 18px 0 52px;position:relative}
+.pseudo .l::before{
+  counter-increment:ln;content:counter(ln);
+  position:absolute;left:0;width:38px;text-align:right;
+  color:var(--azul-25);font-size:.68rem;
+}
+.pseudo .l:hover{background:var(--azul-06)}
+.pseudo .kw{color:var(--naranja-oscuro);font-weight:600}
+.pseudo .cm{color:var(--azul-55)}
+
+/* Invariante con su demostración */
+.teorema{
+  background:var(--blanco);border:1px solid var(--azul-15);
+  border-left:3px solid var(--azul);border-radius:2px;
+  padding:16px 19px;margin-top:14px;
+}
+.teorema .et{
+  font-family:var(--fm);font-size:.64rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--azul-55);display:block;margin-bottom:7px;
+}
+.teorema h4{margin:0 0 7px}
+.teorema .eq{margin:10px 0 0}
+.prueba{
+  margin-top:11px;padding-top:11px;border-top:1px solid var(--azul-10);
+  font-size:.85rem;font-weight:300;
+}
+.prueba b{font-weight:600}
+
+/* Analogía en lenguaje llano — solo en la guía */
+.analogia{
+  background:var(--naranja-12);border-left:3px solid var(--naranja);
+  border-radius:2px;padding:15px 19px;margin-top:14px;
+}
+.analogia h4{margin:0 0 7px;color:var(--naranja-oscuro)}
+.analogia p{font-size:.9rem;font-weight:300}
+
+/* Punto de extensión — lo que el modelo mayor va a enganchar aquí */
+.extension{
+  background:var(--marfil);border:1px dashed var(--azul-25);border-radius:2px;
+  padding:15px 19px;margin-top:13px;
+}
+.extension h4{margin:0 0 6px;font-size:.86rem}
+.extension p{font-size:.85rem;font-weight:300;margin-top:5px}
+.extension .gancho{
+  font-family:var(--fm);font-size:.72rem;color:var(--naranja-oscuro);font-weight:600;
+}
+
+/* Comparación lado a lado */
+.contraste{display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  border:1px solid var(--azul-15);border-radius:2px;overflow:hidden;margin-top:14px}
+.contraste > div{padding:16px 19px;background:var(--blanco)}
+.contraste > div + div{border-left:1px solid var(--azul-15)}
+.contraste h4{margin:0 0 8px}
+.contraste p{font-size:.87rem;font-weight:300}
+@media(max-width:560px){.contraste > div + div{border-left:none;border-top:1px solid var(--azul-15)}}
+
+</style>
+
+<header class="cab">
+  <div class="inner">
+    <div>
+      <span class="kicker">Operaciones Nacionales · Red de frío · Guía de lectura</span>
+      <h1>Guía de Saturación</h1>
+      <p>Qué mide el modelo, por qué mide dos cosas y no una, y qué hacer con el resultado. La matemática está, pero explicada: cada fórmula viene con su traducción a lenguaje corriente.</p>
+    </div>
+    <div class="logoslot" title="Dejar el archivo del logo en analytics/saturacion/logo.png y ejecutar: npm run saturacion"><b>Logo Operaciones Nacionales</b><span>espacio reservado &middot; 52 px de alto</span></div>
+  </div>
+</header>
+
+<div class="marco">
+  <nav id="rail" aria-label="Secciones">
+    <span class="grupo">Entender</span>
+    <button data-p="que" aria-current="page">Qué es la saturación</button>
+    <button data-p="dos">Por qué son dos</button>
+    <button data-p="formula">La fórmula, explicada</button>
+    <span class="grupo">Ver</span>
+    <button data-p="caso">Un caso completo</button>
+    <button data-p="veredictos">Los cuatro veredictos</button>
+    <button data-p="hub">HUB y normales</button>
+    <span class="grupo">Usar</span>
+    <button data-p="red">Las 20 sucursales</button>
+    <button data-p="palancas">Qué palanca mover</button>
+    <button data-p="errores">Errores de lectura</button>
+  </nav>
+
+  <div class="panel">
+
+    <!-- ============ QUÉ ES ============ -->
+    <section id="que" class="pagina on">
+      <div class="phead">
+        <span class="setiq">Entender · 1</span>
+        <h2>Qué es la saturación</h2>
+        <p class="prosa">Un número que responde una pregunta concreta: ¿lo que la política nos obliga a guardar, cabe en la bodega que tenemos?</p>
+      </div>
+
+      <div class="analogia">
+        <h4>La idea en una frase</h4>
+        <p>Saturación es <b>lo que necesito dividido por lo que tengo</b>. Si necesito 120 posiciones y tengo 100, la saturación es 1,2: me falta un 20 %.</p>
+      </div>
+
+      <h3>Cómo se lee el número</h3>
+      <div class="tw"><table>
+        <thead><tr><th class="n">ρ</th><th>Qué significa</th><th>Cómo se ve en la bodega</th></tr></thead>
+        <tbody>
+          <tr><td class="n">0,50</td><td>Uso la mitad de lo que aguanto</td><td>Pasillos despejados, posiciones vacías</td></tr>
+          <tr><td class="n">0,80</td><td>Uso ocho de cada diez posiciones</td><td>Cómodo, con margen para un peak</td></tr>
+          <tr><td class="n">1,00</td><td>Justo en el límite</td><td>Todo lleno. Cualquier desvío desborda</td></tr>
+          <tr><td class="n">1,50</td><td>Necesitaría un 50 % más de bodega</td><td>Producto en pasillos, quiebres, o inventario fuera de cámara</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="analogia">
+        <h4>Cuidado con una confusión frecuente</h4>
+        <p>ρ = 1,5 <b>no</b> significa que hoy haya un 50 % de producto de más tirado en el piso. Significa que la <b>política vigente pide</b> más de lo que la cámara sostiene. En la práctica esa diferencia se paga de alguna forma: quiebres, pasillos ocupados, producto fuera de cámara o reposiciones de emergencia. El número no dice cuál de esas formas: dice cuánta presión hay.</p>
+      </div>
+
+      <h3>De dónde sale el número</h3>
+      <p class="prosa lt">De cuatro cosas que ya conocemos de cada sucursal, sin encuestas ni supuestos nuevos:</p>
+      <ul class="vin">
+        <li><b>Cuánto vende.</b> Los kilos que salen al mes.</li>
+        <li><b>Cuántos días guarda.</b> La política de abastecimiento, en días de cobertura.</li>
+        <li><b>Cuánto le cabe.</b> Posiciones de pallet instaladas y metros cuadrados.</li>
+        <li><b>Cuánta gente trabaja.</b> Dotación y cómo se reparte entre turnos.</li>
+      </ul>
+      <p class="nota">Cada sucursal se mide <b>contra su propia capacidad</b>. Por eso ρ sí se puede comparar entre Calama y Miraflores, aunque sus tamaños no tengan nada que ver. Lo que nunca se suma son los kilos ni los metros: sumar 2.693 m² de Miraflores con 287 de Calama no describe nada real.</p>
+    </section>
+
+    <!-- ============ POR QUÉ DOS ============ -->
+    <section id="dos" class="pagina">
+      <div class="phead">
+        <span class="setiq">Entender · 2</span>
+        <h2>Por qué son dos preguntas y no una</h2>
+        <p class="prosa">Una sola cifra de «saturación» escondería la mitad de los problemas.</p>
+      </div>
+
+      <div class="contraste">
+        <div>
+          <h4>Pregunta 1 · ¿Cabe el producto?</h4>
+          <p>El inventario que exige la política, ¿entra en las cámaras? Se compara contra las <b>posiciones de pallet</b>.</p>
+          <div class="eq" style="font-size:.82rem;text-align:center;margin-top:11px">ρ* = máx( ρ congelado , ρ refrigerado )</div>
+          <p style="margin-top:9px"><span class="pill e-est">saturación estructural</span></p>
+        </div>
+        <div>
+          <h4>Pregunta 2 · ¿Cabe la gente?</h4>
+          <p>Con el piso que sobra, ¿pueden trabajar las personas del turno más cargado? Se compara contra los <b>metros cuadrados libres</b>.</p>
+          <div class="eq" style="font-size:.82rem;text-align:center;margin-top:11px">ρ_op = m² que exige la operación / m² libres</div>
+          <p style="margin-top:9px"><span class="pill e-ope">saturación operacional</span></p>
+        </div>
+      </div>
+
+      <h3>Dos casos reales que lo explican</h3>
+
+      <div class="analogia">
+        <h4>Bodega llena, operación cómoda</h4>
+        <p>Las cajas llegan al tope de las racks, pero en el turno peak hay tres personas y espacio de sobra para moverse. Si promediáramos ambas mediciones, el resultado diría «está bien». <b>No está bien</b>: la cámara desborda y eso se traduce en quiebres.</p>
+      </div>
+
+      <div class="analogia">
+        <h4>Bodega holgada, operación imposible</h4>
+        <p>El inventario cabe cómodo, pero en el peak entran tantas personas a la vez que se estorban y no pueden trabajar. Mirando solo la cámara, esta sucursal parecería sana. <b>No lo está</b>: el cuello está en el piso, no en las racks.</p>
+      </div>
+
+      <p class="nota">Por eso las dos mediciones se reportan <b>siempre por separado</b> y nunca se promedian, ni se combinan en un índice único. Fundirlas escondería una cámara desbordada detrás de un diagnóstico operacional cómodo, o al revés.</p>
+
+      <h3>La segunda pregunta solo tiene sentido a veces</h3>
+      <p class="prosa lt">Si el inventario ya ocupó toda la superficie, no queda piso sobre el cual preguntarse si cabe la gente. En ese caso el modelo <b>no inventa un número</b>: deja la segunda pregunta sin responder y lo dice explícitamente como «sin etapa 2».</p>
+      <p class="prosa lt">Podría haber puesto 0 (que diría «la operación va holgada») o infinito (que diría «la operación está colapsada»). Ninguna de las dos es cierta: simplemente no hay dato. Hoy eso ocurre en <b id="nSinEtapa2"></b> de las 20 sucursales.</p>
+    </section>
+
+    <!-- ============ FÓRMULA ============ -->
+    <section id="formula" class="pagina">
+      <div class="phead">
+        <span class="setiq">Entender · 3</span>
+        <h2>La fórmula, explicada</h2>
+        <p class="prosa">Aquí está la matemática completa. Cada línea viene con su traducción.</p>
+      </div>
+
+      <h3>Paso 1 · De kilos al mes a kilos al día</h3>
+      <div class="eq">d = D / 30,44</div>
+      <p class="prosa lt"><b>En palabras:</b> los kilos que la sucursal mueve en un mes, repartidos entre los días del mes. Da el flujo diario. Se usa 30,44 porque es el promedio real de días por mes en un año.</p>
+
+      <h3>Paso 2 · Cuánto inventario pide la política</h3>
+      <div class="eq">inventario = d × DOH</div>
+      <p class="prosa lt"><b>En palabras:</b> el flujo diario multiplicado por los días de cobertura. Si la sucursal mueve 27.000 kg al día y la política dice guardar 3,6 días, entonces debe tener unos 97.000 kg en cámara.</p>
+      <p class="prosa lt">DOH significa <i>días de cobertura</i>: cuántos días de venta mantengo guardados. Es la palanca principal del modelo — casi todo lo demás se deduce de ella.</p>
+
+      <h3>Paso 3 · De kilos a posiciones de pallet</h3>
+      <div class="eq">posiciones que necesito  =  inventario / 459</div>
+      <p class="prosa lt"><b>En palabras:</b> cada posición de pallet aguanta unos 459 kg. Dividiendo el inventario por esa cifra sabemos cuántas posiciones hacen falta.</p>
+      <p class="nota">Este número no es un supuesto arbitrario: en las 20 sucursales la capacidad en kilos y las posiciones guardan la relación <span class="m">K = P × 458,9</span> con una dispersión de apenas 0,93 %. Los kilos de capacidad son, de hecho, una columna calculada a partir de las posiciones.</p>
+
+      <h3>Paso 4 · La saturación estructural</h3>
+      <div class="eq">ρ = posiciones que necesito / posiciones que tengo</div>
+      <p class="prosa lt"><b>En palabras:</b> la división que da el número. Pero se hace <b>dos veces por separado</b>, una para congelado y otra para refrigerado, porque son cámaras distintas.</p>
+
+      <div class="analogia">
+        <h4>Por qué manda la peor y no el promedio</h4>
+        <p>Congelado y refrigerado son compartimentos <b>rígidos</b>: no se prestan espacio. Si la cámara de congelado desborda, no la salva que sobre lugar en la refrigerada — el producto no se puede mover ahí. La sucursal está tan apretada como su cámara peor, así que se toma <b>el máximo</b>, no la media.</p>
+      </div>
+
+      <h3>Paso 5 · Cuánto piso queda libre</h3>
+      <div class="eq">m² libres  =  m² totales × ( 1 − ocupación )</div>
+      <p class="prosa lt"><b>En palabras:</b> el inventario ocupa una parte de la superficie; lo que sobra es el piso donde se trabaja. Mientras más apretada la política, menos piso queda.</p>
+      <p class="prosa lt">Esta línea es importante porque es <b>el único puente</b> entre las dos preguntas. La política de inventario afecta a la operación solamente por aquí: comprimiendo el espacio libre. No hay ningún otro camino.</p>
+
+      <h3>Paso 6 · La saturación operacional</h3>
+      <div class="eq">m² que exige la operación  =  personas del turno peak × 36
+
+ρ_op  =  m² que exige la operación / m² libres</div>
+      <p class="prosa lt"><b>En palabras:</b> cada persona necesita unos 36 m² para trabajar dentro de la cámara. Se toma el turno con más gente —el peak— porque lo que restringe es cuántas personas están <b>al mismo tiempo</b> adentro, no cuántas pasan en el día.</p>
+      <p class="nota">El reparto de turnos es 20 % mañana, 40 % tarde y 40 % noche. El peak es entonces el 40 % de la dotación. Mover gente del turno cargado a los otros dos baja ρ_op sin tocar ρ* — es la palanca más barata que existe.</p>
+
+      <h3>Una sola cosa que no viene en la planilla</h3>
+      <p class="prosa lt">Todo lo anterior sale de datos que ya tenemos, salvo un número: <b>qué proporción de la demanda es congelada</b> (se le llama φ). El modelo lo deduce en vez de suponerlo.</p>
+      <div class="eq">φ  =  1 / [ 1 + (capacidad refrigerada / capacidad congelada) × (DOH congelado / DOH refrigerado) ]
+
+<span class="cmt">con los datos de la red:</span>  φ = <b class="res" id="sPhi"></b></div>
+      <p class="prosa lt"><b>En palabras:</b> si la red se construyó para sostener su propia política, entonces el tamaño de cada cámara ya contiene la información del mix. Se despeja de ahí.</p>
+      <div class="analogia">
+        <h4>Por qué no basta mirar el tamaño de las cámaras</h4>
+        <p>Sería tentador decir «la cámara congelada es el 27,6 % del total, entonces el 27,6 % de la demanda es congelada». Está mal, y por una razón concreta: <b>el espacio que ocupa un producto depende de cuántos días se queda</b>. El congelado se guarda más días que el refrigerado, así que ocupa más cámara por cada kilo vendido. Usar el atajo sobreestimaría el congelado en <b id="sSesgo"></b> y haría aparecer déficit de congelado en las 20 sucursales — un error del método, no un hallazgo.</p>
+      </div>
+    </section>
+
+    <!-- ============ CASO ============ -->
+    <section id="caso" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 4</span>
+        <h2>Un caso completo</h2>
+        <p class="prosa">La misma cuenta de la sección anterior, hecha entera con los números de una sucursal real.</p>
+      </div>
+      <div class="barra">
+        <label class="sel" for="selCaso">Ver el caso de</label>
+        <select id="selCaso"></select>
+      </div>
+      <div id="casoResumen"></div>
+      <div id="casoDetalle"></div>
+    </section>
+
+    <!-- ============ VEREDICTOS ============ -->
+    <section id="veredictos" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 5</span>
+        <h2>Los cuatro veredictos</h2>
+        <p class="prosa">Dos preguntas, cada una con dos respuestas posibles, dan exactamente cuatro situaciones. No hay más.</p>
+      </div>
+
+      <div class="tw"><table>
+        <thead><tr><th>Veredicto</th><th>¿Cabe el producto?</th><th>¿Cabe la gente?</th><th>Qué está pasando</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill e-sin">sin saturación</span></td>
+            <td>Sí</td><td>Sí</td>
+            <td>La sucursal está dentro de límite en ambas dimensiones.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-ope">operacional</span></td>
+            <td>Sí</td><td>No</td>
+            <td>El producto entra sin problema, pero la gente del turno peak no tiene dónde trabajar.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-est">estructural</span></td>
+            <td>No</td><td>Sí o sin dato</td>
+            <td>La cámara crítica desborda. Es el problema más común de la red.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-amb">ambas</span></td>
+            <td>No</td><td>No</td>
+            <td>Ni la cámara ni el piso dan abasto. Requiere intervenir en los dos frentes.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <h3>Cómo está repartida la red hoy</h3>
+      <div class="cifras" id="cifrasVeredictos"></div>
+      <div class="tw" id="tablaVeredictos"></div>
+      <p class="nota">Estos conteos usan las <b>políticas de abastecimiento vigentes</b>, tal como fueron entregadas. No son un escenario ni una proyección: es la fotografía de hoy.</p>
+    </section>
+
+    <!-- ============ HUB ============ -->
+    <section id="hub" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 6</span>
+        <h2>Sucursales HUB y sucursales normales</h2>
+        <p class="prosa">Algunas sucursales no solo venden: también despachan a otras. Eso cambia su cálculo.</p>
+      </div>
+
+      <div class="contraste">
+        <div>
+          <h4>Sucursal normal</h4>
+          <p>Guarda inventario solo para su propia venta. Lo que necesita depende únicamente de su demanda.</p>
+          <div class="eq" style="font-size:.82rem;margin-top:11px">demanda efectiva = demanda propia</div>
+          <p style="margin-top:9px" class="lt"><b id="hNormal"></b> de las 20 sucursales.</p>
+        </div>
+        <div>
+          <h4>Sucursal HUB</h4>
+          <p>Además de vender, mueve por sus cámaras el volumen que despacha a otras. Ese flujo ocupa espacio real y entra al cálculo.</p>
+          <div class="eq" style="font-size:.82rem;margin-top:11px">demanda efectiva = propia + lo que despacha</div>
+          <p style="margin-top:9px" class="lt"><b id="hHub"></b> de las 20 sucursales.</p>
+        </div>
+      </div>
+
+      <div id="hubDetalle"></div>
+
+      <div class="analogia">
+        <h4>«¿No estamos contando el mismo kilo dos veces?»</h4>
+        <p>No. Un kilo que va de Antofagasta a Arica ocupa cámara <b>dos veces distintas</b>: primero en Antofagasta, mientras espera el despacho; después en Arica, mientras espera la venta. Son dos ocupaciones físicas reales, en dos lugares y dos momentos. Si lo descontáramos de Arica estaríamos subestimando su saturación; si lo omitiéramos en Antofagasta, subestimaríamos la de Antofagasta.</p>
+      </div>
+
+      <p class="nota">El efecto no es cosmético: sin considerar lo que despacha, Antofagasta aparecía con holgura y su cámara crítica era el congelado. Al incorporarlo, satura y su cámara crítica pasa a ser el refrigerado. Cambia el diagnóstico, no solo la magnitud.</p>
+    </section>
+
+    <!-- ============ RED ============ -->
+    <section id="red" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 7</span>
+        <h2>Las 20 sucursales</h2>
+        <p class="prosa">Ordenadas de mayor a menor saturación estructural. Elige cualquiera para ver su cuenta completa.</p>
+      </div>
+      <div class="barra">
+        <div class="segmento" id="segTipo">
+          <button data-t="todas" aria-pressed="true">Todas</button>
+          <button data-t="normal" aria-pressed="false">Normales</button>
+          <button data-t="hub" aria-pressed="false">HUB</button>
+        </div>
+        <span class="conteo" id="conteoSuc"></span>
+      </div>
+      <div class="fichas" id="gridSucursales"></div>
+      <div class="detalle" id="detSucursal" hidden></div>
+    </section>
+
+    <!-- ============ PALANCAS ============ -->
+    <section id="palancas" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 8</span>
+        <h2>Qué palanca mover</h2>
+        <p class="prosa">Cada veredicto tiene una respuesta distinta. Aplicar la palanca equivocada no mejora nada.</p>
+      </div>
+
+      <div class="tw"><table>
+        <thead><tr><th>Si aparece</th><th>Palanca inmediata</th><th>Palanca de fondo</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill e-est">estructural</span></td>
+            <td>Bajar los días de cobertura de la <b>cámara crítica</b>: menos stock, más frecuencia de reposición.</td>
+            <td>Ampliar o reconvertir la cámara que satura.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-ope">operacional</span></td>
+            <td>Mover dotación del turno peak a los otros dos. Es reversible y no cuesta inversión.</td>
+            <td>Rediseñar el layout o ampliar superficie.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-amb">ambas</span></td>
+            <td>Primero los días de cobertura: al liberar posiciones se libera piso, y la operación mejora sola.</td>
+            <td>Revisar si la sucursal está bien dimensionada para su rol en la red.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-sin">sin saturación</span></td>
+            <td>Nada. Verificar que la holgura no sea capacidad ociosa.</td>
+            <td>Candidata a absorber volumen de una sucursal saturada.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="analogia">
+        <h4>El orden importa</h4>
+        <p>La palanca del inventario mueve <b>las dos</b> mediciones a la vez: menos stock libera posiciones y, con ellas, piso para operar. La palanca de la dotación mueve <b>solo una</b>: cambia la operación y deja la cámara igual. Por eso, cuando ambas saturan, se empieza siempre por el inventario.</p>
+      </div>
+
+      <h3>Tres números que ayudan a decidir</h3>
+      <ul class="vin">
+        <li><b>κ (kappa).</b> Por cuánto se puede multiplicar la política actual antes de saturar. Si κ = 0,8, hay que bajarla un 20 %. Si κ = 1,3, hay margen para subirla un 30 %.</li>
+        <li><b>Cámara crítica.</b> Cuál de las dos cámaras es la que satura. Indica dónde actuar: no sirve bajar el refrigerado si la que desborda es la de congelado.</li>
+        <li><b>Participación de cada régimen.</b> Qué parte de la saturación aporta el congelado y qué parte el refrigerado. Si el congelado aporta el 28 %, bajarlo un 10 % reduce la saturación un 2,8 %.</li>
+      </ul>
+
+      <h3>Dónde tiene más efecto actuar</h3>
+      <div class="tw" id="tablaPalancas"></div>
+    </section>
+
+    <!-- ============ ERRORES ============ -->
+    <section id="errores" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 9</span>
+        <h2>Errores de lectura frecuentes</h2>
+        <p class="prosa">Cinco conclusiones que el número no autoriza, y qué dice en realidad.</p>
+      </div>
+
+      <div class="card">
+        <h4>«Sumemos la saturación de la red»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No se puede.</b> Cada sucursal se mide contra su propia capacidad, así que un promedio simple daría más peso a las chicas. Lo que sí se puede es <b>contar sucursales</b> por estado, que es lo que reportan todos los documentos.</p>
+      </div>
+
+      <div class="card">
+        <h4>«Esta sucursal tiene ρ alto, está mal gestionada»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No se sigue.</b> ρ alto puede venir de una política exigente, de una cámara pequeña para su demanda, o de un rol de red que le agrega volumen. El número señala <b>dónde mirar</b>, no de quién es la responsabilidad.</p>
+      </div>
+
+      <div class="card">
+        <h4>«ρ bajo es siempre bueno»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No.</b> Una sucursal muy por debajo de su capacidad tiene inmovilizada una cámara que otra necesita. La banda sana está entre 0,40 y 0,80, no en el mínimo posible.</p>
+      </div>
+
+      <div class="card">
+        <h4>«La operación está bien porque no aparece saturada»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>Ojo con el «sin dato».</b> Si la sucursal no tiene piso libre, la operación no se evalúa — y eso <b>no</b> es lo mismo que estar holgada. Hoy hay <b id="eSinEtapa2"></b> sucursales en esa condición: su celda de operación dice «n/d», no «bien».</p>
+      </div>
+
+      <div class="card">
+        <h4>«Bajemos el DOH parejo en toda la red»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>Desperdicia la palanca.</b> Cada sucursal tiene una cámara crítica distinta y una participación distinta de cada régimen. Bajar parejo castiga a las que ya estaban sanas y no ataca lo suficiente a las que desbordan. El ajuste se hace por sucursal y por régimen.</p>
+      </div>
+
+      <p class="nota">Para el detalle formal de por qué cada una de estas afirmaciones no se sostiene —con las derivaciones y las demostraciones— está el documento técnico de la especificación del modelo.</p>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  Guía de lectura · Modelo de saturación de la red de frío · las cifras salen del mismo núcleo verificado que el informe · Operaciones Nacionales.
+</footer>
+
+<script>
+// Nucleo del modelo de saturacion — Operaciones Nacionales, red de frio.
+// Espejo exacto de analytics/saturacion/modelo_saturacion.py.
+// paridad_saturacion.mjs compara este archivo contra la salida de Python.
+//
+// El calculo es POR SUCURSAL. No se agregan magnitudes entre sucursales: solo
+// rho es comparable, porque cada una se mide contra su propia capacidad.
+//
+// Dos etapas que nunca se mezclan en un mismo numero:
+//   ETAPA 1  estructural   — el inventario de politica, ¿cabe en las camaras?
+//   ETAPA 2  operacional   — condicional: solo si quedan m2 libres, ¿alcanzan
+//                            esos m2 para que opere el turno mas cargado?
+
+const RED_ABASTECIMIENTO = { 'Antofagasta': ['Arica', 'Iquique', 'Calama'] };
+
+const PARAMETROS_BASE = {
+  diasMes: 30.44,
+  kgPorPosicion: 459,
+  aprovechamiento: 1,
+  m2PorPersona: 36,
+  turnos: [
+    { nombre: 'mañana', sigma: 0.20 },
+    { nombre: 'tarde', sigma: 0.40 },
+    { nombre: 'noche', sigma: 0.40 }
+  ],
+  mixCongelado: null,   // null = deducir de los datos
+  factorDohC: 1,        // escalado de politica: SOLO simulacion
+  factorDohR: 1,
+  fraccionHub: 1,       // porcion del volumen abastecido que pasa por el hub
+  // Fórmula unificada: factor de empuje por sobrestocks
+  factorEmpujeAlpha: 0, // fracción de sobrestocks que llega (0 a 1)
+  sobrestocksRatio: 0   // ratio de sobrestocks en planta / demanda base (0 a 1)
+};
+
+function validarParametros(p) {
+  const suma = p.turnos.reduce((a, t) => a + t.sigma, 0);
+  if (Math.abs(suma - 1) > 1e-9) throw new Error(`los turnos deben sumar 1, suman ${suma}`);
+  if (p.turnos.some((t) => t.sigma < 0)) throw new Error('ningun turno puede ser negativo');
+  for (const k of ['diasMes', 'kgPorPosicion', 'm2PorPersona', 'factorDohC', 'factorDohR']) {
+    if (!(p[k] > 0)) throw new Error(`${k} debe ser positivo, es ${p[k]}`);
+  }
+  if (!(p.aprovechamiento > 0 && p.aprovechamiento <= 1)) {
+    throw new Error(`aprovechamiento debe estar en (0,1], es ${p.aprovechamiento}`);
+  }
+  if (p.mixCongelado !== null && !(p.mixCongelado > 0 && p.mixCongelado < 1)) {
+    throw new Error(`mixCongelado debe estar en (0,1), es ${p.mixCongelado}`);
+  }
+  if (!(p.fraccionHub >= 0 && p.fraccionHub <= 1)) {
+    throw new Error(`fraccionHub debe estar en [0,1], es ${p.fraccionHub}`);
+  }
+  if (!(p.factorEmpujeAlpha >= 0 && p.factorEmpujeAlpha <= 1)) {
+    throw new Error(`factorEmpujeAlpha debe estar en [0,1], es ${p.factorEmpujeAlpha}`);
+  }
+  if (!(p.sobrestocksRatio >= 0 && p.sobrestocksRatio <= 1)) {
+    throw new Error(`sobrestocksRatio debe estar en [0,1], es ${p.sobrestocksRatio}`);
+  }
+}
+
+const clave = (n) =>
+  String(n).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+function esEvaluable(s) {
+  return ['m2', 'posiciones', 'capCongKg', 'capRefrKg', 'capTotalKg',
+          'personas', 'demandaMes', 'dohCongelado', 'dohRefrigerado']
+    .every((k) => typeof s[k] === 'number' && s[k] > 0);
+}
+
+// El espacio que ocupa un regimen es su volumen por los dias que se guarda.
+// De  K_C/K_R = (phi·DOH_C)/((1-phi)·DOH_R)  se despeja phi. Se pondera con la
+// demanda PROPIA: el mix es del producto, no del flujo que cruza un hub.
+function deducirMix(sucursales) {
+  const v = sucursales.filter(esEvaluable);
+  const suma = (f) => v.reduce((a, s) => a + f(s), 0);
+  const kC = suma((s) => s.capCongKg);
+  const kR = suma((s) => s.capRefrKg);
+  const peso = suma((s) => s.demandaMes);
+  const dohC = suma((s) => s.dohCongelado * s.demandaMes) / peso;
+  const dohR = suma((s) => s.dohRefrigerado * s.demandaMes) / peso;
+  const phi = 1 / (1 + (kR / kC) * (dohC / dohR));
+  return {
+    phi,
+    shareCapacidadCongelado: kC / (kC + kR),
+    dohCPonderado: dohC,
+    dohRPonderado: dohR,
+    sesgoProxyCapacidad: (kC / (kC + kR)) / phi
+  };
+}
+
+function evaluarSucursal(s, par, phi, indice) {
+  if (!esEvaluable(s)) return { sucursal: s.nombre, evaluable: false };
+
+  const a0 = par.m2PorPersona, gamma = par.kgPorPosicion, u = par.aprovechamiento;
+  const dohC = s.dohCongelado * par.factorDohC;
+  const dohR = s.dohRefrigerado * par.factorDohR;
+  const sigmaPeak = Math.max(...par.turnos.map((t) => t.sigma));
+  const turnoPeak = par.turnos.reduce((a, b) => (b.sigma > a.sigma ? b : a)).nombre;
+
+  // (0) Red de abastecimiento: el flujo incluye lo que se despacha a terceros.
+  const abastece = RED_ABASTECIMIENTO[s.nombre] || [];
+  let aporte = 0;
+  for (const n of abastece) {
+    const otra = indice[clave(n)];
+    if (otra && otra.demandaMes) aporte += par.fraccionHub * otra.demandaMes;
+  }
+  const dEf = s.demandaMes + aporte;
+
+  // Factor de empuje (sobrestocks): amplía la demanda por kilos no demandados
+  // que llegan a la sucursal. Fórmula unificada: ρ = Demanda_eff / Capacidad
+  const factorEmpuje = 1 + par.factorEmpujeAlpha * par.sobrestocksRatio;
+  const dEfAjustado = dEf * factorEmpuje;
+
+  // Detectar si es sucursal HUB (modelo cross-dock) o Normal (almacenaje)
+  const esHub = abastece.length > 0; // Es HUB si abastece a otras
+
+  // ============== ETAPA 1 — SATURACION ESTRUCTURAL ==============
+
+  const d = dEfAjustado / par.diasMes;                       // (1) flujo diario (con empuje)
+  const dC = phi * d, dR = (1 - phi) * d;
+  const dohPol = phi * dohC + (1 - phi) * dohR;      // (2) politica ponderada
+
+  const beta = s.capCongKg / s.capTotalKg;           // (3) capacidad en posiciones
+  const posTot = s.posiciones * u;
+  const posC = posTot * beta, posR = posTot * (1 - beta);
+
+  const nC = dC * dohC / gamma;                      // (4) requerimiento
+  const nR = dR * dohR / gamma;
+  const nTot = nC + nR;
+
+  const dohFisC = posC * gamma / dC;                 // (5) DOH fisico
+  const dohFisR = posR * gamma / dR;
+  const dohFisTot = posTot * gamma / d;
+
+  const rhoC = nC / posC;                            // (6) saturacion estructural
+  const rhoR = nR / posR;
+  const rhoEstructural = Math.max(rhoC, rhoR);
+  const rhoFlex = nTot / posTot;
+
+  const eC = phi * dohC / dohPol;                    // (7) participacion politica
+  const eR = (1 - phi) * dohR / dohPol;
+
+  // ======= ETAPA 2 — SATURACION OPERACIONAL (condicional) =======
+
+  const densidad = s.posiciones / s.m2;              // (8) superficie
+  const m2Uso = nTot / densidad;
+  const m2Libre = s.m2 - m2Uso;                      // = A · (1 − rhoFlex)
+
+  const personasPeak = s.personas * sigmaPeak;       // (9) concurrencia del peak
+  const m2Operacion = personasPeak * a0;
+
+  const hayEspacioM2 = m2Libre > 0;                  // (10) compuerta
+  const rhoOperacional = hayEspacioM2 ? m2Operacion / m2Libre : null;
+  const personasQueCaben = hayEspacioM2 ? m2Libre / a0 : 0;
+
+  // (11) Diagnostico. Los dos veredictos son INDEPENDIENTES: fundirlos en una
+  //      sola etiqueta esconderia una camara desbordada detras de un diagnostico
+  //      operacional, o al reves.
+  const camaraCritica = rhoC >= rhoR ? 'congelado' : 'refrigerado';
+  const saturadoEstructural = rhoEstructural > 1;
+  const saturadoOperacional = hayEspacioM2 ? rhoOperacional > 1 : null;
+
+  let estado, detalleEstado;
+  if (saturadoEstructural && saturadoOperacional) {
+    estado = 'estructural y operacional';
+    detalleEstado = `la camara de ${camaraCritica} desborda y la operacion no cabe`;
+  } else if (saturadoEstructural) {
+    estado = 'saturacion estructural';
+    detalleEstado = hayEspacioM2
+      ? `la camara de ${camaraCritica} desborda`
+      : 'el inventario de politica no cabe en la superficie';
+  } else if (saturadoOperacional) {
+    estado = 'saturacion operacional';
+    detalleEstado = 'el inventario cabe, la operacion no';
+  } else {
+    estado = 'sin saturacion';
+    detalleEstado = hayEspacioM2
+      ? 'cabe el inventario y cabe la operacion'
+      : 'el inventario cabe justo, sin superficie libre';
+  }
+
+  // (12) Politicas de quiebre, en forma cerrada
+  const dohCQuiebreFlex = (dohFisTot - (1 - phi) * dohR) / phi;
+  const rhoFlexQuiebreOp = 1 - m2Operacion / s.m2;
+  const dohPolQuiebreOp = dohFisTot * rhoFlexQuiebreOp;
+
+  const turnos = par.turnos.map((t) => ({
+    turno: t.nombre,
+    sigma: t.sigma,
+    personas: s.personas * t.sigma,
+    m2Requeridos: s.personas * t.sigma * a0,
+    holguraM2: m2Libre - s.personas * t.sigma * a0,
+    esPeak: t.sigma === sigmaPeak
+  }));
+
+  return {
+    sucursal: s.nombre, evaluable: true, abastece,
+    tipo: esHub ? 'hub' : 'normal',
+    demandaPropia: s.demandaMes, demandaAportada: aporte, demandaEfectiva: dEf,
+    demandaEfectivaAjustada: dEfAjustado,
+    factorEmpuje: factorEmpuje,
+    factorHub: dEf / s.demandaMes,
+    demandaDiaKg: d, mixCongelado: phi,
+    dohPoliticaC: dohC, dohPoliticaR: dohR, dohPoliticaPonderado: dohPol,
+    dohFisicoC: dohFisC, dohFisicoR: dohFisR, dohFisicoTotal: dohFisTot,
+    posReqC: nC, posReqR: nR, posReqTotal: nTot,
+    posDispC: posC, posDispR: posR, posDispTotal: posTot,
+    rhoCongelado: rhoC, rhoRefrigerado: rhoR,
+    rhoEstructural, rhoFlex,
+    camaraCritica,
+    shareCongInstalado: beta, shareCongRequerido: nC / nTot,
+    desbalanceCamara: nC / nTot - beta,
+    elasticidadDohC: eC, elasticidadDohR: eR,
+    derivadaRhoDohC: phi / dohFisTot, derivadaRhoDohR: (1 - phi) / dohFisTot,
+    densidadPosM2: densidad,
+    m2Total: s.m2, m2Uso, m2Libre, m2Operacion,
+    personasTotal: s.personas, personasPeak, personasQueCaben,
+    turnoPeak, turnos,
+    hayEspacioM2, rhoOperacional, saturadoEstructural, saturadoOperacional,
+    estado, detalleEstado,
+    kappaEstructural: 1 / rhoEstructural,
+    dohCQuiebre: dohFisC, dohRQuiebre: dohFisR,
+    dohCQuiebreFlexible: dohCQuiebreFlex,
+    dohCQuiebreFlexibleFactible: dohCQuiebreFlex >= 0,
+    dohPolQuiebreOperacional: dohPolQuiebreOp,
+    operacionAlcanzable: rhoFlexQuiebreOp > 0
+  };
+}
+
+function evaluarRed(sucursales, parciales = {}) {
+  const par = { ...PARAMETROS_BASE, ...parciales };
+  validarParametros(par);
+  const indice = Object.fromEntries(sucursales.map((s) => [clave(s.nombre), s]));
+  const ded = deducirMix(sucursales);
+  const phi = par.mixCongelado === null ? ded.phi : par.mixCongelado;
+
+  const filas = sucursales.map((s) => evaluarSucursal(s, par, phi, indice));
+  const ev = filas.filter((r) => r.evaluable).sort((a, b) => b.rhoEstructural - a.rhoEstructural);
+
+  // Conteos de sucursales, nunca sumas de magnitudes: las sucursales no son
+  // comparables en kg, m2 ni posiciones.
+  return {
+    parametros: par, phi, deduccion: ded, resultados: ev,
+    noEvaluables: filas.filter((r) => !r.evaluable),
+    conteo: {
+      evaluadas: ev.length,
+      saturadasEstructural: ev.filter((r) => r.saturadoEstructural).length,
+      saturadasOperacional: ev.filter((r) => r.saturadoOperacional === true).length,
+      sinSaturacion: ev.filter((r) => r.estado === 'sin saturacion').length,
+      sinEtapa2: ev.filter((r) => !r.hayEspacioM2).length,
+      camaraCongelado: ev.filter((r) => r.camaraCritica === 'congelado').length,
+      camaraRefrigerado: ev.filter((r) => r.camaraCritica === 'refrigerado').length
+    }
+  };
+}
+
+const DATOS = [{"nombre":"Miraflores","m2":2693.0,"posiciones":1864.0,"capCongKg":226644.0,"capRefrKg":628767.0,"capTotalKg":855411.0,"personas":62.0,"demandaMes":4863144.0,"dohCongelado":3.0887475701994496,"dohRefrigerado":2.2980752712096217},{"nombre":"Antofagasta","m2":1108.0,"posiciones":708.0,"capCongKg":128000.0,"capRefrKg":197000.0,"capTotalKg":325000.0,"personas":32.0,"demandaMes":2888208.0,"dohCongelado":5.648945859330309,"dohRefrigerado":2.411822300969038},{"nombre":"Arica","m2":352.0,"posiciones":94.0,"capCongKg":12000.0,"capRefrKg":31000.0,"capTotalKg":43000.0,"personas":6.0,"demandaMes":557203.0,"dohCongelado":5.215003816896563,"dohRefrigerado":1.9497198317167044},{"nombre":"Calama","m2":287.0,"posiciones":59.0,"capCongKg":7009.0,"capRefrKg":19859.0,"capTotalKg":26869.0,"personas":7.0,"demandaMes":612155.0,"dohCongelado":5.5286329872129185,"dohRefrigerado":1.7403855339961425},{"nombre":"Chillán","m2":720.0,"posiciones":216.0,"capCongKg":21825.0,"capRefrKg":77462.0,"capTotalKg":99287.0,"personas":21.0,"demandaMes":2190528.0,"dohCongelado":3.41350443118266,"dohRefrigerado":2.116756294590039},{"nombre":"Concepción","m2":669.0,"posiciones":566.0,"capCongKg":70000.0,"capRefrKg":190000.0,"capTotalKg":260000.0,"personas":27.0,"demandaMes":2667973.0,"dohCongelado":3.0609520127996284,"dohRefrigerado":2.2057271907303564},{"nombre":"Copiapó","m2":1098.0,"posiciones":348.0,"capCongKg":71222.0,"capRefrKg":88562.0,"capTotalKg":159784.0,"personas":11.0,"demandaMes":811319.0,"dohCongelado":3.6881791390065857,"dohRefrigerado":2.4847820745443556},{"nombre":"Coquimbo","m2":1035.0,"posiciones":620.0,"capCongKg":68755.0,"capRefrKg":216013.0,"capTotalKg":284768.0,"personas":23.0,"demandaMes":1838374.0,"dohCongelado":3.326055931526626,"dohRefrigerado":2.3218605356117443},{"nombre":"Hijuelas","m2":584.0,"posiciones":203.0,"capCongKg":23000.0,"capRefrKg":70000.0,"capTotalKg":93000.0,"personas":17.0,"demandaMes":1415978.0,"dohCongelado":3.547149261838425,"dohRefrigerado":2.2911874132267256},{"nombre":"Huechuraba","m2":1057.0,"posiciones":562.0,"capCongKg":70200.0,"capRefrKg":187600.0,"capTotalKg":257800.0,"personas":50.0,"demandaMes":3622088.0,"dohCongelado":2.8019271943560904,"dohRefrigerado":2.289667540927903},{"nombre":"Iquique","m2":486.0,"posiciones":144.0,"capCongKg":20000.0,"capRefrKg":46000.0,"capTotalKg":66000.0,"personas":10.0,"demandaMes":951578.0,"dohCongelado":5.49130238281382,"dohRefrigerado":1.858162727849742},{"nombre":"Los Ángeles","m2":723.0,"posiciones":384.0,"capCongKg":26775.0,"capRefrKg":149668.0,"capTotalKg":176443.0,"personas":18.0,"demandaMes":1570386.0,"dohCongelado":3.5162250412173615,"dohRefrigerado":2.276467749892043},{"nombre":"Osorno","m2":427.0,"posiciones":190.0,"capCongKg":10000.0,"capRefrKg":77000.0,"capTotalKg":87000.0,"personas":14.0,"demandaMes":1026269.0,"dohCongelado":3.455553373991302,"dohRefrigerado":2.3886425646603406},{"nombre":"Puerto Montt","m2":735.0,"posiciones":260.0,"capCongKg":37821.0,"capRefrKg":81470.0,"capTotalKg":119291.0,"personas":18.0,"demandaMes":1714082.0,"dohCongelado":3.5112581550748483,"dohRefrigerado":2.528931715102929},{"nombre":"Punta Arenas","m2":560.0,"posiciones":283.0,"capCongKg":70000.0,"capRefrKg":60000.0,"capTotalKg":130000.0,"personas":9.0,"demandaMes":626355.0,"dohCongelado":9.713041205946958,"dohRefrigerado":3.573662459268064},{"nombre":"Rancagua","m2":840.0,"posiciones":600.0,"capCongKg":75925.0,"capRefrKg":199655.0,"capTotalKg":275580.0,"personas":29.0,"demandaMes":2445343.0,"dohCongelado":3.113827772084543,"dohRefrigerado":2.326023657171945},{"nombre":"San Antonio","m2":550.0,"posiciones":174.0,"capCongKg":16000.0,"capRefrKg":63863.0,"capTotalKg":79863.0,"personas":14.0,"demandaMes":881050.0,"dohCongelado":3.469757558734177,"dohRefrigerado":2.5130685963592434},{"nombre":"Temuco","m2":656.0,"posiciones":422.0,"capCongKg":51367.0,"capRefrKg":142286.0,"capTotalKg":193653.0,"personas":28.0,"demandaMes":2755707.0,"dohCongelado":3.762267375535856,"dohRefrigerado":2.2093822868519357},{"nombre":"Valdivia","m2":336.0,"posiciones":196.0,"capCongKg":5000.0,"capRefrKg":85000.0,"capTotalKg":90000.0,"personas":9.0,"demandaMes":816946.0,"dohCongelado":3.635103921319831,"dohRefrigerado":1.8289386991035026},{"nombre":"Viña del Mar","m2":680.0,"posiciones":547.0,"capCongKg":56000.0,"capRefrKg":195000.0,"capTotalKg":251000.0,"personas":26.0,"demandaMes":2070303.0,"dohCongelado":3.074174382075525,"dohRefrigerado":2.225285087030298},{"nombre":"San Bernardo","m2":3252.0,"posiciones":2860.0,"capCongKg":null,"capRefrKg":null,"capTotalKg":null,"personas":34.0,"demandaMes":null,"dohCongelado":null,"dohRefrigerado":null}];
+
+/* ------------------------------------------------------------------ *
+ * Capa comun a los dos documentos derivados (tecnico y guia).
+ * Asume que ya estan definidos, arriba en el mismo <script>:
+ *   - el nucleo verificado (evaluarRed, ...)
+ *   - const DATOS
+ * No se ejecuta sola: la construccion la inlinea en su marcador.
+ * ------------------------------------------------------------------ */
+
+/* ---------- formato, en convencion es-CL ---------- */
+const nf = (n, d = 2) =>
+  Number(n).toLocaleString('es-CL', { minimumFractionDigits: d, maximumFractionDigits: d });
+const ent = (n) => Math.round(n).toLocaleString('es-CL');
+const pct = (n, d = 1) => nf(n * 100, d) + ' %';
+
+/* ---------- calculo ---------- */
+const RED = evaluarRed(DATOS);
+const RES = RED.resultados;
+const porNombre = Object.fromEntries(RES.map((r) => [r.sucursal, r]));
+
+const CLASE = {
+  'estructural y operacional': 'amb',
+  'saturacion estructural': 'est',
+  'saturacion operacional': 'ope',
+  'sin saturacion': 'sin'
+};
+const ETIQUETA = {
+  'estructural y operacional': 'ambas',
+  'saturacion estructural': 'estructural',
+  'saturacion operacional': 'operacional',
+  'sin saturacion': 'sin saturación'
+};
+const pill = (r) => `<span class="pill e-${CLASE[r.estado]}">${ETIQUETA[r.estado]}</span>`;
+
+// El nucleo se escribe en ASCII a proposito, asi que su detalleEstado viene sin
+// tildes. Se reescribe aqui, en la capa de presentacion, en vez de tocar el
+// archivo verificado.
+function detalle(r) {
+  const cam = `la cámara de ${r.camaraCritica} desborda`;
+  switch (r.estado) {
+    case 'estructural y operacional': return `${cam} y la operación no cabe`;
+    case 'saturacion estructural':
+      return r.hayEspacioM2 ? cam : 'el inventario de política no cabe en la superficie';
+    case 'saturacion operacional': return 'el inventario cabe, la operación no';
+    default:
+      return r.hayEspacioM2 ? 'cabe el inventario y cabe la operación'
+                            : 'el inventario cabe justo, sin superficie libre';
+  }
+}
+const mayus = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+
+/* ---------- navegacion por paginas ---------- */
+const rail = document.getElementById('rail');
+rail.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-p]');
+  if (!b) return;
+  for (const o of rail.querySelectorAll('button[data-p]')) o.removeAttribute('aria-current');
+  b.setAttribute('aria-current', 'page');
+  for (const s of document.querySelectorAll('.pagina')) s.classList.toggle('on', s.id === b.dataset.p);
+  window.scrollTo({ top: 0, behavior: 'auto' });
+});
+
+/* ---------- ficha de sucursal ---------- */
+function ficha(r, extra) {
+  return `
+<button class="ficha ${CLASE[r.estado]}" data-suc="${r.sucursal}">
+  <div class="top">
+    <span class="nom">${r.sucursal} ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''}</span>
+    <span class="rho">${nf(r.rhoEstructural, 2)}</span>
+  </div>
+  ${pill(r)}
+  ${extra ? `<p class="lt" style="font-size:.79rem;margin-top:9px;color:var(--azul-75)">${extra}</p>` : ''}
+  <dl>
+    <dt>ρ operacional</dt><dd>${r.hayEspacioM2 ? nf(r.rhoOperacional, 2) : 'n/d'}</dd>
+    <dt>Cámara crítica</dt><dd>${r.camaraCritica}</dd>
+    <dt>Demanda efectiva</dt><dd>${ent(r.demandaEfectiva)} kg</dd>
+    <dt>m² libres</dt><dd>${nf(r.m2Libre, 0)}</dd>
+  </dl>
+</button>`;
+}
+
+/* ---------- derivacion completa, paso a paso ---------- */
+function derivacion(r) {
+  const s = DATOS.find((x) => x.nombre === r.sucursal);
+  const p = RED.parametros;
+  const sigma = Math.max(...p.turnos.map((t) => t.sigma));
+  const red = r.abastece.length
+    ? `D_ef = ${ent(r.demandaPropia)} + ${ent(r.demandaAportada)} = <b class="res">${ent(r.demandaEfectiva)}</b> kg/mes   <span class="cmt">hub: ×${nf(r.factorHub, 2)}</span>`
+    : `D_ef = D = <b class="res">${ent(r.demandaEfectiva)}</b> kg/mes   <span class="cmt">no abastece a terceros</span>`;
+
+  const op = r.hayEspacioM2
+    ? `<b>ρ_op = ${nf(r.m2Operacion, 1)} / ${nf(r.m2Libre, 1)} = <span class="res">${nf(r.rhoOperacional, 4)}</span></b>   <span class="cmt">${r.saturadoOperacional ? 'satura' : 'dentro de límite'}</span>`
+    : `<b class="res">ρ_op no definido</b>   <span class="cmt">m²_libre ≤ 0: no hay superficie sobre la cual preguntar</span>`;
+
+  return `
+<div class="card">
+  <h3>${r.sucursal} ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''} ${pill(r)}</h3>
+  <p class="lt" style="margin-top:8px;font-size:.88rem">${mayus(detalle(r))}. Cámara crítica: <b>${r.camaraCritica}</b>.</p>
+
+  <h4>Paso 0 · Red de abastecimiento</h4>
+  <div class="eq">${red}</div>
+
+  <h4>Pasos 1–2 · Flujo diario y política ponderada</h4>
+  <div class="eq">d    = D_ef / 30,44 = <b>${nf(r.demandaDiaKg, 1)}</b> kg/día
+d_C  = φ · d = ${nf(RED.phi, 6)} × ${nf(r.demandaDiaKg, 1)} = <b>${nf(r.demandaDiaKg * RED.phi, 1)}</b> kg/día
+d_R  = (1 − φ) · d                     = <b>${nf(r.demandaDiaKg * (1 - RED.phi), 1)}</b> kg/día
+
+DOH_pol = φ·DOH_C + (1−φ)·DOH_R
+        = ${nf(RED.phi, 4)}×${nf(r.dohPoliticaC, 4)} + ${nf(1 - RED.phi, 4)}×${nf(r.dohPoliticaR, 4)} = <b>${nf(r.dohPoliticaPonderado, 4)}</b> días</div>
+
+  <h4>Paso 3 · Capacidad efectiva en posiciones</h4>
+  <div class="eq">β    = K_C / K = ${ent(s.capCongKg)} / ${ent(s.capTotalKg)} = <b>${nf(r.shareCongInstalado, 4)}</b>
+P_C  = P · u · β       = ${ent(s.posiciones)} × ${nf(r.shareCongInstalado, 4)} = <b>${nf(r.posDispC, 1)}</b> pos
+P_R  = P · u · (1 − β)                        = <b>${nf(r.posDispR, 1)}</b> pos</div>
+
+  <h4>Paso 4 · Requerimiento que impone la política</h4>
+  <div class="eq">n_C = d_C · DOH_C / γ = ${nf(r.demandaDiaKg * RED.phi, 1)} × ${nf(r.dohPoliticaC, 4)} / 459 = <b>${nf(r.posReqC, 1)}</b> pos
+n_R = d_R · DOH_R / γ = ${nf(r.demandaDiaKg * (1 - RED.phi), 1)} × ${nf(r.dohPoliticaR, 4)} / 459 = <b>${nf(r.posReqR, 1)}</b> pos
+n   = n_C + n_R                                            = <b>${nf(r.posReqTotal, 1)}</b> pos</div>
+
+  <h4>Paso 5 · DOH físico, el contrapeso de la política</h4>
+  <div class="eq">DOH_fís_C = P_C · γ / d_C = <b>${nf(r.dohFisicoC, 4)}</b> días   <span class="cmt">política: ${nf(r.dohPoliticaC, 4)}</span>
+DOH_fís_R = P_R · γ / d_R = <b>${nf(r.dohFisicoR, 4)}</b> días   <span class="cmt">política: ${nf(r.dohPoliticaR, 4)}</span></div>
+
+  <h4>Pasos 6–7 · Saturación estructural</h4>
+  <div class="eq">ρ_C = n_C / P_C = ${nf(r.posReqC, 1)} / ${nf(r.posDispC, 1)} = <b>${nf(r.rhoCongelado, 4)}</b>
+ρ_R = n_R / P_R = ${nf(r.posReqR, 1)} / ${nf(r.posDispR, 1)} = <b>${nf(r.rhoRefrigerado, 4)}</b>
+
+<b>ρ* = máx(ρ_C, ρ_R) = <span class="res">${nf(r.rhoEstructural, 4)}</span></b>   <span class="cmt">manda ${r.camaraCritica}</span>
+ρ_flex = n / P = <b>${nf(r.rhoFlex, 4)}</b>   <span class="cmt">ocupación de la superficie total</span>
+
+<span class="cmt">Verificación V5 · desigualdad del mediante:</span>
+mín(${nf(r.rhoCongelado, 4)}, ${nf(r.rhoRefrigerado, 4)}) ≤ ${nf(r.rhoFlex, 4)} ≤ ${nf(r.rhoEstructural, 4)}  ✓</div>
+
+  <h4>Paso 8 · Superficie ocupada y libre</h4>
+  <div class="eq">δ       = P / A = ${ent(s.posiciones)} / ${ent(s.m2)} = <b>${nf(r.densidadPosM2, 4)}</b> pos/m²
+A_uso   = n / δ                       = <b>${nf(r.m2Uso, 1)}</b> m²
+A_libre = A − A_uso = ${ent(s.m2)} − ${nf(r.m2Uso, 1)} = <b>${nf(r.m2Libre, 1)}</b> m²
+
+<span class="cmt">Verificación V3 · identidad de acoplamiento:</span>
+A · (1 − ρ_flex) = ${ent(s.m2)} × ${nf(1 - r.rhoFlex, 4)} = <b>${nf(s.m2 * (1 - r.rhoFlex), 1)}</b> m²  ✓</div>
+
+  <h4>Pasos 9–10 · Superficie que exige la operación</h4>
+  <div class="eq">N_peak = N · máx(σ_t) = ${ent(s.personas)} × ${nf(sigma, 2)} = <b>${nf(r.personasPeak, 1)}</b> personas   <span class="cmt">turno ${r.turnoPeak}</span>
+A_op   = N_peak · a₀ = ${nf(r.personasPeak, 1)} × 36        = <b>${nf(r.m2Operacion, 1)}</b> m²
+
+${op}</div>
+
+  <h4>Pasos 11–12 · Sensibilidad y políticas de quiebre</h4>
+  <div class="eq">κ* = 1 / ρ* = <b>${nf(r.kappaEstructural, 4)}</b>   <span class="cmt">${r.kappaEstructural >= 1 ? 'admite subir la política' : 'obliga a bajarla'}</span>
+
+∂ρ/∂DOH_C = φ / DOH_fís = <b>${nf(r.derivadaRhoDohC, 6)}</b>      E_C = <b>${pct(r.elasticidadDohC)}</b>
+∂ρ/∂DOH_R = (1−φ) / DOH_fís = <b>${nf(r.derivadaRhoDohR, 6)}</b>  E_R = <b>${pct(r.elasticidadDohR)}</b>
+<span class="cmt">Verificación V15 · E_C + E_R = ${nf(r.elasticidadDohC + r.elasticidadDohR, 6)}  ✓</span>
+
+<span class="cmt">DOH que satura cada cámara (= su DOH físico):</span>
+DOH_C* = <b>${nf(r.dohCQuiebre, 4)}</b> días        DOH_R* = <b>${nf(r.dohRQuiebre, 4)}</b> días
+
+<span class="cmt">DOH ponderado que satura la etapa operacional:</span>
+DOH_pol* = DOH_fís · (1 − A_op/A) = <b>${r.operacionAlcanzable ? nf(r.dohPolQuiebreOperacional, 4) + ' días' : 'inalcanzable'}</b></div>
+  ${r.operacionAlcanzable ? '' : '<p class="nota">N · σ_peak · a₀ ≥ A: ni con inventario cero cabe la gente del turno peak. Ninguna política alcanza ρ_op = 1, y el modelo lo marca como inalcanzable en vez de entregar un DOH negativo.</p>'}
+</div>`;
+}
+
+/* ---------- selector que repinta la derivacion ---------- */
+function montarSelectorDerivacion(idSelect, idDestino) {
+  const sel = document.getElementById(idSelect);
+  sel.innerHTML = RES.map((r) =>
+    `<option value="${r.sucursal}">${r.sucursal} — ρ* ${nf(r.rhoEstructural, 2)}</option>`).join('');
+  const pinta = () => {
+    document.getElementById(idDestino).innerHTML = derivacion(porNombre[sel.value]);
+  };
+  sel.addEventListener('change', pinta);
+  pinta();
+}
+
+/* ---------- abre el detalle al elegir una ficha ---------- */
+function abreDetalle(gridId, detId) {
+  document.getElementById(gridId).addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-suc]');
+    if (!b) return;
+    const det = document.getElementById(detId);
+    det.hidden = false;
+    det.innerHTML = `<button class="cerrar" type="button">Cerrar</button>${derivacion(porNombre[b.dataset.suc])}`;
+    det.querySelector('.cerrar').addEventListener('click', () => { det.hidden = true; });
+    det.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+
+/* ---------- cifras que se citan en el texto ---------- */
+const sinEtapa2 = RES.filter((r) => !r.hayEspacioM2);
+document.getElementById('nSinEtapa2').textContent = sinEtapa2.length;
+document.getElementById('eSinEtapa2').textContent = sinEtapa2.length;
+document.getElementById('sPhi').textContent = nf(RED.phi, 6);
+document.getElementById('sSesgo').textContent = nf(RED.deduccion.sesgoProxyCapacidad, 4) + '×';
+
+/* ---------- caso completo ---------- */
+const selCaso = document.getElementById('selCaso');
+selCaso.innerHTML = RES.map((r) =>
+  `<option value="${r.sucursal}"${r.sucursal === 'Valdivia' ? ' selected' : ''}>${r.sucursal}</option>`).join('');
+
+function pintaCaso() {
+  const r = porNombre[selCaso.value];
+  const s = DATOS.find((x) => x.nombre === r.sucursal);
+  document.getElementById('casoResumen').innerHTML = `
+<div class="card">
+  <h3>${r.sucursal} ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''} ${pill(r)}</h3>
+  <p class="lt" style="margin-top:8px;font-size:.9rem">${mayus(detalle(r))}.</p>
+  <div class="cifras" style="margin-top:14px">
+    <div class="cifra"><span class="et">Vende</span><span class="v">${ent(s.demandaMes / 1000)}</span><span class="su">toneladas al mes</span></div>
+    <div class="cifra"><span class="et">Guarda</span><span class="v">${nf(r.dohPoliticaPonderado, 1)}</span><span class="su">días de cobertura</span></div>
+    <div class="cifra"><span class="et">Cámara crítica</span><span class="v" style="font-size:1.05rem">${r.camaraCritica}</span><span class="su">la que manda</span></div>
+    <div class="cifra"><span class="et">Saturación</span><span class="v">${nf(r.rhoEstructural, 2)}</span><span class="su">de esa cámara</span></div>
+  </div>
+
+  <p class="lt prosa" style="margin-top:14px;font-size:.9rem">La cuenta se hace <b>por cámara, no sobre el total</b>, porque congelado y refrigerado no se prestan espacio:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Cámara</th><th class="n">Necesita</th><th class="n">Tiene</th><th class="n">Saturación</th><th></th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Congelado</td><td class="n">${nf(r.posReqC, 0)}</td><td class="n">${nf(r.posDispC, 0)}</td>
+        <td class="n"><b>${nf(r.rhoCongelado, 2)}</b></td>
+        <td>${r.camaraCritica === 'congelado' ? '<span class="pill e-est">manda esta</span>' : ''}</td>
+      </tr>
+      <tr>
+        <td>Refrigerado</td><td class="n">${nf(r.posReqR, 0)}</td><td class="n">${nf(r.posDispR, 0)}</td>
+        <td class="n"><b>${nf(r.rhoRefrigerado, 2)}</b></td>
+        <td>${r.camaraCritica === 'refrigerado' ? '<span class="pill e-est">manda esta</span>' : ''}</td>
+      </tr>
+      <tr>
+        <td class="lt">Suma de ambas</td><td class="n lt">${nf(r.posReqTotal, 0)}</td><td class="n lt">${nf(r.posDispTotal, 0)}</td>
+        <td class="n lt">${nf(r.rhoFlex, 2)}</td>
+        <td class="lt" style="font-size:.76rem">no es la saturación</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <p class="lt prosa" style="margin-top:12px;font-size:.9rem">
+    Si sumáramos las dos cámaras daría <b>${nf(r.rhoFlex, 2)}</b>, que se ve mejor de lo que es:
+    esa suma supone que el producto congelado podría guardarse en la cámara refrigerada, y no puede.
+    Lo que vale es la cámara de <b>${r.camaraCritica}</b>, con <b>${nf(r.rhoEstructural, 2)}</b>.
+    ${r.saturadoEstructural
+      ? `Para dejar de saturar habría que bajar la política a <b>${pct(r.kappaEstructural, 0)}</b> de la actual.`
+      : `Todavía admite subir la política hasta <b>×${nf(r.kappaEstructural, 2)}</b> antes de saturar.`}
+    ${r.hayEspacioM2
+      ? `Quedan <b>${nf(r.m2Libre, 0)} m²</b> libres y el turno peak necesita <b>${nf(r.m2Operacion, 0)} m²</b>, así que la operación ${r.saturadoOperacional ? '<b>no cabe</b>' : 'cabe'}.`
+      : `No quedan m² libres, así que la operación no se evalúa.`}
+  </p>
+</div>
+<h3>La cuenta completa, paso a paso</h3>
+<p class="prosa lt">Los mismos seis pasos de la sección anterior, con los números de ${r.sucursal}.</p>`;
+  document.getElementById('casoDetalle').innerHTML = derivacion(r);
+}
+selCaso.addEventListener('change', pintaCaso);
+pintaCaso();
+
+/* ---------- veredictos ---------- */
+const c = RED.conteo;
+document.getElementById('cifrasVeredictos').innerHTML = [
+  ['Sin saturación', c.sinSaturacion, 'cabe todo'],
+  ['Solo operacional', RES.filter((r) => r.estado === 'saturacion operacional').length, 'la gente no cabe'],
+  ['Solo estructural', RES.filter((r) => r.estado === 'saturacion estructural').length, 'el producto no cabe'],
+  ['Ambas', RES.filter((r) => r.estado === 'estructural y operacional').length, 'los dos frentes'],
+  ['Sin etapa 2', c.sinEtapa2, 'operación sin evaluar']
+].map(([et, v, su]) => `<div class="cifra"><span class="et">${et}</span><span class="v">${v}</span><span class="su">${su}</span></div>`).join('');
+
+const ORDEN = ['sin saturacion', 'saturacion operacional', 'saturacion estructural', 'estructural y operacional'];
+document.getElementById('tablaVeredictos').innerHTML = `<table>
+  <thead><tr><th>Veredicto</th><th class="n">Sucursales</th><th>Cuáles</th></tr></thead>
+  <tbody>${ORDEN.map((est) => {
+    const en = RES.filter((r) => r.estado === est);
+    return `<tr><td><span class="pill e-${CLASE[est]}">${ETIQUETA[est]}</span></td><td class="n">${en.length}</td><td class="lt">${en.length ? en.map((r) => r.sucursal).join(', ') : '—'}</td></tr>`;
+  }).join('')}</tbody></table>`;
+
+/* ---------- hub ---------- */
+const hubs = RES.filter((r) => r.tipo === 'hub');
+document.getElementById('hHub').textContent = hubs.length;
+document.getElementById('hNormal').textContent = RES.length - hubs.length;
+document.getElementById('hubDetalle').innerHTML = hubs.map((h) => `
+<div class="card">
+  <h4>${h.sucursal} abastece a ${h.abastece.join(', ')}</h4>
+  <div class="cifras" style="margin-top:12px">
+    <div class="cifra"><span class="et">Su venta</span><span class="v">${ent(h.demandaPropia / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Lo que despacha</span><span class="v">${ent(h.demandaAportada / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Total que mueve</span><span class="v">${ent(h.demandaEfectiva / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Factor</span><span class="v">×${nf(h.factorHub, 2)}</span><span class="su">sobre su venta</span></div>
+  </div>
+  <p class="lt prosa" style="margin-top:13px;font-size:.89rem">Por sus cámaras pasa <b>${nf(h.factorHub, 2)} veces</b> lo que vende. Con ese volumen su saturación es <b>${nf(h.rhoEstructural, 2)}</b> y la cámara que manda es la de <b>${h.camaraCritica}</b>.</p>
+</div>`).join('');
+
+/* ---------- listado ---------- */
+let filtro = 'todas';
+function pintaSucursales() {
+  const lista = RES.filter((r) => filtro === 'todas' || r.tipo === filtro);
+  document.getElementById('gridSucursales').innerHTML = lista.map((r) => ficha(r)).join('');
+  document.getElementById('conteoSuc').textContent =
+    `${lista.length} de ${RES.length} · ${lista.filter((r) => r.saturadoEstructural).length} con el producto fuera de límite`;
+}
+document.getElementById('segTipo').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-t]');
+  if (!b) return;
+  filtro = b.dataset.t;
+  for (const o of e.currentTarget.querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b));
+  pintaSucursales();
+  document.getElementById('detSucursal').hidden = true;
+});
+pintaSucursales();
+abreDetalle('gridSucursales', 'detSucursal');
+
+/* ---------- dónde actúa mejor cada palanca ---------- */
+const saturadas = RES.filter((r) => r.saturadoEstructural)
+  .slice().sort((a, b) => b.rhoEstructural - a.rhoEstructural).slice(0, 8);
+document.getElementById('tablaPalancas').innerHTML = `<table>
+  <thead><tr>
+    <th>Sucursal</th><th class="n">ρ*</th><th>Cámara crítica</th>
+    <th class="n">κ</th><th>Hay que bajar la política a</th><th class="n">Aporta congelado</th>
+  </tr></thead>
+  <tbody>${saturadas.map((r) => `<tr>
+    <td><b>${r.sucursal}</b> ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''}</td>
+    <td class="n">${nf(r.rhoEstructural, 2)}</td>
+    <td>${r.camaraCritica}</td>
+    <td class="n">${nf(r.kappaEstructural, 2)}</td>
+    <td class="n">${pct(r.kappaEstructural, 0)} de la actual</td>
+    <td class="n">${pct(r.elasticidadDohC, 0)}</td>
+  </tr>`).join('')}</tbody></table>
+<p class="nota">Las ocho con mayor saturación. «Bajar la política a X %» significa multiplicar los días de cobertura actuales por ese factor para quedar justo en el límite.</p>`;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,519 @@
+<title>Guía de Saturación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/*__ESTILO__*/
+</style>
+
+<header class="cab">
+  <div class="inner">
+    <div>
+      <span class="kicker">Operaciones Nacionales · Red de frío · Guía de lectura</span>
+      <h1>Guía de Saturación</h1>
+      <p>Qué mide el modelo, por qué mide dos cosas y no una, y qué hacer con el resultado. La matemática está, pero explicada: cada fórmula viene con su traducción a lenguaje corriente.</p>
+    </div>
+    <!--__LOGO__-->
+  </div>
+</header>
+
+<div class="marco">
+  <nav id="rail" aria-label="Secciones">
+    <span class="grupo">Entender</span>
+    <button data-p="que" aria-current="page">Qué es la saturación</button>
+    <button data-p="dos">Por qué son dos</button>
+    <button data-p="formula">La fórmula, explicada</button>
+    <span class="grupo">Ver</span>
+    <button data-p="caso">Un caso completo</button>
+    <button data-p="veredictos">Los cuatro veredictos</button>
+    <button data-p="hub">HUB y normales</button>
+    <span class="grupo">Usar</span>
+    <button data-p="red">Las 20 sucursales</button>
+    <button data-p="palancas">Qué palanca mover</button>
+    <button data-p="errores">Errores de lectura</button>
+  </nav>
+
+  <div class="panel">
+
+    <!-- ============ QUÉ ES ============ -->
+    <section id="que" class="pagina on">
+      <div class="phead">
+        <span class="setiq">Entender · 1</span>
+        <h2>Qué es la saturación</h2>
+        <p class="prosa">Un número que responde una pregunta concreta: ¿lo que la política nos obliga a guardar, cabe en la bodega que tenemos?</p>
+      </div>
+
+      <div class="analogia">
+        <h4>La idea en una frase</h4>
+        <p>Saturación es <b>lo que necesito dividido por lo que tengo</b>. Si necesito 120 posiciones y tengo 100, la saturación es 1,2: me falta un 20 %.</p>
+      </div>
+
+      <h3>Cómo se lee el número</h3>
+      <div class="tw"><table>
+        <thead><tr><th class="n">ρ</th><th>Qué significa</th><th>Cómo se ve en la bodega</th></tr></thead>
+        <tbody>
+          <tr><td class="n">0,50</td><td>Uso la mitad de lo que aguanto</td><td>Pasillos despejados, posiciones vacías</td></tr>
+          <tr><td class="n">0,80</td><td>Uso ocho de cada diez posiciones</td><td>Cómodo, con margen para un peak</td></tr>
+          <tr><td class="n">1,00</td><td>Justo en el límite</td><td>Todo lleno. Cualquier desvío desborda</td></tr>
+          <tr><td class="n">1,50</td><td>Necesitaría un 50 % más de bodega</td><td>Producto en pasillos, quiebres, o inventario fuera de cámara</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="analogia">
+        <h4>Cuidado con una confusión frecuente</h4>
+        <p>ρ = 1,5 <b>no</b> significa que hoy haya un 50 % de producto de más tirado en el piso. Significa que la <b>política vigente pide</b> más de lo que la cámara sostiene. En la práctica esa diferencia se paga de alguna forma: quiebres, pasillos ocupados, producto fuera de cámara o reposiciones de emergencia. El número no dice cuál de esas formas: dice cuánta presión hay.</p>
+      </div>
+
+      <h3>De dónde sale el número</h3>
+      <p class="prosa lt">De cuatro cosas que ya conocemos de cada sucursal, sin encuestas ni supuestos nuevos:</p>
+      <ul class="vin">
+        <li><b>Cuánto vende.</b> Los kilos que salen al mes.</li>
+        <li><b>Cuántos días guarda.</b> La política de abastecimiento, en días de cobertura.</li>
+        <li><b>Cuánto le cabe.</b> Posiciones de pallet instaladas y metros cuadrados.</li>
+        <li><b>Cuánta gente trabaja.</b> Dotación y cómo se reparte entre turnos.</li>
+      </ul>
+      <p class="nota">Cada sucursal se mide <b>contra su propia capacidad</b>. Por eso ρ sí se puede comparar entre Calama y Miraflores, aunque sus tamaños no tengan nada que ver. Lo que nunca se suma son los kilos ni los metros: sumar 2.693 m² de Miraflores con 287 de Calama no describe nada real.</p>
+    </section>
+
+    <!-- ============ POR QUÉ DOS ============ -->
+    <section id="dos" class="pagina">
+      <div class="phead">
+        <span class="setiq">Entender · 2</span>
+        <h2>Por qué son dos preguntas y no una</h2>
+        <p class="prosa">Una sola cifra de «saturación» escondería la mitad de los problemas.</p>
+      </div>
+
+      <div class="contraste">
+        <div>
+          <h4>Pregunta 1 · ¿Cabe el producto?</h4>
+          <p>El inventario que exige la política, ¿entra en las cámaras? Se compara contra las <b>posiciones de pallet</b>.</p>
+          <div class="eq" style="font-size:.82rem;text-align:center;margin-top:11px">ρ* = máx( ρ congelado , ρ refrigerado )</div>
+          <p style="margin-top:9px"><span class="pill e-est">saturación estructural</span></p>
+        </div>
+        <div>
+          <h4>Pregunta 2 · ¿Cabe la gente?</h4>
+          <p>Con el piso que sobra, ¿pueden trabajar las personas del turno más cargado? Se compara contra los <b>metros cuadrados libres</b>.</p>
+          <div class="eq" style="font-size:.82rem;text-align:center;margin-top:11px">ρ_op = m² que exige la operación / m² libres</div>
+          <p style="margin-top:9px"><span class="pill e-ope">saturación operacional</span></p>
+        </div>
+      </div>
+
+      <h3>Dos casos reales que lo explican</h3>
+
+      <div class="analogia">
+        <h4>Bodega llena, operación cómoda</h4>
+        <p>Las cajas llegan al tope de las racks, pero en el turno peak hay tres personas y espacio de sobra para moverse. Si promediáramos ambas mediciones, el resultado diría «está bien». <b>No está bien</b>: la cámara desborda y eso se traduce en quiebres.</p>
+      </div>
+
+      <div class="analogia">
+        <h4>Bodega holgada, operación imposible</h4>
+        <p>El inventario cabe cómodo, pero en el peak entran tantas personas a la vez que se estorban y no pueden trabajar. Mirando solo la cámara, esta sucursal parecería sana. <b>No lo está</b>: el cuello está en el piso, no en las racks.</p>
+      </div>
+
+      <p class="nota">Por eso las dos mediciones se reportan <b>siempre por separado</b> y nunca se promedian, ni se combinan en un índice único. Fundirlas escondería una cámara desbordada detrás de un diagnóstico operacional cómodo, o al revés.</p>
+
+      <h3>La segunda pregunta solo tiene sentido a veces</h3>
+      <p class="prosa lt">Si el inventario ya ocupó toda la superficie, no queda piso sobre el cual preguntarse si cabe la gente. En ese caso el modelo <b>no inventa un número</b>: deja la segunda pregunta sin responder y lo dice explícitamente como «sin etapa 2».</p>
+      <p class="prosa lt">Podría haber puesto 0 (que diría «la operación va holgada») o infinito (que diría «la operación está colapsada»). Ninguna de las dos es cierta: simplemente no hay dato. Hoy eso ocurre en <b id="nSinEtapa2"></b> de las 20 sucursales.</p>
+    </section>
+
+    <!-- ============ FÓRMULA ============ -->
+    <section id="formula" class="pagina">
+      <div class="phead">
+        <span class="setiq">Entender · 3</span>
+        <h2>La fórmula, explicada</h2>
+        <p class="prosa">Aquí está la matemática completa. Cada línea viene con su traducción.</p>
+      </div>
+
+      <h3>Paso 1 · De kilos al mes a kilos al día</h3>
+      <div class="eq">d = D / 30,44</div>
+      <p class="prosa lt"><b>En palabras:</b> los kilos que la sucursal mueve en un mes, repartidos entre los días del mes. Da el flujo diario. Se usa 30,44 porque es el promedio real de días por mes en un año.</p>
+
+      <h3>Paso 2 · Cuánto inventario pide la política</h3>
+      <div class="eq">inventario = d × DOH</div>
+      <p class="prosa lt"><b>En palabras:</b> el flujo diario multiplicado por los días de cobertura. Si la sucursal mueve 27.000 kg al día y la política dice guardar 3,6 días, entonces debe tener unos 97.000 kg en cámara.</p>
+      <p class="prosa lt">DOH significa <i>días de cobertura</i>: cuántos días de venta mantengo guardados. Es la palanca principal del modelo — casi todo lo demás se deduce de ella.</p>
+
+      <h3>Paso 3 · De kilos a posiciones de pallet</h3>
+      <div class="eq">posiciones que necesito  =  inventario / 459</div>
+      <p class="prosa lt"><b>En palabras:</b> cada posición de pallet aguanta unos 459 kg. Dividiendo el inventario por esa cifra sabemos cuántas posiciones hacen falta.</p>
+      <p class="nota">Este número no es un supuesto arbitrario: en las 20 sucursales la capacidad en kilos y las posiciones guardan la relación <span class="m">K = P × 458,9</span> con una dispersión de apenas 0,93 %. Los kilos de capacidad son, de hecho, una columna calculada a partir de las posiciones.</p>
+
+      <h3>Paso 4 · La saturación estructural</h3>
+      <div class="eq">ρ = posiciones que necesito / posiciones que tengo</div>
+      <p class="prosa lt"><b>En palabras:</b> la división que da el número. Pero se hace <b>dos veces por separado</b>, una para congelado y otra para refrigerado, porque son cámaras distintas.</p>
+
+      <div class="analogia">
+        <h4>Por qué manda la peor y no el promedio</h4>
+        <p>Congelado y refrigerado son compartimentos <b>rígidos</b>: no se prestan espacio. Si la cámara de congelado desborda, no la salva que sobre lugar en la refrigerada — el producto no se puede mover ahí. La sucursal está tan apretada como su cámara peor, así que se toma <b>el máximo</b>, no la media.</p>
+      </div>
+
+      <h3>Paso 5 · Cuánto piso queda libre</h3>
+      <div class="eq">m² libres  =  m² totales × ( 1 − ocupación )</div>
+      <p class="prosa lt"><b>En palabras:</b> el inventario ocupa una parte de la superficie; lo que sobra es el piso donde se trabaja. Mientras más apretada la política, menos piso queda.</p>
+      <p class="prosa lt">Esta línea es importante porque es <b>el único puente</b> entre las dos preguntas. La política de inventario afecta a la operación solamente por aquí: comprimiendo el espacio libre. No hay ningún otro camino.</p>
+
+      <h3>Paso 6 · La saturación operacional</h3>
+      <div class="eq">m² que exige la operación  =  personas del turno peak × 36
+
+ρ_op  =  m² que exige la operación / m² libres</div>
+      <p class="prosa lt"><b>En palabras:</b> cada persona necesita unos 36 m² para trabajar dentro de la cámara. Se toma el turno con más gente —el peak— porque lo que restringe es cuántas personas están <b>al mismo tiempo</b> adentro, no cuántas pasan en el día.</p>
+      <p class="nota">El reparto de turnos es 20 % mañana, 40 % tarde y 40 % noche. El peak es entonces el 40 % de la dotación. Mover gente del turno cargado a los otros dos baja ρ_op sin tocar ρ* — es la palanca más barata que existe.</p>
+
+      <h3>Una sola cosa que no viene en la planilla</h3>
+      <p class="prosa lt">Todo lo anterior sale de datos que ya tenemos, salvo un número: <b>qué proporción de la demanda es congelada</b> (se le llama φ). El modelo lo deduce en vez de suponerlo.</p>
+      <div class="eq">φ  =  1 / [ 1 + (capacidad refrigerada / capacidad congelada) × (DOH congelado / DOH refrigerado) ]
+
+<span class="cmt">con los datos de la red:</span>  φ = <b class="res" id="sPhi"></b></div>
+      <p class="prosa lt"><b>En palabras:</b> si la red se construyó para sostener su propia política, entonces el tamaño de cada cámara ya contiene la información del mix. Se despeja de ahí.</p>
+      <div class="analogia">
+        <h4>Por qué no basta mirar el tamaño de las cámaras</h4>
+        <p>Sería tentador decir «la cámara congelada es el 27,6 % del total, entonces el 27,6 % de la demanda es congelada». Está mal, y por una razón concreta: <b>el espacio que ocupa un producto depende de cuántos días se queda</b>. El congelado se guarda más días que el refrigerado, así que ocupa más cámara por cada kilo vendido. Usar el atajo sobreestimaría el congelado en <b id="sSesgo"></b> y haría aparecer déficit de congelado en las 20 sucursales — un error del método, no un hallazgo.</p>
+      </div>
+    </section>
+
+    <!-- ============ CASO ============ -->
+    <section id="caso" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 4</span>
+        <h2>Un caso completo</h2>
+        <p class="prosa">La misma cuenta de la sección anterior, hecha entera con los números de una sucursal real.</p>
+      </div>
+      <div class="barra">
+        <label class="sel" for="selCaso">Ver el caso de</label>
+        <select id="selCaso"></select>
+      </div>
+      <div id="casoResumen"></div>
+      <div id="casoDetalle"></div>
+    </section>
+
+    <!-- ============ VEREDICTOS ============ -->
+    <section id="veredictos" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 5</span>
+        <h2>Los cuatro veredictos</h2>
+        <p class="prosa">Dos preguntas, cada una con dos respuestas posibles, dan exactamente cuatro situaciones. No hay más.</p>
+      </div>
+
+      <div class="tw"><table>
+        <thead><tr><th>Veredicto</th><th>¿Cabe el producto?</th><th>¿Cabe la gente?</th><th>Qué está pasando</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill e-sin">sin saturación</span></td>
+            <td>Sí</td><td>Sí</td>
+            <td>La sucursal está dentro de límite en ambas dimensiones.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-ope">operacional</span></td>
+            <td>Sí</td><td>No</td>
+            <td>El producto entra sin problema, pero la gente del turno peak no tiene dónde trabajar.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-est">estructural</span></td>
+            <td>No</td><td>Sí o sin dato</td>
+            <td>La cámara crítica desborda. Es el problema más común de la red.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-amb">ambas</span></td>
+            <td>No</td><td>No</td>
+            <td>Ni la cámara ni el piso dan abasto. Requiere intervenir en los dos frentes.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <h3>Cómo está repartida la red hoy</h3>
+      <div class="cifras" id="cifrasVeredictos"></div>
+      <div class="tw" id="tablaVeredictos"></div>
+      <p class="nota">Estos conteos usan las <b>políticas de abastecimiento vigentes</b>, tal como fueron entregadas. No son un escenario ni una proyección: es la fotografía de hoy.</p>
+    </section>
+
+    <!-- ============ HUB ============ -->
+    <section id="hub" class="pagina">
+      <div class="phead">
+        <span class="setiq">Ver · 6</span>
+        <h2>Sucursales HUB y sucursales normales</h2>
+        <p class="prosa">Algunas sucursales no solo venden: también despachan a otras. Eso cambia su cálculo.</p>
+      </div>
+
+      <div class="contraste">
+        <div>
+          <h4>Sucursal normal</h4>
+          <p>Guarda inventario solo para su propia venta. Lo que necesita depende únicamente de su demanda.</p>
+          <div class="eq" style="font-size:.82rem;margin-top:11px">demanda efectiva = demanda propia</div>
+          <p style="margin-top:9px" class="lt"><b id="hNormal"></b> de las 20 sucursales.</p>
+        </div>
+        <div>
+          <h4>Sucursal HUB</h4>
+          <p>Además de vender, mueve por sus cámaras el volumen que despacha a otras. Ese flujo ocupa espacio real y entra al cálculo.</p>
+          <div class="eq" style="font-size:.82rem;margin-top:11px">demanda efectiva = propia + lo que despacha</div>
+          <p style="margin-top:9px" class="lt"><b id="hHub"></b> de las 20 sucursales.</p>
+        </div>
+      </div>
+
+      <div id="hubDetalle"></div>
+
+      <div class="analogia">
+        <h4>«¿No estamos contando el mismo kilo dos veces?»</h4>
+        <p>No. Un kilo que va de Antofagasta a Arica ocupa cámara <b>dos veces distintas</b>: primero en Antofagasta, mientras espera el despacho; después en Arica, mientras espera la venta. Son dos ocupaciones físicas reales, en dos lugares y dos momentos. Si lo descontáramos de Arica estaríamos subestimando su saturación; si lo omitiéramos en Antofagasta, subestimaríamos la de Antofagasta.</p>
+      </div>
+
+      <p class="nota">El efecto no es cosmético: sin considerar lo que despacha, Antofagasta aparecía con holgura y su cámara crítica era el congelado. Al incorporarlo, satura y su cámara crítica pasa a ser el refrigerado. Cambia el diagnóstico, no solo la magnitud.</p>
+    </section>
+
+    <!-- ============ RED ============ -->
+    <section id="red" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 7</span>
+        <h2>Las 20 sucursales</h2>
+        <p class="prosa">Ordenadas de mayor a menor saturación estructural. Elige cualquiera para ver su cuenta completa.</p>
+      </div>
+      <div class="barra">
+        <div class="segmento" id="segTipo">
+          <button data-t="todas" aria-pressed="true">Todas</button>
+          <button data-t="normal" aria-pressed="false">Normales</button>
+          <button data-t="hub" aria-pressed="false">HUB</button>
+        </div>
+        <span class="conteo" id="conteoSuc"></span>
+      </div>
+      <div class="fichas" id="gridSucursales"></div>
+      <div class="detalle" id="detSucursal" hidden></div>
+    </section>
+
+    <!-- ============ PALANCAS ============ -->
+    <section id="palancas" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 8</span>
+        <h2>Qué palanca mover</h2>
+        <p class="prosa">Cada veredicto tiene una respuesta distinta. Aplicar la palanca equivocada no mejora nada.</p>
+      </div>
+
+      <div class="tw"><table>
+        <thead><tr><th>Si aparece</th><th>Palanca inmediata</th><th>Palanca de fondo</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill e-est">estructural</span></td>
+            <td>Bajar los días de cobertura de la <b>cámara crítica</b>: menos stock, más frecuencia de reposición.</td>
+            <td>Ampliar o reconvertir la cámara que satura.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-ope">operacional</span></td>
+            <td>Mover dotación del turno peak a los otros dos. Es reversible y no cuesta inversión.</td>
+            <td>Rediseñar el layout o ampliar superficie.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-amb">ambas</span></td>
+            <td>Primero los días de cobertura: al liberar posiciones se libera piso, y la operación mejora sola.</td>
+            <td>Revisar si la sucursal está bien dimensionada para su rol en la red.</td>
+          </tr>
+          <tr>
+            <td><span class="pill e-sin">sin saturación</span></td>
+            <td>Nada. Verificar que la holgura no sea capacidad ociosa.</td>
+            <td>Candidata a absorber volumen de una sucursal saturada.</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="analogia">
+        <h4>El orden importa</h4>
+        <p>La palanca del inventario mueve <b>las dos</b> mediciones a la vez: menos stock libera posiciones y, con ellas, piso para operar. La palanca de la dotación mueve <b>solo una</b>: cambia la operación y deja la cámara igual. Por eso, cuando ambas saturan, se empieza siempre por el inventario.</p>
+      </div>
+
+      <h3>Tres números que ayudan a decidir</h3>
+      <ul class="vin">
+        <li><b>κ (kappa).</b> Por cuánto se puede multiplicar la política actual antes de saturar. Si κ = 0,8, hay que bajarla un 20 %. Si κ = 1,3, hay margen para subirla un 30 %.</li>
+        <li><b>Cámara crítica.</b> Cuál de las dos cámaras es la que satura. Indica dónde actuar: no sirve bajar el refrigerado si la que desborda es la de congelado.</li>
+        <li><b>Participación de cada régimen.</b> Qué parte de la saturación aporta el congelado y qué parte el refrigerado. Si el congelado aporta el 28 %, bajarlo un 10 % reduce la saturación un 2,8 %.</li>
+      </ul>
+
+      <h3>Dónde tiene más efecto actuar</h3>
+      <div class="tw" id="tablaPalancas"></div>
+    </section>
+
+    <!-- ============ ERRORES ============ -->
+    <section id="errores" class="pagina">
+      <div class="phead">
+        <span class="setiq">Usar · 9</span>
+        <h2>Errores de lectura frecuentes</h2>
+        <p class="prosa">Cinco conclusiones que el número no autoriza, y qué dice en realidad.</p>
+      </div>
+
+      <div class="card">
+        <h4>«Sumemos la saturación de la red»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No se puede.</b> Cada sucursal se mide contra su propia capacidad, así que un promedio simple daría más peso a las chicas. Lo que sí se puede es <b>contar sucursales</b> por estado, que es lo que reportan todos los documentos.</p>
+      </div>
+
+      <div class="card">
+        <h4>«Esta sucursal tiene ρ alto, está mal gestionada»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No se sigue.</b> ρ alto puede venir de una política exigente, de una cámara pequeña para su demanda, o de un rol de red que le agrega volumen. El número señala <b>dónde mirar</b>, no de quién es la responsabilidad.</p>
+      </div>
+
+      <div class="card">
+        <h4>«ρ bajo es siempre bueno»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>No.</b> Una sucursal muy por debajo de su capacidad tiene inmovilizada una cámara que otra necesita. La banda sana está entre 0,40 y 0,80, no en el mínimo posible.</p>
+      </div>
+
+      <div class="card">
+        <h4>«La operación está bien porque no aparece saturada»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>Ojo con el «sin dato».</b> Si la sucursal no tiene piso libre, la operación no se evalúa — y eso <b>no</b> es lo mismo que estar holgada. Hoy hay <b id="eSinEtapa2"></b> sucursales en esa condición: su celda de operación dice «n/d», no «bien».</p>
+      </div>
+
+      <div class="card">
+        <h4>«Bajemos el DOH parejo en toda la red»</h4>
+        <p class="lt" style="margin-top:7px;font-size:.89rem"><b>Desperdicia la palanca.</b> Cada sucursal tiene una cámara crítica distinta y una participación distinta de cada régimen. Bajar parejo castiga a las que ya estaban sanas y no ataca lo suficiente a las que desbordan. El ajuste se hace por sucursal y por régimen.</p>
+      </div>
+
+      <p class="nota">Para el detalle formal de por qué cada una de estas afirmaciones no se sostiene —con las derivaciones y las demostraciones— está el documento técnico de la especificación del modelo.</p>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  Guía de lectura · Modelo de saturación de la red de frío · las cifras salen del mismo núcleo verificado que el informe · Operaciones Nacionales.
+</footer>
+
+<script>
+/*__CORE__*/
+
+const DATOS = /*__DATOS__*/;
+
+/*__COMUN__*/
+
+/* ---------- cifras que se citan en el texto ---------- */
+const sinEtapa2 = RES.filter((r) => !r.hayEspacioM2);
+document.getElementById('nSinEtapa2').textContent = sinEtapa2.length;
+document.getElementById('eSinEtapa2').textContent = sinEtapa2.length;
+document.getElementById('sPhi').textContent = nf(RED.phi, 6);
+document.getElementById('sSesgo').textContent = nf(RED.deduccion.sesgoProxyCapacidad, 4) + '×';
+
+/* ---------- caso completo ---------- */
+const selCaso = document.getElementById('selCaso');
+selCaso.innerHTML = RES.map((r) =>
+  `<option value="${r.sucursal}"${r.sucursal === 'Valdivia' ? ' selected' : ''}>${r.sucursal}</option>`).join('');
+
+function pintaCaso() {
+  const r = porNombre[selCaso.value];
+  const s = DATOS.find((x) => x.nombre === r.sucursal);
+  document.getElementById('casoResumen').innerHTML = `
+<div class="card">
+  <h3>${r.sucursal} ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''} ${pill(r)}</h3>
+  <p class="lt" style="margin-top:8px;font-size:.9rem">${mayus(detalle(r))}.</p>
+  <div class="cifras" style="margin-top:14px">
+    <div class="cifra"><span class="et">Vende</span><span class="v">${ent(s.demandaMes / 1000)}</span><span class="su">toneladas al mes</span></div>
+    <div class="cifra"><span class="et">Guarda</span><span class="v">${nf(r.dohPoliticaPonderado, 1)}</span><span class="su">días de cobertura</span></div>
+    <div class="cifra"><span class="et">Cámara crítica</span><span class="v" style="font-size:1.05rem">${r.camaraCritica}</span><span class="su">la que manda</span></div>
+    <div class="cifra"><span class="et">Saturación</span><span class="v">${nf(r.rhoEstructural, 2)}</span><span class="su">de esa cámara</span></div>
+  </div>
+
+  <p class="lt prosa" style="margin-top:14px;font-size:.9rem">La cuenta se hace <b>por cámara, no sobre el total</b>, porque congelado y refrigerado no se prestan espacio:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Cámara</th><th class="n">Necesita</th><th class="n">Tiene</th><th class="n">Saturación</th><th></th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Congelado</td><td class="n">${nf(r.posReqC, 0)}</td><td class="n">${nf(r.posDispC, 0)}</td>
+        <td class="n"><b>${nf(r.rhoCongelado, 2)}</b></td>
+        <td>${r.camaraCritica === 'congelado' ? '<span class="pill e-est">manda esta</span>' : ''}</td>
+      </tr>
+      <tr>
+        <td>Refrigerado</td><td class="n">${nf(r.posReqR, 0)}</td><td class="n">${nf(r.posDispR, 0)}</td>
+        <td class="n"><b>${nf(r.rhoRefrigerado, 2)}</b></td>
+        <td>${r.camaraCritica === 'refrigerado' ? '<span class="pill e-est">manda esta</span>' : ''}</td>
+      </tr>
+      <tr>
+        <td class="lt">Suma de ambas</td><td class="n lt">${nf(r.posReqTotal, 0)}</td><td class="n lt">${nf(r.posDispTotal, 0)}</td>
+        <td class="n lt">${nf(r.rhoFlex, 2)}</td>
+        <td class="lt" style="font-size:.76rem">no es la saturación</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <p class="lt prosa" style="margin-top:12px;font-size:.9rem">
+    Si sumáramos las dos cámaras daría <b>${nf(r.rhoFlex, 2)}</b>, que se ve mejor de lo que es:
+    esa suma supone que el producto congelado podría guardarse en la cámara refrigerada, y no puede.
+    Lo que vale es la cámara de <b>${r.camaraCritica}</b>, con <b>${nf(r.rhoEstructural, 2)}</b>.
+    ${r.saturadoEstructural
+      ? `Para dejar de saturar habría que bajar la política a <b>${pct(r.kappaEstructural, 0)}</b> de la actual.`
+      : `Todavía admite subir la política hasta <b>×${nf(r.kappaEstructural, 2)}</b> antes de saturar.`}
+    ${r.hayEspacioM2
+      ? `Quedan <b>${nf(r.m2Libre, 0)} m²</b> libres y el turno peak necesita <b>${nf(r.m2Operacion, 0)} m²</b>, así que la operación ${r.saturadoOperacional ? '<b>no cabe</b>' : 'cabe'}.`
+      : `No quedan m² libres, así que la operación no se evalúa.`}
+  </p>
+</div>
+<h3>La cuenta completa, paso a paso</h3>
+<p class="prosa lt">Los mismos seis pasos de la sección anterior, con los números de ${r.sucursal}.</p>`;
+  document.getElementById('casoDetalle').innerHTML = derivacion(r);
+}
+selCaso.addEventListener('change', pintaCaso);
+pintaCaso();
+
+/* ---------- veredictos ---------- */
+const c = RED.conteo;
+document.getElementById('cifrasVeredictos').innerHTML = [
+  ['Sin saturación', c.sinSaturacion, 'cabe todo'],
+  ['Solo operacional', RES.filter((r) => r.estado === 'saturacion operacional').length, 'la gente no cabe'],
+  ['Solo estructural', RES.filter((r) => r.estado === 'saturacion estructural').length, 'el producto no cabe'],
+  ['Ambas', RES.filter((r) => r.estado === 'estructural y operacional').length, 'los dos frentes'],
+  ['Sin etapa 2', c.sinEtapa2, 'operación sin evaluar']
+].map(([et, v, su]) => `<div class="cifra"><span class="et">${et}</span><span class="v">${v}</span><span class="su">${su}</span></div>`).join('');
+
+const ORDEN = ['sin saturacion', 'saturacion operacional', 'saturacion estructural', 'estructural y operacional'];
+document.getElementById('tablaVeredictos').innerHTML = `<table>
+  <thead><tr><th>Veredicto</th><th class="n">Sucursales</th><th>Cuáles</th></tr></thead>
+  <tbody>${ORDEN.map((est) => {
+    const en = RES.filter((r) => r.estado === est);
+    return `<tr><td><span class="pill e-${CLASE[est]}">${ETIQUETA[est]}</span></td><td class="n">${en.length}</td><td class="lt">${en.length ? en.map((r) => r.sucursal).join(', ') : '—'}</td></tr>`;
+  }).join('')}</tbody></table>`;
+
+/* ---------- hub ---------- */
+const hubs = RES.filter((r) => r.tipo === 'hub');
+document.getElementById('hHub').textContent = hubs.length;
+document.getElementById('hNormal').textContent = RES.length - hubs.length;
+document.getElementById('hubDetalle').innerHTML = hubs.map((h) => `
+<div class="card">
+  <h4>${h.sucursal} abastece a ${h.abastece.join(', ')}</h4>
+  <div class="cifras" style="margin-top:12px">
+    <div class="cifra"><span class="et">Su venta</span><span class="v">${ent(h.demandaPropia / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Lo que despacha</span><span class="v">${ent(h.demandaAportada / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Total que mueve</span><span class="v">${ent(h.demandaEfectiva / 1000)}</span><span class="su">ton/mes</span></div>
+    <div class="cifra"><span class="et">Factor</span><span class="v">×${nf(h.factorHub, 2)}</span><span class="su">sobre su venta</span></div>
+  </div>
+  <p class="lt prosa" style="margin-top:13px;font-size:.89rem">Por sus cámaras pasa <b>${nf(h.factorHub, 2)} veces</b> lo que vende. Con ese volumen su saturación es <b>${nf(h.rhoEstructural, 2)}</b> y la cámara que manda es la de <b>${h.camaraCritica}</b>.</p>
+</div>`).join('');
+
+/* ---------- listado ---------- */
+let filtro = 'todas';
+function pintaSucursales() {
+  const lista = RES.filter((r) => filtro === 'todas' || r.tipo === filtro);
+  document.getElementById('gridSucursales').innerHTML = lista.map((r) => ficha(r)).join('');
+  document.getElementById('conteoSuc').textContent =
+    `${lista.length} de ${RES.length} · ${lista.filter((r) => r.saturadoEstructural).length} con el producto fuera de límite`;
+}
+document.getElementById('segTipo').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-t]');
+  if (!b) return;
+  filtro = b.dataset.t;
+  for (const o of e.currentTarget.querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b));
+  pintaSucursales();
+  document.getElementById('detSucursal').hidden = true;
+});
+pintaSucursales();
+abreDetalle('gridSucursales', 'detSucursal');
+
+/* ---------- dónde actúa mejor cada palanca ---------- */
+const saturadas = RES.filter((r) => r.saturadoEstructural)
+  .slice().sort((a, b) => b.rhoEstructural - a.rhoEstructural).slice(0, 8);
+document.getElementById('tablaPalancas').innerHTML = `<table>
+  <thead><tr>
+    <th>Sucursal</th><th class="n">ρ*</th><th>Cámara crítica</th>
+    <th class="n">κ</th><th>Hay que bajar la política a</th><th class="n">Aporta congelado</th>
+  </tr></thead>
+  <tbody>${saturadas.map((r) => `<tr>
+    <td><b>${r.sucursal}</b> ${r.tipo === 'hub' ? '<span class="hubtag">HUB</span>' : ''}</td>
+    <td class="n">${nf(r.rhoEstructural, 2)}</td>
+    <td>${r.camaraCritica}</td>
+    <td class="n">${nf(r.kappaEstructural, 2)}</td>
+    <td class="n">${pct(r.kappaEstructural, 0)} de la actual</td>
+    <td class="n">${pct(r.elasticidadDohC, 0)}</td>
+  </tr>`).join('')}</tbody></table>
+<p class="nota">Las ocho con mayor saturación. «Bajar la política a X %» significa multiplicar los días de cobertura actuales por ese factor para quedar justo en el límite.</p>`;
+</script>

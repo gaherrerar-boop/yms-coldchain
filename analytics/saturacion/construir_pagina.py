@@ -210,6 +210,53 @@ def construir_explorador(logo: Path | None = None) -> None:
     print(f"explorador escrito: {destino}  ({len(suelto.encode('utf-8')):,} bytes)")
 
 
+# Los dos documentos derivados comparten hoja de estilo y capa de presentacion,
+# y ambos inlinean el mismo nucleo verificado. Se generan de las mismas fuentes
+# para que no puedan divergir entre si ni respecto del informe.
+DERIVADOS = (
+    ("doc_tecnico.html", "tecnico_saturacion.html", "artifact_tecnico.html"),
+    ("doc_simple.html", "guia_saturacion.html", "artifact_guia.html"),
+)
+
+
+def construir_derivados(logo: Path | None = None) -> None:
+    nucleo = extraer_nucleo(RAIZ / "saturacion.core.js")
+    comun = (RAIZ / "comun_saturacion.js").read_text(encoding="utf-8")
+    estilo = (RAIZ / "estilo_saturacion.css").read_text(encoding="utf-8")
+    datos = json.loads((RAIZ / "salidas" / "entrada.json").read_text(encoding="utf-8"))
+    datos_js = json.dumps(datos, ensure_ascii=False, separators=(",", ":"))
+    bloque = bloque_logo(logo)
+
+    for fuente, suelto_nom, art_nom in DERIVADOS:
+        plantilla = (RAIZ / fuente).read_text(encoding="utf-8")
+        for marca in ("/*__ESTILO__*/", "/*__CORE__*/", "/*__DATOS__*/",
+                      "/*__COMUN__*/", "<!--__LOGO__-->"):
+            if marca not in plantilla:
+                raise SystemExit(f"falta el marcador {marca} en {fuente}")
+
+        cuerpo = (plantilla
+                  .replace("/*__ESTILO__*/", estilo)
+                  .replace("<!--__LOGO__-->", bloque)
+                  .replace("/*__CORE__*/", nucleo)
+                  .replace("/*__COMUN__*/", comun)
+                  .replace("/*__DATOS__*/", datos_js))
+
+        for prohibido in ("__ESTILO__", "__CORE__", "__DATOS__", "__COMUN__",
+                          "__LOGO__", "export {"):
+            if prohibido in cuerpo:
+                raise SystemExit(f"{art_nom} quedo con residuo: {prohibido}")
+
+        verificar_js(cuerpo, art_nom)
+
+        art = RAIZ / "salidas" / art_nom
+        art.write_text(cuerpo, encoding="utf-8")
+        print(f"artifact escrito:   {art}  ({len(cuerpo.encode('utf-8')):,} bytes)")
+
+        suelto = ENVOLTORIO.format(cuerpo=cuerpo)
+        (RAIZ / suelto_nom).write_text(suelto, encoding="utf-8")
+        print(f"documento escrito:  {RAIZ / suelto_nom}  ({len(suelto.encode('utf-8')):,} bytes)")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Arma la pagina autocontenida")
     ap.add_argument("--logo", type=Path, default=None,
@@ -219,6 +266,7 @@ def main() -> None:
     args = ap.parse_args()
     construir(args.logo)
     construir_explorador(args.logo)
+    construir_derivados(args.logo)
 
 
 if __name__ == "__main__":
